@@ -1,0 +1,133 @@
+<div class="page-container">
+  <app-header-title-bar [title]="'change_username' | translate" [clickForRouterBack]="true"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web">
+    <div class="container stepper-continer">
+      <mat-horizontal-stepper
+        linear
+        labelPosition="bottom"
+        matStepperIcon="edit"
+        [disableRipple]="true"
+        #stepper
+        class="line-selected-{{ stepper.selectedIndex }}"
+      >
+        <!-- step1  ： 身份验证-->
+        <mat-step label="{{ 'identification' | translate }}">
+          <div class="warning-container">
+            <div class="warning-icon"></div>
+            <div>{{ 'username_change_warning' | translate }}</div>
+          </div>
+          <div class="form-container">
+            <div class="form-group">
+              <app-customize-input
+                [size]="'large'"
+                [label]="'password_text' | translate"
+                #iPwd
+                [type]="'password'"
+                [disabled]="isLoading"
+                (keyup.enter)="checkToSubmit1(stepper)"
+                [(value)]="password"
+                (onChange)="this.showErrorText = ''"
+                [error]="!!showErrorText && showErrorText"
+                (onFocus)="onFocus(iPwd)"
+                (onBlur)="onBlur(iPwd)"
+              >
+                <i
+                  class="onact96-not"
+                  right-content
+                  [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+                  (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+                ></i>
+              </app-customize-input>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg-show">
+                {{ 'enter_pwd' | translate }}
+              </div>
+              <customize-button
+                class="next-btn"
+                type="primary"
+                [loading]="isLoading"
+                [disabled]="!canSubmit1()"
+                size="large"
+                width="100%"
+                (onClick)="goForward(stepper)"
+              >
+                {{ 'next' | translate }}
+              </customize-button>
+            </div>
+          </div>
+        </mat-step>
+        <!-- step2  ： 修改用户名-->
+        <mat-step label="{{ 'change_username' | translate }}">
+          <div class="form-container">
+            <div class="form-group">
+              <!-- 输入框 -->
+              <app-customize-input
+                [size]="'large'"
+                [label]="'username_text' | translate"
+                #iUName
+                [error]="!!showErrorText && showErrorText"
+                [disabled]="isLoading"
+                (keyup.enter)="checkToSubmit2(stepper)"
+                [(value)]="userName"
+                (onFocus)="onFocus(iUName)"
+                (onChange)="onUserNameInput(iUName)"
+                (onBlur)="onBlur(iUName)"
+              >
+              </app-customize-input>
+              <!-- 错误浮框 -->
+              <div class="valid-pop-container" *ngIf="!!userName && $any(iUName).isFocus && !canSubmit2()">
+                <div class="valid-pop">
+                  <p>
+                    * {{ 'length_error' | translate
+                    }}<i [class]="$any(iUName).isValid1 ? 'icon-correct' : 'icon-error'"></i>
+                  </p>
+                  <p>
+                    * {{ 'letter_error' | translate
+                    }}<i [class]="$any(iUName).isValid2 ? 'icon-correct' : 'icon-error'"></i>
+                  </p>
+                  <p>
+                    * {{ 'pass_error_info' | translate }}
+                    <i [class]="$any(iUName).isValid3 ? 'icon-correct' : 'icon-error'"></i>
+                  </p>
+                </div>
+              </div>
+              <customize-button
+                class="next-btn"
+                type="primary"
+                [loading]="isLoading"
+                [disabled]="!canSubmit2()"
+                size="large"
+                width="100%"
+                (onClick)="goForward(stepper)"
+              >
+                {{ 'next' | translate }}
+              </customize-button>
+            </div>
+          </div>
+        </mat-step>
+        <!-- step3  ： 修改成功-->
+        <mat-step label="{{ 'change_success_msg' | translate }}">
+          <div class="form-container none-border">
+            <div class="form-group">
+              <app-success-verification-page
+                [header]="'username_change_success_title' | translate"
+                [successText]="'username_change_success_msg' | translate"
+              >
+              </app-success-verification-page>
+            </div>
+            <customize-button class="back-btn" type="primary" size="large" width="100%" (onClick)="handleback()">
+              {{ 'back' | translate }}
+            </customize-button>
+          </div>
+        </mat-step>
+        <!--步骤条显示-->
+        <ng-template matStepperIcon="number" let-index="index" optional="false">
+          <mat-icon>{{ index === 0 ? '1' : index === 1 ? '2' : '3' }}</mat-icon>
+        </ng-template>
+        <ng-template matStepperIcon="edit" let-index="index" optional="false">
+          <mat-icon>{{ index === 0 ? '1' : index === 1 ? '2' : '3' }}</mat-icon>
+        </ng-template>
+      </mat-horizontal-stepper>
+    </div>
+  </div>
+</div>

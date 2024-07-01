@@ -1,0 +1,409 @@
+<div class="container">
+  <div class="content-box">
+    <ng-container *ngIf="!isH5; else H5page">
+      <div class="search-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [(value)]="selectedGrantType"
+            [label]="'disb_method' | translate"
+            [options]="grantTypeSelect | unshift: allGrantType"
+            [valueKey]="'code'"
+            [textKey]="'description'"
+          >
+          </app-customize-select>
+          <app-customize-select
+            [(value)]="selectedCurrency"
+            [label]="'curr' | translate"
+            [options]="currencies | unshift: walletHistoryService.CURRENCY_ALL"
+            [valueKey]="'currency'"
+            [textKey]="'currency'"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="selectedTimeValue"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [label]="'scope' | translate"
+            [options]="timeOptions"
+          ></app-customize-select>
+
+          <div class="form-group-align">
+            <customize-button size="small" type="text" (onClick)="reset()" [plain]="true">
+              {{ 'reset' | translate }}
+            </customize-button>
+            <customize-button size="small" type="text" (onClick)="searchLoadData()" [plain]="true" [active]="true">
+              {{ 'filter' | translate }}
+            </customize-button>
+          </div>
+        </app-customize-form-group>
+      </div>
+
+      <div class="data-list" [appLoading]="loading">
+        <table *ngIf="bonusHistoryData.length > 0">
+          <thead>
+            <th>{{ 'dates' | translate }}</th>
+            <th>{{ 'order' | translate }}</th>
+            <th>{{ 'act_name' | translate }}</th>
+            <th>{{ 'amount' | translate }}</th>
+            <th>{{ 'disb_method' | translate }}</th>
+            <th>{{ 'status' | translate }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of bonusHistoryData; let i = index" (click)="openWebDetail(item)">
+              <td class="wrap">{{ item.grantTime | mdate: 'YYYY-MM-DD HH:mm:ss' }}</td>
+              <td class="wrap">{{ item.bonusOrderId }}</td>
+              <td>{{ item.bonusName }}</td>
+              <td>
+                <p class="text">
+                  {{ item.amount | currencyValue: item.currency }}
+                </p>
+                <img class="currency-img" [src]="item.currency | currencyIcon" />
+              </td>
+              <td>{{ grantTypeSelect | filterByKeyValue: 'code' : item.grantType : 'description' }}</td>
+              <td>{{ item.statusName }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <app-empty *ngIf="bonusHistoryData.length === 0 && !loading" [text]="'no_record' | translate"></app-empty>
+
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+      </div>
+    </ng-container>
+
+    <ng-template #H5page>
+      <div class="search-h5-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [width]="'40vw'"
+            [fixedHeight]="true"
+            [(value)]="selectedGrantType"
+            [label]="'disb_method' | translate"
+            [options]="grantTypeSelect"
+            [valueKey]="'code'"
+            [textKey]="'description'"
+            (valueChange)="loadData(); bonusHistoryData = []"
+          ></app-customize-select>
+          <div class="form-group-align margin-left-auto">
+            <i class="search-h5-bar-filter icon-filter mutual-opacity onact96-not" (click)="openh5Filter()"></i>
+          </div>
+        </app-customize-form-group>
+      </div>
+
+      <ul class="data-h5-list" [appLoading]="loading">
+        <li class="item" *ngFor="let item of bonusHistoryData">
+          <div class="group first">
+            <span>{{ 'bonus' | translate }}</span>
+            <p class="onact96" (click)="openh5Detail(item)">
+              {{ item.statusName }}<i class="icon-arrow-right-simple"></i>
+            </p>
+          </div>
+          <div class="group">
+            <span>{{ 'dates' | translate }}：</span>
+            <p>{{ item.grantTime | mdate: 'YYYY-MM-DD HH:mm' }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'order' | translate }}：</span>
+            <p>{{ item.bonusOrderId }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'act_name' | translate }}</span>
+            <p>{{ item.bonusName }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'amount' | translate }}：</span>
+            <p>
+              {{ item.amount | currencyValue: item.currency }}
+              <img [src]="item.currency | currencyIcon" />
+            </p>
+          </div>
+          <div class="group">
+            <span>{{ 'act_name' | translate }}</span>
+            <p>{{ grantTypeSelect | filterByKeyValue: 'code' : item.grantType : 'description' }}</p>
+          </div>
+        </li>
+
+        <app-empty *ngIf="bonusHistoryData.length === 0 && !loading" [text]="'no_record' | translate"></app-empty>
+
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+      </ul>
+    </ng-template>
+  </div>
+</div>
+
+<!-- h5选择选项弹窗模板 -->
+<ng-template #h5Filter>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="h5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <app-customize-select
+          [(value)]="selectedCurrency"
+          [label]="'curr' | translate"
+          [options]="currencies | unshift: walletHistoryService.CURRENCY_ALL"
+          [valueKey]="'currency'"
+          [textKey]="'currency'"
+        ></app-customize-select>
+        <app-customize-select
+          [(value)]="selectedTimeValue"
+          [(timeValue)]="selectedTime"
+          [timeDance]="true"
+          [label]="'scope' | translate"
+          [options]="timeOptions"
+        ></app-customize-select>
+      </app-customize-form-group>
+      <div class="popup-btn-group">
+        <customize-button width="100%" (onClick)="reset()">
+          {{ 'reset' | translate }}
+        </customize-button>
+        <customize-button
+          class="popup-btn-margin-left"
+          type="primary"
+          width="100%"
+          (onClick)="h5FilterPopup.close(); searchLoadData()"
+        >
+          {{ 'filter' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- h5详情弹窗模板 -->
+<ng-template #detailData>
+  <div class="h5-detail-popup" *ngIf="selectedItem">
+    <div class="title">
+      <span>{{ 'bonus_details' | translate }}</span>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="detailDataPopup.close()"></i>
+    </div>
+    <ul class="info-box">
+      <li class="group">
+        <p>{{ 'dates' | translate }}</p>
+        <span>{{ selectedItem.grantTime | mdate: 'YYYY-MM-DD HH:mm:ss' }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'order' | translate }}</p>
+        <span>{{ selectedItem.bonusOrderId }}</span>
+      </li>
+
+      <li class="group">
+        <p>{{ 'curr' | translate }}</p>
+        <span>{{ selectedItem.currency }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'amount' | translate }}</p>
+        <span>{{ selectedItem.amount | currencyValue: selectedItem.currency }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'act_name' | translate }}</p>
+        <span>{{ selectedItem.bonusName }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'disb_method' | translate }}</p>
+        <span>
+          {{ grantTypeSelect | filterByKeyValue: 'code' : selectedItem.grantType : 'description' }}
+          <ng-container *ngIf="selectedItem.statusName">({{ selectedItem.statusName }})</ng-container>
+        </span>
+      </li>
+    </ul>
+  </div>
+</ng-template>
+
+<!-- none sticky 详情弹窗 -->
+<ng-template #noneStickyDetails>
+  <div class="deal-data-detail-popup" *ngIf="renderNoneStickyDetails()">
+    <div class="title">
+      <span>{{ 'none_details' | translate }}</span>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="noneStickyPopup.close()"></i>
+    </div>
+    <div class="info-box">
+      <app-scrollbar>
+        <div class="info-group">
+          <div class="info-item">
+            <label>{{ 'act_title' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.prizeName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'act_type' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.grantName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'act_name' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.bonusName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'init_amount' | translate }}:</label>
+            <span
+              >{{
+                renderNoneStickyDetails()?.amount || 0 | currencyValue: renderNoneStickyDetails()?.currency || 'USDT'
+              }}
+              <img class="currency-img" [src]="renderNoneStickyDetails()?.currency || 'USDT' | currencyIcon" />
+            </span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'curr_bonus' | translate }}:</label>
+            <span
+              >{{
+                renderNoneStickyDetails()?.balance || 0 | currencyValue: renderNoneStickyDetails()?.currency || 'USDT'
+              }}
+              <img class="currency-img" [src]="renderNoneStickyDetails()?.currency || 'USDT' | currencyIcon"
+            /></span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'bet_flow' | translate }}:</label>
+            <span
+              >{{
+                renderNoneStickyDetails()?.currentBetTurnover || 0
+                  | currencyValue: renderNoneStickyDetails()?.currency || 'USDT'
+              }}
+              <img class="currency-img" [src]="renderNoneStickyDetails()?.currency || 'USDT' | currencyIcon"
+            /></span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'receive_amount' | translate }}:</label>
+            <span
+              >{{
+                renderNoneStickyDetails()?.withdrawAmount || 0
+                  | currencyValue: renderNoneStickyDetails()?.currency || 'USDT'
+              }}
+              <img class="currency-img" [src]="renderNoneStickyDetails()?.currency || 'USDT' | currencyIcon"
+            /></span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'bet_process' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.betProgress }}%</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'requirements' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.betCount || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'status' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.statusName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'release_date' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.grantTime || 0 | mdate: 'YYYY-MM-DD HH:mm:ss' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'last_renew_date' | translate }}:</label>
+            <span>{{ renderNoneStickyDetails()?.lastUpdateTime || 0 | mdate: 'YYYY-MM-DD HH:mm:ss' }}</span>
+          </div>
+        </div>
+      </app-scrollbar>
+    </div>
+    <customize-button
+      class="bottom-box"
+      *ngIf="!isH5"
+      width="112px"
+      type="primary"
+      size="medium"
+      (onClick)="noneStickyPopup.close()"
+    >
+      {{ 'sure' | translate }}
+    </customize-button>
+  </div>
+</ng-template>
+
+<!-- free spin 详情弹窗 -->
+<ng-template #freeSpinDetails>
+  <div class="deal-data-detail-popup" *ngIf="renderFreeSpinDetails()">
+    <div class="title">
+      <span>{{ 'none_details' | translate }}</span>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="freeSpinPopup.close()"></i>
+    </div>
+    <div class="info-box">
+      <app-scrollbar>
+        <div class="info-group">
+          <div class="info-item">
+            <label>{{ 'act_title' | translate }}:</label>
+            <span>{{ renderFreeSpinDetails()?.prizeName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'act_type' | translate }}:</label>
+            <span>{{ renderFreeSpinDetails()?.grantName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'act_name' | translate }}:</label>
+            <span>{{ renderFreeSpinDetails()?.bonusName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'support_game' | translate }}:</label>
+            <span
+              >{{ renderFreeSpinDetails()?.providerName || '-' }} / {{ renderFreeSpinDetails()?.gameName || '-' }}</span
+            >
+          </div>
+          <div class="info-item">
+            <label>{{ 'amount_of_free_Spin' | translate }}:</label>
+            <span>{{ renderFreeSpinDetails()?.maxSpinNum || 0 }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'spin_value' | translate }}:</label>
+            <span
+              >{{ renderFreeSpinDetails()?.amount || 0 | currencyValue: renderFreeSpinDetails()?.currency || 'USDT' }}
+              <img class="currency-img" [src]="renderFreeSpinDetails()?.currency || 'USDT' | currencyIcon"
+            /></span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'spin_bonus' | translate }}:</label>
+            <span>
+              {{ renderFreeSpinDetails()?.balance || 0 | currencyValue: renderFreeSpinDetails()?.currency || 'USDT' }}
+              <img class="currency-img" [src]="renderFreeSpinDetails()?.currency || 'USDT' | currencyIcon" />
+            </span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'release_date' | translate }}:</label>
+            <span>{{ renderFreeSpinDetails()?.grantTime || 0 | mdate: 'YYYY-MM-DD HH:mm:ss' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'issued_bonus' | translate }}:</label>
+            <span>
+              {{
+                renderFreeSpinDetails()?.bonusAmount || 0 | currencyValue: renderFreeSpinDetails()?.currency || 'USDT'
+              }}
+              <img class="currency-img" [src]="renderFreeSpinDetails()?.currency || 'USDT' | currencyIcon" />
+            </span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'exchange_fs' | translate }}:</label>
+            <span>{{
+              renderFreeSpinDetails()?.isNonSticky ? ('non_sticky_bonus' | translate) : ('cash_coupons' | translate)
+            }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'last_renew_date' | translate }}:</label>
+            <span>{{ renderFreeSpinDetails()?.lastUpdateTime || 0 | mdate: 'YYYY-MM-DD HH:mm:ss' }}</span>
+          </div>
+        </div>
+      </app-scrollbar>
+    </div>
+    <customize-button
+      class="bottom-box"
+      *ngIf="!isH5"
+      width="112px"
+      type="primary"
+      size="medium"
+      (onClick)="freeSpinPopup.close()"
+    >
+      {{ 'sure' | translate }}
+    </customize-button>
+  </div>
+</ng-template>

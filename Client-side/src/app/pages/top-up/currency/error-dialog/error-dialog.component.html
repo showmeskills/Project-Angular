@@ -1,0 +1,12 @@
+<div class="container">
+  <span class="important-icon" *ngIf="data?.errorCode != '2054'"></span>
+  <span class="important-icon-1" *ngIf="data?.errorCode == '2054'"></span>
+  <p>{{ title }}</p>
+  <p class="txt">{{ message }}</p>
+  <div class="btn-group">
+    <customize-button size="large" width="100%" (onClick)="close()">{{ 'cancels' | translate }}</customize-button>
+    <customize-button size="large" width="100%" type="primary" (onClick)="toKycVerify(submitTxt)"
+      >{{ submitTxt }}
+    </customize-button>
+  </div>
+</div>

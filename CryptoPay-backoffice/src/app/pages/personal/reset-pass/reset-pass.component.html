@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <div class="modal-title fw-bolder">{{ 'common.changePassword.title' | lang }}</div>
+
+  <div class="c-btn-close" (click)="modal.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<form class="px-12 py-10" [formGroup]="formGroup">
+  <form-row
+    [label]="'common.changePassword.curPass' | lang"
+    [label-width]="lang.isLocal ? 90 : 146"
+    name="oldPassword"
+    [invalidFeedback]="{ required: ('form.inpTips' | lang : { label: ('common.changePassword.curPass' | lang) }) }"
+    *ngIf="!isForce"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <label [invalid]="invalid" form-wrap>
+        <input [formControl]="control" form-full type="password" autocomplete="off" [input-reveal]="reveal" />
+        <reveal #reveal></reveal>
+      </label>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.changePassword.newPass' | lang" [label-width]="lang.isLocal ? 90 : 146">
+    <ng-template>
+      <label
+        [invalid]="validator.isControlInvalid('password', formGroup.get('newPassword')) || checkPassword"
+        form-wrap
+      >
+        <input
+          [formControl]="formGroup.get('newPassword')!['controls']['password']"
+          form-full
+          type="password"
+          autocomplete="off"
+          [input-reveal]="reveal"
+        />
+        <reveal #reveal></reveal>
+      </label>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="validator.isControlInvalid('password', formGroup.get('newPassword'))">
+        {{ 'common.pleaseEnter' | lang }}{{ 'common.changePassword.newPass' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.changePassword.confirmPass' | lang" [label-width]="lang.isLocal ? 90 : 146">
+    <ng-template>
+      <label
+        [invalid]="validator.isControlInvalid('againPassword', formGroup.get('newPassword')) || checkPassword"
+        form-wrap
+      >
+        <input
+          [formControl]="formGroup.get('newPassword')!['controls']['againPassword']"
+          form-full
+          type="password"
+          autocomplete="off"
+          [input-reveal]="reveal"
+        />
+        <reveal #reveal></reveal>
+      </label>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div
+        class="invalid-feedback"
+        *ngIf="validator.controlHasError('required', 'againPassword', formGroup.get('newPassword'))"
+      >
+        {{ 'common.pleaseEnter' | lang }}{{ 'common.changePassword.confirmPass' | lang }}
+      </div>
+      <div class="invalid-feedback" *ngIf="checkPassword">{{ 'common.changePassword.differentPass' | lang }}</div>
+    </ng-template>
+  </form-row>
+
+  <!-- 尽快修改密码提示 -->
+  <div class="text-danger" *ngIf="isForce">* {{ 'common.login.soonModifyPassTips' | lang }}</div>
+</form>
+
+<modal-footer (dismiss)="modal.dismiss()" (confirm)="onSubmit()"></modal-footer>

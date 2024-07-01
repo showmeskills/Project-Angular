@@ -1,0 +1,221 @@
+<div class="bg-fff rounded-2 px-12 py-8 d-flex flex-wrap">
+  <!-- 订单号 -->
+  <form-row [label]="'wallet.conversion.order' | lang" contentWidth="360" label-width="98">
+    <ng-template>
+      <input
+        class="form-control rounded-0"
+        type="text"
+        [style.width.px]="260"
+        [(ngModel)]="filterData.order"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 热钱包地址 -->
+  <form-row [label]="'wallet.conversion.address' | lang" contentWidth="490" label-width="98">
+    <ng-template>
+      <input
+        class="form-control rounded-0"
+        type="text"
+        [style.width.px]="406"
+        [(ngModel)]="filterData.address"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 转账网络 -->
+  <form-row [label]="'wallet.conversion.network' | lang" contentWidth="260" label-width="98">
+    <ng-template>
+      <mat-form-field [style.width.px]="170">
+        <mat-select
+          class="form-control rounded-0"
+          [(ngModel)]="filterData.network"
+          (selectionChange)="onFilter('network')"
+        >
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of networkList" [value]="item.network">{{ item.network }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种 -->
+  <form-row [label]="'wallet.conversion.currency' | lang" contentWidth="260" label-width="98">
+    <ng-template>
+      <mat-form-field [style.width.px]="170">
+        <mat-select class="form-control rounded-0" [(ngModel)]="filterData.coin" (selectionChange)="onFilter('coin')">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of currencyList" [value]="item.token">{{ item.token }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 闪兑状态 -->
+  <form-row [label]="'wallet.conversion.status' | lang" contentWidth="260" label-width="98">
+    <ng-template>
+      <mat-form-field [style.width.px]="170">
+        <mat-select class="form-control rounded-0" [(ngModel)]="filterData.status" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of conversionService.statusList" [value]="item.value">{{
+            item.lang | lang
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 时间 -->
+  <form-row [label]="'common.date' | lang" contentWidth="260" label-width="98">
+    <ng-template>
+      <input
+        class="text-center form-control w-100 rounded-0"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="filterData.time"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="bg-fff rounded px-10 py-8 mt-8">
+  <div class="d-flex flex-ac justify-content-between">
+    <div class="fz-20 flex-1">{{ 'wallet.conversion.title' | lang }}</div>
+
+    <button type="button" class="btn btn-light-primary" (click)="onOpenExchange()">
+      <svg-icon [src]="'./assets/images/svg/flash.svg'" class="svg-icon svg-icon-14 vam"></svg-icon>
+      <span class="vam">{{ 'wallet.conversion.conversion' | lang }}</span>
+    </button>
+  </div>
+
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'wallet.conversion.order' | lang }}</span>
+        </th>
+        <!--        <th>-->
+        <!--          <span class="cell">{{ 'wallet.conversion.transactionOrderNo' | lang }}</span>-->
+        <!--        </th>-->
+        <th>
+          <span class="cell">{{ 'wallet.conversion.address' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'wallet.conversion.network' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'wallet.conversion.currency' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'wallet.conversion.conversionNumber' | lang }}</span>
+        </th>
+        <!--        <th>-->
+        <!--          <span class="cell">{{ 'wallet.conversion.price' | lang }}</span>-->
+        <!--        </th>-->
+        <th>
+          <span class="cell">{{ 'wallet.conversion.commission' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'wallet.conversion.get' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'wallet.conversion.completeTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'wallet.conversion.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of list">
+        <tr>
+          <td>
+            <span class="cell">{{ item.txNum }}</span>
+          </td>
+          <!--          <td>-->
+          <!--            <span class="cell">{{ item.tradeTxNum }}</span>-->
+          <!--          </td>-->
+          <td>
+            <span class="cell">{{ item.toAddress }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.fromNetwork }} ➔ {{ item.toNetwork }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.fromCoin }} ➔ {{ item.toCoin }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.fromAmount }}</span>
+          </td>
+          <!--          <td>-->
+          <!--            <span class="cell">-->
+          <!--              1 {{ item.fromCoin }}-->
+          <!--              <br />-->
+          <!--              ≈-->
+          <!--              <br />-->
+          <!--              {{ item.rate | toFormatNumberDecimal: 8 | toFormatMoney }} {{ item.toCoin }}-->
+          <!--            </span>-->
+          <!--          </td>-->
+          <td>
+            <!-- 钱包转账手续费都是虚拟币这里直接给默认usdt就可以 -->
+            <span class="cell">{{ item.totalFee | currencyValue : 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.toAmount | currencyValue : item.toCoin }} {{ item.toCoin }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ (item.completedTime | timeFormat) || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <app-label class="cursor-pointer" [type]="getStatus(item.status)?.type" (click)="onDetail(item)">
+                {{ item.status | conversionStatus }}
+              </app-label>
+            </span>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <empty *ngIf="!list.length"></empty>
+
+  <div class="d-flex flex-between pt-10 table-footer">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

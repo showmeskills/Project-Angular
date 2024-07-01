@@ -1,0 +1,37 @@
+<div class="timer-zone" *ngIf="renderRemainingTimer(); else defaultZone">
+  <ng-container *ngFor="let item of renderRemainingTimer() | keyvalue">
+    <ng-container
+      *ngTemplateOutlet="
+        timerTmp;
+        context: {
+          timer: item.value.time,
+          unit: item.value.unit
+        }
+      "
+    ></ng-container>
+  </ng-container>
+</div>
+<ng-template #timerTmp let-timer="timer" let-unit="unit">
+  <div class="timer">
+    <p class="text">
+      {{ timer < 0 ? '00' : timer > 0 && timer < 10 ? '0' + timer : timer || '00' }}
+    </p>
+    <p class="text unit">{{ unit }}</p>
+  </div>
+</ng-template>
+
+<ng-template #defaultZone>
+  <div class="timer-zone">
+    <ng-container *ngFor="let item of renderLodingTimer() | keyvalue">
+      <ng-container
+        *ngTemplateOutlet="
+          timerTmp;
+          context: {
+            timer: item.value.time,
+            unit: item.value.unit
+          }
+        "
+      ></ng-container>
+    </ng-container>
+  </div>
+</ng-template>

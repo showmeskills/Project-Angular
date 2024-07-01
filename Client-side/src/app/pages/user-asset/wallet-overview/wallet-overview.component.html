@@ -1,0 +1,315 @@
+<div class="page-container">
+  <div class="main-container" *ngIf="currentCurrency">
+    <div class="container" *ngIf="!isH5">
+      <div class="content-box card-box overview">
+        <div class="title">{{ 'wallet_over' | translate }}</div>
+        <div class="group">
+          <ng-container *ngTemplateOutlet="btnGroup; context: { isMain: true, category: 'Main' }"></ng-container>
+          <div class="split-line"></div>
+          <div class="link-style mutual-opacity onact96-not" [routerLink]="'../history'">
+            {{ 'trans_history' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content-box card-box assets" [class.disabled]="loading">
+        <!-- 总资产 -->
+        <div class="assets-item">
+          <div class="assets-title">
+            {{ 'es_bal' | translate }}
+            <span class="hide-assets-value mutual-opacity onact96" (click)="hideAssetsValue = !hideAssetsValue">
+              <i [class]="hideAssetsValue ? 'icon-pwd-show' : 'icon-pwd-hidden'"></i>
+              <em>{{ hideAssetsValue ? ('show_bal' | translate) : ('hide_bal' | translate) }}</em>
+            </span>
+            <ng-container *ngIf="isH5">
+              <div class="link-style mutual-opacity onact96-not" [routerLink]="'../history'">
+                {{ 'trans_history' | translate }}
+              </div>
+            </ng-container>
+          </div>
+          <ng-container
+            *ngTemplateOutlet="assetsValue; context: { value: newViewData.totalAsset, hide: hideAssetsValue }"
+          >
+          </ng-container>
+        </div>
+        <!-- 待确认金额 -->
+        <div class="assets-item">
+          <div class="assets-title">
+            {{ 'open_balance' | translate }}
+            <app-tool-tip *ngIf="newViewData.totalFreezeAmount > 0">
+              <i origin class="icon-tips mutual-opacity"></i>
+              <ul tooltip class="tooltip-info">
+                <ng-container *ngFor="let item of walletInfo.overviewWallet.currencies">
+                  <li *ngIf="item.freezeAmount > 0">
+                    <span class="lable">{{ item.currency }}<em>：</em></span>
+                    <span>{{ item.freezeAmount | currencyValue : item.currency }}</span>
+                  </li>
+                </ng-container>
+              </ul>
+            </app-tool-tip>
+          </div>
+          <ng-container
+            *ngTemplateOutlet="assetsValue; context: { value: newViewData.totalFreezeAmount }"
+          ></ng-container>
+        </div>
+        <!-- 抵用金余额 -->
+        <div class="assets-item">
+          <div class="assets-title">
+            {{ 'cre_bal' | translate }}
+            <app-tool-tip *ngIf="newViewData.totalBonus > 0">
+              <i origin class="icon-tips mutual-opacity"></i>
+              <ul tooltip class="tooltip-info bonus">
+                <li *ngFor="let item of walletInfo.bonusDetail">
+                  <span class="lable" [title]="item.bonusName">{{ item.bonusName }}</span>
+                  <span>
+                    {{ item.amount | currencyValue : item.currency }}<em>{{ item.currency }}</em>
+                  </span>
+                </li>
+              </ul>
+            </app-tool-tip>
+            <customize-button
+              *ngIf="newViewData.totalBonus !== 0"
+              class="ml-10"
+              type="primary"
+              size="small"
+              minWidth="60px"
+              [disabled]="loading"
+              [loading]="loading"
+              (onClick)="onClearToZero('bonus')"
+            >
+              {{ 'clear_zero' | translate }}
+            </customize-button>
+          </div>
+          <ng-container *ngTemplateOutlet="assetsValue; context: { value: newViewData.totalBonus }"></ng-container>
+        </div>
+        <!-- 提款限额 -->
+        <div class="assets-item">
+          <div class="assets-title">
+            {{ 'wd_limit' | translate }}
+            <app-tool-tip *ngIf="withdrawLimit > 0">
+              <i origin class="icon-tips mutual-opacity"></i>
+              <ul tooltip class="tooltip-info">
+                <li *ngFor="let item of walletInfo.overviewWallet.currencies">
+                  <span class="lable">{{ item.currency }}<em>：</em></span>
+                  <span>{{ item.withdrawLimit | currencyValue : item.currency }}</span>
+                </li>
+              </ul>
+            </app-tool-tip>
+            <customize-button
+              *ngIf="clearWithdrawaLimitCurrencies.length !== 0"
+              class="ml-10"
+              type="primary"
+              size="small"
+              [loading]="clearZeroLoading.clearWithDrawLimitLoading"
+              [disabled]="disableWithdrawLimit"
+              (onClick)="onClearToZero('withdrawLimit')"
+            >
+              {{ 'clear_zero' | translate }}
+            </customize-button>
+          </div>
+          <ng-container *ngTemplateOutlet="assetsValue; context: { value: withdrawLimit }"></ng-container>
+        </div>
+        <!-- 非粘性 -->
+        <ng-container *ngIf="renderNonStickyBonusWallet()">
+          <!-- 娱乐场/真人娱乐场-->
+          <div class="assets-item" *ngFor="let item of renderNonStickyBonusWallet()">
+            <div class="assets-title">
+              {{ item.title || '' }}
+              <app-tool-tip *ngIf="item.amount > 0">
+                <i origin class="icon-tips mutual-opacity"></i>
+                <ul tooltip class="tooltip-info bonus">
+                  <li>
+                    <span class="lable">{{ item.currency }}<em>：</em></span>
+                    <span>{{ item.amount | currencyValue : item.currency }}</span>
+                  </li>
+                </ul>
+              </app-tool-tip>
+              <customize-button
+                *ngIf="item.totalAmount !== 0"
+                class="ml-10"
+                type="primary"
+                size="small"
+                [disabled]="loading"
+                [loading]="loading"
+                minWidth="60px"
+                (onClick)="onClearToZero('bonus')"
+              >
+                {{ 'clear_zero' | translate }}
+              </customize-button>
+            </div>
+            <ng-container *ngTemplateOutlet="assetsValue; context: { value: item.totalAmount || 0 }"></ng-container>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isH5">
+          <ng-container *ngTemplateOutlet="btnGroup; context: { isMain: true, category: 'Main' }"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content-box card-box account">
+        <div class="title">{{ 'wallet_over' | translate }}</div>
+        <div class="account" *ngIf="newViewData.walletList" [class.loading-space]="loading" [appLoading]="loading">
+          <ng-container *ngIf="!loading">
+            <ng-container *ngFor="let item of newViewData.walletList">
+              <ng-container
+                *ngTemplateOutlet="
+                  accountItem;
+                  context: {
+                    value: item.totalBalance,
+                    desc: item.desc,
+                    isMain: item.isMain,
+                    category: item.category,
+                    currency: item.currency,
+                    isFirst: item.isFirst,
+                    providerId: item.providerId,
+                    item: item
+                  }
+                "
+              >
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template
+  #btnGroup
+  let-isMain="isMain"
+  let-category="category"
+  let-isFirst="isFirst"
+  let-providerId="providerId"
+  let-item="item"
+>
+  <div class="btn-group">
+    <customize-button
+      *ngIf="isMain"
+      width="100%"
+      type="primary"
+      size="small"
+      [disabled]="renderPiqCheckedLoading()"
+      (onClick)="$event.stopPropagation(); handleTopUp()"
+      >{{ 'deposit' | translate }}</customize-button
+    >
+
+    <customize-button
+      *ngIf="isMain"
+      width="100%"
+      type="text"
+      size="small"
+      [plain]="true"
+      (onClick)="$event.stopPropagation(); handleWithdrawal()"
+      >{{ 'withdraw' | translate }}</customize-button
+    >
+
+    <customize-button
+      type="text"
+      [plain]="true"
+      size="small"
+      width="100%"
+      (onClick)="$event.stopPropagation(); openWalletTransDialog(category)"
+      >{{ 'trans' | translate }}</customize-button
+    >
+    <ng-container *ngIf="!isMain">
+      <ng-container *ngIf="item.providerCategorys?.length > 1; else normalBtn">
+        <app-tool-tip [light]="true" [arrow]="false" [direction]="['down', 'up', 'left', 'right']">
+          <customize-button
+            origin
+            type="text"
+            [plain]="true"
+            size="small"
+            width="100%"
+            (onClick)="$event.stopPropagation()"
+          >
+            {{ 'go_game' | translate }}
+            <i class="icon-arrow-down go-game-btn-icon"></i>
+          </customize-button>
+          <ul tooltip class="go-game-list">
+            <li
+              class="mutual-opacity onact96-not"
+              *ngFor="let providerCategory of item.providerCategorys"
+              (click)="openGamePage(providerId, isFirst, category, providerCategory)"
+            >
+              {{ category | translate }} - {{ providerCategory | providerCategoryName : true | translate }}
+            </li>
+          </ul>
+        </app-tool-tip>
+      </ng-container>
+      <ng-template #normalBtn>
+        <customize-button
+          type="text"
+          [plain]="true"
+          size="small"
+          width="100%"
+          (onClick)="
+            $event.stopPropagation(); openGamePage(providerId, isFirst, category, (item.providerCategorys ?? [])[0])
+          "
+          >{{ 'go_game' | translate }}
+        </customize-button>
+      </ng-template>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #assetsValue let-value="value" let-hide="hide">
+  <div class="value">
+    <span class="usd">
+      <!-- 特殊要求：只显示小数点后两位数 -->
+      <span>{{ hide ? '*****' : (value | currencyValue : 'USDT' : undefined : undefined : 2) }}</span>
+      <em>USDT</em>
+    </span>
+    <ng-container *ngIf="currentCurrency !== 'USDT'">
+      <em class="sign">≈</em>
+      <span class="current"
+        >{{ hide ? '*****' : (afterRate(value, currentCurrency) | currencyValue : currentCurrency)
+        }}<em>{{ currentCurrency }}</em></span
+      >
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template
+  #accountItem
+  let-isMain="isMain"
+  let-value="value"
+  let-desc="desc"
+  let-currency="currency"
+  let-category="category"
+  let-isFirst="isFirst"
+  let-providerId="providerId"
+  let-item="item"
+>
+  <div class="account-item" (click)="handleOpen(item)">
+    <div class="info">
+      <div class="account-title">
+        <i class="icon-tinybag"></i><span>{{ category | translate }}</span>
+      </div>
+      <div class="account-value">
+        <!-- 特殊要求：只显示小数点后两位数 -->
+        <span>{{ value | currencyValue : currency : undefined : undefined : 2 }}</span>
+        <em>{{ currency }}</em>
+      </div>
+    </div>
+    <div class="desc">
+      <ng-container *ngIf="isMain && value > 0; else descText">
+        <img *ngFor="let i of item.currencies" class="currency-icon" [src]="i.currency | currencyIcon" />
+      </ng-container>
+      <ng-template #descText>{{ desc | translate }}</ng-template>
+    </div>
+    <div class="action" *ngIf="!isH5">
+      <div class="link-style mutual-opacity">{{ 'wal_det' | translate }}</div>
+      <ng-container
+        *ngTemplateOutlet="
+          btnGroup;
+          context: { isMain: isMain, category: category, isFirst: isFirst, providerId: providerId, item: item }
+        "
+      >
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

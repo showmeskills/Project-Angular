@@ -1,0 +1,202 @@
+<div class="main">
+  <div class="color-111 mb-10 fz-18 fw-bolder">{{ 'member.model.groupMail' | lang }}</div>
+  <div class="body">
+    <!-- 发送对象 -->
+    <form-row [label]="'member.model.send' | lang" label-width="100">
+      <ng-template>
+        {{ 'member.model.total' | lang }}
+        {{ userNameList?.length ? userNameList.length : 0 }}
+        {{ 'member.model.member' | lang }}
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'UID'" label-width="100" [contentWidth]="450">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="color-aaa">{{ 'member.coupon.model.pleaseEnterInfo' | lang }}</div>
+        <div class="d-flex flex-ac">
+          <textarea
+            [style.height.px]="160"
+            type="text"
+            class="form-control"
+            autocomplete="off"
+            [(ngModel)]="dataMessage.userUid"
+          ></textarea>
+          <button class="c-btn c-btn-primary ml-6" (click)="getUserId(dataMessage.userUid)">
+            {{ 'member.model.add' | lang }}
+          </button>
+        </div>
+      </ng-template>
+    </form-row>
+    <div class="d-flex flex-ac flex-wrap" *ngIf="isNowUser">
+      <!-- vip等级 -->
+      <form-row [label]="'member.model.vipLevel' | lang" class="mr-8" label-width="100">
+        <ng-template>
+          <mat-form-field [style.width.px]="180">
+            <mat-select multiple class="form-control" [(ngModel)]="dataMessage.vipList" value="0">
+              <mat-select-trigger>
+                <span *ngIf="!dataMessage.vipList?.length || dataMessage.vipList.includes('')">
+                  {{ 'common.all' | lang }}
+                </span>
+                <ng-container *ngIf="dataMessage.vipList.length < vipLevelList.length">
+                  <ng-container *ngFor="let item of dataMessage.vipList; last as last">
+                    <span *ngIf="item !== ''">{{ item | vipName }}{{ !last ? ', ' : '' }}</span>
+                  </ng-container>
+                </ng-container>
+              </mat-select-trigger>
+
+              <mat-option value="" #allVipSelected (click)="toggleAllVip()">{{ 'common.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of vipLevelList" [value]="item.value" (click)="toggleVip()">{{
+                item.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <!-- 来源 -->
+      <form-row [label]="'member.model.ly' | lang" class="mr-8">
+        <ng-template>
+          <mat-form-field [style.width.px]="180">
+            <mat-select multiple class="form-control" value="0" [(ngModel)]="dataMessage.sourceValList">
+              <mat-select-trigger>
+                <span *ngIf="!dataMessage.sourceValList?.length || dataMessage.sourceValList.includes('')">
+                  {{ 'common.all' | lang }}
+                </span>
+                <ng-container *ngIf="dataMessage.sourceValList.length < base.sourceList.length">
+                  <ng-container *ngFor="let item of dataMessage.sourceValList; last as last">
+                    <span *ngIf="item !== ''">{{ item }}{{ !last ? ', ' : '' }}</span>
+                  </ng-container>
+                </ng-container>
+              </mat-select-trigger>
+              <mat-option value="" #allSourceSelected (click)="toggleAllSource()">{{ 'common.all' | lang }}</mat-option>
+              <mat-option
+                *ngFor="let item of base.sourceList"
+                [value]="item.categoryDescription"
+                (click)="toggleSource()"
+                >{{ item.categoryDescription }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <!-- 用户状态 -->
+      <form-row [label]="'member.model.userStatus' | lang" class="mr-8">
+        <ng-template>
+          <mat-form-field [style.width.px]="180">
+            <mat-select multiple class="form-control" value="0" [(ngModel)]="dataMessage.statusValList">
+              <mat-select-trigger>
+                <span *ngIf="!dataMessage.statusValList?.length || dataMessage.statusValList.includes('')">
+                  {{ 'common.all' | lang }}
+                </span>
+                <ng-container *ngIf="dataMessage.statusValList.length < base.statusList.length">
+                  <ng-container *ngFor="let item of dataMessage.statusValList; last as last">
+                    <span *ngIf="item !== ''">{{ item }}{{ !last ? ', ' : '' }}</span>
+                  </ng-container>
+                </ng-container>
+              </mat-select-trigger>
+              <mat-option value="" #allStatusSelected (click)="toggleAllStatus()">{{ 'common.all' | lang }}</mat-option>
+              <mat-option
+                *ngFor="let item of base.statusList"
+                [value]="item.categoryDescription"
+                (click)="toggleStatus()"
+                >{{ item.categoryDescription }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <!-- 类型 -->
+    <form-row [label]="'common.type' | lang" label-width="100" required>
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of messageTypeList">
+            <input type="radio" name="messageType" [value]="item.value" [(ngModel)]="messageType" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 内容 -->
+    <form class="form w-100 mt-8" [formGroup]="formGroup" #form>
+      <!-- tab -->
+      <lang-tab [(value)]="selectLang" formArrayName="lang" #langTab (languageChange)="updateLanguageForm()">
+        <ng-template let-i="i" let-current="current">
+          <!-- 站内信标题 -->
+          <form-row
+            name="title"
+            [label]="('common.title' | lang) + '（' + current?.name + '）'"
+            label-width="220"
+            [invalidFeedback]="{
+              required: ('member.kyc.model.pleaseEnterTitle' | lang) + '（' + current?.name + '）'
+            }"
+            [group]="langArrayForm.controls[i]"
+          >
+            <ng-template let-invalid="invalid">
+              <input
+                [class.is-invalid]="invalid"
+                class="form-control"
+                [formControl]="langArrayForm.controls[i]['controls']['title']"
+                type="text"
+                maxlength="20"
+                [placeholder]="'content.insite.less' | lang: { n: 20 }"
+              />
+            </ng-template>
+          </form-row>
+          <!-- 站内信内容 -->
+          <form-row
+            class="mt-4"
+            name="content"
+            [label]="('member.model.content' | lang) + '（' + current?.name + '）'"
+            label-width="220"
+            [invalidFeedback]="{ required: 'member.model.groupContent' | lang }"
+            [group]="langArrayForm.controls[i]"
+          >
+            <ng-template let-invalid="invalid">
+              <div class="form-control rounded border-1 h-auto" [class.is-invalid]="invalid">
+                <ueditor [formControl]="langArrayForm.controls[i]['controls']['content']"></ueditor>
+              </div>
+            </ng-template>
+            <div afterContent class="fz-14 color-999">{{ 'member.model.textTips' | lang: { n: 20, m: 170 } }}</div>
+          </form-row>
+        </ng-template>
+      </lang-tab>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <div class="btn-wrap">
+      <button class="c-btn c-btn-default" (click)="onBack()">{{ 'common.cancel' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onSubmit(modalTpl, langTab)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'member.model.tips' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body d-flex flex-ac justify-content-center pb-15 pt-15">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x"></svg-icon>
+      <p class="fz-16 ml-20 mb-0">{{ 'member.model.whether' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+        {{ 'common.cancel' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c({ value: true })">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>

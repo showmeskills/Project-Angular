@@ -1,0 +1,118 @@
+<div class="modal-content">
+  <modal-title
+    *ngIf="data.flag"
+    [title]="('game.homeLabel' | lang) + '-' + data.item.name"
+    (close)="modal.dismiss()"
+  ></modal-title>
+  <modal-title
+    *ngIf="!data.flag"
+    [title]="('game.lobbyLabel' | lang) + '-' + data.item.name"
+    (close)="modal.dismiss()"
+  ></modal-title>
+  <div class="px-10 mt-8">
+    <!-- 状态  label-width="174" 230  (selectionChange)="reportDetail.confirm.emit(true)"-->
+    <form-row label-width="240" [label]="'game.provider.setSort' | lang" [flag]="false" *ngIf="false">
+      <ng-template>
+        <mat-form-field [style.width.px]="240">
+          <mat-select class="form-control rounded-0" [(ngModel)]="sortName">
+            <mat-option [value]="item.value" *ngFor="let item of list">{{ item.lang | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+    <!-- 跳转页面 -->
+    <form-row [label]="'game.provider.jumpPage' | lang" label-width="240" [flag]="false">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <label class="radio radio-lg mr-12">
+            <input type="radio" name="url" value="LabelPage" [(ngModel)]="type" />
+            <span class="mr-4"></span>{{ 'game.provider.tabPage' | lang }}
+          </label>
+          <label class="radio radio-lg mr-12">
+            <input type="radio" name="url" value="AssignUrl" [(ngModel)]="type" />
+            <span class="mr-4"></span>{{ 'game.provider.specifyUrl' | lang }}
+          </label>
+        </div>
+        <!-- 指定url -->
+        <div *ngIf="type === 'AssignUrl'">
+          <!-- 独立 formatLabel="yyyy-MM-dd" -->
+          <div class="d-flex">
+            <span class="text">WEB</span>
+            <input [style.width.px]="240" type="text" class="form-control" [(ngModel)]="webUrl" />
+          </div>
+          <div class="d-flex mt-5">
+            <span class="text">APP</span>
+            <input [style.width.px]="240" type="text" class="form-control" [(ngModel)]="appUrl" />
+          </div>
+        </div>
+        <!-- over -->
+        <!-- 开启促销开关（新模版） -->
+      </ng-template>
+    </form-row>
+    <form-row label-width="240" [label]="'game.provider.displayRows' | lang">
+      <ng-template>
+        <input type="text" [style.width.px]="240" class="form-control" [(ngModel)]="multiLine" input-number />
+      </ng-template>
+    </form-row>
+    <!-- 大厅标签没有以下功能 -->
+    <ng-container *ngIf="data.flag">
+      <!--  是否为娱乐场-->
+      <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title">
+          {{ 'game.provider.IsCasino' | lang }}
+          <svg-icon
+            [ngbPopover]="'game.provider.poptips' | lang"
+            triggers="mouseenter:mouseleave"
+            class="svg-icon svg-icon-sm"
+            [src]="'./assets/images/svg/sigh.svg'"
+          ></svg-icon>
+        </label>
+        <label class="switch switch-success">
+          <input type="checkbox" [(ngModel)]="isPlayground" [disabled]="disable" />
+          <span></span>
+        </label>
+      </div>
+      <!-- 提示 -->
+      <div class="text-danger" *ngIf="disable">{{ 'game.provider.disabledTips' | lang }}</div>
+      <!-- 选择娱乐场排除标签 -->
+      <div class="w-100 d-flex py-2" *ngIf="isPlayground">
+        <label class="mr-0 mb-0 label-title"> {{ 'game.provider.selectCasino' | lang }} </label>
+        <div class="labelbox">
+          <div class="gameList" *ngFor="let item of excludeList; let i = index">
+            <img *ngIf="item.icon" [src]="item.iconAddress + item.icon" width="18" height="18" />
+            <p class="mx-2" [ngbPopover]="item.name" triggers="mouseenter:mouseleave">{{ item.name }}</p>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-del.svg'"
+              class="svg-icon svg-icon-2x"
+              (click)="onDelLabel(i)"
+            ></svg-icon>
+          </div>
+          <div class="addHall" (click)="openAddLabelPopup(addLabelPoup)">
+            <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <modal-footer (confirm)="onSubmit()" (dismiss)="modal.close()"></modal-footer>
+  <!-- 二次弹窗 -->
+  <!-- 编辑/新增 标签 暂时用外部接口测试 -->
+  <ng-template #addLabelPoup let-c="close" let-d="dismiss">
+    <div class="modal-content addLabelPoup">
+      <modal-title [title]="'game.provider.add' | lang" (close)="c()"></modal-title>
+      <div class="modal-body">
+        <div class="main">
+          <div class="item" *ngFor="let item of data.addLabelList">
+            <img [src]="item.iconAddress + item.icon" />
+            <span class="name">{{ item.name }}</span>
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="item.checked" />
+              <span></span>
+            </label>
+          </div>
+        </div>
+        <modal-footer (confirm)="onAddLabelSubmit(c)" (dismiss)="c()"></modal-footer>
+      </div>
+    </div>
+  </ng-template>
+</div>

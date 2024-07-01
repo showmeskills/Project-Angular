@@ -1,0 +1,36 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+@import url('../control-limit/control-limit.component.scss');
+
+.activity-container {
+  padding-top: 100px;
+  padding-bottom: 10px;
+
+  @media (max-width: 767px) {
+    padding-top: 20px;
+  }
+}
+
+.top-flex-out {
+  @media (max-width: 767px) {
+    margin-top: 20px;
+  }
+
+  img {
+    width: 66px;
+    height: 66px;
+  }
+
+  display: flex;
+  align-items: center;
+  @include polyfills.flex-gap(20px, 'row nowrap');
+}
+
+.flex-layout {
+  display: flex;
+  flex-direction: column;
+  padding-left: 84px;
+
+  @media (max-width: 767px) {
+    padding-left: 0;
+  }
+}

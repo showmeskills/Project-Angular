@@ -1,0 +1,82 @@
+<div class="rank-popup-container">
+  <div class="popup-header">
+    <p class="text-20">{{ 'my_rank_btn' | translate }}</p>
+    <i class="icon-close-simple mutual-opacity onact96-not" (click)="close()"></i>
+  </div>
+  <div class="popup-body" [appLoading]="loading || !ready">
+    <ng-container *ngIf="ready && !loading && myRankDetail">
+      <div class="top-img">
+        <img
+          [class.active]="myRankDetail.isJoined"
+          [src]="
+            myRankDetail.isJoined ? 'assets/images/offer-list/rank/light.png' : 'assets/images/offer-list/rank/car.png'
+          "
+          lazy="loading"
+          alt=""
+        />
+      </div>
+      <p class="text-16">{{ myRankDetail.text || '' }}</p>
+      <div class="time-zone">
+        <div class="timer">
+          <p class="number text-popup-14">
+            {{ remainingTime.day > 0 && remainingTime.day < 10 ? '0' + remainingTime.day : remainingTime.day || '00' }}
+          </p>
+          <p class="text-popup-14">{{ 'day' | translate }}</p>
+        </div>
+        <div class="timer">
+          <p class="number text-popup-14">
+            {{
+              remainingTime.hour > 0 && remainingTime.hour < 10 ? '0' + remainingTime.hour : remainingTime.hour || '00'
+            }}
+          </p>
+          <p class="text-popup-14">{{ 'hour_unit' | translate }}</p>
+        </div>
+        <div class="timer">
+          <p class="number text-popup-14">
+            {{ remainingTime.min > 0 && remainingTime.min < 10 ? '0' + remainingTime.min : remainingTime.min || '00' }}
+          </p>
+          <p class="text-popup-14">{{ 'minu' | translate }}</p>
+        </div>
+        <div class="timer">
+          <p class="number text-popup-14">
+            {{ remainingTime.sec > 0 && remainingTime.sec < 10 ? '0' + remainingTime.sec : remainingTime.sec || '00' }}
+          </p>
+          <p class="text-popup-14">{{ 'second_unit' | translate }}</p>
+        </div>
+      </div>
+      <p class="info text-popup-14">{{ 'rank_tips' | translate }}</p>
+      <div class="show-rank">
+        <p class="text-popup-14">{{ 'my_rank_btn' | translate }}</p>
+        <p class="rank-box">
+          <i class="animation-icon-loading-dot" *ngIf="rankloading"><i></i><i></i><i></i></i>
+          <ng-container *ngIf="!rankloading">
+            {{ myRankDetail.bonusInfo?.rankNumber || ('apply_rank' | translate) + '....' }}
+          </ng-container>
+        </p>
+      </div>
+      <div class="show-money">
+        <div class="show-rank">
+          <p class="text-popup-14">{{ 'current_reward' | translate }}</p>
+          <p class="rank-box">
+            <i class="animation-icon-loading-dot" *ngIf="rankloading"><i></i><i></i><i></i></i>
+            <ng-container *ngIf="!rankloading">
+              {{ myRankDetail.bonusInfo?.bonusUsdtMoney || 0 | currencyValue : 'USDT' }}
+              <img [src]="'USDT' | currencyIcon" lazy="loading" alt="" />
+            </ng-container>
+          </p>
+        </div>
+        <div class="show-rank ml-14">
+          <p class="text-popup-14">{{ 'current_bet' | translate }}</p>
+          <p class="rank-box">
+            <i class="animation-icon-loading-dot" *ngIf="rankloading"><i></i><i></i><i></i></i>
+            <ng-container *ngIf="!rankloading">
+              {{ myRankDetail.bonusInfo?.rankMoney || 0 | currencyValue : 'USDT' }}
+              <img [src]="'USDT' | currencyIcon" lazy="loading" alt="" />
+            </ng-container>
+          </p>
+        </div>
+      </div>
+      <div class="hind-info text-popup-14"><span class="highlight">*</span>{{ 'rank_hind' | translate }}</div>
+    </ng-container>
+  </div>
+</div>

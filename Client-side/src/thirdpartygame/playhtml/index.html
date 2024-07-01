@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <script src="/thirdpartygame/play/lz-string.min.js"></script>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        width: 100% !important;
+        height: 100% !important;
+        background-color: black;
+        overflow: hidden;
+        border: 0;
+      }
+      #error-tip {
+        color: #fff;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        box-sizing: border-box;
+        text-align: center;
+        display: none;
+      }
+    </style>
+    <title>play</title>
+  </head>
+  <body>
+    <div id="error-tip">Failed to enter the game, please try again or contact customer service.</div>
+    <script id="init">
+      const domain = '';
+      const query = new URLSearchParams(location.search);
+      const data = query.get('data');
+      const token = query.get('token');
+      const provider = query.get('GameProvider');
+      const apiUrl = (domain || window.location.origin) + '/v1/game/thirdpartygame';
+      if (data && token && provider) {
+        fetch(`${apiUrl}?data=${data}&provider=${provider}`, {
+          headers: {
+            'Cache-Control': 'no-store,no-cache',
+            'Content-Type': 'application/json;charset=utf-8',
+            Authorization: `Bearer ${token}`,
+            'ngsw-bypass': 'true',
+          },
+        })
+          .then(res => {
+            if (res.ok) return res.json();
+            throw new Error('Request failed');
+          })
+          .then(res => {
+            if (res.data) {
+              const html = LZString.decompressFromBase64(res.data);
+              document.open();
+              document.write(html);
+              document.close();
+            } else {
+              throw new Error('Request failed');
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            document.getElementById('error-tip').style.display = 'flex';
+            document.getElementById('init').remove();
+          });
+      }
+    </script>
+  </body>
+</html>

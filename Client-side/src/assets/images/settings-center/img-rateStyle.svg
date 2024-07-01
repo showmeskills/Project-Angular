@@ -1,0 +1,14 @@
+<svg data-name="组 8295" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <linearGradient id="r46srosnaa" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fb6943"/>
+            <stop offset="1" stop-color="#f74c28"/>
+        </linearGradient>
+    </defs>
+    <path data-name="矩形 1960" style="fill:none" d="M0 0h22v22H0z"/>
+    <g data-name="组 8302">
+        <path data-name="路径 13742" d="M307.589 168.256v7.579l-5.445 5.323a7.274 7.274 0 1 0 5.445-12.9z" transform="translate(-294.985 -163.548)" style="fill:url(#r46srosnaa)"/>
+        <path data-name="路径 13743" d="m78.779 324.869 5.533-5.3-5.512-5.329a7.27 7.27 0 0 0-.02 10.629z" transform="translate(-73.451 -306.86)" style="fill:#76808f"/>
+        <path data-name="路径 13744" d="M178.785 73.042V64a9.863 9.863 0 0 0-6.753 2.665z" transform="translate(-167.254 -61.2)" style="fill:#76808f"/>
+    </g>
+</svg>

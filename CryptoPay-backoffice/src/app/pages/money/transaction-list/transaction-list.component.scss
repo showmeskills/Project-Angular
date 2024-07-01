@@ -1,0 +1,126 @@
+.container {
+  &-title {
+    white-space: nowrap;
+    font-size: 16px;
+    color: #969bad;
+  }
+
+  &-tooltip-text {
+    font-size: 10px;
+  }
+
+  &-button {
+    width: 14px;
+    height: 14px;
+    color: #fff;
+    line-height: 14px;
+    background-color: #a1a5b7;
+    font-size: 12px;
+    border: none;
+    border-radius: 20px;
+    margin-left: 6px;
+    text-align: center;
+
+    &-text {
+      margin-left: -1px;
+    }
+  }
+}
+
+.edit {
+  padding: 7px 13px;
+  line-height: 20px;
+  font-size: 14px;
+  background-color: #f5f8fa;
+  cursor: pointer;
+  color: #7e8299;
+  transition: all 0.2s linear;
+  border-radius: 6px;
+
+  &:hover {
+    color: #7e8299;
+    background-color: #e4e6ef;
+  }
+}
+
+.status {
+  width: 58px;
+  margin: auto;
+  border-radius: 6px;
+  font-family: 'PingFangSC';
+  font-size: 14px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: center;
+}
+
+.status_normal {
+  color: #50cd89;
+  background-color: #e8fff3;
+}
+
+.status_lock {
+  color: #ffc700;
+  background-color: #fff8dd;
+}
+
+.status_stop {
+  color: #f1416c;
+  background-color: #fff5f8;
+}
+
+.status_noActive {
+  color: #7239ea;
+  background-color: #f8f5ff;
+}
+
+.status_processing {
+  color: #009ef7;
+  background-color: #f1faff;
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 3px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle {
+  margin-left: 5px;
+}
+
+.count {
+  &-wrap {
+    padding: 18px 0;
+    text-align: center;
+    border-top: 1px dashed #ebedf3;
+    border-bottom: 1px dashed #ebedf3;
+  }
+
+  &-item {
+    margin-right: 16px;
+    line-height: 16px;
+  }
+}

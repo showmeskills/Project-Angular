@@ -1,0 +1,153 @@
+@mixin tabs($prefix: 'tabs', $isBottomLine: false) {
+  @if ($prefix != '') {
+    .#{$prefix} {
+      width: 100%;
+      min-height: 40px;
+      padding-left: 30px;
+      padding-right: 30px;
+
+      // tab底部线条
+      @if ($isBottomLine) {
+        ::ng-deep {
+          .mat-mdc-tab-links::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            height: 2px;
+            background: rgba(#e4e6ef, 0.8);
+            width: 100%;
+          }
+        }
+      }
+
+      &-item {
+        position: relative;
+        flex-direction: column;
+        min-width: 58px;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        margin-right: 20px;
+        overflow: visible;
+        cursor: pointer;
+
+        &-name {
+          font-size: 16px;
+          color: #969bad;
+        }
+
+        //选中
+        &.active,
+        &.active .#{$prefix}-item-name,
+        &.mat-mdc-tab-label-active .#{$prefix}-item-name {
+          color: #009ef7 !important;
+        }
+
+        @media (hover: hover) {
+          &:hover,
+          &:hover .#{$prefix}-item-name {
+            color: #009ef7 !important;
+          }
+        }
+
+        &:first-child {
+          margin-left: 5px;
+          transition: none;
+        }
+
+        &:last-child {
+          margin-right: 5px;
+        }
+      }
+
+      // matTab组件样式覆盖
+      &::ng-deep {
+        .mat-mdc-tab-links,
+        .mat-mdc-tab-links {
+          height: 100%;
+        }
+
+        .mdc-tab-indicator__content--underline {
+          height: 0;
+          display: flex;
+          background-color: transparent;
+
+          &::before {
+            content: '';
+            width: 4px;
+            height: 2px;
+            border-radius: 5px;
+            position: relative;
+            flex: 1;
+            margin: 0 4px;
+            background-color: #009ef7;
+          }
+        }
+
+        .mat-mdc-tab-link,
+        .mat-mdc-tab-link {
+          opacity: 1;
+          height: auto;
+          padding: 0 4px 0 4px;
+        }
+      }
+
+      @content;
+    }
+  } @else if($prefix == '') {
+    @error 'prefix is empty';
+  }
+}
+
+@mixin tab-line($prefix: 'tab') {
+  .#{$prefix}-hd {
+    display: flex;
+    flex-flow: row nowrap;
+    border: 0;
+
+    &-item {
+      height: 38px;
+      line-height: 38px;
+      min-width: 60px;
+      text-align: center;
+      font-size: 16px;
+      color: #373a49;
+      cursor: pointer;
+      border: 1px solid transparent;
+
+      &:not(.mdc-tab--stacked) {
+        height: 38px;
+        line-height: 38px;
+      }
+
+      &.mat-mdc-tab-link:not(.mat-mdc-tab-disabled, .mat-tab-disabled) {
+        opacity: 1;
+      }
+
+      &.active,
+      &.mdc-tab--active {
+        color: #009ef7;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border: 1px solid #eff2f5;
+        border-bottom: 1px solid #fff;
+      }
+    }
+
+    ::ng-deep {
+      .mdc-tab-indicator {
+        display: none;
+      }
+    }
+  }
+
+  .#{$prefix}-bd {
+    padding: 10px 15px;
+    margin-top: -1px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border: 1px solid #eff2f5;
+
+    @content;
+  }
+}

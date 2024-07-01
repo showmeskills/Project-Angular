@@ -1,0 +1,227 @@
+<div class="card d-flex flex-wrap flex-row py-6 px-8 my-6">
+  <!-- 交易记录 -->
+  <ng-container *ngIf="isListPage; else ChartPage">
+    <!-- UID -->
+    <form-row [label]="'UID'" class="mr-8">
+      <ng-template>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="reportDetail.data.uid"
+          (keyup)="$event.keyCode === 13 && reportDetail.confirm.emit(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 订单号 -->
+    <form-row [label]="'game.provider.orders' | lang" class="mr-8">
+      <ng-template>
+        <input type="text" class="form-control" [(ngModel)]="reportDetail.data.order" />
+      </ng-template>
+    </form-row>
+
+    <!-- 供应商 -->
+    <ng-container *ngTemplateOutlet="ProviderSelectTpl"></ng-container>
+
+    <!-- 状态 -->
+    <form-row [label]="'common.status' | lang" class="mr-8">
+      <ng-template>
+        <mat-form-field>
+          <mat-select
+            class="form-control"
+            [(ngModel)]="reportDetail.data.status"
+            (selectionChange)="reportDetail.confirm.emit(true)"
+          >
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.value" *ngFor="let item of reportDetail.statusList">{{
+              item.lang[0] | lang
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 币种 -->
+    <form-row class="mr-8" [label]="'common.currency' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="150">
+          <mat-select
+            class="form-control"
+            [style.width.px]="150"
+            [(ngModel)]="reportDetail.data.currency"
+            (selectionChange)="reportDetail.confirm.emit(true)"
+            *search="let searchList$ of currencyList; key: 'code'"
+          >
+            <!-- 内容框 -->
+            <mat-select-trigger>
+              <div class="d-flex flex-ac">
+                <img
+                  *ngIf="reportDetail.data.currency"
+                  [currencyIcon]="reportDetail.data.currency"
+                  currencySize="18"
+                  class="mr-4"
+                />
+                <span>{{ reportDetail.data.currency || ('common.all' | lang) }}</span>
+              </div>
+            </mat-select-trigger>
+
+            <!-- 搜索框 -->
+            <input type="search" searchInput />
+
+            <!-- 下拉框 -->
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of searchList$ | async" [value]="item?.code">
+              <div class="d-flex flex-ac">
+                <img *ngIf="item.code" [currencyIcon]="item.code" currencySize="18" class="mr-4" />
+                <span>{{ item.code }}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 本金 -->
+    <form-row [label]="'game.principal' | lang" class="mr-8">
+      <ng-template>
+        <div class="d-flex">
+          <mat-form-field [style.width.px]="100">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="reportDetail.data.principalType"
+              (selectionChange)="reportDetail.confirm.emit(true)"
+            >
+              <mat-option [value]="item.value" *ngFor="let item of principalTypeList">{{
+                item.lang | lang
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <input
+            class="form-control ml-4"
+            [style.width.px]="100"
+            [placeholder]="'game.provider.input' | lang"
+            [(ngModel)]="reportDetail.data.principal"
+            (keyup)="$event.keyCode === 13 && reportDetail.confirm.emit(true)"
+            type="text"
+          />
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 日期组件 -->
+    <form-row [label]="'common.date' | lang" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.activity.sencliCommon.selectAcitivityTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="reportDetail.data.tradeTime"
+          (dateTimeChange)="reportDetail.confirm.emit(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <!-- 赛事名称 -->
+    <form-row [label]="'game.eventName' | lang" class="mr-8" *ngIf="type === 'sport'">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="reportDetail.data.gameName"
+          (keyup)="$event.keyCode === 13 && reportDetail.confirm.emit(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 赛事ID -->
+    <form-row [label]="'game.eventId' | lang" class="mr-8" *ngIf="type !== 'sport'">
+      <ng-template>
+        <mat-form-field>
+          <mat-select
+            no-space
+            class="form-control"
+            [(ngModel)]="reportDetail.data.eventId"
+            (selectionChange)="reportDetail.confirm.emit(true)"
+            *search="let searchList$ of reportDetail.eventIdList; key: 'gameName'"
+          >
+            <input type="search" searchInput />
+
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.id" *ngFor="let item of searchList$ | async">
+              {{ item.gameName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- 交易统计 -->
+  <ng-template #ChartPage>
+    <!-- 供应商 -->
+    <ng-container *ngTemplateOutlet="ProviderSelectTpl"></ng-container>
+
+    <!-- 日期组件 -->
+    <form-row [label]="'common.date' | lang" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.activity.sencliCommon.selectAcitivityTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="reportDetail.data.tradeChartTime"
+          (dateTimeChange)="reportDetail.confirm.emit(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+  </ng-template>
+
+  <div class="btn-wrap py-2">
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="reportDetail.resetFilter()"
+    >
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="reportDetail.confirm.emit(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 游戏供应商下拉选择模板 -->
+<ng-template #ProviderSelectTpl>
+  <form-row [label]="'game.provider.provider' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select
+          class="form-control"
+          [(ngModel)]="reportDetail.data.provider"
+          (selectionChange)="onSelectProvider()"
+        >
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.id" *ngFor="let item of reportDetail.providerList">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+</ng-template>

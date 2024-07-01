@@ -1,0 +1,275 @@
+<ng-template #emptyTpl>-</ng-template>
+
+<div class="d-flex py-2 mr-16">
+  <label class="form-title" style="flex: 0 0 250px">{{ 'payment.method.paymentMethod' | lang }}：</label>
+  <div class="flex-1 d-flex flex-ac">
+    <span class="fz-14 fw-bolder">{{ data.name }}</span>
+  </div>
+</div>
+
+<div class="d-flex py-2 mr-16">
+  <label class="form-title" style="flex: 0 0 250px">LOGO：</label>
+  <div class="flex-1 d-flex flex-ac">
+    <img *ngIf="data.icon?.[0]; else emptyTpl" class="rounded" [src]="data.icon?.[0]" width="36" height="36" alt="" />
+  </div>
+</div>
+
+<div class="d-flex py-2 mr-16">
+  <label class="form-title" style="flex: 0 0 250px">{{ 'payment.method.feeRatioPaid' | lang }}：</label>
+  <div class="flex-1 color-aaa">
+    <label class="d-flex form-control px-4 mb-0" [style.width.px]="208">
+      <input [(ngModel)]="data.fee" class="flex-1 formalities" type="text" input-percentage />
+      <span>%</span>
+    </label>
+  </div>
+</div>
+
+<div class="d-flex py-2 mr-16">
+  <label class="form-title" style="flex: 0 0 250px">{{ 'payment.method.singleLimit' | lang }}：</label>
+  <div class="flex-1 d-flex flex-ac">
+    <span class="fz-14 color-999"
+      >{{ 'payment.method.singleLimit' | lang }} {{ data.minAmount | toFormatMoney }}-{{
+        data.maxAmount | toFormatMoney
+      }}</span
+    >
+  </div>
+</div>
+
+<div class="d-flex py-2 mr-16">
+  <label class="form-title" style="flex: 0 0 250px">
+    <span class="text-danger">*</span>{{ 'payment.method.paymentDirection' | lang }}：</label
+  >
+  <div class="flex-1 d-flex form-title">
+    <ng-container [ngSwitch]="data.category">
+      <span *ngSwitchCase="'Deposit'">{{ 'payment.method.deposit' | lang }}</span>
+      <span *ngSwitchCase="'Withdraw'">{{ 'payment.method.withdrawal' | lang }}</span>
+      <!--      <label class="radio radio-lg mr-12 fz-14 my-2">-->
+      <!--        <input name="category" value="Deposit" type="radio" [(ngModel)]="data.category" />-->
+      <!--        <span class="mr-4"></span>存款-->
+      <!--      </label>-->
+      <!--      <label class="radio radio-lg mr-12 fz-14 my-2">-->
+      <!--        <input name="category" value="Withdraw" type="radio" [(ngModel)]="data.category" />-->
+      <!--        <span class="mr-4"></span>提款-->
+      <!--      </label>-->
+    </ng-container>
+  </div>
+</div>
+
+<form-row
+  [label]="'payment.method.label' | lang"
+  label-width="250"
+  name="label"
+  [invalidFeedback]="{ required: 'payment.method.pleaseSelectLabel' | lang }"
+>
+  <ng-template let-invalid="invalid">
+    <div class="d-flex">
+      <mat-form-field [style.width.px]="208">
+        <mat-select
+          [class.is-invalid]="invalid"
+          class="form-control"
+          [(ngModel)]="data.selectLabel"
+          [placeholder]="'payment.method.pleaseSelectLabel' | lang"
+          multiple
+        >
+          <mat-select-trigger>{{ data?.selectLabel?.length ? labelName.join(', ') : '' }}</mat-select-trigger>
+          <mat-option *ngFor="let item of labelList" [value]="item.labelId">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="ml-4" *ngIf="!labelList.length && isEditTag">
+        <div class="tag-add d-flex flex-center" (click)="onOpenEditLabelTpl(addTagTpl)">
+          <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <div afterContent class="tag-wrap d-flex" *ngIf="labelList.length && isEditTag">
+    <div>
+      <div class="tag-add d-flex flex-center" (click)="onOpenEditLabelTpl(addTagTpl)">
+        <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+      </div>
+    </div>
+
+    <div class="d-flex" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+      <div class="tag-item" *ngFor="let item of labelList" (click)="onOpenEditLabelTpl(addTagTpl, item)" cdkDrag>
+        <svg-icon [src]="'./assets/images/svg/sort.svg'"></svg-icon>
+        <span class="mx-5"> {{ item.name }}</span>
+        <svg-icon
+          class="tag-close cursor-pointer svg-icon svg-icon-1x"
+          [src]="'assets/images/svg/close.svg'"
+          (click)="onOpenDelTagTpl($event, delTagTpl, item)"
+        ></svg-icon>
+      </div>
+    </div>
+  </div>
+</form-row>
+
+<div class="d-flex py-2 mr-16">
+  <label class="form-title" style="flex: 0 0 250px">{{ 'common.status' | lang }}：</label>
+  <div class="flex-1 d-flex flex-ac">
+    <span *ngIf="data.status" [style.height.px]="34" class="label label-lg label-inline label-light-primary px-9">{{
+      'payment.method.open' | lang
+    }}</span>
+    <span *ngIf="!data.status" [style.height.px]="34" class="label label-lg label-inline label-light-danger px-9">{{
+      'payment.method.shutDown' | lang
+    }}</span>
+  </div>
+</div>
+
+<div class="d-flex py-2 mr-16">
+  <label class="form-title" style="flex: 0 0 250px">{{ 'payment.method.handlingFee' | lang }}：</label>
+  <div class="flex-1 d-flex">
+    <label class="switch switch-success mb-0">
+      <input type="checkbox" [(ngModel)]="data.feeEnabled" />
+      <span></span>
+    </label>
+  </div>
+</div>
+
+<!-- tab -->
+<ng-container [formGroup]="formGroup">
+  <lang-tab class="mt-8" [(value)]="selectLang" formArrayName="lang" #langTab (languageChange)="updateLanguageForm()">
+    <ng-template let-i="i" let-current="current">
+      <form-row
+        name="remark"
+        [label]="('payment.method.operationalCopy' | lang) + '（' + current.name + '）'"
+        label-width="220"
+        [invalidFeedback]="{ required: 'payment.method.enterOperationalCopy' | lang }"
+        [group]="langArrayForm.controls[i]"
+      >
+        <ng-template let-invalid="invalid">
+          <textarea
+            type="text"
+            class="form-control resize-none"
+            autocomplete="off"
+            rows="7"
+            [class.is-invalid]="invalid"
+            [formControl]="langArrayForm.controls[i]['controls']['remark']"
+          ></textarea>
+        </ng-template>
+      </form-row>
+
+      <ng-template #depositLabel
+        ><div>{{ 'payment.method.depositPage tips' | lang }}（{{ current.name }}）</div></ng-template
+      >
+      <form-row
+        class="mt-4"
+        name="withdrawDesc"
+        [label]="depositLabel"
+        label-width="220"
+        [invalidFeedback]="{ required: 'payment.method.enterReminderText' | lang }"
+        [group]="langArrayForm.controls[i]"
+      >
+        <ng-template let-invalid="invalid">
+          <ueditor
+            type="Article"
+            class="form-control rounded border-1 h-auto"
+            [class.is-invalid]="invalid"
+            [formControl]="langArrayForm.controls[i]['controls']['withdrawDesc']"
+          ></ueditor>
+        </ng-template>
+      </form-row>
+
+      <ng-template #detailLabel
+        ><div>{{ 'payment.method.depositPage tips' | lang }}（{{ current.name }}）</div></ng-template
+      >
+      <form-row
+        class="mt-4"
+        name="detailDesc"
+        [label]="detailLabel"
+        label-width="220"
+        [invalidFeedback]="{ required: 'payment.method.enterHintText' | lang }"
+        [group]="langArrayForm.controls[i]"
+      >
+        <ng-template let-invalid="invalid">
+          <div class="form-control rounded border-1 h-auto" [class.is-invalid]="invalid">
+            <ueditor type="Article" [formControl]="langArrayForm.controls[i]['controls']['detailDesc']"></ueditor>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <div class="mb-4"></div>
+    </ng-template>
+  </lang-tab>
+</ng-container>
+
+<!-- 按钮组 -->
+<div class="btn-wrap pt-12 flex-center d-flex">
+  <button class="c-btn c-btn-default ml-0" (click)="back()">{{ 'common.back' | lang }}</button>
+  <button class="c-btn c-btn-primary" (click)="onSubmit(langTab)">{{ 'common.confirm' | lang }}</button>
+</div>
+
+<!-- 添加标签 -->
+<ng-template #addTagTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title fw-bolder fz-16">
+      {{ data ? ('payment.method.editTags' | lang) : ('payment.method.addTag' | lang) }}
+    </div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <lang-tab
+      [(value)]="selectLangLabel"
+      (languageChange)="updateLanguageTagForm($event)"
+      class="w-100"
+      #labelLangTab
+      [formArray]="labelControl"
+      [(selection)]="selectLangLabelCurrent"
+    >
+      <ng-template let-code="code" let-currentLang="current">
+        <form-row
+          [label]="'common.name' | lang"
+          class="pb-8"
+          name="label"
+          [group]="findCurrentLang(code)"
+          [invalidFeedback]="{
+            required: ('payment.method.enterLabelContent' | lang) + currentLang.name + '）'
+          }"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input
+              type="text"
+              class="form-control w-100"
+              [class.is-invalid]="invalid"
+              [formControl]="control"
+              input-trim
+            />
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="onUpdateLabel(c, labelLangTab)">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- 删除标签提示 -->
+<ng-template #delTagTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title fw-bolder">{{ 'payment.method.prompt' | lang }}</div>
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+    <p class="fz-16 fw-bolder mt-8">{{ 'payment.method.deleteTag' | lang }}</p>
+    <p class="fz-16">{{ 'payment.method.languagesUnder' | lang }}</p>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</ng-template>

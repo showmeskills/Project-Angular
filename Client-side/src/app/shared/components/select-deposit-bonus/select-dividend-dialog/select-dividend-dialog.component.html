@@ -1,0 +1,123 @@
+<div class="main-container">
+  <div class="header-row">
+    <span class="title">{{ 'select_bonus00' | translate }}</span>
+    <i class="icon-close pointer onact96-not" (click)="close()" [class.disabled]="couponLoading || bonusLoading"></i>
+  </div>
+  <div class="notice-row">
+    {{ 'select_bonus01' | translate }}
+    <p class="link pointer onact96-not" [class.disabled]="couponLoading || bonusLoading" (click)="jumpToPage('coupon')">
+      {{ 'g_t_view00' | translate }}
+    </p>
+  </div>
+  <div class="swtich-btn" *ngIf="selectDepositBonusService.isOpenCouponCodeDeposit && !bonusLoading">
+    <customize-button
+      width="100%"
+      [radius]="'47px'"
+      [type]="selectCurrentIndex === index ? 'primary' : 'default'"
+      *ngFor="let item of switchBtn; let index = index"
+      (onClick)="onSwitchBonusType(index)"
+      [disabled]="couponLoading"
+    >
+      {{ item }}
+    </customize-button>
+  </div>
+  <!--option-->
+  <ng-container [ngSwitch]="selectCurrentIndex">
+    <ng-container *ngSwitchCase="0">
+      <app-scrollbar *ngIf="renderBonusList().length > 0 && !bonusLoading; else defaultContainer">
+        <div
+          class="dividend-ticket pointer onact96"
+          [class.active]="item.isActive"
+          *ngFor="let item of renderBonusList()"
+          (click)="handleSelected(item)"
+        >
+          <div class="tick" [class.active]="item.isActive"></div>
+          <div class="row">
+            <p class="name">{{ item.bonusActivityName }}</p>
+            <p class="percent">
+              <ng-container *ngIf="item.prizeAmountType == 0">
+                {{ item.freeSpinTimes }} {{ 'num_times' | translate }}
+              </ng-container>
+              <ng-container *ngIf="item.prizeAmountType == 1"> {{ item.bonusFixedUsdt }} USDT </ng-container>
+              <ng-container *ngIf="item.prizeAmountType == 2"> {{ item.returnPercentage }} % </ng-container>
+            </p>
+          </div>
+          <div class="row">
+            <div class="box-container" [class.m-top-12]="data.isShowTimes">
+              <div class="item-box" *ngFor="let activityType of item.activityTypeName">
+                {{ activityType }}
+              </div>
+              <div class="item-box">
+                {{ item.grantTypeName }}
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="!data.isShowTimes">
+            <div class="details-box" *ngIf="item.projectedIncome && item.projectedCurrency">
+              <p class="txt-gray">{{ 'amo_bonu00' | translate }}</p>
+              <p class="num">{{ item.projectedIncome }}</p>
+              <img class="icon" [src]="item.projectedCurrency | currencyIcon" alt="" />
+            </div>
+          </div>
+          <div class="row" *ngIf="data.isShowTimes && item.rateVos && item.rateVos.length">
+            <div class="min-deposit">
+              <p>{{ 'mini_deposit' | translate }} {{ item.rateVos[0].minDepositUsdt || 0 }}</p>
+              <img class="icon" [src]="'USDT' | currencyIcon" />
+            </div>
+          </div>
+          <div
+            class="row"
+            [class.border]="item.projectedOrdNum && item.projectedTotalNum > 1"
+            *ngIf="item.projectedOrdNum && item.projectedTotalNum > 1 && !data.isShowTimes"
+          >
+            <p class="time">{{ 'curr_n_deposit' | translate: item.projectedOrdNum }}</p>
+          </div>
+        </div>
+      </app-scrollbar>
+      <ng-template #defaultContainer>
+        <div class="bonus-container" [appLoading]="bonusLoading">
+          <app-empty
+            *ngIf="!bonusLoading"
+            [icon]="'assets/images/card-center/empty.png'"
+            [text]="'no_bon_sel_t' | translate"
+          ></app-empty>
+        </div>
+      </ng-template>
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <div class="coupon-code-container">
+        <app-customize-input
+          size="large"
+          [type]="'text'"
+          [max]="12"
+          [width]="'100%'"
+          [value]="couponValue"
+          [loading]="couponLoading"
+          (onChange)="onCoupnValueChange($event)"
+          [placeholder]="'exchange_input_tips' | translate"
+        ></app-customize-input>
+      </div>
+    </ng-container>
+  </ng-container>
+  <customize-button
+    *ngIf="selectCurrentIndex === 0"
+    class="no-thanks"
+    size="large"
+    type="default"
+    (onClick)="cancelPopup()"
+    [disabled]="couponLoading || bonusLoading"
+  >
+    {{ 'no_thanks' | translate }}
+  </customize-button>
+  <customize-button
+    class="submit-btn"
+    size="large"
+    type="primary"
+    (onClick)="confirm()"
+    [disabled]="couponLoading || bonusLoading"
+    [loading]="couponLoading"
+  >
+    {{ 'confirm_button' | translate }}
+  </customize-button>
+</div>

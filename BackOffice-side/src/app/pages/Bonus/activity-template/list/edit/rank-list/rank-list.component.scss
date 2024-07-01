@@ -1,0 +1,16 @@
+.cell_box {
+  img {
+    max-width: none !important;
+    max-height: none !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    width: 20px;
+    height: 26px;
+  }
+}
+.bg {
+  background: url(/assets/images/bonus/onther.svg) no-repeat;
+  width: 19px;
+  height: 21px;
+  color: #ffffff;
+}

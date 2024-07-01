@@ -1,0 +1,982 @@
+<div class="card hd mt-6">
+  <div class="card-header pb-8">
+    <!-- 筛选查询 -->
+    <div class="head-title">{{ 'member.kyc.model.filterQuery' | lang }}</div>
+    <!-- UID -->
+    <div class="d-flex flex-ac mt-6 flex-wrap">
+      <form-row label="UID" class="mr-16">
+        <ng-template>
+          <input
+            [style.width.px]="200"
+            class="form-control"
+            type="text"
+            [placeholder]="'form.enterTips' | lang: { label: 'UID' }"
+            [(ngModel)]="searchData.uid"
+            (keyup)="$event.key === 'Enter' && loadData(true)"
+            input-trim
+          />
+        </ng-template>
+      </form-row>
+
+      <!-- 认证内容 -->
+      <form-row [label]="'member.kyc.authenticationContent' | lang" class="mr-16">
+        <ng-template>
+          <mat-form-field>
+            <mat-select class="form-control" [(ngModel)]="searchData.certification" (selectionChange)="loadData(true)">
+              <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+              <mat-option value="0">{{ 'member.kyc.basis' | lang }}</mat-option>
+              <mat-option value="1">{{ 'member.kyc.middle' | lang }}</mat-option>
+              <mat-option value="2">{{ 'member.kyc.adv' | lang }}</mat-option>
+              <!-- 活体认证 -->
+              <mat-option value="3">{{ 'member.kyc.vivoAuthentication' | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <!-- 更新时间 -->
+      <form-row [label]="'common.updateTime' | lang" class="mr-16">
+        <ng-template>
+          <input
+            [style.width.px]="200"
+            class="form-control text-center"
+            type="text"
+            [placeholder]="'form.chooseTips' | lang: { label: 'common.updateTime' | lang }"
+            selectMode="date-range"
+            [owlDateTime]="picker"
+            [owlDateTimeTrigger]="picker"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [(ngModel)]="searchData.updateTime"
+            (dateTimeChange)="loadData(true)"
+          />
+
+          <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+        </ng-template>
+      </form-row>
+
+      <!-- 审核状态 -->
+      <form-row [label]="'member.kyc.model.approvalStatus' | lang" class="mr-16">
+        <ng-template>
+          <mat-form-field>
+            <mat-select class="form-control" [(ngModel)]="searchData.processState" (selectionChange)="loadData(true)">
+              <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+              <mat-option value="0">{{ 'member.kyc.underReview' | lang }}</mat-option>
+              <mat-option value="1">{{ 'member.kyc.authenticationFailed' | lang }}</mat-option>
+              <mat-option value="2">{{ 'member.kyc.authenticationSucceeded' | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <div class="btn-wrap">
+        <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-10 list p-12">
+  <div class="d-flex flex-wrap">
+    <div class="flex-1"></div>
+    <button type="button" class="btn btn-light-primary py-2 ml-4" (click)="onExport()">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon vam"></svg-icon>
+      <span class="vam">{{ 'game.provider.export' | lang }}</span>
+    </button>
+    <button type="button" class="btn btn-light-primary py-2 ml-4" (click)="onExportAll()">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon vam"></svg-icon>
+      <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+    </button>
+  </div>
+  <div class="flex-fill mt-4 px-3">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <!-- 订单号 -->
+            <span class="cell">{{ 'member.kyc.model.orderNumber' | lang }}</span>
+          </th>
+          <!-- 供应商 -->
+          <th>
+            <span class="cell">{{ 'member.kyc.model.supplier' | lang }}</span>
+          </th>
+          <th><span class="cell">UID</span></th>
+          <!-- 认证内容 -->
+          <th>
+            <span class="cell">{{ 'member.kyc.model.authenticationContent' | lang }}</span>
+          </th>
+          <!-- 审核状态 -->
+          <th>
+            <span class="cell">{{ 'member.kyc.model.approvalStatus' | lang }}</span>
+          </th>
+          <!-- 审核人 -->
+          <th>
+            <span class="cell">{{ 'member.kyc.model.reviewer' | lang }}</span>
+          </th>
+          <!-- 更新时间 -->
+          <th>
+            <span class="cell">{{ 'member.kyc.model.updateTime' | lang }}</span>
+          </th>
+          <!-- 操作 -->
+          <th>
+            <span class="cell">{{ 'member.kyc.model.operating' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.kycCode }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.kycThirdCode }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.uid }}</span>
+          </td>
+          <td>
+            <span class="cell" *ngIf="item.kycType === 0">{{ 'member.kyc.basis' | lang }}</span>
+            <span class="cell" *ngIf="item.kycType === 1">{{ 'member.kyc.middle' | lang }}</span>
+            <span class="cell" *ngIf="item.kycType === 2">{{ 'member.kyc.adv' | lang }}</span>
+            <!-- 活体认证 -->
+            <span class="cell" *ngIf="item.kycType === 3">{{ 'member.kyc.vivoAuthentication' | lang }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <app-label *ngIf="item.processState === 0" class="cursor-pointer" minWidth="72" type="yellow"
+                >{{ 'member.kyc.underReview' | lang }} >
+              </app-label>
+              <app-label *ngIf="item.processState === 1" class="cursor-pointer" minWidth="72" type="danger"
+                >{{ 'member.kyc.authenticationFailed' | lang }} ></app-label
+              >
+              <app-label *ngIf="item.processState === 2" class="cursor-pointer" minWidth="72" type="success"
+                >{{ 'member.kyc.authenticationSucceeded' | lang }} ></app-label
+              >
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.operator }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.updateTimestamp | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell text-nowrap">
+              <span
+                class="btn btn-primary mx-2"
+                *ngIf="item.processState === 0 && item.auditType === 1"
+                (click)="onExamine(examinelTpl, item)"
+                >{{ 'member.kyc.model.review' | lang }}</span
+              >
+              <span class="btn btn-default mx-2" (click)="onDetail(detailTpl, item)">{{
+                'member.kyc.model.detail' | lang
+              }}</span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between flex-ac pt-12">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData()"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        [isLoading]="isLoading"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>
+<!-- 审核-->
+<ng-template #examinelTpl let-d="dismiss" let-c="close">
+  <div class="modal-header">
+    <div class="modal-title">{{ 'member.kyc.model.review' | lang }}</div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="px-12 py-8">
+    <div class="mt-4">
+      <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+      <div class="lh-22 border-wrap px-8 mt-4">
+        <div class="d-flex py-4">
+          <div class="flex-1">
+            <!-- 商户 -->
+            <div class="color-999">{{ 'member.kyc.model.merchant' | lang }}</div>
+            <div class="fz-16">{{ tenantName?.name }}</div>
+          </div>
+          <div class="flex-1 border-left pl-4">
+            <div class="color-999">{{ 'member.kyc.model.supplier' | lang }} :</div>
+            <div class="fz-16">{{ onExamineDate?.kycThirdCode }}</div>
+          </div>
+        </div>
+        <div class="d-flex py-4 border-top">
+          <div class="flex-1">
+            <!-- 认证板块 -->
+            <div class="color-999">{{ 'member.kyc.model.authenticationContent' | lang }}：</div>
+            <div class="fz-16" *ngIf="onDetailDate.kycType === 0">{{ 'member.kyc.basis' | lang }}</div>
+            <div class="fz-16" *ngIf="onDetailDate.kycType === 1">{{ 'member.kyc.middle' | lang }}</div>
+            <div class="fz-16" *ngIf="onDetailDate.kycType === 2">{{ 'member.kyc.adv' | lang }}</div>
+            <div class="fz-16" *ngIf="onDetailDate.kycType === 3">{{ 'member.kyc.vivoAuthentication' | lang }}</div>
+          </div>
+          <div class="flex-1 border-left pl-4">
+            <div class="color-999">UID：</div>
+            <div class="fz-16">{{ onDetailDate?.uid || onExamineDate.uid }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.auditContent' | lang }}</div>
+      <div class="lh-22 border-wrap px-8 mt-4">
+        <div class="d-flex py-4">
+          <div class="flex-1">
+            <!-- 国家/地区： -->
+            <div class="color-999">{{ 'member.kyc.model.countryAndregioc' | lang }}</div>
+            <div class="fz-16">{{ onDetailDate.country }}</div>
+          </div>
+          <div class="flex-1 border-left pl-4">
+            <!-- 城市 -->
+            <div class="color-999">{{ 'member.kyc.model.city' | lang }}：</div>
+            <div class="fz-16">{{ onDetailDate.city }}</div>
+          </div>
+          <div class="flex-1 border-left pl-4">
+            <!--邮政编码：-->
+            <div class="color-999">{{ 'member.kyc.model.postalCode' | lang }}</div>
+            <div class="fz-16">{{ onDetailDate.zipCode }}</div>
+          </div>
+        </div>
+        <div class="d-flex py-4 border-top">
+          <div class="flex-1" *ngIf="!isJumio">
+            <!-- 居住地址：： -->
+            <div class="color-999">{{ 'member.kyc.model.address' | lang }}</div>
+            <div class="fz-16">{{ onDetailDate.address }}</div>
+          </div>
+        </div>
+        <div class="py-4">
+          <div class="d-flex form-img-box">
+            <img
+              *ngIf="
+                kycTypeTpl === 1 && (onDetailDate?.frontsideImage || onDetailDate?.networkImgeUrl);
+                else nopBase64Img
+              "
+              nz-image
+              [src]="'data:image/png;base64,' + isJumio ? onDetailDate?.frontsideImage : onDetailDate?.networkImgeUrl"
+            />
+            <ng-template #nopBase64Img>
+              <img nz-image [src]="isJumio ? onDetailDate?.frontsideImage : onDetailDate?.networkImgeUrl" />
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="lh-22 border-wrap px-8 mt-4">
+        <div class="d-flex py-4">
+          <!--是否通过：  -->
+          <div class="color-999">{{ 'member.kyc.model.doesitPass' | lang }}</div>
+          <div class="d-flex">
+            <label class="radio radio-lg radio-success mr-10">
+              <input checked type="radio" [value]="2" name="type" [(ngModel)]="radioData.radioType" />
+              <!-- 通过 -->
+              <span class="mr-4"></span>
+              {{ 'member.kyc.model.by' | lang }}
+            </label>
+            <label class="radio radio-lg radio-success">
+              <input type="radio" [value]="1" name="type" [(ngModel)]="radioData.radioType" />
+              <span class="mr-4"></span>
+              {{ 'common.reject' | lang }}
+            </label>
+          </div>
+        </div>
+        <!-- Jumio中级审核：当选择通过时需填写国家资料 -->
+        <ng-container *ngIf="radioData.radioType === 2 && isJumio">
+          <form-row label="Full Name" label-width="100" [contentWidth]="200" *ngIf="isFullName; else noFullNameTep">
+            <ng-template>
+              <input class="form-control" type="text" [(ngModel)]="radioData.fullName" />
+            </ng-template>
+          </form-row>
+          <ng-template #noFullNameTep>
+            <form-row label="First Name" label-width="100" [contentWidth]="200">
+              <ng-template>
+                <input class="form-control" type="text" [(ngModel)]="radioData.firstName" />
+              </ng-template>
+            </form-row>
+            <form-row label="Last Name" label-width="100" [contentWidth]="200">
+              <ng-template>
+                <input class="form-control" type="text" [(ngModel)]="radioData.lastName" />
+              </ng-template>
+            </form-row>
+          </ng-template>
+        </ng-container>
+
+        <div class="d-flex py-4 flex-ac" *ngIf="radioData.radioType === 1">
+          <!-- 拒绝原因 -->
+          <div class="color-999">{{ 'member.kyc.model.denialReason' | lang }}：</div>
+          <div class="d-flex">
+            <input type="text" class="form-control" autocomplete="off" [(ngModel)]="radioData.radioText" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.back' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="onUpdateExamine(c)">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- 详情-->
+<ng-template #detailTpl let-d="dismiss" let-c="close">
+  <div class="modal-header new-modal-header">
+    <div class="d-flex new-title">
+      <div class="modal-title">{{ 'member.kyc.model.detail' | lang }}</div>
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+    <div class="tab">
+      <div class="tab-item active">
+        {{ tabs[activeTabIndex].name | lang }}
+      </div>
+    </div>
+  </div>
+  <!-- 基础认证 -->
+  <ng-template [ngIf]="activeTabIndex === 0">
+    <div class="px-12 py-8" *ngIf="kycTypeTpl === 0; else nullBlock">
+      <div class="mt-2">
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.orderNumber' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.kycCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.merchant' | lang }}</div>
+              <div class="fz-16">{{ tenantName?.name }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.supplier' | lang }}</div>
+              <div class="fz-16">{{ onExamineDate?.kycThirdCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">UID：</div>
+              <div class="fz-16">{{ onExamineDate?.uid }}</div>
+            </div>
+          </div>
+          <div class="d-flex py-4 border-top">
+            <div class="flex-1">
+              <!-- 要求： -->
+              <div class="color-999">{{ 'member.kyc.model.claim' | lang }}:</div>
+              <div class="fz-16" *ngIf="onExamineDate.kycArea !== 'CHN'; else chn">
+                {{ 'member.kyc.model.allInfo' | lang }}
+              </div>
+              <!-- 国籍、证件号、姓名 -->
+              <ng-template #chn
+                ><div class="fz-16">{{ 'member.kyc.model.natIDName' | lang }}</div></ng-template
+              >
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <!-- 申请时间： -->
+              <div class="color-999">{{ 'member.kyc.model.applicationTime' | lang }}</div>
+              <div class="fz-16">{{ onExamineDate?.createTime }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.auditContent' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <ng-template [ngIf]="onExamineDate.kycArea !== 'CHN'">
+            <div class="d-flex py-4">
+              <div class="flex-1">
+                <!--国籍：  -->
+                <div class="color-999">{{ 'member.kyc.model.countryofCitizen' | lang }}:</div>
+                <div class="fz-16">{{ onExamineDate?.kycArea }}</div>
+              </div>
+              <!-- 名字： -->
+              <div class="flex-1 border-left pl-4">
+                <div class="color-999">{{ 'member.kyc.model.name' | lang }}:</div>
+                <div class="fz-16">{{ onDetailDate?.lastName }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 姓氏： -->
+                <div class="color-999">{{ 'member.kyc.model.lastName' | lang }}：</div>
+                <div class="fz-16">{{ onDetailDate?.firstName }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 中间名： -->
+                <div class="color-999">{{ 'member.kyc.model.middleName' | lang }}:</div>
+                <div class="fz-16">{{ onDetailDate?.fullName }}</div>
+              </div>
+            </div>
+            <div class="d-flex py-4 border-top border-bottom">
+              <div class="flex-1">
+                <!-- 出生日期： -->
+                <div class="color-999">{{ 'member.kyc.model.dateofBirth' | lang }}:</div>
+                <div class="fz-16">{{ birthDay }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 地址： -->
+                <div class="color-999">{{ 'member.kyc.model.land' | lang }}:</div>
+                <div class="fz-16">{{ onDetailDate?.address }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 邮政编码： -->
+                <div class="color-999">{{ 'member.kyc.model.postalCode' | lang }}:</div>
+                <div class="fz-16">{{ onDetailDate?.zipCode }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 城市： -->
+                <div class="color-999">{{ 'member.kyc.model.city' | lang }}:</div>
+                <div class="fz-16">{{ onDetailDate?.city }}</div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template [ngIf]="onExamineDate.kycArea === 'CHN'">
+            <div class="d-flex py-4 border-bottom">
+              <div class="flex-1">
+                <div class="color-999">{{ 'member.kyc.model.countryofCitizen' | lang }}:</div>
+                <!-- 中国 -->
+                <div class="fz-16">{{ 'member.kyc.model.china' | lang }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 证件号： -->
+                <div class="color-999">{{ 'member.kyc.model.licenseNumber' | lang }}：</div>
+                <div class="fz-16">{{ onDetailDate?.idCardNumber }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 姓名 -->
+                <div class="color-999">{{ 'member.kyc.model.name' | lang }}：</div>
+                <div class="fz-16">
+                  {{ onDetailDate?.fullName }} {{ onDetailDate?.firstName }} {{ onDetailDate?.lastName }}
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <!-- 完成时间： -->
+              <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.updateTime }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <!-- 审核状态： -->
+              <div class="color-999">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+              <div class="fz-16 yellow-text" *ngIf="onExamineDate.processState === 0">
+                {{ 'member.kyc.underReview' | lang }}
+              </div>
+              <div class="fz-16 red-text" *ngIf="onExamineDate.processState === 1">
+                {{ 'member.kyc.authenticationFailed' | lang }}
+              </div>
+              <div class="fz-16 green-text" *ngIf="onExamineDate.processState === 2">
+                {{ 'member.kyc.authenticationSucceeded' | lang }}
+              </div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <!-- 审核人： -->
+              <div class="color-999">{{ 'member.kyc.model.reviewer' | lang }}:</div>
+              <div class="fz-16">{{ onExamineDate?.operator }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #nullBlock>
+      <div class="px-12 py-8">
+        <div class="container-empty">
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt">{{ 'common.emptyText' | lang }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+  <!-- 中级认证 -->
+  <ng-template [ngIf]="activeTabIndex === 1">
+    <div class="px-12 py-8" *ngIf="kycTypeTpl === 1; else nullBlock">
+      <div class="mt-2">
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.orderNumber' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.kycCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.merchant' | lang }}</div>
+              <div class="fz-16">{{ tenantName?.name }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.supplier' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.kycThirdCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">UID：</div>
+              <div class="fz-16">{{ onExamineDate?.uid }}</div>
+            </div>
+          </div>
+          <div class="d-flex py-4 border-top">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.claim' | lang }}：</div>
+              <!-- 证件签发国/地区、选择发行文件、发行文件照片 -->
+              <div class="fz-16" *ngIf="onExamineDate.kycArea !== 'CHN'; else chn">
+                {{ 'member.kyc.model.hairstyleInfo' | lang }}
+              </div>
+              <!-- 证件签发国/地区、姓名、证件号、银行卡号、手机号 -->
+              <ng-template #chn
+                ><div class="fz-16">{{ 'member.kyc.model.documentsInfo' | lang }}</div></ng-template
+              >
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.applicationTime' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.createTime }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.auditContent' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <ng-template [ngIf]="onExamineDate.kycArea !== 'CHN'">
+            <div class="d-flex py-4">
+              <div class="flex-1">
+                <div class="color-999">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+                <div class="fz-16">{{ onDetailDate?.country }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <div class="color-999">{{ 'member.kyc.model.selectRelease' | lang }}：</div>
+                <div class="fz-16">{{ onDetailDate?.idType }}</div>
+              </div>
+            </div>
+            <div class="d-flex py-4 border-top">
+              <div class="flex-1">
+                <!-- 发行文件照片 -->
+                <div class="color-999">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+              </div>
+            </div>
+            <div class="d-flex pb-4">
+              <div class="flex-1 pr-4">
+                <div class="fz-16">
+                  <div class="d-flex form-img-box">
+                    <img nz-image [src]="onDetailDate_image.frontsideImage" />
+                  </div>
+                </div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <div class="fz-16">
+                  <div class="d-flex form-img-box">
+                    <img nz-image [src]="onDetailDate_image.backsideImage" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template [ngIf]="onExamineDate.kycArea === 'CHN'">
+            <div class="d-flex py-4 border-bottom">
+              <div class="flex-1">
+                <div class="color-999">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+                <div class="fz-16">{{ 'member.kyc.model.china' | lang }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <div class="color-999">{{ 'member.kyc.model.name' | lang }}：</div>
+                <div class="fz-16">{{ onDetailDate?.name }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <div class="color-999">{{ 'member.kyc.model.licenseNumber：' | lang }}</div>
+                <div class="fz-16">{{ onDetailDate?.idcard }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 银行卡号 -->
+                <div class="color-999">{{ 'member.kyc.model.bankCard' | lang }}：</div>
+                <div class="fz-16">{{ onDetailDate?.bankcard }}</div>
+              </div>
+            </div>
+          </ng-template>
+
+          <div class="d-flex py-4">
+            <div class="flex-1" *ngIf="onExamineDate.kycArea !== 'CHN'">
+              <!-- 完成时间 -->
+              <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.updateTime }}</div>
+            </div>
+            <ng-template [ngIf]="onExamineDate.kycArea === 'CHN'">
+              <div class="flex-1">
+                <!-- 手机号 -->
+                <div class="color-999">{{ 'member.kyc.model.phoneNumber' | lang }}：</div>
+                <div class="fz-16">{{ onDetailDate?.mobile }}</div>
+              </div>
+              <div class="flex-1 border-left pl-4">
+                <!-- 完成时间 -->
+                <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+                <div class="fz-16">{{ onExamineDate?.updateTime }}</div>
+              </div>
+            </ng-template>
+            <div class="flex-1 border-left pl-4">
+              <!-- 审核状态 -->
+              <div class="color-999">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+              <div class="fz-16 yellow-text" *ngIf="onExamineDate.processState === 0">
+                {{ 'member.kyc.underReview' | lang }}
+              </div>
+              <div class="fz-16 red-text" *ngIf="onExamineDate.processState === 1">
+                {{ 'member.kyc.authenticationFailed' | lang }}
+              </div>
+              <div class="fz-16 green-text" *ngIf="onExamineDate.processState === 2">
+                {{ 'member.kyc.authenticationSucceeded' | lang }}
+              </div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.reviewer' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.operator }}</div>
+            </div>
+          </div>
+          <div class="d-flex py-4 border-top" *ngIf="onExamineDate.processState === 1">
+            <div class="flex-1">
+              <!-- 失败原因 -->
+              <div class="color-999">{{ 'member.kyc.model.failReason' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.auditInfo }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #nullBlock>
+      <div class="px-12 py-8">
+        <div class="container-empty">
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt">{{ 'common.emptyText' | lang }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+  <!-- 高级认证 -->
+  <ng-template [ngIf]="activeTabIndex === 2">
+    <div class="px-12 py-8" *ngIf="kycTypeTpl === 2; else nullBlock">
+      <div class="mt-2">
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.orderNumber' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.kycCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.merchant' | lang }}</div>
+              <div class="fz-16">{{ tenantName?.name }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.supplier' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.kycThirdCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">UID：</div>
+              <div class="fz-16">{{ onExamineDate?.uid }}</div>
+            </div>
+          </div>
+          <div class="d-flex py-4 border-top">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.claim' | lang }}：</div>
+              <!-- 国家/地区、 居住地址、邮政编码、城市、地址上传 -->
+              <div class="fz-16">
+                {{ 'member.kyc.model.allUpload' | lang }}
+              </div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.applicationTime' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.createTime }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <!--审核内容 -->
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.auditContent' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ onDetailDate?.country }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.address' | lang }}：</div>
+              <div class="fz-16">{{ onDetailDate?.address }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+              <div class="fz-16">{{ onDetailDate?.postalCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.city' | lang }}：</div>
+              <div class="fz-16">{{ onDetailDate?.city }}</div>
+            </div>
+          </div>
+          <div class="d-flex pt-4 border-top">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+            </div>
+          </div>
+          <div class="py-4">
+            <div class="d-flex form-img-box">
+              <img nz-image [src]="onDetailDate?.networkImgeUrl" />
+            </div>
+          </div>
+
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.updateTime }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+              <div class="fz-16 yellow-text" *ngIf="onExamineDate.processState === 0">
+                {{ 'member.kyc.underReview' | lang }}
+              </div>
+              <div class="fz-16 red-text" *ngIf="onExamineDate.processState === 1">
+                {{ 'member.kyc.authenticationFailed' | lang }}
+              </div>
+              <div class="fz-16 green-text" *ngIf="onExamineDate.processState === 2">
+                {{ 'member.kyc.authenticationSucceeded' | lang }}
+              </div>
+            </div>
+            <div class="flex-1 border-left pl-4" *ngIf="onExamineDate.processState === 1">
+              <div class="color-999">{{ 'member.kyc.model.denialReason' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.auditInfo }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.reviewer' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.operator }}</div>
+            </div>
+          </div>
+          <div class="d-flex py-4 border-top" *ngIf="onExamineDate.processState === 1">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.failReason' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.auditInfo }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #nullBlock>
+      <div class="px-12 py-8">
+        <div class="container-empty">
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt">{{ 'common.emptyText' | lang }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+  <!-- 活体认证 -->
+  <ng-template [ngIf]="activeTabIndex === 3">
+    <div class="px-12 py-8" *ngIf="kycTypeTpl === 3; else nullBlock">
+      <div class="mt-2">
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.orderNumber' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.kycCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.merchant' | lang }}</div>
+              <div class="fz-16">{{ tenantName?.name }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.supplier' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.kycThirdCode }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">UID：</div>
+              <div class="fz-16">{{ onDetailDate?.uid || onExamineDate.uid }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.applicationTime' | lang }}：</div>
+              <div class="fz-16">{{ onExamineDate?.createTime }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <!-- 审核结果 -->
+        <div class="fz-16 lh-22 fw-bolder">{{ 'member.kyc.model.auditResults' | lang }}</div>
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <!-- 活体识别 -->
+              <div class="color-999">{{ 'member.kyc.model.livingBody' | lang }}：</div>
+              <div class="fz-16 yellow-text" *ngIf="onExamineDate.processState === 0">
+                {{ 'member.kyc.underReview' | lang }}
+              </div>
+              <div class="fz-16 red-text" *ngIf="onExamineDate.processState === 1">
+                {{ 'member.kyc.authenticationFailed' | lang }}
+              </div>
+              <div class="fz-16 green-text" *ngIf="onExamineDate.processState === 2">
+                {{ 'member.kyc.authenticationSucceeded' | lang }}
+              </div>
+              <!-- <div class="fz-16 red-text">{{ onThirdDetailDate?.idScanStatus }}</div> -->
+            </div>
+          </div>
+
+          <div class="pt-2" *ngIf="onThirdDetailDate">
+            <div class="img-list d-flex">
+              <div
+                class="img-list-box"
+                (click)="onChangeImg(onThirdDetailDate?.idScanImageFace)"
+                [ngClass]="{
+                  active: activeImg === onThirdDetailDate?.idScanImageFace
+                }"
+              >
+                <div class="img-box">
+                  <img nz-image [src]="onThirdDetailDate?.idScanImageFace" />
+                </div>
+                <!-- 人脸正面 -->
+                <div class="text-box">{{ 'member.kyc.model.faceFront' | lang }}</div>
+              </div>
+              <div
+                class="img-list-box"
+                (click)="onChangeImg(onThirdDetailDate?.idScanImage)"
+                [ngClass]="{
+                  active: activeImg === onThirdDetailDate?.idScanImage
+                }"
+              >
+                <div class="img-box">
+                  <img nz-image [src]="onThirdDetailDate?.idScanImage" />
+                </div>
+                <!-- 证件正面照片 -->
+                <div class="text-box">{{ 'member.kyc.model.photoFront' | lang }}</div>
+              </div>
+              <div
+                class="img-list-box"
+                (click)="onChangeImg(onThirdDetailDate?.idScanImageBackside)"
+                [ngClass]="{
+                  active: activeImg === onThirdDetailDate?.idScanImageBackside
+                }"
+              >
+                <div class="img-box">
+                  <img nz-image [src]="onThirdDetailDate?.idScanImageBackside" />
+                </div>
+                <!-- 证件反面照片 -->
+                <div class="text-box">{{ 'member.kyc.model.photoReverse' | lang }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="py-4" *ngIf="onThirdDetailDate">
+            <div class="d-flex form-img-box">
+              <img nz-image [src]="activeImg" />
+            </div>
+          </div>
+
+          <div class="pt-2" *ngIf="!onThirdDetailDate">
+            <div class="container-empty">
+              <div>
+                <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+                <div class="txt">{{ 'common.emptyText' | lang }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="lh-22 border-wrap px-8 mt-4">
+          <div class="d-flex py-4">
+            <div class="flex-1">
+              <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ onThirdDetailDate?.callbackDate }}</div>
+            </div>
+            <div class="flex-1 border-left pl-4">
+              <div class="color-999">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+              <div class="fz-16 yellow-text" *ngIf="onExamineDate.processState === 0">
+                {{ 'member.kyc.underReview' | lang }}
+              </div>
+              <div class="fz-16 red-text" *ngIf="onExamineDate.processState === 1">
+                {{ 'member.kyc.authenticationFailed' | lang }}
+              </div>
+              <div class="fz-16 green-text" *ngIf="onExamineDate.processState === 2">
+                {{ 'member.kyc.authenticationSucceeded' | lang }}
+              </div>
+              <!-- <div class="fz-16 red-text">{{ onThirdDetailDate?.idScanStatus }}</div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #nullBlock>
+      <div class="px-12 py-8">
+        <div class="container-empty">
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt">{{ 'common.emptyText' | lang }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+  <!-- 近期存款记录 -->
+  <ng-template [ngIf]="activeTabIndex === 4">
+    <div class="px-12 py-8">
+      <div class="container-empty">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <!-- 资产来源证明 -->
+  <ng-template [ngIf]="activeTabIndex === 5">
+    <div class="px-12 py-8">
+      <div class="container-empty">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.back' | lang }}</button>
+  </div>
+</ng-template>

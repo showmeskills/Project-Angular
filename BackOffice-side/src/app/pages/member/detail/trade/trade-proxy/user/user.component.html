@@ -1,0 +1,189 @@
+<header class="px-12 pt-10 pb-8">
+  <h2 class="fz-20">{{ 'game.proxy.userManager' | lang }}</h2>
+
+  <div class="d-flex flex-wrap">
+    <form-row [label]="'game.proxy.subUID' | lang" class="mr-12">
+      <ng-template>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="data.subUID"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'game.proxy.statisticsDate' | lang" class="mr-12">
+      <ng-template>
+        <input
+          class="form-control text-center"
+          type="text"
+          [placeholder]="'game.proxy.statisticsDateTip' | lang"
+          formatLabel="yyyy-MM-dd"
+          selectMode="date-range"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          rangeSeparator="-"
+          [(ngModel)]="data.statisticsDate"
+          (dateTimeChange)="loadData(true)"
+        />
+        <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'game.proxy.registryDate' | lang" class="mr-12">
+      <ng-template>
+        <input
+          class="form-control text-center"
+          type="text"
+          [placeholder]="'game.proxy.registryDateTip' | lang"
+          formatLabel="yyyy-MM-dd"
+          selectMode="date-range"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          rangeSeparator="-"
+          [(ngModel)]="data.registryDate"
+          (dateTimeChange)="loadData(true)"
+        />
+        <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</header>
+
+<section class="px-8">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'game.proxy.subUID' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.deposit' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.flow' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.transAmountUsdt' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.totalWinLos' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.bonus' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.commission' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">
+            <span>
+              <span class="vam"> {{ 'game.proxy.latestLoginTime' | lang }}</span>
+              <span class="triangle d-inline-block">
+                <div class="triangle-down"></div>
+              </span>
+            </span>
+          </span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.registrationTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.operate' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.deposit | currencyValue: 'USDT' }}
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.activeFlowUsdt | currencyValue: 'USDT' }}
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.transAmountUsdt | currencyValue: 'USDT' }}
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <ng-container *win="item.totalWinLoss; let value; prev as prev">
+              <span [winColor]="value" [winColorReverse]="true">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+            </ng-container>
+            <!-- {{ item.totalWinLoss }} -->
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.bonus | currencyValue: 'USDT' }}
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.commission | currencyValue: 'USDT' }}
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.lastLoginTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.regTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell" [ngSwitch]="item.status">
+            <ng-container *ngSwitchCase="1">{{ 'game.proxy.normal' | lang }}</ng-container>
+            <ng-container *ngSwitchCase="2">{{ 'game.proxy.audit' | lang }}</ng-container>
+            <ng-container *ngSwitchDefault>-</ng-container>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <empty [show]="!list.length && !loading"></empty>
+</section>
+
+<div class="d-flex flex-between flex-ac p-8">
+  <div>
+    <mat-form-field [style.width.px]="76">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+      [isLoading]="loading"
+    ></app-paginator>
+  </div>
+</div>

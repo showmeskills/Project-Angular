@@ -1,0 +1,10 @@
+<div class="main-container" [appLoading]="isLoading">
+  <ng-container *ngIf="show && !isLoading">
+    <iframe [src]="url" height="" style="height: 680px; width: 1200px"></iframe>
+  </ng-container>
+  <ng-container *ngIf="notFound">
+    <div class="not-found-page">
+      <app-page-not-found></app-page-not-found>
+    </div>
+  </ng-container>
+</div>

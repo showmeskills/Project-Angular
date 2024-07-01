@@ -1,0 +1,338 @@
+<div class="left-menu-container full" [@show]="!invisible && state">
+  <ng-container *ngIf="!invisible && (state || !closed)" [ngTemplateOutlet]="full"></ng-container>
+</div>
+
+<div class="left-menu-container rail" *ngIf="!isH5" [@show]="!invisible && !state">
+  <ng-container *ngIf="!invisible && (!state || !opened)" [ngTemplateOutlet]="rail"></ng-container>
+</div>
+
+<ng-template #full>
+  <div class="menu-head">
+    <div class="main-menu" *ngIf="headerMenu">
+      <a
+        class="main-menu-item onact96"
+        *ngFor="let item of headerMenu; let i = index"
+        [class.active]="checkIfHeaderRouterActive(item)"
+        [href]="domain + '/' + appService.languageCode + miniGameService.getLinkByMethod(item)"
+        (click)="clickMainMenu(item); $event.preventDefault()"
+      >
+        <img class="header-icon active" [src]="item.icon" alt="" />
+        <img class="header-icon no-active" [src]="item.menuIcon" alt="" />
+        <span>{{ item.name }}</span>
+      </a>
+    </div>
+    <div
+      *ngIf="opened"
+      class="close-trigger animate__animated animate__faster animate__fadeIn animate__fill_none onact96"
+      (click)="turn(false)"
+    >
+      <i class="trigger-icon icon-close-simple" *ngIf="isH5"></i>
+      <i class="trigger-icon icon-menu-trigger reverse-icon" *ngIf="!isH5"></i>
+    </div>
+  </div>
+
+  <!-- 活动入口 -->
+  <app-left-menu-activity-bar (afterClick)="isH5 && turn(false)"></app-left-menu-activity-bar>
+
+  <div class="menu-body">
+    <app-scrollbar #scrollbar>
+      <div class="menu-list">
+        <ng-container *ngFor="let item of leftMenu; let i = index">
+          <ng-container *ngTemplateOutlet="menuItem; context: { item: item, level: 1, isFirst: i == 0 }"></ng-container>
+        </ng-container>
+        <ng-container *ngFor="let defaultItem of defaultMenuData; let i = index">
+          <ng-container *ngTemplateOutlet="menuItem; context: { item: defaultItem, level: 1 }"></ng-container>
+        </ng-container>
+      </div>
+    </app-scrollbar>
+  </div>
+</ng-template>
+
+<ng-template #rail>
+  <div class="menu-head">
+    <div
+      class="mutual-opacity open-trigger animate__animated animate__faster animate__fadeIn animate__fill_none onact96"
+      *ngIf="closed"
+      (click)="turn(true)"
+    >
+      <i class="trigger-icon icon-menu-trigger"></i>
+    </div>
+  </div>
+  <div class="menu-body">
+    <app-scrollbar #scrollbar>
+      <div class="menu-list">
+        <ng-container *ngFor="let item of leftMenu">
+          <a
+            [href]="domain + '/' + appService.languageCode + miniGameService.getLinkByMethod(item)"
+            (click)="$event.stopPropagation(); $event.preventDefault(); clickRailMenu(item, true)"
+          >
+            <div
+              class="rail-menu-item level1 onact96"
+              cdkOverlayOrigin
+              #origin="cdkOverlayOrigin"
+              [class.active]="item.expand && item.redirectMethod == 'DropDownList'"
+              (mouseenter)="item.tooltip = true"
+              (mouseleave)="item.tooltip = false"
+            >
+              <div>
+                <ng-container *ngIf="item.menuIcon">
+                  <ng-container *ngIf="item.menuIcon.startsWith('http'); else iconClassTemp">
+                    <img [class.darker]="item.labelId" class="rail-img" [src]="item.menuIcon" />
+                  </ng-container>
+                  <ng-template #iconClassTemp>
+                    <i [class]="item.menuIcon"></i>
+                  </ng-template>
+                </ng-container>
+              </div>
+            </div>
+          </a>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="origin"
+            [cdkConnectedOverlayPositions]="railPositions"
+            [cdkConnectedOverlayOpen]="item.tooltip"
+          >
+            <div class="rail-tooltip animate__animated animate__faster animate__fadeIn animate__fill_none">
+              {{ item.name }}
+            </div>
+          </ng-template>
+        </ng-container>
+        <ng-container *ngFor="let item of leftMenu">
+          <ng-container *ngTemplateOutlet="railMenuItem; context: { item: item, level: 1 }"></ng-container>
+        </ng-container>
+        <ng-container *ngFor="let defaultItem of defaultMenuData | filterByKeyValue: 'showOnRail'">
+          <ng-container *ngTemplateOutlet="railMenuItem; context: { item: defaultItem, level: 1 }"></ng-container>
+        </ng-container>
+      </div>
+    </app-scrollbar>
+  </div>
+</ng-template>
+
+<!-- 【收缩时】菜单 item 模板 -->
+<ng-template #railMenuItem let-item="item" let-level="level">
+  <ng-container *ngIf="item.infoExpandList; else directly">
+    <ng-container *ngIf="item.expand && level == 1 && item.redirectMethod == 'DropDownList'">
+      <ng-container *ngFor="let subItem of item.infoExpandList">
+        <ng-container *ngTemplateOutlet="railMenuItem; context: { item: subItem, level: level + 1 }"></ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-template #directly>
+    <ng-container *ngIf="item.options">
+      <ng-container *ngTemplateOutlet="railOptions; context: { item: item }"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="item.special">
+      <ng-container [ngSwitch]="item.ident">
+        <ng-container *ngSwitchCase="'theme-switch'" [ngTemplateOutlet]="railThemeSwitch"></ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="!item.options && !item.special">
+      <a
+        [href]="domain + '/' + appService.languageCode + miniGameService.getLinkByMethod(item)"
+        (click)="$event.stopPropagation(); clickRailMenu(item); $event.preventDefault()"
+      >
+        <div
+          [class]="'onact96 rail-menu-item ' + (item.ident || '') + ' ' + (item.class || '') + ' level' + level"
+          [class.disabled]="checkDisabled(item)"
+          [class.active]="getRouterLink(item) | routerActive: 'full'"
+          cdkOverlayOrigin
+          #origin="cdkOverlayOrigin"
+          (mouseenter)="item.tooltip = true"
+          (mouseleave)="item.tooltip = false"
+        >
+          <div>
+            <ng-container *ngIf="item.menuIcon">
+              <ng-container *ngIf="item.menuIcon.startsWith('http'); else iconClassTemp">
+                <img [src]="item.menuIcon" />
+              </ng-container>
+              <ng-template #iconClassTemp>
+                <i [class]="item.menuIcon"></i>
+              </ng-template>
+            </ng-container>
+          </div>
+        </div>
+      </a>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="origin"
+        [cdkConnectedOverlayPositions]="railPositions"
+        [cdkConnectedOverlayOpen]="item.tooltip"
+      >
+        <div class="rail-tooltip animate__animated animate__faster animate__fadeIn animate__fill_none">
+          {{ item.name ? item.name : item.labelName }}
+        </div>
+      </ng-template>
+    </ng-container>
+  </ng-template>
+</ng-template>
+
+<!-- 【收缩时】菜单项是选择列表时的模板 -->
+<ng-template #railOptions let-item="item">
+  <div class="rail-menu-item level1">
+    <div class="options rail-options">
+      <ng-container *ngFor="let optionsItem of item.options">
+        <div
+          [class]="optionsItem.class"
+          cdkOverlayOrigin
+          #origin="cdkOverlayOrigin"
+          (click)="optionsItem.optionsExpand = !optionsItem.optionsExpand"
+        >
+          <i
+            *ngIf="optionsItem.selectIcon"
+            class="select-icon"
+            [class]="optionsItem.options | filterByKeyValue: 'id' : optionsItem.select : 'menuIcon'"
+          ></i>
+        </div>
+        <ng-template
+          cdkConnectedOverlay
+          (overlayOutsideClick)="nextTick(optionsItem)"
+          [cdkConnectedOverlayPositions]="railPositionsCenter"
+          [cdkConnectedOverlayOpen]="optionsItem.optionsExpand"
+          [cdkConnectedOverlayOrigin]="origin"
+        >
+          <div class="options-overlay-container">
+            <div class="options-list">
+              <div
+                class="options-item onact96"
+                *ngFor="let listItem of optionsItem.options"
+                [class.selected]="listItem.id === optionsItem.select"
+                (click)="$event.stopPropagation(); optionsSelect(optionsItem, listItem)"
+              >
+                <i *ngIf="listItem.menuIcon" [class]="listItem.menuIcon"></i>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 【收缩时】主题切换 -->
+<ng-template #railThemeSwitch>
+  <div class="rail-menu-item level1">
+    <div>
+      <app-theme-switch [simple]="true" [simpleStyle]="'fill'"></app-theme-switch>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 【扩展时】菜单 item 模板 -->
+<ng-template #menuItem let-item="item" let-level="level" let-isFirst="isFirst">
+  <ng-container *ngIf="!item.hide">
+    <!-- 默认第一块为链接颜色 class bright -->
+    <a
+      [class]="'onact96 menu-item ' + (item.ident || '') + ' ' + (item.class || '') + ' level' + level"
+      [class.bright]="level == 2 && isFirst"
+      [class.expand]="item.expand"
+      [class.has-children]="item.infoExpandList?.length"
+      [class.disabled]="checkDisabled(item)"
+      [class.has-bottom-border]="item.hasBotLine"
+      [class.active]="getRouterLink(item) | routerActive: 'full'"
+      (click)="$event.stopPropagation(); clickMenu(item); $event.preventDefault()"
+      (press)="onPressMenu(item)"
+      [href]="domain + '/' + appService.languageCode + miniGameService.getLinkByMethod(item)"
+    >
+      <div class="left">
+        <ng-container *ngIf="item.special; else common">
+          <ng-container [ngSwitch]="item.ident">
+            <ng-container
+              *ngSwitchCase="'theme-switch'"
+              [ngTemplateOutlet]="themeSwitch"
+              [ngTemplateOutletContext]="{ theme: appService.themeSwitch$ | async }"
+            ></ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-template #common>
+          <!-- 第一级 不需要icon -->
+          <ng-container *ngIf="item.menuIcon && level !== 1">
+            <ng-container *ngIf="item.menuIcon.startsWith('https'); else iconClassTemp">
+              <img [src]="item.menuIcon" />
+            </ng-container>
+            <ng-template #iconClassTemp>
+              <i [class]="item.menuIcon"></i>
+            </ng-template>
+          </ng-container>
+          <span>{{ item.name ? item.name : item.labelName }}</span>
+          <i *ngIf="item.trigger" [class.trigger-expand]="item.value" class="expand-icon icon-arrow-left-simple"></i>
+          <em *ngIf="item.num && (item.num | async) as count">{{ count }}</em>
+          <ng-container *ngIf="item.options">
+            <ng-container *ngTemplateOutlet="options; context: { item: item }"></ng-container>
+          </ng-container>
+        </ng-template>
+      </div>
+      <div class="right">
+        <i
+          *ngIf="item.infoExpandList?.length && item.redirectMethod == 'DropDownList'"
+          class="expand-icon icon-arrow-left-simple"
+        ></i>
+      </div>
+    </a>
+    <ng-container *ngIf="item.infoExpandList?.length && item.expand && item.redirectMethod == 'DropDownList'">
+      <ng-container *ngFor="let subItem of item.infoExpandList">
+        <ng-container
+          *ngTemplateOutlet="menuItem; context: { item: subItem, level: level + 1, isFirst: isFirst }"
+        ></ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="item.triggerChildren && item.expand">
+      <ng-container
+        *ngTemplateOutlet="menuItem; context: { item: item.triggerChildren, level: level + 1 }"
+      ></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- 【扩展时】菜单项是选择列表时的模板 -->
+<ng-template #options let-item="item">
+  <div class="options">
+    <ng-container *ngFor="let optionsItem of item.options">
+      <div
+        [class]="optionsItem.class"
+        cdkOverlayOrigin
+        #origin="cdkOverlayOrigin"
+        (click)="optionsItem.optionsExpand = !optionsItem.optionsExpand"
+      >
+        <i
+          *ngIf="optionsItem.selectIcon"
+          class="select-icon"
+          [class]="optionsItem.options | filterByKeyValue: 'id' : optionsItem.select : 'menuIcon'"
+        ></i>
+        <span>{{ optionsItem.options | filterByKeyValue: 'id' : optionsItem.select : 'text' }}</span>
+        <i class="options-icon icon-arrow-right-simple" [class.expand]="optionsItem.optionsExpand"></i>
+      </div>
+      <ng-template
+        cdkConnectedOverlay
+        (overlayOutsideClick)="nextTick(optionsItem)"
+        [cdkConnectedOverlayPositions]="positions"
+        [cdkConnectedOverlayOpen]="optionsItem.optionsExpand"
+        [cdkConnectedOverlayOrigin]="origin"
+      >
+        <div class="options-overlay-container">
+          <div class="options-list">
+            <div
+              class="options-item onact96"
+              *ngFor="let listItem of optionsItem.options"
+              [class.selected]="listItem.id === optionsItem.select"
+              (click)="$event.stopPropagation(); optionsSelect(optionsItem, listItem)"
+            >
+              <i *ngIf="listItem.menuIcon" [class]="listItem.menuIcon"></i>
+              <span>{{ listItem.text }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- 【扩展时】主题切换 -->
+<ng-template #themeSwitch let-theme="theme">
+  <span class="onact96-not" [class.deactive]="theme !== 'sun'" (click)="themeSwitchComponent.toggle(false)">{{
+    'day_m' | translate
+  }}</span>
+  <app-theme-switch #themeSwitchComponent></app-theme-switch>
+  <span class="onact96-not" [class.deactive]="theme !== 'moon'" (click)="themeSwitchComponent.toggle(true)">{{
+    'night_m' | translate
+  }}</span>
+</ng-template>

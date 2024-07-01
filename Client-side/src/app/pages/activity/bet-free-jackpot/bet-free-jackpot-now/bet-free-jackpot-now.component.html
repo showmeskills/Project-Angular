@@ -1,0 +1,86 @@
+<div class="container" [appLoading]="appLoading">
+  <ng-container *ngIf="progress">
+    <div class="top">
+      <div class="info">
+        <div class="tit">{{ userObj?.activityName }} {{ 'pre_cor_each_jop' | translate }}</div>
+        <div class="desc" *ngIf="!editMode">
+          {{ 'u_pre_mul_jop' | translate }}
+          <ng-container *ngIf="userObj?.isJoined">
+            {{ 'pre_edit_jop' | translate }}<em>{{ userObj?.lastUpdate | date : 'YYYY-MM-dd HH:mm:ss' }}</em>
+          </ng-container>
+        </div>
+      </div>
+      <customize-button size="large" type="primary" *ngIf="!editMode" (onClick)="editMode = !editMode"
+        >{{ 'mod_quz_jop' | translate }}
+      </customize-button>
+    </div>
+
+    <div class="edit-status" *ngIf="editMode">
+      <div *ngFor="let item of events; let i = index" [class.active]="item.edited">
+        <i class="icon-correct" *ngIf="item.edited"></i>
+        <em>{{ i + 1 }}</em>
+      </div>
+    </div>
+
+    <div class="events">
+      <div class="event-item" [class.edit]="editMode" *ngFor="let item of events">
+        <div class="edit-desc" *ngIf="editMode">{{ 'enter_sco_jop' | translate }}</div>
+        <div class="event-main">
+          <div class="team-info left">
+            <img [src]="item.homeIcon" />
+            <span>{{ item.home }}</span>
+          </div>
+          <div class="scores">
+            <span>{{ item.scoreHome }}</span>
+            <em>-</em>
+            <span>{{ item.scoreAway }}</span>
+          </div>
+          <div class="team-info right">
+            <span>{{ item.away }}</span>
+            <img [src]="item.awayIcon" />
+          </div>
+          <div class="option left">
+            <div class="operate" *ngIf="editMode">
+              <span class="mutual-opacity onact96-not" (click)="minus(item, 'Home')">-</span>
+              <span class="mutual-opacity onact96-not" (click)="add(item, 'Home')">+</span>
+            </div>
+            <div class="label" *ngIf="!editMode">
+              <span>{{ 'result_jop' | translate }}</span>
+              <span>{{ 'big_small_jop' | translate }}{{ betFreeData.infoBase.sbv }}{{ 'ball_jop' | translate }}</span>
+            </div>
+          </div>
+          <div class="results">
+            <ng-container *ngIf="!editMode">
+              <span>{{ item.canceled ? ('over_jop' | translate) : ('no_over_jop' | translate) }}</span>
+              <span>{{
+                item.scoreHome + item.scoreAway > betFreeData.infoBase.sbv
+                  ? ('more_than_jop' | translate)
+                  : ('less_than_jop' | translate)
+              }}</span>
+            </ng-container>
+          </div>
+          <div class="option right" *ngIf="editMode">
+            <div class="operate">
+              <span class="mutual-opacity onact96-not" (click)="add(item, 'Away')">+</span>
+              <span class="mutual-opacity onact96-not" (click)="minus(item, 'Away')">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit" *ngIf="editMode">
+      <customize-button size="large" type="primary" (onClick)="submitVerify()">{{
+        'sub_im_jop' | translate
+      }}</customize-button>
+    </div>
+  </ng-container>
+
+  <div class="no-now-jackpot" *ngIf="!progress">
+    <div class="title">{{ 'no_gus_cur_jop' | translate }}</div>
+    <div class="text">{{ 'no_gus_cur_tip_jop' | translate }}</div>
+    <customize-button size="large" radius="30px" type="primary" (onClick)="toHistory()">{{
+      'view_hist_jop' | translate
+    }}</customize-button>
+  </div>
+</div>

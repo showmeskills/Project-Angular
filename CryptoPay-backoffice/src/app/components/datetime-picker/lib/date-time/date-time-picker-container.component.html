@@ -1,0 +1,110 @@
+<div
+  [cdkTrapFocus]="picker.pickerMode !== 'inline'"
+  [@fadeInPicker]="picker.pickerMode === 'inline' ? '' : 'enter'"
+  class="owl-dt-container-inner"
+>
+  <div
+    *ngIf="picker.isInRangeMode && picker.pickerType !== 'calendar'"
+    role="radiogroup"
+    class="owl-dt-container-info owl-dt-container-row"
+  >
+    <div
+      role="radio"
+      [tabindex]="activeSelectedIndex === 0 ? 0 : -1"
+      [attr.aria-checked]="activeSelectedIndex === 0"
+      class="owl-dt-control owl-dt-container-range owl-dt-container-from"
+      [ngClass]="{ 'owl-dt-container-info-active': activeSelectedIndex === 0 }"
+      (click)="handleClickOnInfoGroup($event, 0)"
+      (keydown)="handleKeydownOnInfoGroup($event, to, 0)"
+      #from
+    >
+      <span class="owl-dt-control-content owl-dt-container-range-content" tabindex="-1">
+        <!--                <span class="owl-dt-container-info-label">{{fromLabel}}:</span>-->
+        <span class="owl-dt-container-info-value">{{ fromFormattedValue }}</span>
+      </span>
+    </div>
+
+    <div class="owl-dt-container-range-separator">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="100%" height="100%">
+        <path
+          d="M0 4.95 4.95 0l.707.707L1.414 4.95l4.243 4.243-.707.707z"
+          transform="rotate(180 4.768 5.9)"
+          style="fill-rule: evenodd; clip-rule: evenodd"
+        />
+      </svg>
+    </div>
+
+    <div
+      role="radio"
+      [tabindex]="activeSelectedIndex === 1 ? 0 : -1"
+      [attr.aria-checked]="activeSelectedIndex === 1"
+      class="owl-dt-control owl-dt-container-range owl-dt-container-to"
+      [ngClass]="{ 'owl-dt-container-info-active': activeSelectedIndex === 1 }"
+      (click)="handleClickOnInfoGroup($event, 1)"
+      (keydown)="handleKeydownOnInfoGroup($event, from, 1)"
+      #to
+    >
+      <span class="owl-dt-control-content owl-dt-container-range-content" tabindex="-1">
+        <!--                <span class="owl-dt-container-info-label">{{toLabel}}:</span>-->
+        <span class="owl-dt-container-info-value">{{ toFormattedValue }}</span>
+      </span>
+    </div>
+  </div>
+
+  <owl-date-time-calendar
+    *ngIf="pickerType === 'both' || pickerType === 'calendar'"
+    class="owl-dt-container-row"
+    [firstDayOfWeek]="picker.firstDayOfWeek"
+    [(pickerMoment)]="pickerMoment"
+    [selected]="picker.selected"
+    [selecteds]="picker.selecteds"
+    [selectMode]="picker.selectMode"
+    [minDate]="picker.minDateTime"
+    [maxDate]="picker.maxDateTime"
+    [dateFilter]="picker.dateTimeFilter"
+    [startView]="picker.startView"
+    [hideOtherMonths]="picker.hideOtherMonths"
+    (yearSelected)="picker.selectYear($event)"
+    (monthSelected)="picker.selectMonth($event)"
+    (selectedChange)="dateSelected($event)"
+  >
+    <!--        <owl-date-time-timer-->
+    <!--                class="owl-dt-container-row"-->
+    <!--                [pickerMoment]="pickerMoment"-->
+    <!--                [minDateTime]="picker.minDateTime"-->
+    <!--                [maxDateTime]="picker.maxDateTime"-->
+    <!--                [showSecondsTimer]="picker.showSecondsTimer"-->
+    <!--                [hour12Timer]="picker.hour12Timer"-->
+    <!--                [stepHour]="picker.stepHour"-->
+    <!--                [stepMinute]="picker.stepMinute"-->
+    <!--                [stepSecond]="picker.stepSecond"-->
+    <!--                (selectedChange)="timeSelected($event)"></owl-date-time-timer>-->
+  </owl-date-time-calendar>
+
+  <owl-date-time-timer
+    *ngIf="picker.showTimer && (pickerType === 'timer' || pickerType === 'both')"
+    class="owl-dt-container-row"
+    [pickerMoment]="pickerMoment"
+    [minDateTime]="picker.minDateTime"
+    [maxDateTime]="picker.maxDateTime"
+    [showSecondsTimer]="picker.showSecondsTimer"
+    [hour12Timer]="picker.hour12Timer"
+    [stepHour]="picker.stepHour"
+    [stepMinute]="picker.stepMinute"
+    [stepSecond]="picker.stepSecond"
+    (selectedChange)="timeSelected($event)"
+  ></owl-date-time-timer>
+
+  <div *ngIf="showControlButtons" class="owl-dt-control-btn-wrap owl-dt-container-row">
+    <!-- <span class="owl-dt-control-btn owl-dt-control-btn-default" (click)="onCancelClicked($event)">{{
+      cancelLabel
+    }}</span>
+    <span class="owl-dt-control-btn owl-dt-control-btn-primary" (click)="onSetClicked($event)">{{ setLabel }}</span> -->
+    <span class="owl-dt-control-btn owl-dt-control-btn-default" (click)="onCancelClicked($event)">{{
+      'common.cancel' | lang
+    }}</span>
+    <span class="owl-dt-control-btn owl-dt-control-btn-primary" (click)="onSetClicked($event)">{{
+      'common.confirm' | lang
+    }}</span>
+  </div>
+</div>

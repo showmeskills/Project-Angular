@@ -1,0 +1,7 @@
+<div class="text-center">
+  <svg-icon [src]="icon" class="svg-icon menu-icon"></svg-icon>
+  <div [class]="'txt ' + (textClass || '')" [style]="textStyle">
+    <ng-container *ngIf="text === undefined; else tpl">{{ 'common.emptyText' | lang }}</ng-container>
+    <ng-template #tpl>{{ text }}</ng-template>
+  </div>
+</div>

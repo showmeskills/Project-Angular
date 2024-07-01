@@ -1,0 +1,53 @@
+:host {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.banner-container {
+  min-height: 40px;
+  width: 90%;
+  background: #ff0f0099;
+  border-radius: 4px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #fff;
+  padding: 0 15px 0 20px;
+  line-height: 16px;
+  @media (max-width: 767px) {
+    padding: 12px 15px 12px;
+    line-height: 17px;
+  }
+
+  &:host-context(.dark) & {
+    background: #ff0f0033;
+  }
+
+  .text {
+    padding: 0 18px;
+  }
+  .offset-start {
+    width: inherit;
+  }
+
+  span {
+    cursor: pointer;
+    &:host-context(.dark) & {
+      color: var(--primary-color);
+    }
+  }
+
+  i {
+    font-size: 16px;
+    cursor: pointer;
+
+    &.icon-toast-fail {
+      &:host-context(.dark) & {
+        color: var(--primary-color);
+      }
+    }
+  }
+}

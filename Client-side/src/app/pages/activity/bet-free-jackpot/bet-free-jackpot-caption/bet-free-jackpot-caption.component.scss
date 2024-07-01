@@ -1,0 +1,149 @@
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  min-height: 500px;
+  padding-top: 20px;
+  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+}
+.detail {
+  .content {
+    display: block;
+    $hf: 2em, 1.5em, 1.17em, 1em, 0.83em, 0.67em;
+    $hm: 0.67em, 0.86em, 1em, 1.33em, 1.67em, 2.33em;
+    overflow-x: scroll;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    ::ng-deep {
+      @each $h in $hf {
+        h#{index($hf, $h)} {
+          font: normal normal bold #{$h} / 1.714 Microsoft YaHei;
+        }
+      }
+
+      @each $h in $hm {
+        h#{index($hm, $h)} {
+          margin: #{$h} 0;
+          color: var(--text-color);
+        }
+      }
+
+      h1 {
+        display: flex;
+        align-items: center;
+      }
+
+      .high-light-text {
+        font-size: 28px;
+        color: var(--text-color);
+
+        @media (max-width: 767px) {
+          font-size: 16px;
+        }
+      }
+
+      .al-center {
+        display: flex;
+        align-items: center;
+      }
+
+      .activity-img-icon {
+        width: 40px;
+        height: 40px;
+
+        @media (max-width: 767px) {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      i,
+      em {
+        font-style: italic;
+      }
+
+      p {
+        color: var(--text-color);
+        // word-break: break-all;
+        margin: 5px 0px;
+        line-height: 1.8;
+
+        &:host-context(.dark) & {
+          color: #b1bad3;
+        }
+      }
+
+      ul,
+      ol {
+        padding-left: 30px;
+
+        li::marker {
+          color: var(--text-color);
+        }
+      }
+
+      ol {
+        list-style-type: decimal;
+      }
+
+      ul {
+        list-style-type: disc;
+      }
+
+      strong {
+        font-weight: bold;
+      }
+
+      table {
+        width: 100%;
+
+        th {
+          p {
+            padding: 10px;
+            text-align: center;
+            white-space: nowrap;
+          }
+        }
+
+        tr {
+          td {
+            p {
+              padding: 10px;
+              text-align: center;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+
+      .primary-text {
+        color: var(--primary-color);
+      }
+
+      a {
+        text-decoration: none;
+
+        &:link {
+          color: var(--primary-color);
+        }
+
+        &:visited {
+          color: var(--primary-color);
+        }
+      }
+    }
+  }
+}

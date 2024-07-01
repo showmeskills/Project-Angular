@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="header-container">
+    <span class="title">{{ 'lang_and_region' | translate }}</span>
+    <span class="close-icon onact96-not" (click)="close()"></span>
+  </div>
+  <div class="lang-container">
+    <div class="label">{{ 's_lang_and_region' | translate }}</div>
+    <div class="cuntry-row">
+      <div *ngFor="let data of colunmDatas; let i = index">
+        <div class="colnum fog-row">
+          <div class="item onact96" *ngFor="let item of data" (click)="selectLang(item)">
+            <div class="country-image">
+              <i class="country" class="{{ className(item) }}"></i>
+            </div>
+            <p>{{ item.name }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

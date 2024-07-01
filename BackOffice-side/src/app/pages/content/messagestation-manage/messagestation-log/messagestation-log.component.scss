@@ -1,0 +1,87 @@
+.txt-omit {
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.list {
+  .checkbox {
+    transform: scale(1.2);
+  }
+}
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 4px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle {
+  margin-left: 5px;
+}
+
+.color-blue {
+  color: #009ef7;
+}
+
+.status {
+  padding: 9px 10px;
+}
+
+.status_normal {
+  color: #50cd89;
+  background-color: #e8fff3;
+}
+
+.status_lock {
+  color: #ffc700;
+  background-color: #fff8dd;
+}
+
+.status_stop {
+  color: #f1416c;
+  background-color: #fff5f8;
+}
+.status_noactive {
+  color: #7e8299;
+  background-color: #f5f8fa;
+}
+
+.table {
+  tr {
+    border-bottom: 1px dashed #ebedf3;
+
+    td {
+      border-top: 0 !important;
+    }
+  }
+}
+
+.btn-light-primary:hover::ng-deep path {
+  fill: #fff !important;
+}
+//由于上面的important 导致VIP icon hover之后全白BUG ，以下为特例样式
+.btn-light-primary:hover::ng-deep .svg-vip-icon > svg > g > path {
+  fill: none !important;
+}

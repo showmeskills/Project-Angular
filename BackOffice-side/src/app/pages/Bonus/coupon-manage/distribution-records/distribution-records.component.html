@@ -1,0 +1,236 @@
+<div class="bg-fff rounded-2 p-8 d-flex flex-wrap">
+  <!-- UID -->
+  <form-row label="UID" class="mr-12">
+    <ng-template>
+      <input
+        class="form-control rounded-0"
+        type="text"
+        [(ngModel)]="data.uid"
+        [style.width.px]="140"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 发放人员 -->
+  <form-row [label]="'member.coupon.sender' | lang" class="mr-12">
+    <ng-template>
+      <input
+        class="form-control rounded-0"
+        type="text"
+        [(ngModel)]="data.issued"
+        [style.width.px]="140"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 发放时间 -->
+  <form-row [label]="'member.giveOut.IssuanceTime' | lang" class="mr-12">
+    <ng-template>
+      <input
+        class="text-center w-100 form-control rounded-0"
+        type="text"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [style.width.px]="200"
+        [owlDateTime]="settlementPicker"
+        [owlDateTimeTrigger]="settlementPicker"
+        [(ngModel)]="data.issuedTime"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #settlementPicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <!-- 状态 -->
+  <form-row [label]="'common.status' | lang" class="mr-12">
+    <ng-template>
+      <mat-form-field [style.width.px]="134">
+        <mat-select class="form-control rounded-0" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <!-- 送审失败(可再次送审) -->
+          <mat-option [value]="VoucherStatus.ReviewFail">{{ 'member.coupon.toReviewFail' | lang }}</mat-option>
+          <!-- 审核中 -->
+          <mat-option [value]="VoucherStatus.Reviewing">{{ 'member.kyc.underReview' | lang }}</mat-option>
+          <!-- 审核拒绝 -->
+          <mat-option [value]="VoucherStatus.ReviewReject">{{ 'member.kyc.declined' | lang }}</mat-option>
+          <!-- 表示发放失败 -->
+          <mat-option [value]="VoucherStatus.IssueFail">{{ 'member.giveOut.failedissue' | lang }}</mat-option>
+          <mat-option [value]="VoucherStatus.Unclaimed">{{ 'member.giveOut.pendingCollection' | lang }}</mat-option>
+          <mat-option [value]="VoucherStatus.Received">{{ 'member.giveOut.received' | lang }}</mat-option>
+          <mat-option [value]="VoucherStatus.InUse">{{ 'member.giveOut.Using' | lang }}</mat-option>
+          <mat-option [value]="VoucherStatus.Used">{{ 'member.giveOut.Used' | lang }}</mat-option>
+          <mat-option [value]="VoucherStatus.Invalid">{{ 'member.giveOut.expired' | lang }}</mat-option>
+          <mat-option [value]="VoucherStatus.Expired">{{ 'member.coupon.expired' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="mt-8 bg-fff p-8 rounded-2">
+  <div class="d-flex flex-wrap">
+    <div class="flex-1"></div>
+
+    <div>
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-2 lh-18">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'finance.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0" [appLoading]="loading">
+    <thead>
+      <tr>
+        <!-- 名称 -->
+        <th>
+          <span class="cell">{{ 'member.coupon.name' | lang }}</span>
+        </th>
+        <!-- 券码 -->
+        <th>
+          <span class="cell">{{ 'member.coupon.couponCode' | lang }}</span>
+        </th>
+        <!-- 类型 -->
+        <th>
+          <span class="cell">{{ 'common.type' | lang }}</span>
+        </th>
+        <!-- 金额 -->
+        <th>
+          <span class="cell">{{ 'common.amount' | lang }}</span>
+        </th>
+        <!-- 币种 -->
+        <th>
+          <span class="cell">{{ 'common.currency' | lang }}</span>
+        </th>
+        <!-- UID -->
+        <th><span class="cell">UID</span></th>
+        <!-- 发放人员 -->
+        <th>
+          <span class="cell">{{ 'member.coupon.sender' | lang }}</span>
+        </th>
+        <!-- 发放时间 -->
+        <th>
+          <span class="cell">{{ 'member.giveOut.IssuanceTime' | lang }}</span>
+        </th>
+        <!-- 状态 -->
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.voucherName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.tmpCode || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ this.couponService.getCouponTypeLang(item.releaseType) | lang }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.money | currencyValue: item.moneyType }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.moneyType }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createBy || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell" [ngSwitch]="item.releaseStatus">
+            <!-- 送审失败(可再次送审) -->
+            <app-label type="danger" *ngSwitchCase="VoucherStatus.ReviewFail">{{
+              'member.coupon.toReviewFail' | lang
+            }}</app-label>
+            <!-- 审核中 -->
+            <app-label type="yellow" *ngSwitchCase="VoucherStatus.Reviewing">{{
+              'member.kyc.underReview' | lang
+            }}</app-label>
+            <!-- 审核拒绝 -->
+            <app-label type="yellow" *ngSwitchCase="VoucherStatus.ReviewReject">{{
+              'member.kyc.declined' | lang
+            }}</app-label>
+            <!-- 表示发放失败 -->
+            <app-label type="danger" *ngSwitchCase="VoucherStatus.IssueFail">{{
+              'member.giveOut.failedissue' | lang
+            }}</app-label>
+            <!-- 待领取（审核后待领取） -->
+            <app-label type="primary" *ngSwitchCase="VoucherStatus.Unclaimed">{{
+              'member.giveOut.pendingCollection' | lang
+            }}</app-label>
+            <!-- 已领取 -->
+            <app-label type="warning" *ngSwitchCase="VoucherStatus.Received">{{
+              'member.giveOut.received' | lang
+            }}</app-label>
+            <!-- 使用中 -->
+            <app-label type="success" *ngSwitchCase="VoucherStatus.InUse">{{
+              'member.giveOut.Using' | lang
+            }}</app-label>
+            <!-- 已使用 -->
+            <app-label type="default" *ngSwitchCase="VoucherStatus.Used">{{ 'member.giveOut.Used' | lang }}</app-label>
+            <!-- 已失效 -->
+            <app-label type="default" *ngSwitchCase="VoucherStatus.Invalid">{{
+              'member.giveOut.expired' | lang
+            }}</app-label>
+            <!-- 已失效 -->
+            <app-label type="default" *ngSwitchCase="VoucherStatus.Expired">{{
+              'member.coupon.expired' | lang
+            }}</app-label>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- loading -->
+  <div *ngIf="!list.length && loading" style="height: 380px" [appLoading]="loading"></div>
+
+  <!-- 空显示 -->
+  <empty class="bg-fff rounded" [show]="!list.length && !loading"></empty>
+</div>
+
+<div class="d-flex flex-between pt-6 flex-ac">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        style="background: #fff"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+    ></app-paginator>
+  </div>
+</div>

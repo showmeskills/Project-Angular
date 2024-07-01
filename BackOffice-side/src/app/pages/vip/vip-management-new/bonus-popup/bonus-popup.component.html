@@ -1,0 +1,181 @@
+<div class="modal-content">
+  <modal-title [title]="'member.management.vipc.welfareConfiguration' | lang" (close)="modal.dismiss()"></modal-title>
+
+  <div class="base mx-6 mt-10 mb-5" [appLoading]="templateInfoLoading">
+    <div class="base-header">{{ 'member.management.Basic' | lang }}</div>
+
+    <div class="base-content-wrap">
+      <!-- SVIP持续时间 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.svipDuration' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-4 fz-14 color-222">
+            <input type="radio" name="continued" [value]="30" [(ngModel)]="templateInfoData.svipKeepTime" /><span
+              class="mr-4"
+            ></span
+            >30D
+          </label>
+          <label class="radio radio-lg mr-4 fz-14 color-222">
+            <input type="radio" name="continued" [value]="60" [(ngModel)]="templateInfoData.svipKeepTime" /><span
+              class="mr-4"
+            ></span
+            >60D
+          </label>
+          <label class="radio radio-lg mr-4 fz-14 color-222">
+            <input type="radio" name="continued" [value]="90" [(ngModel)]="templateInfoData.svipKeepTime" /><span
+              class="mr-4"
+            ></span
+            >90D
+          </label>
+        </div>
+      </div>
+
+      <!-- SVIP再邀请时间 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.svipReinvitation' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="again" [value]="30" [(ngModel)]="templateInfoData.svipInviteTime" /><span
+              class="mr-4"
+            ></span
+            >30D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="again" [value]="60" [(ngModel)]="templateInfoData.svipInviteTime" /><span
+              class="mr-4"
+            ></span
+            >60D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="again" [value]="90" [(ngModel)]="templateInfoData.svipInviteTime" /><span
+              class="mr-4"
+            ></span
+            >90D
+          </label>
+        </div>
+      </div>
+
+      <!-- empty -->
+      <div class="base-row"></div>
+    </div>
+  </div>
+
+  <div class="modal-body p-6 custom-scroll-y" [style.height.px]="435" [appLoading]="levelGroupLoading">
+    <table class="table mb-0 level-table">
+      <thead>
+        <tr>
+          <th *ngFor="let item of thList; index as i">
+            <span class="cell">
+              <ng-container *ngIf="i <= 1; else checkboxTel">
+                {{ item.lang | lang }}
+              </ng-container>
+              <ng-template #checkboxTel>
+                <label class="checkbox checkbox-lg">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="item.checked"
+                    [checked]="item.checked"
+                    (change)="thSelectChange(item)"
+                  />
+                  <span class="mr-2"></span>
+                  <div style="white-space: break-spaces">{{ item.lang | lang }}</div>
+                </label>
+              </ng-template>
+            </span>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <ng-container *ngFor="let items of levelGroupList; index as i">
+          <tr class="level-table-fisrt cursor-pointer" (click)="items.expand = !items.expand">
+            <td colspan="16">
+              <span class="cell">
+                {{ items?.vipGroupName || '-' }}
+                <ng-container *ngIf="items?.vipLevelStart">
+                  {{ items?.vipLevelStart + ' ~ ' + items?.vipLevelEnd }}
+                </ng-container>
+              </span>
+            </td>
+            <td>
+              <span class="cell px-4">
+                <svg-icon
+                  class="svg-icon svg-icon-2x5 cursor-pointer"
+                  [src]="
+                    items.expand
+                      ? './assets/images/svg/sports/competition/matched-expand.svg'
+                      : './assets/images/svg/sports/competition/matched-shrink.svg'
+                  "
+                ></svg-icon>
+              </span>
+            </td>
+          </tr>
+
+          <ng-container *ngIf="items.expand && items.vipLevelResDtoList?.length">
+            <tr *ngFor="let item of items.vipLevelResDtoList; index as j">
+              <td>
+                <span class="cell">{{ item.vipName || '-' }}</span>
+              </td>
+
+              <ng-container *ngFor="let key of thValueList">
+                <ng-container
+                  *ngTemplateOutlet="inputTpl; context: { $implicit: { oneIndex: i, twoIndex: j, key } }"
+                ></ng-container>
+              </ng-container>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!levelGroupList.length && !levelGroupLoading"></empty>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">{{ 'common.cancel' | lang }}</button>
+    <button
+      type="button"
+      class="c-btn btn btn-primary"
+      (click)="confirm()"
+      [disabled]="levelGroupLoading || templateInfoLoading"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 输入模版 -->
+<ng-template #inputTpl let-data>
+  <td>
+    <span class="cell">
+      <form-wrap>
+        <input
+          class="form-control fz-16 text-center w-100"
+          autocomplete="off"
+          type="text"
+          [disabled]="disableList.includes(data.key)"
+          [(ngModel)]="levelGroupList[data.oneIndex].vipLevelResDtoList[data.twoIndex][data.key]"
+          input-float
+          [decimal]="2"
+        />
+        <span
+          suffix
+          *ngIf="
+            [
+              'sportsCashback',
+              'liveCashback',
+              'casinoCashback',
+              'chessCashback',
+              'firstDepositBonus',
+              'withdrawalFeeProportion'
+            ].includes(data.key)
+          "
+          >%</span
+        >
+        <span suffix *ngIf="['dayWithdrawLimitMoney'].includes(data.key)">X</span>
+      </form-wrap>
+    </span>
+  </td>
+</ng-template>

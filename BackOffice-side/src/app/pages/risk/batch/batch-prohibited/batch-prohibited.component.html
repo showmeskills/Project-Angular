@@ -1,0 +1,624 @@
+<div class="card py-8 px-8">
+  <mat-tab-group class="w-100" [(selectedIndex)]="curApplyType">
+    <mat-tab [label]="'budget.manualEntry' | lang">
+      <div class="py-8 px-12 batch-wrap" *ngFor="let group of formGroup.controls; index as i" [formGroup]="group">
+        <!-- 标题：数据x -->
+        <div class="batch-label color-999 fz-16 bg-fff">{{ 'common.data' | lang }}{{ i + 1 }}</div>
+
+        <!-- 移除当条记录 -->
+        <div class="batch-remove" (click)="remove(i)">
+          <svg-icon
+            [src]="'./assets/images/svg/close-normal.svg'"
+            class="svg-icon svg-icon-2x mr-0 color-999"
+          ></svg-icon>
+        </div>
+
+        <!-- UID、类型选择 -->
+        <div class="d-flex flex-row flex-wrap">
+          <!-- UID -->
+          <form-row label="UID" class="mr-16" name="uid">
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <input [class.is-invalid]="invalid" type="text" class="form-control" [formControl]="control" input-trim />
+            </ng-template>
+          </form-row>
+        </div>
+
+        <!-- 登录禁用 -->
+        <div class="lh-30 mt-2">
+          <!-- <label class="fz-16 color-222 fw-500">
+              {{ 'member.list.login' | lang }}
+              <span class="ml-4"></span>
+            </label> -->
+          <form-row
+            class="px-0 py-0"
+            [label]="'member.list.login' | lang"
+            labelStyle="fontSize:16px;font-weight: 500;"
+            name="isLoginDisable"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <div class="lh-30 pt-3">
+                <label class="checkbox checkbox-lg mr-8">
+                  <input type="checkbox" [formControl]="control" />
+                  <span class="mr-4"></span>{{ 'common.all' | lang }}
+                </label>
+              </div>
+            </ng-template>
+          </form-row>
+          <!-- 时间组件 -->
+          <div class="d-flex flex-row flex-wrap" *ngIf="group.value.isLoginDisable">
+            <form-row [label]="'member.overview.disableTime' | lang" name="isForbidLoginForever">
+              <ng-template let-control="formControl">
+                <div class="d-flex flex-wrap">
+                  <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+                    <input
+                      type="radio"
+                      [name]="'loginBatchTimeRange_' + i"
+                      [value]="true"
+                      [formControl]="control"
+                      (change)="timeRangeChange(group, 'login')"
+                    />
+                    <span class="mr-4"></span>{{ 'risk.batch.permanently' | lang }}
+                  </label>
+                  <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+                    <input
+                      type="radio"
+                      [name]="'loginBatchTimeRange_' + i"
+                      [value]="false"
+                      [formControl]="control"
+                      (change)="timeRangeChange(group, 'login')"
+                    />
+                    <span class="mr-4"></span>{{ 'risk.batch.certainPeriod' | lang }}
+                  </label>
+
+                  <div [hidden]="!!control.value">
+                    <form-row class="py-0" [showLabel]="false" [control]="group.controls.forbidLoginTime">
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <input
+                          class="form-control text-center"
+                          type="text"
+                          [placeholder]="'member.overview.pleaseChooseTime' | lang"
+                          [style.width.px]="280"
+                          selectMode="date-range"
+                          [owlDateTime]="pickerlogin"
+                          [owlDateTimeTrigger]="pickerlogin"
+                          rangeSeparator="-"
+                          [formControl]="control"
+                          [class.is-invalid]="invalid"
+                          [min]="minDate"
+                          readonly
+                        />
+                        <owl-date-time pickerType="both" class="fz-20" #pickerlogin></owl-date-time>
+                      </ng-template>
+                    </form-row>
+                  </div>
+                </div>
+              </ng-template>
+            </form-row>
+          </div>
+        </div>
+
+        <!-- <form-row [label]="'common.type' | lang" class="mr-16" name="main">
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <mat-form-field>
+                <mat-select
+                  [class.is-invalid]="invalid"
+                  class="form-control"
+                  [formControl]="control"
+                  (selectionChange)="typeChange(group)"
+                >
+                  <mat-option *ngFor="let item of batchService.mainList" [value]="item.main">{{
+                    item.lang | lang
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </ng-template>
+          </form-row> -->
+
+        <!-- 游戏 -->
+        <div class="lh-30 mt-2">
+          <!-- <label class="fz-16 color-222 fw-500">
+              {{ 'common.game' | lang }}
+              <span class="ml-4"></span>
+            </label> -->
+          <form-row
+            class="px-0 py-0"
+            [label]="'common.game' | lang"
+            labelStyle="fontSize:16px;font-weight: 500;"
+            name="isGameDisable"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <div class="lh-30 pt-3">
+                <label class="checkbox checkbox-lg mr-8" [class.checkbox-indeterminate]="isIndeterminate(group)">
+                  <input type="checkbox" [formControl]="control" (change)="checkItem($event, group, i)" />
+                  <span class="mr-4"></span>{{ 'common.all' | lang }}
+                </label>
+              </div>
+            </ng-template>
+          </form-row>
+
+          <!-- 游戏类型 -->
+          <div class="d-flex flex-row flex-wrap">
+            <form-row [label]="'dashboard.transaction.gameType' | lang" name="gametype" class="mr-16">
+              <ng-template let-control="formControl">
+                <mat-form-field>
+                  <mat-select
+                    class="form-control"
+                    [formControl]="control"
+                    *search="let searchList$ of providerList; key: 'description'"
+                    multiple
+                    (selectionChange)="providerChange(group, i)"
+                  >
+                    <input class="fz-16" type="search" searchInput />
+                    <mat-option (click)="toggleSelectAll(group, i, 'gametype')" [value]="'all'">{{
+                      'common.all' | lang
+                    }}</mat-option>
+                    <mat-option *ngFor="let item of searchList$ | async" [value]="item.code">{{
+                      item.description
+                    }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-template>
+            </form-row>
+
+            <!-- 游戏 -->
+            <form-row [label]="'common.game' | lang" class="mr-16" name="gameCodes" *ngIf="!!group.value.gametype">
+              <ng-template let-control="formControl">
+                <mat-form-field [style.width.px]="300">
+                  <mat-select
+                    class="form-control"
+                    [formControl]="control"
+                    *search="let searchList$ of gameList[i]; key: 'providerNameAndId'"
+                    multiple
+                  >
+                    <input class="fz-16" type="search" searchInput />
+                    <mat-option [value]="'all'" (click)="toggleSelectAll(group, i, 'gameCodes')">{{
+                      'common.all' | lang
+                    }}</mat-option>
+                    <mat-option
+                      *ngFor="let item of searchList$ | async"
+                      [value]="item.providerCatId"
+                      (click)="toggleSelectItem(group, 'gameCodes')"
+                      >{{ item.name }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </ng-template>
+            </form-row>
+          </div>
+          <!-- 时间范围 -->
+          <div class="d-flex flex-row flex-wrap" *ngIf="group.value.isGameDisable">
+            <form-row [label]="'member.overview.disableTime' | lang" name="isForbidGameForever">
+              <ng-template let-control="formControl">
+                <div class="d-flex flex-wrap">
+                  <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+                    <input
+                      type="radio"
+                      [name]="'gameBatchTimeRange_' + i"
+                      [value]="true"
+                      [formControl]="control"
+                      (change)="timeRangeChange(group, 'game')"
+                    />
+                    <span class="mr-4"></span>{{ 'risk.batch.permanently' | lang }}
+                  </label>
+                  <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+                    <input
+                      type="radio"
+                      [name]="'gameBatchTimeRange_' + i"
+                      [value]="false"
+                      [formControl]="control"
+                      (change)="timeRangeChange(group, 'game')"
+                    />
+                    <span class="mr-4"></span>{{ 'risk.batch.certainPeriod' | lang }}
+                  </label>
+
+                  <div [hidden]="!!control.value">
+                    <form-row class="py-0" [showLabel]="false" [control]="group.controls.forbidGameTime">
+                      <ng-template let-control="formControl">
+                        <input
+                          class="form-control text-center"
+                          type="text"
+                          [placeholder]="'member.overview.pleaseChooseTime' | lang"
+                          [style.width.px]="280"
+                          selectMode="date-range"
+                          [owlDateTime]="pickerGame"
+                          [owlDateTimeTrigger]="pickerGame"
+                          rangeSeparator="-"
+                          [formControl]="control"
+                          [min]="minDate"
+                          readonly
+                        />
+                        <owl-date-time pickerType="both" class="fz-20" #pickerGame></owl-date-time>
+                      </ng-template>
+                    </form-row>
+                  </div>
+                </div>
+              </ng-template>
+            </form-row>
+          </div>
+        </div>
+
+        <!-- 支付 -->
+        <div class="lh-30 mt-2">
+          <!-- <label class="fz-16 color-222 fw-500">
+                {{ 'risk.batch.pay' | lang }}
+                <span class="ml-4"></span>checkPayItem
+              </label> -->
+          <div>
+            <form-row
+              class="px-0 py-0"
+              [label]="'risk.batch.pay' | lang"
+              labelStyle="fontSize:16px;font-weight: 500;"
+              name="isPayDisable"
+            >
+              <ng-template let-control="formControl">
+                <div class="lh-30 pt-3">
+                  <label class="checkbox checkbox-lg mr-8" [class.checkbox-indeterminate]="ispayIndeterminate(group)">
+                    <input type="checkbox" [formControl]="control" (change)="checkPayItem($event, group, i)" />
+                    <span class="mr-4"></span>{{ 'common.all' | lang }}
+                  </label>
+                </div>
+              </ng-template>
+            </form-row>
+
+            <!-- <form-row
+              class="px-0 py-0"
+              [label]="'member.overview.deposit' | lang"
+              label-width="140"
+              labelStyle="fontSize:14px;height:30px"
+              name="depositType"
+            >
+              <ng-template let-invalid="invalid" let-control="formControl">
+                <div class="d-flex flex-ac flex-wrap">
+                  <label class="checkbox checkbox-lg mr-8" *ngFor="let prod of depositList; let j = index">
+                    <input type="checkbox" select  [checkboxArrayControl]="control" [checkboxArrayValue]="prod.type"/>
+                    <span class="mr-4"></span>{{ prod.lang | lang }}
+                  </label>
+                </div>
+              </ng-template>
+            </form-row>
+            <form-row
+              class="px-0 py-0"
+              [label]="'member.overview.withdrawal' | lang"
+              label-width="140"
+              labelStyle="fontSize:14px"
+              name="withdrawType"
+            >
+              <ng-template let-invalid="invalid" let-control="formControl">
+                <div class="d-flex flex-ac">
+                  <label class="checkbox checkbox-lg mr-8" *ngFor="let prod of withdrawalList; let j = index">
+                    <input type="checkbox" select [checkboxArrayControl]="control" [checkboxArrayValue]="prod.type" />
+                    <span class="mr-4"></span>{{ prod.lang | lang }}{{prod.checked}}
+                  </label>
+                </div>
+              </ng-template>
+            </form-row> -->
+          </div>
+          <!-- 存款或提款 -->
+          <div class="d-flex flex-row flex-wrap">
+            <form-row [label]="'common.category' | lang" class="mr-16" name="paytype">
+              <ng-template let-invalid="invalid" let-control="formControl">
+                <mat-form-field>
+                  <mat-select
+                    class="form-control"
+                    [class.is-invalid]="invalid"
+                    [formControl]="control"
+                    (selectionChange)="payCategoryChange(group, i)"
+                    multiple
+                  >
+                    <mat-option (click)="togglePaySelectAll(group, 'paytype', i)" [value]="'all'">{{
+                      'common.all' | lang
+                    }}</mat-option>
+                    <mat-option [value]="item.code" *ngFor="let item of payTypeList">{{ item.lang | lang }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-template>
+            </form-row>
+
+            <form-row
+              [label]="'risk.batch.pay' | lang"
+              class="mr-16"
+              name="depositType"
+              *ngIf="!!group.value.paytype"
+              name="payValue"
+            >
+              <ng-template let-invalid="invalid" let-control="formControl">
+                <mat-form-field>
+                  <mat-select class="form-control" [class.is-invalid]="invalid" [formControl]="control" multiple>
+                    <mat-option [value]="'all'" (click)="togglePaySelectAll(group, 'payValue', i)">{{
+                      'common.all' | lang
+                    }}</mat-option>
+                    <mat-option
+                      [value]="item.type"
+                      *ngFor="let item of payList[i]"
+                      (click)="toggleBatchSelectAll(group, 'payValue')"
+                      >{{ item.lang | lang }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </ng-template>
+            </form-row>
+          </div>
+
+          <!-- 时间范围 -->
+          <div class="d-flex flex-row flex-wrap" *ngIf="group.value.isPayDisable">
+            <form-row [label]="'member.overview.disableTime' | lang" name="isForbidPaymentForever">
+              <ng-template let-control="formControl">
+                <div class="d-flex flex-wrap">
+                  <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+                    <input
+                      type="radio"
+                      [name]="'payBatchTimeRange_' + i"
+                      [value]="true"
+                      [formControl]="control"
+                      (change)="timeRangeChange(group, 'pay')"
+                    />
+                    <span class="mr-4"></span>{{ 'risk.batch.permanently' | lang }}
+                  </label>
+                  <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+                    <input
+                      type="radio"
+                      [name]="'payBatchTimeRange_' + i"
+                      [value]="false"
+                      [formControl]="control"
+                      (change)="timeRangeChange(group, 'pay')"
+                    />
+                    <span class="mr-4"></span>{{ 'risk.batch.certainPeriod' | lang }}
+                  </label>
+
+                  <div [hidden]="!!control.value">
+                    <form-row class="py-0" [showLabel]="false" [control]="group.controls.forbidPaymentTime">
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <input
+                          class="form-control text-center"
+                          type="text"
+                          [placeholder]="'member.overview.pleaseChooseTime' | lang"
+                          [style.width.px]="280"
+                          selectMode="date-range"
+                          [owlDateTime]="picker"
+                          [owlDateTimeTrigger]="picker"
+                          rangeSeparator="-"
+                          [formControl]="control"
+                          [class.is-invalid]="invalid"
+                          [min]="minDate"
+                          readonly
+                        />
+                        <owl-date-time pickerType="both" class="fz-20" #picker></owl-date-time>
+                      </ng-template>
+                    </form-row>
+                  </div>
+                </div>
+              </ng-template>
+            </form-row>
+          </div>
+        </div>
+      </div>
+
+      <!-- 提示 -->
+      <span class="px-12 text-danger fz-12">* {{ 'risk.batch.confirmMerchantTips' | lang }}</span>
+
+      <!-- 新增 -->
+      <div class="px-12 mt-8">
+        <button
+          (click)="add()"
+          type="button"
+          class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'common.add' | lang }}</span>
+        </button>
+      </div>
+    </mat-tab>
+    <mat-tab [label]="'budget.batchOperation' | lang">
+      <form-row [label]="'budget.uploadForm' | lang" label-width="107" [control]="fiatBatch.controls.excel">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <div class="d-flex flex-wrap">
+            <div>
+              <upload
+                mark="file"
+                class="mr-30"
+                [style.height.px]="80"
+                [accept]="['xlsx']"
+                [showLimitText]="false"
+                [desc]="''"
+                [limit]="2048"
+                [customRequestSteam]="uploadExcelStream"
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+                (change)="onUploadChange($event)"
+                (clear)="clearExcel()"
+              ></upload>
+
+              <div class="invalid-feedback lh-1n" *ngIf="invalid">{{ 'budget.PleaseUploadForm' | lang }}</div>
+            </div>
+
+            <div class="d-flex flex-column flex-bt lh-1n fz-16 w-100 flex-1 text-nowrap py-2" style="height: 58px">
+              <div class="d-flex w-100">
+                <div class="flex-1"></div>
+                <div>
+                  <span class="cursor-pointer download-excel mr-15" (click)="downloadTemplate()">{{
+                    'risk.batch.downloadTemplate' | lang
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+
+      {{ isUploading ? ('budget.parsingLoading' | lang) : '' }}
+      <div class="catch mt-17" *ngIf="data.list.length">
+        <div>
+          <div class="d-flex">
+            <div class="flex-1 fz-18 color-999 border-bottom lh-42">{{ data.batchId || '-' }}</div>
+
+            <!--              <svg-icon-->
+            <!--                src="./assets/images/svg/admin-close.svg"-->
+            <!--                class="svg-icon svg-icon-lg px-4 cursor-pointer"-->
+            <!--                (click)="removeBatch(i)"-->
+            <!--              ></svg-icon>-->
+          </div>
+
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>
+                  <span class="cell">#</span>
+                </th>
+                <th>
+                  <span class="cell">UID</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.login' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.loginStartDate' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.loginEndDate' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.loginDeactivatePeriod' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.paymentType' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.paymentCategory' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.paymentStartDate' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.paymentEndDate' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'risk.prohibited.paymentDeactivatePeriod' | lang }}</span>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="color-222">
+              <tr *ngFor="let item of data.list; index as i">
+                <td>
+                  <span class="cell">{{ i + 1 }}</span>
+                </td>
+                <td>
+                  <span class="cell">{{ item.uid }}</span>
+                </td>
+                <td>
+                  <span class="cell">{{ (item.isLoginDisable ? 'common.yes' : 'common.no') | lang }}</span>
+                </td>
+                <td>
+                  <span class="cell">{{
+                    item.forbidLoginStartTime ? (item.forbidLoginStartTime | timeFormat) : '-'
+                  }}</span>
+                </td>
+                <td>
+                  <span class="cell">{{ item.forbidLoginEndTime ? (item.forbidLoginEndTime | timeFormat) : '-' }}</span>
+                </td>
+                <!-- 禁用登录时间范围 终身/特定时间 -->
+                <td>
+                  <span class="cell">{{
+                    (item.isLoginDisable
+                      ? item.isForbidLoginForever
+                        ? 'risk.batch.permanently'
+                        : 'risk.prohibited.certainPeriod'
+                      : ''
+                    ) | lang
+                  }}</span>
+                </td>
+                <!-- 禁用支付 全部/付款/提款 -->
+                <td>
+                  <ng-container
+                    *ngIf="item.withdrawType.length === 2 && item.depositType.length === 2; else elseBlock1"
+                  >
+                    <span class="cell">{{ 'common.all' | lang }}</span>
+                  </ng-container>
+                  <ng-template #elseBlock1>
+                    <ng-container
+                      *ngIf="item.withdrawType.length === 0 && item.depositType.length === 0; else elseBlock2"
+                    >
+                      <span class="cell">-</span>
+                    </ng-container>
+                    <ng-template #elseBlock2>
+                      <ng-container
+                        *ngIf="item.withdrawType.length > 0 && item.depositType.length === 0; else elseBlock3"
+                      >
+                        <span class="cell">{{ 'payment.method.withdrawal' | lang }}</span>
+                      </ng-container>
+                      <ng-template #elseBlock3>
+                        <ng-container *ngIf="item.withdrawType.length === 0 && item.depositType.length > 0">
+                          <span class="cell">{{ 'payment.method.deposit' | lang }}</span>
+                        </ng-container>
+                      </ng-template>
+                    </ng-template>
+                  </ng-template>
+                </td>
+                <!-- 禁用支付方式 全部/法币/信用卡买币/加密货币  -->
+                <td>
+                  <!-- <span class="cell">{{ getPayCodetab(item) }}</span> -->
+                  <ng-container *ngIf="item.withdrawType.length === 2 && item.depositType.length === 2; else elseTip1">
+                    <span class="cell">{{ 'common.all' | lang }}</span>
+                  </ng-container>
+                  <ng-template #elseTip1>
+                    <ng-container
+                      *ngIf="item.withdrawType.length === 0 && item.depositType.length === 0; else elseTip2"
+                    >
+                      <span class="cell">-</span>
+                    </ng-container>
+                    <ng-template #elseTip2>
+                      <ng-container *ngIf="item.withdrawType.includes('Legal') || item.depositType.includes('Legal')">
+                        <span class="cell">{{ 'member.overview.depositFiatCurrency' | lang }} -</span>
+                      </ng-container>
+                      <ng-container *ngIf="item.withdrawType.includes('Encryption')">
+                        <span class="cell">{{ 'member.overview.cryptocurrency' | lang }} -</span>
+                      </ng-container>
+                      <ng-container *ngIf="item.depositType.includes('BankCard')">
+                        <span class="cell">{{ 'member.overview.cradBuyCoins' | lang }} -</span>
+                      </ng-container>
+                    </ng-template>
+                  </ng-template>
+                </td>
+                <td>
+                  <span class="cell">{{
+                    item.forbidPaymentStartTime ? (item.forbidPaymentStartTime | timeFormat) : '-'
+                  }}</span>
+                </td>
+                <td>
+                  <span class="cell">{{
+                    item.forbidPaymentEndTime ? (item.forbidPaymentEndTime | timeFormat) : '-'
+                  }}</span>
+                </td>
+                <td>
+                  <span class="cell">{{
+                    (item.isPaymentDisable
+                      ? item.isForbidPaymentForever
+                        ? 'risk.batch.permanently'
+                        : 'risk.prohibited.certainPeriod'
+                      : ''
+                    ) | lang
+                  }}</span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <svg-icon
+                      src="./assets/images/svg/admin-close.svg"
+                      class="svg-icon svg-icon-lg px-4 cursor-pointer"
+                      (click)="removeBatch(i)"
+                    ></svg-icon>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 空显示 -->
+      <empty *ngIf="data.batchId && !list.length" [text]="'form.dataEmpty' | lang" [style.height.px]="180"></empty>
+    </mat-tab>
+  </mat-tab-group>
+  <div class="modal-footer btn-wrap mt-12">
+    <button type="button" class="c-btn btn btn-primary" (click)="submit()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>

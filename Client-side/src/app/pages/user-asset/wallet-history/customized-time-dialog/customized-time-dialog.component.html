@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="title-row">
+    <div class="title">{{ 'custom00' | translate }}</div>
+    <i (click)="close(false)" class="icon-close-simple mutual-opacity onact96-not"></i>
+  </div>
+  <div class="content">
+    <div class="desc">{{ 'time_quer_exc00' | translate }}</div>
+    <div class="calendar">
+      <div class="fromDate">
+        <div class="text">{{ 'start_time00' | translate }}{{ data.useUTC0 ? ' (GMT+0)' : '' }}</div>
+        <app-datepicker [(dateValue)]="startDate" placeholder="YYYY-MM-DD"></app-datepicker>
+      </div>
+      <div class="to">{{ 'to' | translate }}</div>
+      <div class="endDate">
+        <div class="text">{{ 'end_time00' | translate }}{{ data.useUTC0 ? ' (GMT+0)' : '' }}</div>
+        <app-datepicker
+          [(dateValue)]="endDate"
+          [minDate]="startDate"
+          [maxDate]="maxDate"
+          [disabled]="!startDate"
+          placeholder="{{ !startDate ? ('sel_start_time00' | translate) : 'YYYY-MM-DD' }}"
+        ></app-datepicker>
+      </div>
+    </div>
+  </div>
+  <div class="btn-complete mutual-opacity onact96-not" [class.disabled]="!startDate || !endDate" (click)="check()">
+    {{ 'continue' | translate }}
+  </div>
+</div>

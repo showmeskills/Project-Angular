@@ -1,0 +1,143 @@
+<div class="card">
+  <div class="card-body">
+    <form action="#" class="form" [formGroup]="formGroup" #form>
+      <ng-container>
+        <!-- 群组名称 -->
+        <div class="row">
+          <div class="col-12">
+            <div class="w-100 d-flex flex-ac">
+              <label class="mr-0 mb-0">{{ 'auManage.role.gName' | lang }}<span class="text-danger">*</span>：</label>
+              <input
+                type="text"
+                class="form-control"
+                [placeholder]="'auManage.role.enterNameG' | lang"
+                autocomplete="off"
+                [class.is-invalid]="validator.isControlInvalid('groupName')"
+                [class.is-valid]="validator.isControlValid('groupName')"
+                name="groupName"
+                formControlName="groupName"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- 主管 -->
+        <div class="row">
+          <div class="col-12">
+            <div class="w-100 d-flex flex-ac">
+              <label class="mr-0 mb-0">{{ 'auManage.sys.mainMan' | lang }}<span class="text-danger">*</span>：</label>
+              <div class="flex-fill select">
+                <mat-form-field class="w-100">
+                  <mat-select
+                    class="form-control"
+                    [placeholder]="'auManage.role.choseeAd' | lang"
+                    [class.is-invalid]="validator.isControlInvalid('supervisor')"
+                    formControlName="supervisor"
+                  >
+                    <mat-option *ngFor="let item of userInfoList" [value]="item.id">{{ item.userName }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 类型 -->
+        <!-- <form-row label="类型" label-width="250">
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label
+                class="radio radio-lg radio-success fz-16 mr-10"
+                *ngFor="let item of typeList"
+                [class.radio-disabled]="isEdit"
+              >
+                <input
+                  *ngIf="isEdit"
+                  [attr.disabled]="'disabled'"
+                  type="radio"
+                  name="GroupType"
+                  [value]="item.value"
+                  formControlName="type"
+                />
+                <input *ngIf="!isEdit" type="radio" name="GroupType" [value]="item.value" formControlName="type" />
+                <span class="mr-4"></span>{{ item.label }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row> -->
+
+        <!-- 角色（当前编辑群组可用的角色） -->
+        <!-- <form-row label="角色" label-width="250" *ngIf="!!id">
+          <ng-template>
+            <div>
+              <div *ngFor="let item of roleList" class="member-group mb-2">
+                {{ item.name }}
+              </div>
+            </div>
+
+            <div class="btn-member" (click)="openRole(roleTpl)">新增角色</div>
+          </ng-template>
+        </form-row> -->
+
+        <!-- 成员 -->
+        <div class="row member">
+          <div class="col-12">
+            <div class="w-100 d-flex">
+              <label class="mr-0 mb-0 title-label"
+                >{{ 'auManage.role.mem' | lang }}<span class="text-danger">*</span>：</label
+              >
+
+              <div class="flex-fill">
+                <div>
+                  <div class="member-group mb-2" *ngFor="let item of memberSelectedList">
+                    <div>{{ item.userName }}</div>
+
+                    <div class="flex-fill px-4 py-1">
+                      <app-label class="my-1" *ngFor="let el of item.roles">{{ el.roleName }}</app-label>
+                    </div>
+
+                    <!-- <button class="btn-cube sm" (click)="openSelectRole(item)">
+                      <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon"></svg-icon>
+                    </button> -->
+                    <button class="btn-cube sm ml-5" (click)="memberDel(item.id)">
+                      <svg-icon [src]="'./assets/images/svg/admin-del.svg'" class="svg-icon"></svg-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  class="btn-member"
+                  [class.is-invalid]="validator.isControlInvalid('member')"
+                  (click)="openMember()"
+                >
+                  {{ 'auManage.role.addMem' | lang }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="btn-wrap d-flex flex-center">
+              <button class="c-btn c-btn-default" (click)="back()">{{ 'common.back' | lang }}</button>
+              <button class="c-btn c-btn-primary" (click)="ok()">{{ 'common.confirm' | lang }}</button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>
+
+<ng-template #roleTpl let-d="dismiss" let-c="close">
+  <div class="modal-header">
+    <div class="modal-title">{{ 'auManage.role.addRole' | lang }}</div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <role-edit [group]="+id" (back)="d()" (confirm)="c($event)"></role-edit>
+</ng-template>

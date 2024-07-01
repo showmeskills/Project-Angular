@@ -1,0 +1,17 @@
+<div class="game-paginator">
+  <div class="bar">
+    <div class="progress" [style.width]="progress + '%'"></div>
+  </div>
+  <div class="progress-text">
+    {{ 'is_s' | translate }} {{ total }} {{ 'o' | translate }} {{ curNum }} {{ 'g' | translate }}
+  </div>
+  <div
+    class="load-btn mutual-opacity onact96"
+    *ngIf="total > page * pageSize"
+    [class.loading]="loading"
+    (click)="loadNextPage()"
+  >
+    <span *ngIf="!loading">{{ 'load_m' | translate }}</span>
+    <i *ngIf="loading" class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+  </div>
+</div>

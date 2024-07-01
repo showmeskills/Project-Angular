@@ -1,0 +1,51 @@
+<app-theme-component
+  importByComponent="friend"
+  [topFormTemp]="topFormTemp"
+  [textData]="textData"
+  [mainNavList]="navItemList"
+  (onSelectedSubTheme)="onSelectedSubTheme($event)"
+  [subThemeTemp]="subThemeTemp"
+>
+</app-theme-component>
+
+<ng-template #topFormTemp>
+  <div class="home-first-line">
+    <p class="text">
+      {{ 'you_return' | translate }}
+      <span class="value">{{ defaultLink.commissionRate * 1000 || 0 }}‰</span>
+    </p>
+    <p class="text m-top-10">
+      {{ 'fri_return' | translate }}
+      <span class="value">{{ defaultLink.friendCommission * 1000 || 0 }}‰</span>
+    </p>
+  </div>
+  <div class="home-line">
+    <p class="text-14">{{ 'rec_id' | translate }}</p>
+    <p class="line-detail">
+      <span class="text-14 m-right-5">{{ defaultLink.inviteCode }}</span>
+      <app-tool-tip [copyMode]="'icon'" [copyIcon]="'icon-copy-2'" [copyContent]="defaultLink.inviteCode">
+      </app-tool-tip>
+    </p>
+  </div>
+  <div class="home-line justify-center">
+    <p class="text-14">{{ 'rec_link' | translate }}</p>
+    <p class="line-detail m-top-10">
+      <span class="text-14 inviteUrl m-left-5">{{ defaultLink.inviteUrl }}</span>
+      <app-tool-tip
+        [copyMode]="'icon'"
+        [copyIcon]="'icon-copy-2'"
+        [copyContent]="defaultLink.inviteUrl"
+        (afterCopy)="afterCopyInviteUrl()"
+      >
+      </app-tool-tip>
+    </p>
+  </div>
+</ng-template>
+
+<ng-template #subThemeTemp>
+  <ng-container [ngSwitch]="isActiveSubTheme">
+    <app-commission-return *ngSwitchCase="0"></app-commission-return>
+    <app-recommended-return *ngSwitchCase="1"></app-recommended-return>
+    <app-affiliate-customer-operation *ngSwitchCase="2"></app-affiliate-customer-operation>
+  </ng-container>
+</ng-template>

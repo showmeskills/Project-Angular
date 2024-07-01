@@ -1,0 +1,16 @@
+<!-- <div class="banner-container" @fade *ngIf="riskService.showRiskBanner$ | async">
+  <i origin class="icon-toast-fail mutual-opacity inherit"></i>
+  <div class="text">
+    {{ 'risk_tip' | translate }}
+    <span (click)="showTask()">{{ 'go_to_verify' | translate }}</span>
+  </div>
+  <i class="close icon-close-simple inherit onact96-not" (click)="close()"></i>
+</div> -->
+<div class="banner-container" @fade *ngIf="showBanner">
+  <i origin class="icon-toast-fail mutual-opacity inherit"></i>
+  <div class="text offset-start">
+    {{ 'kyc_m_notice' | translate }}
+    <span (click)="openkycPage()">{{ 'start_now' | translate }}>>></span>
+  </div>
+  <i class="close icon-close-simple inherit onact96-not" (click)="close()"></i>
+</div>

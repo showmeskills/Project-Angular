@@ -1,0 +1,59 @@
+.flexbox {
+  display: flex;
+}
+
+.modal-body {
+  .info {
+    width: 100%;
+    align-items: center;
+    height: 35px;
+    .title {
+      display: inline-block;
+      min-width: 110px;
+      color: #969bad;
+    }
+    .red {
+      color: #f1416c;
+    }
+  }
+  .high-box {
+    height: 100px;
+  }
+  .high-box2 {
+    height: 30px;
+  }
+}
+
+@mixin status($bg, $color) {
+  display: inline-block;
+  min-width: 50px;
+  height: 24px;
+  text-align: center;
+  border-radius: 6px;
+  background-color: $bg;
+  color: $color;
+  font-size: 12px;
+  line-height: 24px;
+  padding: 0 6px;
+}
+
+.complete {
+  @include status(#e8fff3, #50cd89);
+}
+.fail {
+  @include status(#fff5f8, #f1416c);
+}
+
+.in-progress {
+  @include status(#fff8dd, #ffc700);
+}
+
+.submitted {
+  @include status(#f1faff, #009ef7);
+}
+.cancel {
+  @include status(#f5f8fa, #7e8299);
+}
+.coinAddress {
+  font-size: 12px;
+}

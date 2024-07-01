@@ -1,0 +1,39 @@
+.exchange {
+  &-wrap {
+    min-height: 116px;
+  }
+
+  &-info {
+    background: #f6fcf9;
+    border-radius: 4px;
+    margin-top: 10px;
+    padding: 5px 0;
+    min-height: 116px;
+  }
+
+  &-row {
+    min-height: 42px;
+    line-height: 42px;
+    padding: 5px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &-value {
+    flex: 0 0 290px;
+    width: 290px;
+  }
+}
+
+.is-preview {
+  .form-control,
+  mat-form-field {
+    background: transparent;
+    pointer-events: none;
+    border-color: transparent;
+  }
+
+  &::ng-deep .mat-mdc-select-arrow-wrapper {
+    display: none;
+  }
+}

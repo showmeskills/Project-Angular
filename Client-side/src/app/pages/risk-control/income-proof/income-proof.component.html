@@ -1,0 +1,105 @@
+<div class="page-container">
+  <app-header-title-bar
+    [showIcon]="!isH5"
+    [title]="'wealth_source_certificate' | translate"
+    [clickForRouterBack]="true"
+  ></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24 custom-container">
+    <ng-container *ngIf="!completed; else pending">
+      <p class="title">{{ 'increase_limit' | translate }}</p>
+      <app-customize-form-group [column]="true" marginTop="24px">
+        <ng-container *ngFor="let item of incomeProofForm | keyvalue">
+          <div class="form-item" *ngIf="item.value.drop">
+            <app-customize-select
+              defaultText=""
+              width="100%"
+              *ngIf="item.value.drop"
+              [label]="item.value.label | translate"
+              [(value)]="item.value.value"
+              [options]="item.value.optionLists!"
+              textKey="name"
+              valueKey="value"
+              [disabled]="rejected"
+            ></app-customize-select>
+            <p class="info" *ngIf="item.value.btmText">{{ item.value.btmText | translate }}</p>
+          </div>
+          <div class="form-item" [style.order]="item.value.order" *ngIf="item.value.customItem">
+            <ng-container
+              *ngTemplateOutlet="
+                customSelector;
+                context: {
+                  label: item.value.label,
+                  options: item.value.optionLists,
+                  selectedOptions: selectedSources
+                }
+              "
+            ></ng-container>
+          </div>
+        </ng-container>
+        <app-risk-uploader [disabled]="rejected" [uploadList]="displayUpload" [style.order]="8"></app-risk-uploader>
+        <div class="declaration" [style.order]="9">
+          <mat-checkbox [checked]="declearation" (change)="declearation = !declearation" [disabled]="rejected">
+            <span class="title">{{ 'statem_00' | translate }}</span>
+          </mat-checkbox>
+          <p class="text">{{ 'wealth_source_statement_protocol' | translate }}</p>
+        </div>
+        <customize-button
+          class="final-btn"
+          [style.order]="10"
+          size="large"
+          type="primary"
+          width="100%"
+          [disabled]="!canSubmitForm || rejected"
+          [loading]="submitLoading"
+          (onClick)="onSubmitPending()"
+        >
+          {{ 'next' | translate }}
+        </customize-button>
+      </app-customize-form-group>
+      <!-- 图片上传区域 -->
+      <div class="btm-text">
+        <i class="icon-kyc-protect"></i>
+        <span class="info">{{ 'asset_proof_safety_tips' | translate }}</span>
+      </div>
+    </ng-container>
+    <ng-template #pending>
+      <div class="pending">
+        <img lazy="loading" src="assets/images/safe-questionnaire/pending.svg" />
+        <p class="title">{{ 'wealth_source_under_review' | translate }}</p>
+        <p class="info">{{ 'wealth_source_under_review_content' | translate }}</p>
+        <customize-button type="primary" size="medium" width="100%" (click)="appService.jumpToHome()">
+          {{ 'sure' | translate }}
+        </customize-button>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<ng-template #customSelector let-label="label" let-options="options" let-selectedOptions="selectedOptions">
+  <div class="custom-select-container">
+    <div class="custom-select-label">{{ label | translate }}</div>
+    <div
+      class="custom-input-container"
+      (click)="expand = rejected ? false : !expand"
+      (clickOutside)="expand = false"
+      [clickOutsideExcludeSelector]="'.custom-options-container'"
+    >
+      <div class="custom-input-text">
+        <ng-container *ngFor="let item of selectedOptions">
+          <p class="text">{{ item.name | translate }}</p>
+        </ng-container>
+      </div>
+      <i class="icon-arrow-up" *ngIf="expand"></i>
+      <i class="icon-arrow-down" *ngIf="!expand"></i>
+    </div>
+    <div class="custom-options-container" *ngIf="expand">
+      <app-scrollbar>
+        <ng-container *ngFor="let item of options; let index = index">
+          <mat-checkbox #checkbox [checked]="item.checked" (change)="onChangeValue(index)" [disabled]="rejected">
+            <span class="item-text">{{ item.name | translate }}</span>
+          </mat-checkbox>
+        </ng-container>
+      </app-scrollbar>
+    </div>
+  </div>
+</ng-template>

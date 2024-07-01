@@ -1,0 +1,342 @@
+<div class="card-header px-12 py-8">
+  <div class="flex-1">
+    <div class="w-100 d-flex flex-ac flex-wrap">
+      <form-row label="UID" class="mr-8" [contentWidth]="175">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            placeholder=""
+            [(ngModel)]="data.uid"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'finance.bill.orderNumber' | lang" class="mr-8" [contentWidth]="220">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            placeholder=""
+            input-trim="input"
+            [(ngModel)]="data.order"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'finance.bill.tradeTime' | lang" class="mr-8" [contentWidth]="294">
+        <ng-template>
+          <label class="form-control clear-input-wrap mb-0">
+            <input
+              class="text-center clear-input flex-1"
+              type="text"
+              [placeholder]="'finance.bill.selectedTradeTime' | lang"
+              selectMode="date-range"
+              formatLabel="yyyy-MM-dd"
+              rangeSeparator="-"
+              [owlDateTime]="bind"
+              [owlDateTimeTrigger]="bind"
+              [(ngModel)]="data.time"
+              (dateTimeChange)="loadData(true)"
+            />
+
+            <svg-icon
+              (click)="onClear($event, 'time')"
+              class="cursor-pointer py-2 px-4 svg-icon svg-icon-1x"
+              [src]="'assets/images/svg/close.svg'"
+            ></svg-icon>
+          </label>
+
+          <owl-date-time pickerType="calendar" class="fz-20" #bind></owl-date-time>
+        </ng-template>
+      </form-row>
+
+      <!-- 状态 -->
+      <form-row [label]="'finance.bill.status' | lang">
+        <ng-template>
+          <mat-form-field [style.width.px]="130">
+            <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+              <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+              <mat-option [value]="item.code" *ngFor="let item of billStatus">{{ item.description }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <div class="card-toolbar flex-1 justify-content-end d-flex">
+        <button class="c-btn c-btn-default mr-6" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-12 px-12 pt-8 pb-10">
+  <div class="d-flex flex-ac flex-between">
+    <h2 class="mb-0 fw-bolder">{{ 'finance.bill.transactionRecord' | lang }}</h2>
+
+    <button (click)="onExport()" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-2 lh-18">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+      <span class="vam">{{ 'finance.export' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="pt-5">
+    <!--begin::Datatable-->
+    <table class="table mb-0" selectChildren>
+      <thead>
+        <tr class="text-nowrap">
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" selectGroup />
+                <span></span>
+              </label>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'finance.deposit.orderNum' | lang }}</span>
+          </th>
+          <th><span class="cell">UID</span></th>
+          <th>
+            <span class="cell">{{ 'finance.bill.auditor' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.currency' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'finance.bill.amount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'finance.bill.adjustmentAmout' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'finance.bill.withdrawalLimit' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'finance.bill.tradeTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'finance.bill.status' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" [(ngModel)]="item.checked" />
+                <span></span>
+              </label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.orderId || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.uid || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.modifiedUserName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item?.detail?.currency || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item?.detail?.balance | currencyValue: item?.detail?.currency }}</span>
+          </td>
+          <td>
+            <ng-container *win="item?.detail?.amount; let value; prev as prev">
+              <span class="cell" [winColor]="value" [winColorReverse]="true">
+                {{ prev }}{{ value | currencyValue: item?.detail?.currency }}
+              </span>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *win="item?.detail?.withdrawLimit; let value; prev as prev">
+              <span class="cell">{{ prev }}{{ value | currencyValue: item?.detail?.currency }}</span>
+            </ng-container>
+          </td>
+          <td>
+            <span class="cell">{{ item.createdTime | timeFormat: 'YYYY-MM-DD HH:mm' }}</span>
+          </td>
+          <!-- 状态 -->
+          <!-- <td class="text-nowrap">
+            <span class="cell">
+              <span
+                *ngIf="item?.detail?.amount >= 0"
+                style="height: 34px; width: 86px"
+                class="label label-lg label-inline label-light-success fz-14"
+              >
+                {{ 'finance.bill.increase' | lang }}
+              </span>
+              <span
+                *ngIf="item?.detail?.amount < 0"
+                style="height: 34px; width: 86px"
+                class="label label-lg label-inline label-light-danger fz-14"
+              >
+                {{ 'finance.bill.deduct' | lang }}
+              </span>
+            </span>
+          </td> -->
+          <!-- 审核状态 -->
+          <td class="text-nowrap">
+            <div class="cell" [ngSwitch]="item.status">
+              <!-- 待开始 -->
+              <app-label *ngSwitchCase="getBillStatusEnum.PENDING" type="default">
+                {{ 'finance.bill.pending' | lang }}
+              </app-label>
+              <!-- 进行中 -->
+              <app-label *ngSwitchCase="getBillStatusEnum.PROCESSING" type="primary">
+                {{ 'finance.bill.progress' | lang }}
+              </app-label>
+              <!-- 已完成 -->
+              <app-label *ngSwitchCase="getBillStatusEnum.FINISH" type="success">
+                {{ 'finance.bill.completed' | lang }}
+              </app-label>
+              <!-- 已拒绝 -->
+              <app-label *ngSwitchCase="getBillStatusEnum.REJECTED" type="danger">
+                {{ 'finance.bill.rejected' | lang }}
+              </app-label>
+              <!-- 已取消 -->
+              <app-label *ngSwitchCase="getBillStatusEnum.CANCEL" type="yellow">
+                {{ 'finance.bill.cancelled' | lang }}
+              </app-label>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-between pt-12">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <ng-template #detailTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title fw-bolder">{{ 'finance.bill.recordDetail' | lang }}</div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body px-17 py-12">
+    <div class="w-100 fz-16">
+      <div class="d-flex py-2">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'finance.bill.customer' | lang }}：</label>
+          <div class="flex-1">{{ merchantName(detailData.tenantId) }}</div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'finance.bill.order' | lang }}：</label>
+          <div class="flex-1">{{ detailData.orderNum }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex py-2">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">UID：</label>
+          <div class="flex-1">{{ detailData.uid }}</div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'finance.bill.account' | lang }}：</label>
+          <div class="flex-1">{{ detailData.createdUserName }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex py-2">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'common.currency' | lang }}：</label>
+          <div class="flex-1">{{ detailData.currency }}</div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'finance.bill.num' | lang }}：</label>
+          <div class="flex-1">{{ detailData.amount > 0 ? '+' : '' }}{{ detailData.amount | toFormatMoney }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex py-2">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'finance.deposit.status' | lang }}：</label>
+          <div class="flex-1">
+            <span
+              *ngIf="detailData.amount >= 0"
+              style="height: 34px; width: 86px"
+              class="label label-lg label-inline label-light-success fz-14"
+              >{{ 'finance.bill.add' | lang }}</span
+            >
+            <span
+              *ngIf="detailData.amount < 0"
+              style="height: 34px; width: 86px"
+              class="label label-lg label-inline label-light-danger fz-14"
+              >{{ 'finance.bill.deduct' | lang }}</span
+            >
+          </div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'finance.bill.tradeTime' | lang }}：</label>
+          <div class="flex-1">
+            {{ detailData.createTime | timeFormat: 'YYYY-MM-DD HH:mm' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex pt-4">
+        <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'finance.bill.remark' | lang }}：</label>
+        <div class="flex-1">
+          <textarea
+            type="text"
+            class="form-control no-disabled"
+            autocomplete="off"
+            rows="6"
+            disabled="disabled"
+            style="resize: none"
+            [value]="detailData.remark"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+      {{ 'common.cancel' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="d()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</ng-template> -->

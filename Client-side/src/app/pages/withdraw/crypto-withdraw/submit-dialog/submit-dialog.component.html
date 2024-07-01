@@ -1,0 +1,144 @@
+<div class="container">
+  <div class="header-row" [class.hide]="data.submitWay == 'currencyWithdraw'">
+    <span class="title">{{ 'withdraw' | translate }}</span>
+    <i class="icon-close mutual-opacity onact96-not" [class.loadding]="loadding" (click)="close()"></i>
+  </div>
+  <!--法币H5下显示-->
+  <div class="currency-css" [class.currency-header]="data.submitWay == 'currencyWithdraw'">
+    <i class="icon-close mutual-opacity onact96-not" [class.loadding]="loadding" (click)="close()"></i>
+    <div class="header-row">
+      {{ 'confi_ord00' | translate }}
+    </div>
+    <p class="txt-1">{{ 'amo_cre00' | translate }}</p>
+    <span
+      >{{ minus(data.submitData.amount, data.submitData.fee) }}
+      <span class="small-txt">{{ data.submitData.currency }}</span></span
+    >
+    <p class="txt-2">{{ 'fee' | translate }}{{ data.submitData.fee }}{{ data.submitData.currency }}</p>
+  </div>
+  <div class="contant-clounm">
+    <!--数字货币-->
+    <ng-container *ngIf="data.submitWay == 'cryptoWithdraw'">
+      <ng-container *ngIf="!data.submitData.isCrypToSubmit">
+        <div class="card">
+          <div class="item-row">
+            <p class="title">{{ 'number' | translate }}</p>
+            <div class="value amount-value">
+              <!-- <img [src]="data.submitData.currency | currencyIcon"> -->
+              <span
+                >{{ 't_t_acc00' | translate }} {{ minus(data.submitData.amount, data.submitData.fee) }}
+                {{ data.submitData.currency }}</span
+              >
+              <span>({{ 'network__fee' | translate }} {{ data.submitData.fee }} {{ data.submitData.currency }})</span>
+            </div>
+          </div>
+          <div class="item-row padding">
+            <p class="title">{{ 'wd_curr_add' | translate }}</p>
+            <span class="value"> {{ data.submitData.address }}</span>
+          </div>
+          <div class="item-row">
+            <p class="title">{{ 'trans_network' | translate }}</p>
+            <span class="value">{{ data.submitData.network }}</span>
+          </div>
+        </div>
+        <div class="txt"><span class="point"></span>{{ 'make_netwk_addrs00' | translate }}</div>
+        <div class="txt"><span class="point"></span>{{ 'make_netwk_addrs01' | translate }}</div>
+      </ng-container>
+      <ng-container *ngIf="data.submitData.isCrypToSubmit">
+        <ng-container *ngTemplateOutlet="fiatToCrypTmp"></ng-container>
+      </ng-container>
+    </ng-container>
+    <!--法币-->
+    <ng-container *ngIf="data.submitWay == 'currencyWithdraw'">
+      <ng-container *ngIf="!data?.submitData?.isNeedWalletAddress; else ebPay">
+        <div class="card h5">
+          <div class="item-row hide">
+            <p class="title">{{ 'amount' | translate }}:</p>
+            <div class="value amount-value">
+              <!-- <img [src]="data.submitData.selectedCurrency.currency | currencyIcon"> -->
+              <span
+                >{{ 't_t_acc00' | translate }} {{ minus(data.submitData.amount, data.submitData.fee) }}
+                {{ data.submitData.selectedCurrency.currency }}</span
+              >
+              <span
+                >({{ 'fee' | translate }} {{ data.submitData.fee }}
+                {{ data.submitData.selectedCurrency.currency }})</span
+              >
+            </div>
+          </div>
+          <div class="item-row padding">
+            <p class="title">{{ 'bn' | translate }}:</p>
+            <span class="value"> {{ data.submitData.selectbackCard.bankName }}</span>
+          </div>
+          <div class="item-row">
+            <p class="title">{{ 'bank_number' | translate }}:</p>
+            <span class="value">{{ data.submitData.selectbackCard.cardNum }}</span>
+          </div>
+        </div>
+        <div class="txt"><span class="point"></span>{{ 'bank_card_tip01' | translate }}</div>
+        <div class="txt"><span class="point"></span>{{ 'bank_card_tip00' | translate }}</div>
+      </ng-container>
+    </ng-container>
+    <customize-button
+      width="100%"
+      size="large"
+      [class.n-m]="data.submitWay == 'currencyWithdraw'"
+      type="primary"
+      (onClick)="next()"
+      [disabled]="loadding"
+      [loading]="loadding"
+      >{{ 'continue' | translate }}</customize-button
+    >
+  </div>
+</div>
+
+<!-- 提虚得法 弹窗 -->
+<ng-template #fiatToCrypTmp>
+  <div class="card">
+    <div class="item-row">
+      <p class="title">{{ 'withdraw_money' | translate }}</p>
+      <span class="value">{{ minus(data.submitData.amount, data.submitData.fee) }} {{ data.submitData.currency }}</span>
+    </div>
+    <div class="item-row padding">
+      <p class="title">{{ 'total_receive' | translate }}</p>
+      <span class="value">
+        {{ 't_t_acc00' | translate }}
+        {{ data.submitData.withdrawAmount | currencyValue : data.submitData.withdrawCurrency }}
+        {{ data.submitData.withdrawCurrency }} ({{ 'fee' | translate }} {{ data.submitData.withdrawFee }}
+        {{ data.submitData.withdrawCurrency }})</span
+      >
+    </div>
+    <div class="item-row">
+      <p class="title">{{ 'wd_curr_add' | translate }}</p>
+      <span class="value"> {{ data.submitData.address }}</span>
+    </div>
+  </div>
+  <div class="txt"><span class="point"></span>{{ 'make_netwk_addrs00' | translate }}</div>
+  <div class="txt"><span class="point"></span>{{ 'make_netwk_addrs01' | translate }}</div>
+</ng-template>
+
+<ng-template #ebPay>
+  <div class="card h5">
+    <div class="item-row">
+      <p class="title">{{ 'withdraw_method' | translate }}:</p>
+      <span class="value"> {{ data.submitData.selectedWithdraw.name }}</span>
+    </div>
+    <div class="item-row padding">
+      <p class="title">{{ 'withdraw_address' | translate }}:</p>
+      <span class="value">{{ data.submitData.walletaddress }}</span>
+    </div>
+    <div class="item-row hide">
+      <p class="title">{{ 'amount' | translate }}:</p>
+      <div class="value amount-value">
+        <!-- <img [src]="data.submitData.selectedCurrency.currency | currencyIcon"> -->
+        <span
+          >{{ 't_t_acc00' | translate }} {{ minus(data.submitData.amount, data.submitData.fee) }}
+          {{ data.submitData.selectedCurrency.currency }}</span
+        >
+        <span>({{ 'fee' | translate }} {{ data.submitData.fee }} {{ data.submitData.selectedCurrency.currency }})</span>
+      </div>
+    </div>
+  </div>
+  <div class="txt"><span class="point"></span>{{ 'confirm_withdraw_address' | translate }}</div>
+  <div class="txt"><span class="point"></span>{{ 'bank_card_tip00' | translate }}</div>
+</ng-template>

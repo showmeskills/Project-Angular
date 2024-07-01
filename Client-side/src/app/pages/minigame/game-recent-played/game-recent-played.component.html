@@ -1,0 +1,38 @@
+<div class="page-container" app-page-banner [title]="'all_rec' | translate" [type]="'history'"></div>
+
+<div class="page-container main-content">
+  <div class="main-container">
+    <div class="container" app-search-game *ngIf="!isH5"></div>
+
+    <!-- 收藏游戏 -->
+    <div class="container games-main">
+      <div class="content-box">
+        <div class="games-list" [class.loading]="loading" [appLoading]="loading">
+          <ng-container *ngIf="games.length > 0">
+            <div class="grid-8-3-gap-11-6">
+              <app-game-unit
+                *ngFor="let item of games"
+                [item]="item"
+                [loading]="nextLoading"
+                (clickItem)="clickGameItem($event)"
+              ></app-game-unit>
+            </div>
+            <app-game-paginator
+              *ngIf="games"
+              (loadNext)="getRecentLyPlayedList(false)"
+              [(page)]="paginator.page"
+              [loading]="nextLoading"
+              [pageSize]="paginator.pageSize"
+              [total]="paginator.total"
+            >
+            </app-game-paginator>
+          </ng-container>
+          <app-empty *ngIf="games.length < 1 && !loading && !nextLoading" [text]="'no_data' | translate"></app-empty>
+        </div>
+      </div>
+    </div>
+
+    <!-- 所有供应商 -->
+    <app-swiper-provider-list class="container"></app-swiper-provider-list>
+  </div>
+</div>

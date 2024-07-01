@@ -1,0 +1,87 @@
+::ng-deep {
+  .sport-currency-dialog-container .mat-mdc-dialog-surface {
+    overflow: unset !important;
+    border-radius: 4px !important;
+  }
+}
+
+.close-btn {
+  margin-left: auto;
+  font-size: 16px;
+}
+.standard-popup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: var(--container-bg-color);
+  gap: 20px;
+  width: 343px;
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+.header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  .title {
+    font-size: 20px;
+    color: var(--text-color);
+  }
+}
+
+.currency {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 14px;
+  img {
+    width: 28px;
+    height: 28px;
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--text-color);
+  }
+}
+
+.custom-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  gap: 10px;
+}
+
+.currency-tip {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  line-height: 1.3;
+
+  > * + * {
+    margin-left: 5px;
+  }
+
+  .tip {
+    color: var(--text-color);
+  }
+
+  &.light {
+    color: #fff;
+  }
+}
+
+.currency-tip-icon {
+  font-size: 14px;
+
+  &::before {
+    color: var(--text-color);
+  }
+}
+
+.currency-tip-text {
+  line-height: 1.5;
+  text-align: justify;
+}

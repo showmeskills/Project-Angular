@@ -1,0 +1,50 @@
+<div class="currency-select">
+  <div class="modal-header">
+    <!-- 选择分类 -->
+    <div class="modal-title">{{ 'content.info.selectCategory' | lang }}</div>
+
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="px-10 py-12">
+    <div class="px-12 scroll">
+      <mat-accordion multi>
+        <mat-expansion-panel *ngFor="let item of list" [hideToggle]="!item?.childrens?.length">
+          <mat-expansion-panel-header (click)="!item?.childrens?.length && (select = item.categoryId)">
+            <mat-panel-title>
+              <div class="d-flex flex-ac">
+                <label class="radio radio-lg" (click)="$event.stopPropagation(); select = item.categoryId">
+                  <input name="type" type="radio" [value]="item.categoryId" [(ngModel)]="select" />
+                  <span></span>
+
+                  <div class="flex-1 d-flex flex-ac">
+                    <img class="mx-4 rounded" [src]="item.iconAddress + item.icon" alt="" width="25" height="25" />
+                    <span class="fz-16">{{ item.title }}</span>
+                  </div>
+                </label>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <label class="item item-child flex-1 d-flex flex-ac" *ngFor="let child of item.childrens">
+            <div class="radio radio-lg">
+              <input name="type" type="radio" [value]="child.categoryId" [(ngModel)]="select" />
+              <span class="mr-4"></span>
+            </div>
+            <img class="ml-2 mr-4 rounded" [src]="item.iconAddress + item.icon" alt="" width="25" height="25" />
+            <span>{{ child.title }}</span>
+          </label>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <empty *ngIf="!list?.length" [style.height.px]="160"></empty>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="c-btn c-btn-default" (click)="modal.dismiss()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary ml-10" (click)="onConfirm()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>

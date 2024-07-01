@@ -1,0 +1,582 @@
+<div class="cardSelect">
+  <div
+    class="cardType"
+    *ngFor="let item of typeList"
+    [class.active]="curTypeValue === item.value"
+    (click)="onSelectCard(item.value)"
+  >
+    {{ item.lang | lang }}
+  </div>
+</div>
+
+<div class="bg-fff py-12 px-12 rounded d-flex flex-wrap">
+  <form-row [label]="'payment.bankManage.searchFor' | lang" class="mr-16" [contentWidth]="281">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [placeholder]="'payment.bankManage.info' | lang"
+        [(ngModel)]="key"
+        (keyup)="$event.keyCode === 13 && (curTypeValue === 1 ? getBankList(true) : getVirtualList(true))"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.finceBank.bindingTime' | lang" label-width="106">
+    <ng-template>
+      <div class="d-flex">
+        <input
+          class="form-control text-center"
+          type="text"
+          selectMode="rangeFrom"
+          [placeholder]="'payment.bankManage.startingTime' | lang"
+          [style.width.px]="148"
+          [owlDateTime]="timeStart"
+          [owlDateTimeTrigger]="timeStart"
+          [(ngModel)]="time"
+        />
+        <owl-date-time class="fz-20" #timeStart></owl-date-time>
+
+        <div class="date-line lh-42"></div>
+
+        <input
+          class="form-control text-center"
+          type="text"
+          selectMode="rangeTo"
+          [placeholder]="'payment.bankManage.endTime' | lang"
+          [style.width.px]="148"
+          [owlDateTime]="timeEnd"
+          [owlDateTimeTrigger]="timeEnd"
+          [(ngModel)]="time"
+          (dateTimeChange)="curTypeValue === 1 ? getBankList(true) : getVirtualList(true)"
+        />
+        <owl-date-time class="fz-20" #timeEnd></owl-date-time>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button
+      class="c-btn c-btn-default"
+      (click)="onReset(); curTypeValue === 1 ? getBankList(true) : getVirtualList(true)"
+    >
+      {{ 'common.reset' | lang }}
+    </button>
+    <button class="c-btn c-btn-primary" (click)="curTypeValue === 1 ? getBankList(true) : getVirtualList(true)">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card mt-8">
+  <div class="card-body">
+    <h3 class="fz-20">{{ 'payment.bankManage.bindingManagement' | lang }}</h3>
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead>
+          <th><span class="cell">UID</span></th>
+          <th>
+            <span class="cell">{{ 'payment.bankManage.userName' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.currency' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'payment.paymentMethod.paymentMethod' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{
+              curTypeValue === 1 ? ('payment.bankManage.bank' | lang) : ('payment.bankManage.theInternet' | lang)
+            }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'payment.bankManage.accountInformation' | lang }}</span>
+          </th>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.userName }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ curTypeValue === 1 ? item.currency : item.currentName || item.network }}
+                <span *ngIf="!item.currentName && curTypeValue !== 1" class="jie fz-14 ml-1">通用</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span *ngIf="item.isEWallet">{{ item.paymentMethod }}</span>
+                <span *ngIf="!item.isEWallet">{{ 'payment.currency.digitalCurrency' | lang }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span *ngIf="item.isEWallet">-</span>
+                <span *ngIf="!item.isEWallet">{{ curTypeValue === 1 ? item.bankName : item.network }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell" style="cursor: pointer" (click)="onView(detailTpl, item.uid)">{{
+                curTypeValue === 1 ? item.cardNum : item.address
+              }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'payment.bankManage.noSearchResults' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="curTypeValue === 1 ? getBankList() : getVirtualList()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="curTypeValue === 1 ? getBankList() : getVirtualList()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #detailTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title fw-bolder">{{ 'payment.bankManage.paymentMethodDetails' | lang }}</div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="w-100 fz-16 modal-container">
+    <mat-tab-group class="w-100 tab-group" [(selectedIndex)]="curTab">
+      <!-- 银行卡管理 -->
+      <mat-tab [label]="'payment.finceBank.bankCardManagement' | lang">
+        <div class="tab-content w-100 fz-16">
+          <div class="w-100">
+            <div class="d-flex">
+              <div class="flex-2 d-flex flex-ac">
+                <label class="form-title fz-16" style="flex: 0 0 120px">UID：</label>
+                <div class="flex-1">{{ payDetailData.uid }}</div>
+              </div>
+              <div class="flex-2 d-flex flex-ac">
+                <label class="form-title fz-16" style="flex: 0 0 120px"
+                  >{{ 'payment.bankManage.userName' | lang }}：</label
+                >
+                <div class="flex-1">{{ payDetailData.userName }}</div>
+              </div>
+            </div>
+            <div class="d-flex">
+              <div class="flex-2 d-flex flex-ac">
+                <label class="form-title fz-16" style="flex: 0 0 120px"
+                  >{{ 'payment.bankManage.actualName' | lang }}：</label
+                >
+                <div class="flex-1">{{ payDetailData.realName || '-' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-100 mt-10">
+            <ng-container *ngIf="payDetailData.bankCardList.length > 0">
+              <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+              <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel" #navBar>
+                <div
+                  mat-tab-link
+                  class="tab-hd-item"
+                  [active]="curBanckValue === i"
+                  *ngFor="let nav of payDetailData.bankCardList; let i = index"
+                  (click)="curBanckValue = i"
+                >
+                  {{ 'payment.bankManage.bankCard' | lang }}{{ i + 1 }}
+                </div>
+              </div>
+
+              <div class="tab-bd">
+                <ng-container *ngFor="let item of payDetailData.bankCardList; let i = index">
+                  <div *ngIf="curBanckValue === i">
+                    <div class="d-flex">
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px">{{ 'common.currency' | lang }}：</label>
+                        <div class="flex-1">{{ item.currency }}</div>
+                      </div>
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px"
+                          >{{ 'payment.bank.bankName' | lang }}：</label
+                        >
+                        <div class="flex-1">{{ item.bankName }}</div>
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <!-- <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px">状态：</label>
+                        <div class="flex-1 d-flex flex-ac">
+                          <div class="suo mr-4 fz-14">账户锁定</div>
+                          <span class="jie fz-14">解锁</span>
+                        </div>
+                      </div> -->
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px"
+                          >{{ 'payment.bankManage.operatingTime' | lang }}：</label
+                        >
+                        <div class="flex-1">
+                          {{ item.createTime | timeFormat }}
+                        </div>
+                      </div>
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px"
+                          >{{ 'payment.bankManage.bankCardNumber' | lang }}：</label
+                        >
+                        <div class="flex-1">{{ item.cardNumber }}</div>
+                      </div>
+                    </div>
+                    <!-- <div class="d-flex">
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px">操作时间：</label>
+                        <div class="flex-1">2021-12-12    12:04:34</div>
+                      </div>
+                    </div> -->
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+
+            <div *ngIf="!payDetailData.bankCardList.length" class="container-empty" style="height: 163px">
+              <div>
+                <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+                <div class="txt">{{ 'common.emptyText' | lang }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-100 mt-12">
+            <div class="d-flex flex-ac justify-content-between">
+              <div style="font-weight: 600">{{ 'payment.bankManage.transactionRecord' | lang }}</div>
+              <!--              <div style="color: #009ef7; font-weight: 600; cursor: pointer" (click)="goTransaction(payDetailData.uid)">-->
+              <!--                {{ 'payment.bankManage.allRecords' | lang }}-->
+              <!--              </div>-->
+            </div>
+            <div class="flex-fill mt-2">
+              <table class="table mb-0">
+                <thead>
+                  <tr>
+                    <th>
+                      <span class="cell">{{ 'common.time' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'payment.bankManage.bankCardNumber' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'common.currency' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'payment.bankManage.transactionAmoun' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'common.type' | lang }}</span>
+                    </th>
+                  </tr>
+                </thead>
+                <!-- [style.height.px]="214" -->
+                <tbody class="color-222" *ngIf="payBankList.length > 0">
+                  <tr *ngFor="let item of payBankList">
+                    <td>
+                      <span class="cell">{{ item.createdTime | timeFormat }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{ item.address || '-' }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{ item.currency }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{ item.amount | toFormatMoney }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{
+                        item.category === PaymentCategoryEnum.Deposit
+                          ? ('payment.method.deposit' | lang)
+                          : ('payment.method.withdrawal' | lang)
+                      }}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- 空显示 -->
+              <div class="container-empty" *ngIf="payBankList.length === 0" style="height: 273px">
+                <div>
+                  <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+                  <div class="txt">{{ 'common.emptyText' | lang }}</div>
+                </div>
+              </div>
+
+              <!-- 页码 -->
+              <div class="d-flex flex-between pt-5 pb-5 table-footer" *ngIf="payBankList.length > 0">
+                <div>
+                  <!-- <mat-form-field [style.width.px]="68">
+                    <mat-select
+                      class="form-control"
+                      [(ngModel)]="paginator.pageSize"
+                      [style.height.px]="34"
+                      [style.font-size.px]="14"
+                      (selectionChange)="loadData()"
+                    >
+                      <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+                    </mat-select>
+                  </mat-form-field> -->
+                </div>
+
+                <div *ngIf="payBankPaginator.total">
+                  <app-paginator
+                    class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+                    [paginator]="payBankPaginator"
+                    (paginate)="getBankVirtualList(payDetailData.uid, 'bank')"
+                  >
+                  </app-paginator>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- 数字货币地址管理 -->
+      <mat-tab [label]="'payment.bankManage.addressManagement' | lang">
+        <div class="tab-content w-100 fz-16">
+          <div class="w-100">
+            <div class="d-flex">
+              <div class="flex-2 d-flex flex-ac">
+                <label class="form-title fz-16" style="flex: 0 0 120px">UID：</label>
+                <div class="flex-1">{{ payDetailData.uid }}</div>
+              </div>
+              <div class="flex-2 d-flex flex-ac">
+                <label class="form-title fz-16" style="flex: 0 0 120px"
+                  >{{ 'payment.bankManage.userName' | lang }}：</label
+                >
+                <div class="flex-1">{{ payDetailData.userName }}</div>
+              </div>
+            </div>
+            <div class="d-flex">
+              <div class="flex-2 d-flex flex-ac">
+                <label class="form-title fz-16" style="flex: 0 0 120px"
+                  >{{ 'payment.bankManage.actualName' | lang }}：</label
+                >
+                <div class="flex-1">{{ payDetailData.realName || '-' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-100 mt-10">
+            <ng-container *ngIf="payDetailData.addressList.length > 0">
+              <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+              <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel" #navBar>
+                <div
+                  mat-tab-link
+                  class="tab-hd-item"
+                  [active]="curVirtualValue === i"
+                  *ngFor="let nav of payDetailData.addressList; let i = index"
+                  (click)="curVirtualValue = i"
+                >
+                  {{ 'payment.bankManage.address' | lang }}{{ i + 1 }}
+                </div>
+              </div>
+
+              <div class="tab-bd">
+                <ng-container *ngFor="let item of payDetailData.addressList; let i = index">
+                  <div *ngIf="curVirtualValue === i">
+                    <div class="d-flex">
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px">{{ 'common.currency' | lang }}：</label>
+                        <div class="flex-1">
+                          {{ item.currency || item.network }}
+                          <span *ngIf="!item.currency" class="jie fz-14">{{
+                            'payment.bankManage.generalPurpose' | lang
+                          }}</span>
+                        </div>
+                      </div>
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px"
+                          ><!--{{ 'payment.bankManage.mainChain' | lang }}-->{{
+                            'payment.paymentMethod.paymentMethod' | lang
+                          }}：</label
+                        >
+                        <div class="flex-1">
+                          <!--                          <span>{{ item.network }}</span>-->
+                          <span *ngIf="item.isEWallet">{{ item.paymentMethod }}</span>
+                          <span *ngIf="!item.isEWallet">
+                            <span>{{ 'payment.currency.digitalCurrency' | lang }}</span>
+                            <span class="pl-4">{{ item.network }}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <!-- <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px">状态：</label>
+                        <div class="flex-1 d-flex flex-ac">
+                          <div class="suo mr-4 fz-14">账户锁定</div>
+                          <span class="jie fz-14">解锁</span>
+                        </div>
+                      </div> -->
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px"
+                          >{{ 'payment.bankManage.operatingTime' | lang }}：</label
+                        >
+                        <div class="flex-1">
+                          {{ item.createTime | timeFormat }}
+                        </div>
+                      </div>
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px"
+                          >{{ 'payment.bankManage.address' | lang }}：</label
+                        >
+                        <div class="flex-1" style="word-break: break-all">
+                          {{ item.address }}
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="d-flex">
+                      <div class="flex-2 d-flex flex-ac">
+                        <label class="form-title fz-16" style="flex: 0 0 120px">操作时间：</label>
+                        <div class="flex-1">2021-12-12    12:04:34</div>
+                      </div>
+                    </div> -->
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+
+            <div *ngIf="!payDetailData.addressList.length" class="container-empty" style="height: 163px">
+              <div>
+                <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+                <div class="txt">{{ 'common.emptyText' | lang }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-100 mt-12">
+            <div class="d-flex flex-ac justify-content-between">
+              <div style="font-weight: 600">{{ 'payment.bankManage.transactionRecord' | lang }}</div>
+              <!--              <div style="color: #009ef7; font-weight: 600; cursor: pointer" (click)="goTransaction(payDetailData.uid)">-->
+              <!--                {{ 'payment.bankManage.allRecords' | lang }}-->
+              <!--              </div>-->
+            </div>
+            <div class="flex-fill mt-2">
+              <table class="table mb-0">
+                <thead>
+                  <tr>
+                    <th>
+                      <span class="cell">{{ 'common.time' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'payment.bankManage.address' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'common.currency' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'payment.bankManage.transactionAmoun' | lang }}</span>
+                    </th>
+                    <th>
+                      <span class="cell">{{ 'common.type' | lang }}</span>
+                    </th>
+                  </tr>
+                </thead>
+                <!-- [style.height.px]="214" -->
+                <tbody class="color-222" *ngIf="payVirtualList.length > 0">
+                  <tr *ngFor="let item of payVirtualList">
+                    <td>
+                      <span class="cell">{{ item.createdTime | timeFormat }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{ item.address || '-' }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{ item.currency }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{ item.amount | toFormatMoney }}</span>
+                    </td>
+                    <td>
+                      <span class="cell">{{
+                        item.category === PaymentCategoryEnum.Deposit
+                          ? ('payment.method.deposit' | lang)
+                          : ('payment.method.withdrawal' | lang)
+                      }}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- 空显示 -->
+              <div class="container-empty" *ngIf="payVirtualList.length === 0" style="height: 273px">
+                <div>
+                  <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+                  <div class="txt">{{ 'common.emptyText' | lang }}</div>
+                </div>
+              </div>
+
+              <!-- 页码 -->
+              <div class="d-flex flex-between pt-5 pb-5 table-footer" *ngIf="payVirtualList.length > 0">
+                <div>
+                  <!-- <mat-form-field [style.width.px]="68">
+                    <mat-select
+                      class="form-control"
+                      [(ngModel)]="paginator.pageSize"
+                      [style.height.px]="34"
+                      [style.font-size.px]="14"
+                      (selectionChange)="loadData()"
+                    >
+                      <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+                    </mat-select>
+                  </mat-form-field> -->
+                </div>
+
+                <div *ngIf="payVirtualPaginator.total">
+                  <app-paginator
+                    class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+                    [paginator]="payVirtualPaginator"
+                    (paginate)="getBankVirtualList(payDetailData.uid, 'virtual')"
+                  >
+                  </app-paginator>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-primary" (click)="c()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</ng-template>

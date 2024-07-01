@@ -1,0 +1,25 @@
+<div class="popup-common standard-popup" *ngIf="!hasToVerify">
+  <img class="header-img" lazy="loading" src="assets/images/face-verify/header-img.svg" />
+  <p class="header-title">{{ 'verify_title' | translate }}</p>
+  <p class="gray-color">{{ 'verify_hint' | translate }}</p>
+  <p class="primary-color">{{ 'alive_verify' | translate }}</p>
+  <ng-container *ngIf="!isH5">
+    <p class="gray-color">{{ 'verify_mobile_msg' | translate }}</p>
+    <p class="primary-color">{{ 'verify_mobile_msg_p' | translate }}</p>
+  </ng-container>
+  <ng-container *ngIf="isH5">
+    <p class="gray-color">{{ 'before_verify' | translate }}</p>
+  </ng-container>
+  <customize-button width="100%" size="medium" type="primary" (onClick)="onConfirm()">
+    {{ 'confirm_button' | translate }}
+  </customize-button>
+</div>
+
+<div class="iframe-container" *ngIf="hasToVerify && data.redirectUrl">
+  <div class="close-pupop">
+    <customize-button type="text" size="small" (onClick)="close()">
+      <span class="text-color">{{ 'close_popup' | translate }}</span>
+    </customize-button>
+  </div>
+  <iframe [src]="data.redirectUrl | safe"></iframe>
+</div>

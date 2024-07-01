@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+$theme: (
+  1: #f2f8ff #31a0f7,
+  2: #fcfaff #7e4aeb,
+  3: #fbf6fc #df506e,
+  4: #fff7f2 #f76c31,
+  5: #f9fcf6 #77be43,
+  6: #F9F2FF #A031F7,
+  7: #FFF3FF #EB4AE5,
+  8: #f7f7f7 #222,
+);
+
+@each $name, $value in $theme {
+  .circle {
+    &-#{$name} {
+      background: nth($value, 1);
+      border-radius: 6px;
+    }
+  }
+}
+
+.plane {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-row-gap: 10px;
+  grid-column-gap: 20px;
+}
+
+.transaction-table {
+  margin-bottom: 0;
+  tr {
+    background: #f9fcff;
+    td {
+      padding: 10px 2px;
+    }
+  }
+}

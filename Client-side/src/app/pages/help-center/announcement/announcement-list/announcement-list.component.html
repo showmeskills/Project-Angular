@@ -1,0 +1,80 @@
+<app-support-theme-detail-layout
+  type="Announcement"
+  [themeTitle]="themeTitle"
+  (goBack)="goBack()"
+  [isListPage]="isListPage"
+  [currentTitle]="currentTitle"
+  [h5DialogTitle]="h5DialogTitle"
+  [debounceBack]="debounceBack"
+  [menuListTemp]="leftMenu"
+  [pageTemp]="pageTemp"
+  [webPaginator]="webPaginator"
+  [article]="article"
+  [h5ListPageTemp]="h5ListPageTemp"
+  [rightList]="rightList"
+  [detailLoading]="detailLoading"
+>
+</app-support-theme-detail-layout>
+
+<!-- 左侧菜单 -->
+<ng-template #leftMenu>
+  <p
+    class="list-item onact96"
+    *ngFor="let item of menuList; let i = index"
+    (click)="selectedMenuItem(i, item)"
+    [class.active]="isActiveIndex == i"
+  >
+    <img class="item-img" [src]="item.iconAddress + item.icon" alt="" lazy="loading" />
+    <span class="item-title">{{ item.title }}</span>
+  </p>
+</ng-template>
+
+<!-- 列表页面 -->
+<ng-template #pageTemp>
+  <ng-container *ngIf="isListPage">
+    <div [appLoading]="isLoading">
+      <p class="right-title">{{ currentTitle }}</p>
+      <div class="page-right-list">
+        <p class="right-list-item onact96" *ngFor="let item of list" (click)="jumpToDetailPage(item)">
+          {{ item.title }}
+          <span class="item-date">{{ item.releaseTime | mdate : 'YYYY-MM-DD' }}</span>
+        </p>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<!-- web页脚 -->
+<ng-template #webPaginator>
+  <div class="right-side" *ngIf="isListPage">
+    <app-paginator
+      [disabled]="isLoading"
+      [loading]="isLoading"
+      [(page)]="paginator.page"
+      [total]="paginator.total"
+      [pageSize]="paginator.pageSize"
+      (onPageChange)="loadListData()"
+    >
+    </app-paginator>
+  </div>
+</ng-template>
+
+<!-- h5 -->
+<ng-template #h5ListPageTemp>
+  <!-- 最新公告 -->
+  <ng-container *ngIf="isListPage">
+    <div class="h5-list" [appLoading]="isLoading">
+      <p class="h5-top-title">{{ currentTitle }}</p>
+      <div class="h5-item onact96" *ngFor="let item of list" (click)="jumpToDetailPage(item)">
+        <span class="item-title">{{ item.title }}</span>
+        <span class="item-date">{{ item.releaseTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+      </div>
+      <div class="left-side">
+        <p class="load-more onact96" (click)="onNextPage()" *ngIf="isShowH5Paginator">
+          {{ 'view_more' | translate }}
+          <i class="icon-arrow-down-simple"></i>
+        </p>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

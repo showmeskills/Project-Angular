@@ -1,0 +1,43 @@
+:host {
+  margin: 20px !important;
+}
+
+ngb-toast {
+  min-width: 210px;
+  padding: 7px 12px;
+  border-radius: 4px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border: 0;
+  margin-bottom: 12px;
+}
+
+.msg-wrap {
+  max-width: 262px;
+  min-width: 180px;
+  margin-left: 10px;
+  word-break: break-word;
+}
+
+.text-wrap {
+  display: inline-block;
+  word-break: break-all;
+  line-height: 22px;
+}
+
+.lh-25 {
+  line-height: 25px;
+}
+
+.close {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  cursor: pointer;
+}
+
+.child-wrap {
+  margin-top: 14px;
+  margin-bottom: 10px;
+  max-height: 200px;
+}

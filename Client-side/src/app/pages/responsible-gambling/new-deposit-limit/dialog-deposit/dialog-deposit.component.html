@@ -1,0 +1,38 @@
+<div class="share-community">
+  <div class="friend-data-header">
+    <!-- <p class="title">{{ 'about_referral_reward' | translate }}</p> -->
+    <p class="title">{{ 'self_exclusion' | translate }}</p>
+    <i class="icon-error onact96-not" (click)="close()"></i>
+  </div>
+  <div class="content">
+    <p>
+      {{ 'self_exclusion_content' | translate }}
+    </p>
+    <div class="radio-field">
+      <label id="agent" class="label-name">{{ 'self_exclusion_period' | translate }}</label>
+      <mat-radio-group aria-labelledby="agent" class="radio-group" [(ngModel)]="timeVal">
+        <mat-radio-button class="radio-button" *ngFor="let item of gameList" [value]="item.time">
+          {{ item.name }}
+        </mat-radio-button>
+      </mat-radio-group>
+
+      <mat-checkbox class="selected-checked" [(ngModel)]="selectedValue">
+        <span class="mutual-opacity">{{ 'self_exclude_understand' | translate }}</span>
+      </mat-checkbox>
+    </div>
+    <div class="fo-bot">
+      <customize-button [plain]="true" type="default" class="close_btn" size="large" (click)="close()">{{
+        'cancels_r' | translate
+      }}</customize-button>
+      <customize-button
+        [loading]="submitLoading"
+        [disabled]="!canContinue()"
+        class="account_btn"
+        type="primary"
+        size="large"
+        (click)="onContinue()"
+        >{{ 'close_account' | translate }}</customize-button
+      >
+    </div>
+  </div>
+</div>

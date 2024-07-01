@@ -1,0 +1,44 @@
+<div class="auto">
+  <div class="title">
+    <span>{{ 'auto_mode' | translate }}</span>
+    <i class="orignal-icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="wrapper">
+    <div>{{ 'auto_mode_des1' | translate }}</div>
+    <div>{{ 'auto_mode_des2' | translate }}</div>
+    <ul>
+      <li>
+        <i>{{ 'bet_number' | translate }}：</i>
+        <span>{{ 'bet_number_des' | translate }}</span>
+      </li>
+      <li *ngIf="data.type != 'plinko'">
+        <i>{{ 'take_profit' | translate }}：</i>
+        <span>{{ 'take_profit_des' | translate }}</span>
+      </li>
+      <li *ngIf="data.type != 'plinko'">
+        <i>{{ 'stop_loss' | translate }}：</i>
+        <span>{{ 'stop_loss_des' | translate }}</span>
+      </li>
+      <li *ngIf="data.type != 'plinko'">
+        <i>{{ 'max_bet' | translate }}：</i>
+        <span>{{ 'max_bet_des' | translate }}</span>
+      </li>
+      <li *ngIf="data.type != 'plinko'">
+        <i>{{ 'won' | translate }}：</i>
+        <span>{{ 'win_des' | translate }}</span>
+      </li>
+      <li *ngIf="data.type != 'plinko'">
+        <i>{{ 'loss' | translate }}：</i>
+        <span>{{ 'loss_des' | translate }}</span>
+      </li>
+    </ul>
+    <div *ngIf="!data.flag">
+      <mat-checkbox (change)="changeBetNowTip($event)">
+        {{ 'no_tip' | translate }}
+      </mat-checkbox>
+    </div>
+    <div class="button onact96">
+      <div (click)="close()">{{ 'continue' | translate }}</div>
+    </div>
+  </div>
+</div>

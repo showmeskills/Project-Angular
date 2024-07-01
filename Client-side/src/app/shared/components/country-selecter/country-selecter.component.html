@@ -1,0 +1,63 @@
+<div
+  class="country-selector-container"
+  [class.kyc-h5]="isH5Kyc"
+  [ngClass]="{ active: isOpen }"
+  [class.kyc-dialog-withd]="isFromDialog"
+  (clickOutside)="isOpen = false"
+  [class.disabled]="disabled"
+>
+  <div class="country-label" [class.kyc-h5]="isH5Kyc" (click)="openDropDown()">
+    <div class="country-row">
+      <div class="country-image" [class.kyc-h5]="isH5Kyc">
+        <span class="country icon-size" [class.w-34]="isH5Kyc" class="{{ fogClassName }}"></span>
+      </div>
+      <div *ngIf="!isH5Kyc">{{ countryName }}</div>
+    </div>
+    <span class="drop-dowm" [ngClass]="{ 'offset-right': !isShowSearch }" [class.clicked]="isOpen"></span>
+  </div>
+  <div
+    class="country-option"
+    *ngIf="isOpen"
+    [class.small]="smallSize && !isH5Kyc"
+    [class.kyc-h5]="isH5Kyc"
+    [class.center]="isFromDialog"
+    [class.dialog-page]="isFromDialog"
+  >
+    <!--搜索栏-->
+    <ng-container *ngIf="isShowSearch">
+      <div class="search-contanier" [class.kyc-h5]="isH5Kyc" [class.focus]="$any(iSearch).isFocus">
+        <i class="search-icon"></i>
+        <input
+          #iSearch
+          class="search-input"
+          type="text"
+          (focus)="onFocus(iSearch)"
+          [(ngModel)]="searchCountry"
+          (input)="onSearchInput(iSearch)"
+        />
+        <i
+          class="icon-clear onact96-not"
+          *ngIf="!!iSearch.value && $any(iSearch).isFocus"
+          (click)="handleClean(iSearch)"
+        ></i>
+      </div>
+    </ng-container>
+    <!--  选项  -->
+    <div class="select-container">
+      <app-scrollbar>
+        <div
+          class="select-row onact96"
+          *ngFor="let key of countries | countryFilter : searchCountry"
+          (click)="handleSelected(key)"
+        >
+          <div class="fog-row">
+            <div class="country-image">
+              <i class="country icon-size" class="{{ className(key.code) }}"></i>
+            </div>
+            <p>{{ key.name }}</p>
+          </div>
+        </div>
+      </app-scrollbar>
+    </div>
+  </div>
+</div>

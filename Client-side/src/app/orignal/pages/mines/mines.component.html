@@ -1,0 +1,85 @@
+<div class="wrapper">
+  <div class="wrapper-top">
+    <orignal-bar type="mines" [(fairnessData)]="fairnessData" [isFast]="false" [(isHotkey)]="isHotkey"> </orignal-bar>
+  </div>
+  <div class="mines">
+    <div class="mines-board">
+      <div class="mines-board-icon icon-left">
+        <p>{{ 'diamond' | translate }}</p>
+        <img [src]="'/assets/orignal/images/mines/diamonds' + (theme == 'sun' ? '' : '-n') + '.svg'" alt="Diamonds" />
+        <span>{{ diamondCounts }}</span>
+      </div>
+      <div class="board" [ngClass]="{ diasbled: !isBetting }">
+        <button
+          *ngFor="let item of list; let i = index"
+          [disabled]="(item.type !== 1 && item.type !== 4) || !isBetting"
+          [ngClass]="{
+            diasbled: !isBetting,
+            emergence: item.type !== 1,
+            diamond: item.type === 2 && item.isOpen,
+            bomb: item.type === 3 && item.isOpen,
+            prepare: item.type === 4 && !item.isOpen
+          }"
+          [class.expectation]="item.boardAnimation"
+          (click)="setItem(i)"
+        >
+          <img
+            *ngIf="item.type !== 1 && item.type !== 4"
+            [src]="
+              '/assets/orignal/images/mines/' +
+              (item.type === 2 ? 'diamonds' : 'bomb') +
+              (theme == 'sun' ? '' : '-n') +
+              '.svg'
+            "
+            alt=""
+          />
+          <div></div>
+        </button>
+      </div>
+      <div class="mines-board-icon icon-right">
+        <p>{{ 'bomb' | translate }}</p>
+        <img [src]="'/assets/orignal/images/mines/bomb' + (theme == 'sun' ? '' : '-n') + '.svg'" alt="Mines" />
+        <span>{{ bombCounts }}</span>
+      </div>
+    </div>
+    <div class="coefficients">
+      <div class="pagination onact96" (click)="page('prev')">
+        <span class="pagination-chevron"></span>
+      </div>
+      <div style="min-width: calc(100% + 22px)" #tabgroup>
+        <mat-tab-group [selectedIndex]="selected" (selectedIndexChange)="selected = $event" [disablePagination]="true">
+          <mat-tab *ngFor="let tab of multiplier; let index = index" disabled [label]="tab.index">
+            <ng-template mat-tab-label>
+              <div class="coefficient-item" [class.active]="selected == tab?.index">
+                <span class="coefficient-item-label ff">{{ tab?.multiplier }}x</span>
+                <span class="coefficient-item-hint">{{ tab?.index }} {{ 'hits' | translate }}</span>
+              </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <div class="pagination onact96" (click)="page('next')">
+        <span class="pagination-chevron"></span>
+      </div>
+    </div>
+  </div>
+
+  <orignal-bet
+    type="mines"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [rate]="rate"
+    [operate]="operate"
+    [isDice]="true"
+    [bombCounts]="bombCounts"
+    (bombCountsChange)="bombCountsChange($event)"
+    (autoSelect)="autoSelect()"
+    (toSubmit)="toSubmit($event)"
+  ></orignal-bet>
+
+  <div class="win-tip" *ngIf="isShowWinTip">
+    <div>{{ winMultiple.multiplier }}X</div>
+    <div><img class="currency-icon" [src]="currentCurrencyData?.icon" />{{ winMoney }}</div>
+  </div>
+</div>

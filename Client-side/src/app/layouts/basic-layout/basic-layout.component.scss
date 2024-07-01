@@ -1,0 +1,188 @@
+.basic-layout {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  :host-context(.is-mobile) & {
+    overflow: initial;
+  }
+}
+
+.layout-backdrop {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  display: block;
+  z-index: 26;
+  visibility: hidden;
+  transition-duration: 400ms;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-property: background-color, visibility;
+
+  &.show {
+    visibility: visible;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.layout-background {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-color: var(--main-page-bg);
+  z-index: -1;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center right;
+    pointer-events: none;
+    opacity: 0.3;
+    :host-context(.dark) & {
+      opacity: 0.3;
+    }
+  }
+}
+.layout-widgets {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  will-change: transform, top;
+  margin-top: var(--root-padding-top);
+
+  &.widgets-hide {
+    top: 0;
+    transform: translateY(-100%);
+    transition: all 0.5s ease;
+  }
+
+  &.widgets-show {
+    top: var(--topbar-height);
+    transform: translateY(0);
+    transition: all 0.2s ease;
+  }
+
+  img {
+    max-width: 20%;
+    width: 136px;
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    &:first-child {
+      float: left;
+    }
+    &:last-child {
+      float: right;
+      transform: scaleX(-1);
+    }
+  }
+}
+
+.left-side {
+  position: fixed;
+  z-index: 27;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  transition-duration: 400ms;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-property: width;
+  background-color: var(--left-side-bg-color);
+  will-change: width;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--header-height);
+    pointer-events: none;
+    height: 8px;
+    // box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.1) inset;
+    z-index: 1;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  :host-context(.dark) & {
+    &::before {
+      border-top: 1px solid rgba(0, 0, 0, 0.3);
+      // box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.3) inset;
+    }
+  }
+}
+
+.layout-content {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  background-color: var(--page-bg-color);
+  transition-duration: 400ms;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-property: margin-left, padding-top;
+  will-change: margin-left, padding-top;
+
+  .hide {
+    display: none;
+  }
+}
+
+.layout-main-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+}
+
+.content {
+  flex: 1 1 100%;
+  width: 100%;
+  min-height: 100%;
+  flex-direction: column;
+  display: flex;
+  :host-context(.is-mobile) & {
+    overflow: auto;
+    &.disabled {
+      overflow: hidden;
+    }
+  }
+  ::ng-deep {
+    app-orignal {
+      height: unset;
+    }
+  }
+}
+
+app-header {
+  &.islevel2 {
+    border-bottom: 2px solid var(--left-nav-bg-color-rail);
+    &::before {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      top: 0;
+      bottom: 0;
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    :host-context(.dark) & {
+      &::before {
+        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<p class="customize-text">
+  <ng-container *ngIf="textTemplate; else defaultTextTemplate">
+    <ng-container *ngTemplateOutlet="textTemplate; context: { textArr: textArr }"></ng-container>
+  </ng-container>
+</p>
+
+<ng-template #defaultTextTemplate>
+  <ng-container *ngFor="let item of textArr">
+    <ng-container *ngIf="!item.isLink">
+      {{ item.text }}
+    </ng-container>
+    <span class="mutual-opacity link-text onact96-not" *ngIf="item.isLink" (click)="handleClick(item.clickIndex!)">{{
+      item.text
+    }}</span>
+  </ng-container>
+</ng-template>

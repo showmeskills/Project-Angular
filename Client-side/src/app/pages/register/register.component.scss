@@ -1,0 +1,357 @@
+@use 'sass:math';
+
+div {
+  display: flex;
+}
+
+:host {
+  justify-content: start;
+}
+
+.container {
+  margin-top: 120px;
+  margin-left: (math.div(572, 1920) * 100%);
+  width: 385px;
+  flex-direction: column;
+
+  @media (max-width: 1024px) {
+    margin-left: 0;
+    align-self: center;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    margin-top: 55px;
+    padding: 0 18px 50px;
+    display: block;
+    font-size: 24px;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 42px;
+    font-weight: bold;
+
+    &:host-context(.dark) & {
+      color: #fff;
+    }
+  }
+
+  .description {
+    font-size: 16px;
+    color: var(--text-color-20);
+    margin-top: 22px;
+    line-height: 16px;
+  }
+
+  // 用户名、手机号 切换按钮
+  .tabs {
+    margin-top: 42px;
+    display: inline-flex;
+    .tab {
+      flex-shrink: 0;
+      height: 40px;
+      font-size: 16px;
+      color: #707a8a;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      padding: 0 10px;
+      white-space: nowrap;
+      user-select: none;
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+
+      &:host-context(.dark) & {
+        color: var(--text-color-20);
+      }
+
+      &.active {
+        border-radius: 4px;
+        background-color: var(--bg-color-10);
+        color: #1e2329;
+
+        &:host-context(.dark) & {
+          color: #fff;
+          background-color: var(--primary-color);
+        }
+      }
+    }
+  }
+
+  //Form表单
+  .form-group {
+    flex-direction: column;
+    margin-top: 25px;
+
+    app-customize-input {
+      flex: 1;
+    }
+
+    label {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #1e2329;
+
+      &:host-context(.dark) & {
+        color: #fff;
+      }
+
+      line-height: 14px;
+    }
+
+    .phone-box {
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      // gap: 8px;
+    }
+
+    .phone-container {
+      .area-code {
+        margin-top: 0;
+
+        &:host-context(.dark) & {
+          border-color: #2f4553;
+          background-color: #0f212e;
+
+          .code {
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    .input-group {
+      &.hidden {
+        display: none;
+      }
+
+      &.referee-input {
+        margin-top: 8px;
+      }
+    }
+
+    // 规则验证浮动框
+    .valid-pop-container {
+      position: relative;
+      z-index: 3;
+
+      .valid-pop {
+        padding: 10px 15px;
+        border-radius: 4px;
+        background-color: #5e6673;
+        color: #fff;
+        font-size: 14px;
+        flex-direction: column;
+        position: absolute;
+        top: 8px;
+        right: 62px;
+
+        i {
+          margin-left: 10px;
+          font-size: 12px;
+        }
+
+        p {
+          display: flex;
+          align-items: center;
+        }
+
+        p:not(:last-child) {
+          margin-bottom: 14px;
+        }
+      }
+    }
+
+    //输入框错误信息
+    .error-msg {
+      color: var(--txt-err-color);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    //密码强度
+    .pwd-strength-container {
+      margin-top: 6px;
+      position: relative;
+      flex-direction: column;
+
+      .pwd-strength {
+        height: 4px;
+        background-color: #e8e8e8;
+
+        span {
+          flex: 1;
+
+          &:not(:last-child) {
+            margin-right: 3px;
+          }
+        }
+
+        .lv1 {
+          background-color: #ff4d4d;
+        }
+
+        .lv2 {
+          background-color: #ff944d;
+        }
+
+        .lv3 {
+          background-color: #ffc44d;
+        }
+
+        .lv4 {
+          background-color: #15bf7b;
+        }
+      }
+
+      //文字提示
+      .strength-tip {
+        color: #474d57;
+        font-size: 14px;
+        position: absolute;
+        right: 0;
+        top: 4px;
+        line-height: 20px;
+
+        &:host-context(.dark) & {
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  //推荐人
+  .ref {
+    label {
+      display: flex;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .icon-arrow-down {
+      display: flex;
+      font-size: 12px;
+      margin-top: 2px;
+      transform: scale(math.div(10, 12)) !important;
+
+      &.up {
+        transform: scale(math.div(10, 12)) rotate(180deg) !important;
+      }
+    }
+  }
+
+  //服务条款
+  .agree {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #474d57;
+    align-items: center;
+
+    &:host-context(.dark) & {
+      color: #fff;
+    }
+
+    a {
+      margin-left: 4px;
+      white-space: nowrap;
+    }
+  }
+
+  .error-msg {
+    color: var(--txt-err-color);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  //提交按钮
+  .customize-submit-btn {
+    margin-top: 25px;
+  }
+
+  //登录链接
+  .login-text {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #474d57;
+    padding-bottom: 20px;
+
+    &:host-context(.dark) & {
+      color: #fff;
+    }
+
+    span {
+      margin-left: 4px;
+    }
+  }
+}
+
+// 自适应
+@media (max-width: 767px) {
+  .container {
+    .title {
+      font-size: 24px;
+      line-height: 33px;
+    }
+
+    .description {
+      margin-top: 16px;
+    }
+
+    .tabs {
+      margin-top: 33px;
+
+      .tab {
+        font-size: 14px;
+        height: 36px;
+        border-radius: 8px;
+      }
+    }
+
+    .form-group {
+      margin-top: 26px;
+
+      .input-group {
+        // margin-top: 4px;
+      }
+
+      .error-msg {
+        margin-top: 4px;
+      }
+
+      .area-code {
+        margin-top: 4px;
+        width: 104px;
+        margin-right: 8px;
+        align-self: flex-end !important;
+      }
+    }
+
+    .ref {
+      margin-top: 30px;
+    }
+
+    .agree {
+      margin-top: 26px;
+    }
+
+    .login-text {
+      margin-top: 24px;
+    }
+
+    //密码强度条
+    .pwd-strength-container {
+      margin-top: 2px;
+    }
+  }
+}
+
+.popup-footer {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--secondary-color);
+  justify-content: center;
+}

@@ -1,0 +1,28 @@
+<div class="hotkey">
+  <div class="title">
+    <span>{{ 'hotkey' | translate }}</span>
+    <i class="orignal-icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="wrapper">
+    <app-scrollbar>
+      <div class="pic" [class]="data"></div>
+    </app-scrollbar>
+    <div class="keyboard">
+      <div class="item" *ngFor="let item of keyboardList">
+        <div class="name">{{ item.name }}</div>
+        <div class="des">{{ item.value }}</div>
+      </div>
+    </div>
+    <div class="open">
+      <mat-slide-toggle
+        class="c-slide-toggle"
+        [(ngModel)]="isOpen"
+        labelPosition="before"
+        (change)="toggleChange($event)"
+      >
+        {{ 'hotkey_open' | translate }}
+      </mat-slide-toggle>
+    </div>
+    <div class="intro">{{ 'hotkey_intro' | translate }}</div>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="landing-page">
+  <div class="full-bleed banner">
+    <div class="content-box">
+      <div class="left">
+        <img src="assets/images/landing-page/top-bg-1.png" class="top-bg-1" />
+        <p>{{ local.bannerTitle }}</p>
+        <div class="register" (click)="router.navigate([appService.languageCode, 'register'])">
+          {{ local.registerNow }}
+        </div>
+        <div class="or">
+          <div class="line"></div>
+          OR
+          <div class="line"></div>
+        </div>
+        <div class="contracts">
+          <a class="contract-item" (click)="router.navigate([''])">
+            <img src="assets/images/landing-page/google.png" alt="google" />
+          </a>
+          <a class="contract-item" (click)="router.navigate([''])">
+            <img src="assets/images/landing-page/line.png" alt="line"
+          /></a>
+          <a class="contract-item" (click)="router.navigate([''])">
+            <img src="assets/images/landing-page/metamask.png" alt="metamask"
+          /></a>
+          <a class="contract-item" (click)="router.navigate([''])">
+            <img src="assets/images/landing-page/telegram.png" alt="telegram"
+          /></a>
+        </div>
+      </div>
+      <div class="right">
+        <img [src]="'assets/images/landing-page/top-right.png' | preferWebp" class="top-right" />
+        <img [src]="'assets/images/landing-page/top-bg-2.png' | preferWebp" class="top-bg-2" />
+      </div>
+    </div>
+  </div>
+  <div class="center-info">
+    <div class="center-item">
+      <p class="title">
+        <img src="assets/images/landing-page/ic_yulecheng.png" alt="娱乐城" /> {{ local.casino.title }}
+      </p>
+      <img [src]="casinoImg | preferWebp" alt="娱乐城" />
+      <p class="sub-title">{{ local.casino.subTitle }}</p>
+      <p class="desc">
+        {{ local.casino.desc }}
+      </p>
+      <a id="casion" class="btn" (click)="router.navigate([appService.languageCode, 'casino'])">{{
+        local.casino.btn
+      }}</a>
+    </div>
+    <div class="center-item">
+      <p class="title"><img src="assets/images/landing-page/ic_tiyu.png" alt="体育" />{{ local.sport.title }}</p>
+      <img [src]="sportImg | preferWebp" alt="体育" />
+      <p class="sub-title">{{ local.sport.subTitle }}</p>
+      <p class="desc">
+        {{ local.sport.desc }}
+      </p>
+      <a id="sport" class="btn" (click)="router.navigate([''])">{{ local.sport.btn }}</a>
+    </div>
+  </div>
+  <div class="more">
+    <a id="more" class="btn" (click)="router.navigate([''])">{{ local.more }}</a>
+    <img src="assets/images/landing-page/more.png" />
+  </div>
+  <div class="cypto">
+    <p class="title">{{ local.cypto.title }}</p>
+    <div class="cypto-icons">
+      <img src="assets/images/landing-page/USDT.png" alt="USDT" />
+      <img src="assets/images/landing-page/SHIB.png" alt="SHIB" />
+      <img src="assets/images/landing-page/TRX.png" alt="TRX" />
+      <img src="assets/images/landing-page/ETH.png" alt="ETH" />
+      <img src="assets/images/landing-page/BCH.png" alt="BCH" />
+      <img src="assets/images/landing-page/EOS.png" alt="EOS" />
+      <img src="assets/images/landing-page/XRP.png" alt="XRP" />
+    </div>
+    <a id="cypto" class="btn" (click)="router.navigate([''])">{{ local.cypto.btn }}</a>
+  </div>
+</div>

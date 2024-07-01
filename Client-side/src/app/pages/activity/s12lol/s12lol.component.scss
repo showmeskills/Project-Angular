@@ -1,0 +1,197 @@
+:host {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.page-container {
+  height: 100%;
+  background-image: url(src/assets/images/activity/s12lol/bg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  overflow: hidden;
+
+  .main-container {
+    @media (max-width: 767px) {
+      padding-left: 19px;
+      padding-right: 19px;
+    }
+  }
+
+  .container {
+    position: relative;
+  }
+}
+
+.part1 {
+  background-image: url(src/assets/images/activity/s12lol/bg1.png);
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  position: relative;
+
+  &::before,
+  .container::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: -1px;
+    background-image: url(src/assets/images/activity/s12lol/bg2.png);
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    pointer-events: none;
+  }
+
+  .container::after {
+    opacity: 0.6;
+  }
+
+  .web-b1 {
+    width: 100%;
+    padding: 60px 0;
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+
+  .h5-b1 {
+    display: none;
+    width: 100%;
+    padding: 25px 0 30px;
+
+    @media (max-width: 767px) {
+      display: block;
+    }
+  }
+
+  .video-iframe-container {
+    height: 0;
+    padding-top: 56.3%;
+    position: relative;
+
+    > iframe {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  @media (max-width: 767px) {
+    background-size: 200%;
+    padding-bottom: 250px;
+
+    &::before,
+    .container::after {
+      content: none;
+    }
+  }
+}
+
+.partition {
+  height: 81px;
+  background-color: #351be6;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+
+  @media (max-width: 767px) {
+    height: 57px;
+
+    img {
+      height: 32px;
+    }
+  }
+}
+
+.part2 {
+  padding-bottom: 80px;
+
+  .container {
+    > img {
+      width: 100%;
+
+      &:first-child {
+        padding: 30px 0;
+
+        @media (max-width: 767px) {
+          padding: 20px 0;
+        }
+      }
+    }
+  }
+
+  .competition {
+    margin-top: 30px;
+    // background-color: #fff;
+    display: flex;
+
+    @media (max-width: 767px) {
+      margin-top: 20px;
+    }
+
+    .left {
+      width: 28.6%;
+      flex-shrink: 0;
+      background-color: #d5b599;
+      background-image: url(src/assets/images/activity/s12lol/sidebg.jpg);
+      background-repeat: no-repeat;
+      background-position: center top;
+
+      @media (max-width: 767px) {
+        width: 0px;
+      }
+    }
+
+    .right {
+      flex: 1;
+      padding: 57px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      .right-container {
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        .tit {
+          align-self: flex-start;
+          padding-bottom: 60px;
+
+          @media (max-width: 767px) {
+            padding-bottom: 30px;
+            padding-right: 60px;
+          }
+        }
+
+        img {
+          width: 100%;
+
+          & + img {
+            padding-top: 60px;
+
+            @media (max-width: 767px) {
+              padding-top: 30px;
+            }
+          }
+        }
+      }
+    }
+
+    @media (max-width: 767px) {
+      background-color: transparent;
+
+      .right {
+        padding: 0;
+      }
+    }
+  }
+}

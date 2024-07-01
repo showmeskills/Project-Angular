@@ -1,0 +1,89 @@
+<div class="currency-select">
+  <div class="modal-header">
+    <div class="modal-title">增加资讯</div>
+
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="px-10 pt-6 pb-12">
+    <div class="d-flex">
+      <div class="ml-12 mr-4 pr-4 scroll" style="flex: 0 0 250px">
+        <mat-accordion multi>
+          <mat-expansion-panel *ngFor="let item of list">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <div style="max-width: 100%">
+                  <label
+                    class="flex-1 d-flex flex-ac cursor-pointer"
+                    (click)="onItem(item, $event)"
+                    [class.active]="currentCategory.categoryId === item.categoryId"
+                  >
+                    <img class="mx-4 rounded" [src]="item.iconAddress + item.icon" alt="" width="25" height="25" />
+                    <span class="text-hidden">{{ item.title }}</span>
+                  </label>
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="w-100">
+              <label
+                class="item item-child flex-1 d-flex flex-ac cursor-pointer"
+                *ngFor="let child of item.childrens"
+                (click)="onItem(child)"
+                [class.active]="currentCategory.categoryId === child.categoryId"
+              >
+                <img class="mx-4 rounded" [src]="item.iconAddress + child.icon" alt="" width="25" height="25" />
+                <span class="text-hidden">{{ child.title }}</span>
+              </label>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+
+      <div class="ml-5 pr-8 flex-1" style="min-width: 0">
+        <div class="fz-12 color-aaa d-flex pr-4" *ngIf="currentCategory.categoryId || select.length">
+          <span class="flex-1 text-hidden" *ngIf="currentCategory">当前分类：{{ currentCategory.title }}</span>
+          <span>已选：{{ select.length }} / 5</span>
+        </div>
+
+        <div class="scroll right-view pr-4">
+          <ng-container *ngIf="currentDataList.length">
+            <label class="information" *ngFor="let sub of currentDataList">
+              <span class="checkbox checkbox-lg">
+                <input type="checkbox" [(ngModel)]="sub.checked" (ngModelChange)="onCheckbox(sub)" />
+                <span></span>
+              </span>
+              <span class="ml-4 information-text">
+                <span class="text-break text-wrap title">{{ sub.articleTitle }}</span>
+                <span class="color-aaa ml-8" style="font-family: serif">{{
+                  sub.releaseTime | timeFormat: 'YYYY-MM-DD'
+                }}</span>
+              </span>
+            </label>
+          </ng-container>
+
+          <!-- 空显示 -->
+          <div
+            class="d-flex align-items-center justify-content-center flex-1"
+            *ngIf="!currentDataList.length"
+            style="height: calc(100% - 20px)"
+          >
+            <div>
+              <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="menu-icon"></svg-icon>
+              <div class="color-999">
+                {{ currentCategory.categoryId ? '目前无关联资料' : '请先选择分类' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="c-btn c-btn-default" (click)="modal.dismiss()">返回</button>
+    <button class="c-btn c-btn-primary ml-10" (click)="onConfirm()">确认</button>
+  </div>
+</div>

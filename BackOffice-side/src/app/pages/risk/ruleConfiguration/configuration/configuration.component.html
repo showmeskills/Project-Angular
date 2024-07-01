@@ -1,0 +1,386 @@
+<!-- 实时积分低于 -->
+<form-row [label]="item.lang | lang" label-width="290" *ngFor="let item of creditList; let i = index">
+  <ng-template>
+    <div class="d-flex flex-ac">
+      <form-wrap [style.width.px]="lang.isLocal ? '140' : '150'">
+        <div class="d-flex flex-ac mr-4">
+          <div class="add mr-2" [class.active]="item.isAdd" (click)="addCut('add', item)">+</div>
+          <div class="cut" [class.active]="!item.isAdd" (click)="addCut('cut', item)">-</div>
+        </div>
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data[item.field]" />
+        <span suffix class="color-aaa fz-14">{{ 'risk.config.score' | lang }}</span>
+      </form-wrap>
+
+      <!-- 且积分变化大于等于 -->
+      <ng-container *ngIf="i === 2">
+        <div class="fz-14 ml-24 mr-5">{{ 'risk.config.integralChange' | lang }}:</div>
+        <form-wrap [style.width.px]="90">
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data[item.field2]" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.score' | lang }}</span>
+        </form-wrap>
+      </ng-container>
+
+      <ng-container *ngIf="i === 3">
+        <div class="color-aaa fz-14 ml-24">{{ 'risk.config.andWithdrawal' | lang }}</div>
+      </ng-container>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 小于同一设备指纹登录次数-->
+<!-- <form-row [label]="'risk.config.fingerprint' | lang" [label-width]="lang.isLocal ? '290' : '510'">
+  <ng-template>
+    <div class="d-flex flex-ac flex-wrap">
+      <form-wrap [style.width.px]="90">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.fingerprintLimit" />
+        <span suffix class="color-aaa fz-14">%</span>
+      </form-wrap>
+    </div>
+  </ng-template>
+</form-row> -->
+
+<!-- 单一场馆 -->
+<form-row [label]="'risk.config.singleChang' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac flex-wrap">
+      <div class="d-flex flex-ac mr-10">
+        <div class="mr-5 fz-14">{{ 'risk.config.last' | lang }}</div>
+        <form-wrap [style.width.px]="100">
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.venuesWinTims" />
+          <!-- 注 -->
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.bet' | lang }}</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.config.profitRate' | lang }}</div>
+        <form-wrap [style.width.px]="100">
+          <span class="color-aaa fz-16">≥</span>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.venuesWinRate" />
+          <span suffix class="color-aaa fz-14">%</span>
+        </form-wrap>
+      </div>
+      <!-- 2 -->
+      <div class="d-flex flex-ac mr-10">
+        <div class="fz-14 ml-24 mr-5">{{ 'risk.config.last' | lang }}</div>
+        <form-wrap [style.width.px]="100">
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.venuesWinTims" />
+          <!-- 注 -->
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.bet' | lang }}</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">NGR</div>
+        <form-wrap [style.width.px]="120">
+          <span class="color-aaa fz-16">≥</span>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.venuesNGR" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 24小时内 -->
+<form-row [label]="'risk.config.twentyFour' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac flex-wrap fz-14">{{ 'risk.config.usersProfits' | lang }}</div>
+    <div class="d-flex flex-ac flex-wrap fz-14">
+      <!-- 危险球被取消累计交易金额 -->
+      <div class="mr-5">{{ 'risk.config.usertips' | lang }}</div>
+      <form-wrap [style.width.px]="lang.isLocal ? '120' : '170'">
+        <span class="color-aaa fz-16">＞</span>
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.lowOperationsTimes" />
+        <span suffix class="color-aaa">{{ 'risk.config.ci' | lang }}</span>
+      </form-wrap>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 单一赛事 -->
+<form-row [label]="'risk.config.singleGame' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac fz-14">
+      <!-- 连续 -->
+      {{ 'risk.config.profitableBets' | lang }}
+      <form-wrap [style.width.px]="lang.isLocal ? '90' : '110'" class="mx-5">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          [(ngModel)]="data.singleMatchContinuousWinBetSlips"
+        />
+        <span suffix class="color-aaa">%</span>
+      </form-wrap>
+    </div>
+
+    <div class="d-flex flex-ac mt-4 fz-14">
+      <form-wrap [style.width.px]="lang.isLocal ? '90' : '200'">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          [(ngModel)]="data.singleMatchTransWithinMinutes"
+        />
+        <span suffix class="color-aaa">{{ 'risk.config.min' | lang }}</span>
+      </form-wrap>
+      <!-- 内注单累计交易金额占正常赛事交易金额 -->
+      <div class="mx-5">{{ 'risk.config.betRate' | lang }}</div>
+      <form-wrap [style.width.px]="lang.isLocal ? '90' : '110'">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          [(ngModel)]="data.singleMatchAccumulatedTransAmtRate"
+        />
+        <span suffix class="color-aaa">%</span>
+      </form-wrap>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 单一供应商 -->
+<form-row [label]="'risk.config.singleSu' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac fz-14">
+      <form-wrap [style.width.px]="90">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          [(ngModel)]="data.venuesWinGreaterThanRiskQuotaInDays"
+        />
+        <span suffix class="color-aaa">{{ 'risk.config.day' | lang }}</span>
+      </form-wrap>
+      <div class="fz-14 mx-5">{{ 'risk.config.profitSingle' | lang }}</div>
+      <!-- <form-wrap [style.width.px]="90">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.providerWinQuotaHours" />
+        <span suffix class="color-aaa">{{ 'risk.config.bei' | lang }}</span>
+      </form-wrap> -->
+    </div>
+
+    <div class="d-flex flex-ac fz-14 mt-4">
+      <form-wrap [style.width.px]="90">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.singlePlatformWinDays" />
+        <span suffix class="color-aaa">{{ 'risk.config.day' | lang }}</span>
+      </form-wrap>
+      <div class="mx-5">{{ 'risk.config.cumulativeProfit ' | lang }}</div>
+      <form-wrap [style.width.px]="90">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.singlePlatformWinRate" />
+        <span suffix class="color-aaa">{{ 'risk.config.bei' | lang }}</span>
+      </form-wrap>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 盈利金额 -->
+<form-row [label]="'risk.config.profitAmount' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac fz-14">
+      <div class="mr-5">{{ 'risk.config.pMore' | lang }}</div>
+      <form-wrap [style.width.px]="lang.isLocal ? '90' : '140'">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.winMoreThanDepositRate" />
+        <span suffix class="color-aaa">{{ 'risk.config.bei' | lang }}</span>
+      </form-wrap>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 30日全平台 -->
+<form-row [label]="'risk.config.allPlat' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac fz-14">
+      <div class="mr-5">{{ 'risk.config.beforeAccumulated' | lang }}</div>
+      <form-wrap [style.width.px]="lang.isLocal ? '90' : '140'">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.everyMonthWinTop" />
+        <span suffix class="color-aaa">{{ 'risk.config.ming' | lang }}</span>
+      </form-wrap>
+      <div class="mx-5">{{ 'risk.config.beforeAccumulative' | lang }}</div>
+      <form-wrap [style.width.px]="lang.isLocal ? '90' : '140'">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.everyMonthTrxTop" />
+        <span suffix class="color-aaa">{{ 'risk.config.ming' | lang }}</span>
+      </form-wrap>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 高额盈利 -->
+<form-row [label]="'risk.config.highWinning' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac fz-14">
+      <div>{{ 'risk.config.moreThan' | lang }}</div>
+      <form-wrap class="mx-5" [style.width.px]="120">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="data.memberExceedPayout" />
+        <span suffix class="color-aaa">USDT</span>
+      </form-wrap>
+      <div>{{ 'risk.config.winning' | lang }}</div>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 大额提款 -->
+<form-row [label]="'risk.config.wdCheck' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac fz-14">
+      <!-- 中文: _ 小时内提交的 _  笔 _  USDT 及以上提款； -->
+      <ng-container *ngIf="this.lang.isLocal; else enTpl">
+        <input
+          [style.width.px]="80"
+          class="form-control fz-14 mr-5"
+          autocomplete="off"
+          type="text"
+          input-number
+          [class.is-invalid]="!+data.largeWithdrawalHours"
+          [(ngModel)]="data.largeWithdrawalHours"
+        />
+        <div>小时内提交的</div>
+        <input
+          [style.width.px]="80"
+          class="form-control fz-14 mx-5"
+          autocomplete="off"
+          type="text"
+          input-number
+          [class.is-invalid]="!+data.largeWithdrawalNum"
+          [(ngModel)]="data.largeWithdrawalNum"
+        />
+        <div>笔</div>
+        <form-wrap class="mx-5" [style.width.px]="120" [invalid]="!+data.largeWithdrawalAmount">
+          <input
+            class="form-control fz-14"
+            autocomplete="off"
+            type="text"
+            [input-float]="3"
+            [input-max]="99999999"
+            [(ngModel)]="data.largeWithdrawalAmount"
+          />
+          <span suffix class="color-aaa">USDT</span>
+        </form-wrap>
+        <div>及以上提款;</div>
+      </ng-container>
+
+      <!-- 英文: _ submitted WD of _ USDT and up in _ hour -->
+      <ng-template #enTpl>
+        <input
+          [style.width.px]="80"
+          class="form-control fz-14 mr-5"
+          autocomplete="off"
+          type="text"
+          input-number
+          [class.is-invalid]="!+data.largeWithdrawalNum"
+          [(ngModel)]="data.largeWithdrawalNum"
+        />
+        <div>submitted WD of</div>
+        <form-wrap class="mx-5" [style.width.px]="120" [invalid]="!+data.largeWithdrawalAmount">
+          <input
+            class="form-control fz-14"
+            autocomplete="off"
+            type="text"
+            [input-float]="3"
+            [input-max]="99999999"
+            [(ngModel)]="data.largeWithdrawalAmount"
+          />
+          <span suffix class="color-aaa">USDT</span>
+        </form-wrap>
+        <div>and up in</div>
+        <input
+          [style.width.px]="80"
+          class="form-control fz-14 mx-5"
+          autocomplete="off"
+          type="text"
+          input-number
+          [class.is-invalid]="!+data.largeWithdrawalHours"
+          [(ngModel)]="data.largeWithdrawalHours"
+        />
+        <div>hour</div>
+      </ng-template>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- DB彩票机器投注 -->
+<!-- <form-row [label]="'risk.config.dbLottery' | lang" label-width="290">
+  <ng-template>
+    多次投注，无时间间隔，且投注金额相同。
+    {{ 'risk.config.dbLotteryContent' | lang }}
+  </ng-template>
+</form-row> -->
+
+<!-- 共享加密货币地址的账户 -->
+<form-row [label]="'risk.config.acAddress' | lang" label-width="290">
+  <ng-template>
+    <!-- 超过1个账户将使用相同的加密货币地址进行提款。 -->
+    <div class="fz-14">{{ 'risk.config.acAddressContent' | lang }}</div>
+  </ng-template>
+</form-row>
+
+<!-- 休眠账户高余额 -->
+<form-row [label]="'risk.config.dormantAccounts' | lang" label-width="290">
+  <ng-template>
+    <!-- 中文: 在最后登录为 _ 天前且余额为 _ USDT及以上的账户 -->
+    <!-- 英文: log-in _ days ago and with balance of _ USDT and more.  -->
+    <div class="d-flex flex-ac fz-14">
+      <div>{{ this.lang.isLocal ? '在最后登录为' : 'log-in' }}</div>
+      <input
+        [style.width.px]="80"
+        class="form-control fz-14 mx-5"
+        autocomplete="off"
+        type="text"
+        input-number
+        [class.is-invalid]="!+data.dormantHighDay"
+        [(ngModel)]="data.dormantHighDay"
+      />
+      <div>{{ this.lang.isLocal ? '天前，且余额为' : 'days ago and with balance of' }}</div>
+      <form-wrap class="mx-5" [style.width.px]="120" [invalid]="!+data.dormantHighBalance">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          [input-float]="3"
+          [input-max]="99999999"
+          [(ngModel)]="data.dormantHighBalance"
+        />
+        <span suffix class="color-aaa">USDT</span>
+      </form-wrap>
+      <div>{{ this.lang.isLocal ? '及以上的账户' : 'and more' }}</div>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 僵尸账户 -->
+<form-row [label]="'risk.config.zombieAccounts' | lang" label-width="290">
+  <ng-template>
+    <!-- 中文: 过去 _ 天内没有任何活动，突然又登录 -->
+    <!-- 英文: no activity (log-in) for the past _ days and will suddenly log-in again  -->
+    <div class="d-flex flex-ac fz-14">
+      <div>{{ this.lang.isLocal ? '过去' : 'no activity (log-in) for the past' }}</div>
+      <input
+        [style.width.px]="80"
+        class="form-control fz-14 mx-5"
+        autocomplete="off"
+        type="text"
+        input-number
+        [class.is-invalid]="!+data.zombieLoginDay"
+        [(ngModel)]="data.zombieLoginDay"
+      />
+      <div>{{ this.lang.isLocal ? '天内没有任何活动，突然又登录' : 'days and will suddenly log-in again' }}</div>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 红利滥用 (TODO: 仅限含商户1或-1权限展示) -->
+<form-row [label]="'risk.config.bonusAbuse' | lang" label-width="290" *ngIf="isOneMerchant">
+  <ng-template>
+    <!-- 与推荐者ID相关的红利滥用者 -->
+    <div class="fz-14">{{ 'risk.config.bonusAbuseTips' | lang }}</div>
+    <textarea
+      class="form-control resize-none w-50"
+      type="text"
+      rows="3"
+      [placeholder]="'member.coupon.model.pleaseEnterInfo' | lang"
+      [(ngModel)]="data.bonusAbuser"
+    ></textarea>
+  </ng-template>
+</form-row>
+
+<div class="btn-wrap pt-14 flex-center d-flex">
+  <button type="button" class="c-btn c-btn-primary" (click)="submit()">{{ 'common.submit' | lang }}</button>
+</div>

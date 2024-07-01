@@ -1,0 +1,11 @@
+<div class="container">
+  <span class="important-icon"></span>
+  <p>{{ 'safety_rem00' | translate }}</p>
+  <p class="txt">{{ data.message }}</p>
+  <div class="btn-group">
+    <!-- <button class="cancel" (click)="close()">取消</button> -->
+    <customize-button type="primary" size="large" miniWidth="168px" (onClick)="toKycVerify()">
+      {{ 'verification' | translate }}
+    </customize-button>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.flex-layout {
+  display: flex;
+}
+
+.concept-container {
+  padding-top: 30px;
+
+  @media (max-width: 767px) {
+    padding-top: 20px;
+    padding-bottom: 58px;
+  }
+}
+
+.content-text {
+  display: flex;
+  align-items: center;
+  @include polyfills.flex-gap(20px, 'row nowrap');
+  line-height: 1.48;
+  color: var(--text-color-20);
+  margin-top: 30px;
+
+  .icon-correct {
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    background-color: #15bf7b;
+    border-radius: 50%;
+
+    &::before {
+      color: #fff;
+    }
+  }
+}

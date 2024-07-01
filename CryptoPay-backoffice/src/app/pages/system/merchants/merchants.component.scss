@@ -1,0 +1,54 @@
+:host {
+  .title {
+    white-space: nowrap;
+    font-size: 16px;
+    color: #969bad;
+  }
+
+  .group-name {
+    margin-left: 15px;
+  }
+
+  input[type='checkbox'] {
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+  }
+
+  table {
+    th {
+      font-weight: normal;
+    }
+  }
+}
+
+.card-body {
+  padding: 30px;
+}
+
+.list {
+  .title {
+    color: #181c32;
+    font-size: 20px;
+  }
+
+  .edit {
+    padding: 8px 13px;
+    line-height: 20px;
+    font-size: 14px;
+    background-color: #f5f8fa;
+    cursor: pointer;
+    color: #7e8299;
+    transition: all 0.2s linear;
+    border-radius: 6px;
+
+    &:hover {
+      color: #7e8299;
+      background-color: #e4e6ef;
+    }
+  }
+}
+
+.vam {
+  vertical-align: middle;
+}

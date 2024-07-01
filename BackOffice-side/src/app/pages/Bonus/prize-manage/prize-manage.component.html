@@ -1,0 +1,246 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 奖品名称 -->
+    <form-row [label]="'member.activity.prizeCommon.prizeName' | lang" class="mr-16" [contentWidth]="280">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.title"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+    <!-- 奖品类型 -->
+    <form-row [label]="'luckRoulette.drawRecord.prizeType' | lang" label-width="110" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.type" (selectionChange)="loadData(true)">
+            <!-- <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option> -->
+            <mat-option *ngFor="let item of typeListCom" [value]="item.value">{{ item.lang | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac justify-content-between">
+    <!-- 奖品配置列表 -->
+    <div class="fz-20">{{ 'member.activity.prizeCommon.prizeConfigurationList' | lang }}</div>
+    <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4" (click)="goPrizeEdit()">
+      <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+      <!-- 新建奖品 -->
+      <span class="vam">{{ 'member.activity.prizeCommon.createPrize' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 奖品名称 -->
+          <th [style.width.%]="25">
+            <span class="cell">{{ 'member.activity.prizeCommon.prizeName' | lang }}</span>
+          </th>
+          <!-- 券码 -->
+          <th>
+            <span class="cell">{{ 'member.coupon.model.couponCode' | lang }}</span>
+          </th>
+          <!-- 奖品类型 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.drawRecord.prizeType' | lang }}</span>
+          </th>
+          <!-- 配置 -->
+          <th>
+            <span class="cell">{{ 'system.merchants.config' | lang }}</span>
+          </th>
+          <!-- 已发放数量 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.alHanoutAmount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <!-- 创建时间 -->
+                <span>{{ 'member.coupon.creadTime' | lang }}</span>
+                <!-- <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span> -->
+              </span>
+            </span>
+          </th>
+          <!-- 状态 -->
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+          <!-- 操作 -->
+          <th>
+            <span class="cell">{{ 'common.operate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.prizeName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.prizeCode || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ prizeService.getPrizeName(prizeTypeList, item.prizeType) }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item | prizeConfig }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.totalIssuedCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.createdTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.status">
+              <!-- 待审核 -->
+              <app-label *ngSwitchCase="1" type="success">{{ 'member.coupon.pendingReview' | lang }}</app-label>
+              <!-- 已审核 -->
+              <app-label *ngSwitchCase="2" type="primary">{{ 'member.coupon.audited' | lang }}</app-label>
+              <!-- 已下架 -->
+              <app-label *ngSwitchCase="3" type="yellow">{{ 'member.coupon.beenRemoved' | lang }}</app-label>
+              <!-- 二次审核 -->
+              <app-label *ngSwitchCase="4" type="info">{{ 'member.coupon.pendingReReview' | lang }}</app-label>
+            </span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.status">
+              <!-- 1:待审核 -->
+              <ng-container *ngSwitchCase="1">
+                <div class="px-3 text-primary cursor-pointer" (click)="goPrizeEdit(item.id)">
+                  <!-- 编辑 -->
+                  {{ 'common.edit' | lang }}
+                </div>
+                <div
+                  class="px-3 text-primary cursor-pointer line"
+                  (click)="onOpenWarningPopup(warningTpl, 'review', item.id)"
+                >
+                  <!-- 审核 -->
+                  {{ 'member.coupon.review' | lang }}
+                </div>
+              </ng-container>
+              <!-- 2:已审核 -->
+              <ng-container *ngSwitchCase="2">
+                <div class="px-3 text-primary cursor-pointer" (click)="goPrizeEdit(item.id, 'check')">
+                  <!-- 查看 -->
+                  {{ 'common.review' | lang }}
+                </div>
+                <div
+                  class="px-3 text-primary cursor-pointer line"
+                  (click)="onOpenWarningPopup(warningTpl, 'down', item.id)"
+                >
+                  <!-- 下架 -->
+                  {{ 'member.coupon.offShelf' | lang }}
+                </div>
+              </ng-container>
+              <!-- 3:已下架 -->
+              <ng-container *ngSwitchCase="3">
+                <div class="px-3 text-primary cursor-pointer" (click)="goPrizeEdit(item.id, 'check')">
+                  <!-- 查看 -->
+                  {{ 'common.review' | lang }}
+                </div>
+                <div class="px-3 text-primary cursor-pointer line" (click)="goPrizeEdit(item.id, 'offlineEdit')">
+                  <!-- 编辑 -->
+                  {{ 'common.edit' | lang }}
+                </div>
+                <div
+                  class="px-3 text-primary cursor-pointer line"
+                  (click)="onOpenWarningPopup(warningTpl, 'up', item.id)"
+                >
+                  <!-- 上架 -->
+                  {{ 'game.provider.up' | lang }}
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="4">
+                <div class="px-3 text-primary cursor-pointer" (click)="goPrizeEdit(item.id, 'offlineEdit')">
+                  <!-- 编辑 -->
+                  {{ 'common.edit' | lang }}
+                </div>
+                <div
+                  class="px-3 text-primary cursor-pointer line"
+                  (click)="onOpenWarningPopup(warningTpl, 'review', item.id)"
+                >
+                  <!-- 审核 -->
+                  {{ 'member.coupon.review' | lang }}
+                </div>
+              </ng-container>
+              <!-- 发放记录查询 -->
+              <div class="px-3 text-primary cursor-pointer line" (click)="goPrizeQuery(item)">
+                <!-- 查询 -->
+                {{ 'member.coupon.receiveList' | lang }}
+              </div>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-data let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'common.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ data.msg | lang }}</p>
+      <div
+        *ngIf="data.type === 'review'"
+        class="fz-16 text-primary config-link"
+        (click)="goPrizeEdit(data.id, 'check')"
+      >
+        <!-- 点击查看该奖品配置 -->
+        {{ 'member.activity.prizeCommon.prizeViewConfiguration' | lang }}
+      </div>
+    </div>
+    <modal-footer (confirm)="c(true)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

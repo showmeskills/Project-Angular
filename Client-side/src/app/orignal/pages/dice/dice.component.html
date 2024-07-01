@@ -1,0 +1,183 @@
+<!-- <div class="money">
+  <div>模拟余额：</div>
+  <img class="currency-icon" [src]="currentCurrencyData?.icon" /><span>{{
+    this.balance || 0
+  }}</span>
+</div> -->
+<div class="wrapper" [class.loading]="loading">
+  <div class="wrapper-top" [class.colu]="isH5">
+    <!-- <div class="wrapper-top-left" [class.h5]="isH5">
+      <div class="top-logo-web" *ngIf="!isH5">
+        <img src="assets/orignal/images/dice/logo-PC.png" class="logo-web">
+      </div>
+      <div class="top-logo-h5" *ngIf="isH5">
+        <em></em>
+        <img src="assets/orignal/images/dice/logo-h5.png" class="logo-h5">
+        <em></em>
+      </div>
+    </div> -->
+    <orignal-bar type="dice" [(fairnessData)]="fairnessData" [(isFastBet)]="isFastBet" [(isHotkey)]="isHotkey">
+    </orignal-bar>
+    <div class="wrapper-top-right" [class.h5]="isH5">
+      <div class="history" [class.hide]="isH5">
+        <div class="numbers">
+          <div class="item ff" *ngFor="let item of list" [class]="item?.lotteryBetReturnAmount > 0 ? 'blue' : 'red'">
+            {{ item?.lotteryBetDetail }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="game-number" [class.h5]="isH5">
+    <div class="left">
+      <div [class.h5]="isH5">
+        <div class="value ff" [class.h5]="isH5">{{ value }}</div>
+        <div class="name">{{ 'prophecy_numbers' | translate }}</div>
+      </div>
+    </div>
+    <div class="center">
+      <div class="circle1" [class.h5]="isH5"></div>
+      <div class="circle2" [class.h5]="isH5"></div>
+      <div class="circle3" [class.h5]="isH5"></div>
+      <img class="center-img" src="assets/orignal/images/dice/group.svg" alt="" *ngIf="isH5 && theme == 'moon'" />
+
+      <img class="center-img" src="assets/orignal/images/dice/dice-light.png" alt="" *ngIf="isH5 && theme == 'sun'" />
+      <section class="container" *ngIf="!isH5">
+        <div id="dice" [class.fast]="loading && isFastBet" [class.nofast]="loading && !isFastBet">
+          <div class="side front"><div class="dot center"></div></div>
+          <div class="side front inner"></div>
+          <div class="side top">
+            <div class="dot dtop dleft"></div>
+            <div class="dot dbottom dright"></div>
+          </div>
+          <div class="side top inner"></div>
+          <div class="side right">
+            <div class="dot dtop dleft"></div>
+            <div class="dot center"></div>
+            <div class="dot dbottom dright"></div>
+          </div>
+          <div class="side right inner"></div>
+          <div class="side left">
+            <div class="dot dtop dleft"></div>
+            <div class="dot dtop dright"></div>
+            <div class="dot dbottom dleft"></div>
+            <div class="dot dbottom dright"></div>
+          </div>
+          <div class="side left inner"></div>
+          <div class="side bottom">
+            <div class="dot center"></div>
+            <div class="dot dtop dleft"></div>
+            <div class="dot dtop dright"></div>
+            <div class="dot dbottom dleft"></div>
+            <div class="dot dbottom dright"></div>
+          </div>
+          <div class="side bottom inner"></div>
+          <div class="side back">
+            <div class="dot dtop dleft"></div>
+            <div class="dot dtop dright"></div>
+            <div class="dot dbottom dleft"></div>
+            <div class="dot dbottom dright"></div>
+            <div class="dot center dleft"></div>
+            <div class="dot center dright"></div>
+          </div>
+          <div class="side back inner"></div>
+          <div class="side cover x"></div>
+          <div class="side cover y"></div>
+          <div class="side cover z"></div>
+        </div>
+      </section>
+    </div>
+    <div
+      class="right"
+      [class.exchange]="
+        !(
+          (winLossAmount > 0 && selected == this.prevCondition) ||
+          (winLossAmount <= 0 && selected != this.prevCondition)
+        )
+      "
+    >
+      <div [class.h5]="isH5">
+        <div class="value ff" [class.h5]="isH5">
+          <span class="ff">{{ currentValue }}</span>
+          <span></span>
+        </div>
+        <div class="name">{{ 'lucky_numbers' | translate }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-option" [class.h5]="isH5" [class.exchange]="selected == 'above'">
+    <!---web -->
+    <ng-container *ngIf="!isH5" [ngTemplateOutlet]="webGameOption"></ng-container>
+  </div>
+
+  <div class="h5-option-contant" [class.exchange]="selected == 'above'">
+    <!---H5 -->
+    <ng-container *ngIf="isH5" [ngTemplateOutlet]="h5GameOption"></ng-container>
+  </div>
+
+  <div class="game-slider" [class.h5]="isH5" [class.exchange]="selected == 'above'">
+    <ngx-slider [(value)]="value" (valueChange)="playVideo()" [options]="options"></ngx-slider>
+  </div>
+  <div class="vertical-line" *ngIf="!isH5"></div>
+  <orignal-bet
+    type="dice"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [rate]="returnRate('rate')"
+    [isDice]="true"
+    [operate]="operate"
+  ></orignal-bet>
+</div>
+
+<ng-template #webGameOption>
+  <div class="left">
+    <div class="option onact96" (click)="changeSelect('below')">
+      <span>{{ 'small' | translate }}</span>
+    </div>
+    <div class="des">
+      <div class="name">{{ 'odds' | translate }}</div>
+      <div class="value ff">X {{ returnRate('rate') }}</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="des">
+      <div class="name">{{ 'win_chance' | translate }}</div>
+      <div class="value ff">{{ returnRate('success') }} %</div>
+    </div>
+    <div class="option onact96" (click)="changeSelect('above')">
+      <span>{{ 'big' | translate }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #h5GameOption>
+  <div class="top-row">
+    <div class="des">
+      <div class="name">{{ 'odds' | translate }}</div>
+      <div class="value ff">X {{ returnRate('rate') }}</div>
+    </div>
+    <em></em>
+    <div class="des">
+      <div class="name">{{ 'win_chance' | translate }}</div>
+      <div class="value ff">{{ returnRate('success') }} %</div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <!--left btn-->
+    <div class="left-btn onact96" (click)="changeSelect('below')">
+      <div class="option">
+        <span>{{ 'small' | translate }}</span>
+      </div>
+    </div>
+    <!--right btn-->
+    <div class="right-btn onact96" (click)="changeSelect('above')">
+      <div class="option">
+        <span>{{ 'big' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</ng-template>

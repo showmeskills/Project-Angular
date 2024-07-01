@@ -1,0 +1,309 @@
+<ng-template #editGroupTpl let-d="dismiss" let-c="close" let-data>
+  <modal-title [title]="'finance.withdrawConf' | lang: (data ? 'groupEdit' : 'groupAdd')" (close)="d()"></modal-title>
+  <div class="modal-body">
+    <form-row [label]="'finance.withdrawConf.groupName' | lang" [control]="nameControl">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input
+          class="form-control rounded-0"
+          (keyup)="$event.key === 'Enter' && onGroupUpdate(c, data)"
+          type="text"
+          input-trim
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        />
+      </ng-template>
+    </form-row>
+  </div>
+  <modal-footer (confirm)="onGroupUpdate(c, data)" (dismiss)="d()"></modal-footer>
+</ng-template>
+
+<div class="withdraw-wrap">
+  <div class="group-config withdraw-bg" [style.max-width]="isShowGroupRule ? 580 : 'none'">
+    <div class="d-flex flex-ac">
+      <input
+        class="form-control group-config-search"
+        type="search"
+        [placeholder]="'finance.withdrawConf.groupSearch' | lang"
+        [(ngModel)]="searchGroupKW"
+      />
+
+      <button class="btn btn-light-primary py-2 px-8 ml-2 lh-26" (click)="onEditGroup(editGroupTpl)">
+        {{ 'finance.add' | lang }}
+      </button>
+    </div>
+
+    <div class="group-config-item-wrap" cdkDropList (cdkDropListDropped)="onDrop($event)">
+      <div [appLoading]="loadingGroup">
+        <div
+          class="group-config-item"
+          *ngFor="let group of renderGroupList; index as i"
+          [class.active]="group.id === ruleService.curGroupId"
+          (click)="onSelGroup(group)"
+          [cdkDragData]="group"
+          cdkDrag
+        >
+          <span class="icon-sort-wrap">
+            <span class="icon-sort"></span>
+            <span class="icon-sort"></span>
+            <span class="icon-sort"></span>
+          </span>
+          <span class="group-config-item-name mr-4">{{ group.groupName }}</span>
+          <svg-icon
+            (click)="onEditGroup(editGroupTpl, $event, group)"
+            [src]="'./assets/images/svg/edit-normal.svg'"
+            class="group-config-item-opera fz-20 mr-2"
+          ></svg-icon>
+          <svg-icon
+            (click)="onDelGroup($event, group)"
+            [src]="'./assets/images/svg/close-normal.svg'"
+            class="group-config-item-opera fz-20"
+          ></svg-icon>
+        </div>
+      </div>
+
+      <ng-container *ngIf="!loadingGroup">
+        <!-- 空显示 -->
+        <empty [style.height.px]="180" *ngIf="!groupList.length && !searchGroupKW"></empty>
+        <empty
+          [style.height.px]="180"
+          *ngIf="!renderGroupList.length && searchGroupKW"
+          [text]="'common.searchResEmpty' | lang"
+        ></empty>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- 策略 -->
+  <div class="flex-2" *ngIf="curGroupData">
+    <div class="withdraw-bg">
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="flex-1 d-flex fw-bolder fz-20">{{ curGroupData?.groupName }}</div>
+
+        <div>
+          <button class="btn btn-light-primary py-2 px-8 mx-2 lh-28" (click)="openAddRule()">
+            {{ 'finance.withdrawConf.ruleAdd' | lang }}
+          </button>
+          <button class="btn btn-light-primary py-2 px-8 mx-2 lh-28" (click)="ruleService.onShowAll()">
+            <span *ngIf="ruleService.showAll">{{ 'finance.withdrawConf.ruleToggleDisable' | lang }}</span>
+            <span *ngIf="!ruleService.showAll">{{ 'finance.withdrawConf.ruleToggleAll' | lang }}</span>
+          </button>
+          <button class="btn btn-light-primary py-2 px-8 mx-2 lh-28" disabled>{{ 'risk.history' | lang }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 规则 -->
+    <div class="position-relative" [appLoading]="!ruleService.rules.length && ruleService.ruleLoading">
+      <div class="rule-wrap position-relative" cdkDropList (cdkDropListDropped)="onRuleDrop($event)">
+        <div
+          class="rule-item withdraw-bg"
+          *ngFor="let item of ruleService.rules; index as i"
+          [cdkDragData]="item"
+          cdkDrag
+          [appLoading]="!!ruleService.rules.length && ruleService.ruleLoading"
+          [style.display]="!ruleService.showAll ? (item.enabled ? '' : 'none') : ''"
+        >
+          <div class="d-flex flex-ac w-100">
+            <label class="checkbox checkbox-lg">
+              <input
+                type="checkbox"
+                [checked]="item.enabled"
+                (change)="onUpdateField(item, 'enabled', enableInp.checked)"
+                #enableInp
+              />
+              <span class="mr-4"></span>
+            </label>
+            <div class="flex-1 color-222 vam mx-2 d-flex flex-ac">
+              AP_{{ ('0' + (i + 1)).slice(-2) }}
+              <input
+                type="text"
+                class="rule-remark ml-4 form-control"
+                [value]="item.policyName"
+                (blur)="onUpdateField(item, 'policyName', nameInp.value)"
+                #nameInp
+              />
+            </div>
+
+            <!-- 编辑 -->
+            <div class="rule-item-iconbtn" [title]="'common.edit' | lang">
+              <svg-icon
+                (click)="onCloneEditRule($event, item, i)"
+                [src]="'./assets/images/svg/pen-line.svg'"
+                class="fz-20"
+              ></svg-icon>
+            </div>
+            <!-- 克隆 -->
+            <div class="rule-item-iconbtn" [title]="'finance.withdrawConf.cloneEdit' | lang">
+              <svg-icon
+                (click)="onCloneEditRule($event, item, i, true)"
+                [src]="'./assets/images/svg/clone.svg'"
+                class="fz-18"
+              ></svg-icon>
+            </div>
+            <!-- 删除 -->
+            <div class="rule-item-iconbtn">
+              <svg-icon
+                (click)="onDelRule($event, i)"
+                [src]="'./assets/images/svg/close-normal.svg'"
+                class="fz-18"
+              ></svg-icon>
+            </div>
+          </div>
+
+          <div>
+            <div class="my-4">
+              <span class="mr-2">{{ 'finance.withdrawConf.conditions' | lang }}:</span>
+
+              <ng-container *ngFor="let key of Object.keys(item.withdrawalConditions || {})">
+                <app-label
+                  *ngIf="
+                    item.withdrawalConditions &&
+                    item.withdrawalConditions[key] !== null &&
+                    !['timeUnit', 'ngrValue'].includes(key)
+                  "
+                  class="px-4 mx-2 mb-2"
+                  type="primary"
+                >
+                  <span class="pr-2">{{ 'finance.rule' | lang: key }}:</span>
+                  <span *ngIf="item.withdrawalConditions">
+                    <!-- 是、否 -->
+                    <span *ngIf="[true, false].includes(item.withdrawalConditions[key])">{{
+                      item.withdrawalConditions[key] === true ? ('finance.yes' | lang) : ('finance.no' | lang)
+                    }}</span>
+
+                    <!-- 数值USDT -->
+                    <span
+                      *ngIf="
+                        ['amountMorethen', 'amountLessthen', 'totalAmountLessthen', 'totalAmountMorethen'].includes(key)
+                      "
+                      >{{ item.withdrawalConditions[key] || 0 }} USDT</span
+                    >
+
+                    <!-- 数值 -->
+                    <span *ngIf="['totalWithdrawalCount'].includes(key)">
+                      {{ item.withdrawalConditions[key] || 0 }}
+                    </span>
+
+                    <!-- 时间 -->
+                    <span *ngIf="['totalTime'].includes(key)">
+                      <span>{{ item.withdrawalConditions[key] || 0 }}</span>
+                      <ng-container *ngFor="let unit of timeUnitList">
+                        <span *ngIf="unit.value === item.withdrawalConditions.timeUnit">{{ unit.lang | lang }}</span>
+                      </ng-container>
+                    </span>
+
+                    <!-- KYC等级 -->
+                    <span *ngIf="key === 'kycLevels'">
+                      <ng-container *ngFor="let hasKyc of item.withdrawalConditions.kycLevels; last as ls">
+                        <ng-container *ngFor="let kyc of kycLevelList">
+                          <ng-container *ngIf="hasKyc === kyc.value">
+                            <span>{{ kyc.lang | lang }}</span>
+                            <span *ngIf="!ls">, </span>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </span>
+
+                    <!-- 风控等级 -->
+                    <span *ngIf="key === 'riskControls'">
+                      <ng-container *ngFor="let hasRiskLevel of item.withdrawalConditions.riskControls; last as ls">
+                        <ng-container *ngFor="let riskLevel of riskLevelList">
+                          <ng-container *ngIf="riskLevel.value === hasRiskLevel">
+                            <span>{{ riskLevel.label }}</span>
+                            <span *ngIf="!ls">, </span>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </span>
+
+                    <!-- 文本 -->
+                    <span
+                      *ngIf="
+                        ['currencyType', 'paymentMethod', 'ipAddress', 'vipLevelLessthen', 'vipLevelMorethen'].includes(
+                          key
+                        )
+                      "
+                    >
+                      {{ item.withdrawalConditions[key] }}
+                    </span>
+
+                    <!-- NGR -->
+                    <span *ngIf="['ngrComparison'].includes(key)">
+                      <ng-container *ngIf="key === 'ngrComparison'">
+                        <ng-container *ngFor="let ngrc of ngrComparisonList">
+                          <ng-container *ngIf="ngrc.value === NgrComparisonEnum[item.withdrawalConditions[key]]"
+                            >{{ ngrc.lang | lang }}{{ item.withdrawalConditions['ngrValue'] }}</ng-container
+                          >
+                        </ng-container>
+                      </ng-container>
+                    </span>
+
+                    <!-- IP国家 -->
+                    <span *ngIf="'ipCountry' === key">
+                      <ng-container *ngFor="let item of item.withdrawalConditions[key]; let last = last">
+                        {{ item }}
+                        {{ !last ? ', ' : '' }}
+                      </ng-container>
+                    </span>
+                  </span>
+                </app-label>
+              </ng-container>
+            </div>
+
+            <div class="my-4">
+              {{ 'finance.withdrawConf.actions' | lang }}:
+
+              <!-- 审核方式 -->
+              <ng-container *ngIf="item.withdrawalActions?.auditOperationMethod">
+                <app-label class="px-4" type="info">
+                  {{ 'finance.withdrawConf.reviewMethod' | lang }}:
+                  <ng-container *ngFor="let operaMethod of operationMethodList">
+                    <ng-container *ngIf="operaMethod.value === item.withdrawalActions?.auditOperationMethod">{{
+                      operaMethod.lang | lang
+                    }}</ng-container>
+                  </ng-container>
+                </app-label>
+
+                <span class="mx-2">{{ 'common.and' | lang }}</span>
+              </ng-container>
+
+              <!-- 审核操作 -->
+              <app-label class="px-4" [type]="item.withdrawalActions?.operation === 'Approved' ? 'success' : 'danger'"
+                >{{ 'finance.withdrawConf.reviewAction' | lang }}:
+                <ng-container *ngFor="let opera of operationList">
+                  <ng-container *ngIf="opera.value === item.withdrawalActions?.operation">{{
+                    opera.lang | lang
+                  }}</ng-container>
+                </ng-container>
+              </app-label>
+
+              <ng-container *ngIf="item.withdrawalActions?.auditOperationMethod === 'Auto'">
+                <span class="mx-2">{{ 'common.and' | lang }}</span>
+
+                <!-- 审核时间 -->
+                <app-label class="px-4" type="warning">
+                  <span class="pr-2">{{ 'finance.rule.time' | lang }}:</span>
+                  <ng-container *ngIf="!(+item.withdrawalActions?.delay || 0); else actTimeUnitTpl">
+                    {{ 'finance.rule.immediate' | lang }}
+                  </ng-container>
+                  <ng-template #actTimeUnitTpl>
+                    <span>{{ item.withdrawalActions?.delay || 0 }}</span>
+                    <ng-container *ngFor="let unit of timeUnitList">
+                      <span *ngIf="unit.value === item.withdrawalActions?.timeUnit">{{ unit.lang | lang }}</span>
+                    </ng-container>
+                  </ng-template>
+                </app-label>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <empty class="withdraw-bg d-flex flex-ac" [style.height.px]="230" *ngIf="!ruleService.rules.length"></empty>
+    </div>
+  </div>
+
+  <div class="withdraw-bg flex-2" *ngIf="!curGroupData">
+    <empty [style.height.px]="230" *ngIf="!groupList.length && !searchGroupKW"></empty>
+  </div>
+</div>

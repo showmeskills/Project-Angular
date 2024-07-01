@@ -1,0 +1,398 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12">
+  <!-- UID -->
+  <form-row [label]="'UID'" class="mr-8" [contentWidth]="250">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [placeholder]="'member.coupon.model.pleaseEnterInfo' | lang"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 用户余额等于超过 -->
+  <form-row [label]="'system.reportViewer.balanceGreater' | lang" class="mr-8">
+    <ng-template>
+      <form-wrap [style.width.px]="150">
+        <input
+          class="form-control fz-14"
+          type="text"
+          [(ngModel)]="data.balanceGreater"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+        <span suffix class="color-aaa">USDT</span>
+      </form-wrap>
+    </ng-template>
+  </form-row>
+
+  <!-- 用户余额少于等于 -->
+  <form-row [label]="'system.reportViewer.balanceLess' | lang" class="mr-8">
+    <ng-template>
+      <form-wrap [style.width.px]="150">
+        <input
+          class="form-control fz-14"
+          type="text"
+          [(ngModel)]="data.balanceLess"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+        <span suffix class="color-aaa">USDT</span>
+      </form-wrap>
+    </ng-template>
+  </form-row>
+
+  <!-- 存款状态 -->
+  <form-row [label]="'system.reportViewer.depositStatus' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.depositStatus" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of depositStatusList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 存款尝试状态 -->
+  <form-row [label]="'system.reportViewer.depositAttemptStatus' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.depositAttemptStatus" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of depositAttemptStatusList" [value]="item.value">{{
+            item.lang | lang
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 用户账号创建时间 -->
+  <form-row [label]="'system.reportViewer.createdTime' | lang" class="mr-8" [contentWidth]="250">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 列表 -->
+<div class="card card-body mt-12">
+  <div class="d-flex flex-ac justify-content-between">
+    <div class="fz-20">{{ 'nav.reportViewer' | lang }}</div>
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 导出 -->
+      <button
+        type="button"
+        class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        (click)="onExport()"
+      >
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+
+      <!-- 列表扩展 -->
+      <div class="ml-6 expand-box" (mouseleave)="expandFlag = false">
+        <button
+          type="button"
+          class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+          (mouseover)="expandFlag = true"
+        >
+          <svg-icon [src]="'./assets/images/svg/gear.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'system.reportViewer.expand' | lang }}</span>
+        </button>
+
+        <div class="p-5 expand" *ngIf="expandFlag" selectChildren>
+          <label class="checkbox checkbox-lg">
+            <input type="checkbox" selectGroup />
+            <span class="mr-4"></span>{{ 'common.all' | lang }}
+          </label>
+
+          <div class="d-flex flex-ac flex-wrap mt-4" style="gap: 10px">
+            <label class="checkbox checkbox-lg mr-4" *ngFor="let item of thList">
+              <input type="checkbox" [(ngModel)]="item.checked" />
+              <span class="mr-4"></span>{{ item.lang | lang }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <div class="report-viewer-table">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let item of thList">
+              <th *ngIf="item.checked">
+                <span class="cell">
+                  <table-sort
+                    *ngIf="item.value === 'userBalance'; else NormalTpl"
+                    [(isAsc)]="data.isAsc"
+                    [(sortCurKey)]="data.order"
+                    [sortKey]="item.value"
+                    (sortChange)="loadData(true)"
+                  >
+                    {{ item.lang | lang }}
+                  </table-sort>
+
+                  <ng-template #NormalTpl>{{ item.lang | lang }}</ng-template>
+                </span>
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list; let i = index">
+            <ng-container *ngFor="let th of thList">
+              <td *ngIf="th.checked">
+                <span class="cell">
+                  <ng-container
+                    *ngIf="
+                      [
+                        'birthDay',
+                        'registeredTime',
+                        'lastLoginTime',
+                        'firstDepositTime',
+                        'userBalance',
+                        'totalDeposit',
+                        'totalWithdrawal',
+                        'firstDepositAmount',
+                        'vipLevel',
+                        'status',
+                        'withBonusRestrictions',
+                        'depositRestrictions',
+                        'withdrawalRestrictions',
+                        'currencies',
+                        'riskControl',
+                        'bettingProducts',
+                        'totalBet',
+                        'firstWithdrawalDate',
+                        'firstDeclinedWithdrawalAmount',
+                        'lastDepositDate',
+                        'lastGameDate',
+                        'bonusUsed'
+                      ].includes(th.value);
+                      else NormalTpl
+                    "
+                  >
+                    <!-- 生日/注册日期/最近登录日期/第一次存款日期/第一次提款日期/最后一次存款日期/最后一笔游戏日期 -->
+                    <ng-container
+                      *ngIf="
+                        [
+                          'birthDay',
+                          'registeredTime',
+                          'lastLoginTime',
+                          'firstDepositTime',
+                          'firstWithdrawalDate',
+                          'lastDepositDate',
+                          'lastGameDate'
+                        ].includes(th.value)
+                      "
+                    >
+                      {{
+                        ['birthDay', 'lastGameDate'].includes(th.value)
+                          ? (item[th.value] | timeFormat: 'YYYY-MM-DD')
+                          : (item[th.value] | timeFormat)
+                      }}
+                    </ng-container>
+
+                    <!-- 用户余额/总存款(USDT)/总提款(USDT)/用户总投注金额/第一次存款成功金额(USDT)/第一次提款失败金额(USDT) -->
+                    <ng-container
+                      *ngIf="
+                        [
+                          'userBalance',
+                          'totalDeposit',
+                          'totalWithdrawal',
+                          'totalBet',
+                          'firstDepositAmount',
+                          'firstDeclinedWithdrawalAmount'
+                        ].includes(th.value)
+                      "
+                    >
+                      {{ item[th.value] | currencyValue: true }}
+                    </ng-container>
+
+                    <!-- VIP等级 -->
+                    <ng-container *ngIf="th.value === 'vipLevel'">
+                      {{ item[th.value] | vipName }}
+                    </ng-container>
+
+                    <!-- 账号状态 -->
+                    <ng-container *ngIf="th.value === 'status'">
+                      <ng-container [ngSwitch]="item[th.value]">
+                        <!-- 正常 -->
+                        <div *ngSwitchCase="'Normal'" class="rounded status_normal status">
+                          {{ 'member.list.normal' | lang }}
+                        </div>
+                        <!-- 账户锁定 -->
+                        <div *ngSwitchCase="'Freezing'" class="rounded status_lock status">
+                          {{ 'member.list.accountLock' | lang }}
+                        </div>
+                        <!-- 账户禁用 -->
+                        <div *ngSwitchCase="'Disable'" class="rounded status_stop status">
+                          {{ 'member.list.accountDisabled' | lang }}
+                        </div>
+                        <!-- 部分禁用 -->
+                        <div *ngSwitchCase="'DisablePart'" class="rounded status_stop status">
+                          {{ 'member.list.partiallyDisabled' | lang }}
+                        </div>
+                        <!-- 未激活 -->
+                        <div *ngSwitchCase="'NotActive'" class="rounded status_noactive status">
+                          {{ 'member.list.inactivated' | lang }}
+                        </div>
+                        <!-- 账户删除 -->
+                        <div *ngSwitchCase="'Deleted'" class="rounded status_stop status">
+                          {{ 'member.list.accountDeletion' | lang }}
+                        </div>
+                        <ng-container *ngSwitchDefault>-</ng-container>
+                      </ng-container>
+                    </ng-container>
+
+                    <!-- 红利限制/存款限制/提款限制/是否使用红利 -->
+                    <ng-container
+                      *ngIf="
+                        [
+                          'withBonusRestrictions',
+                          'depositRestrictions',
+                          'withdrawalRestrictions',
+                          'bonusUsed'
+                        ].includes(th.value)
+                      "
+                    >
+                      <ng-container [ngSwitch]="item[th.value]">
+                        <!-- 是 -->
+                        <ng-container *ngSwitchCase="true">{{ 'bonus.activity.yes' | lang }}</ng-container>
+                        <!-- 否 -->
+                        <ng-container *ngSwitchCase="false">{{ 'bonus.activity.no' | lang }}</ng-container>
+                        <ng-container *ngSwitchDefault>-</ng-container>
+                      </ng-container>
+                    </ng-container>
+
+                    <!-- 币种 -->
+                    <ng-container *ngIf="th.value === 'currencies'">
+                      <ng-container *ngFor="let item of getCurrencyList(item[th.value])">
+                        <img [currencyIcon]="item" currencySize="18" class="mr-2" />
+                      </ng-container>
+                    </ng-container>
+
+                    <!-- 风控等级 -->
+                    <ng-container *ngIf="th.value === 'riskControl'">
+                      <div class="riskLevel" [class]="item[th.value]">
+                        {{ item[th.value] || '-' }}
+                      </div>
+                    </ng-container>
+
+                    <!-- 风控等级 -->
+                    <ng-container *ngIf="th.value === 'bettingProducts'">
+                      <!-- 体育&电竞: 1,2-->
+                      <svg-icon
+                        *ngIf="isGameIcon([1, 2], item[th.value])"
+                        [ngbPopover]="showGameMaker([1, 2], item[th.value])"
+                        triggers="mouseenter:mouseleave"
+                        [svgStyle]="{ 'width.px': 25 }"
+                        [src]="'./assets/images/svg/member/sportGame.svg'"
+                      ></svg-icon>
+                      <!-- 彩票: 3-->
+                      <svg-icon
+                        *ngIf="isGameIcon([3], item[th.value])"
+                        [ngbPopover]="showGameMaker([3], item[th.value])"
+                        triggers="mouseenter:mouseleave"
+                        [svgStyle]="{ 'width.px': 25 }"
+                        [src]="'./assets/images/svg/member/lottery.svg'"
+                      ></svg-icon>
+                      <!-- 真人: 4-->
+                      <svg-icon
+                        *ngIf="isGameIcon([4], item[th.value])"
+                        [ngbPopover]="showGameMaker([4], item[th.value])"
+                        triggers="mouseenter:mouseleave"
+                        [svgStyle]="{ 'width.px': 25 }"
+                        [src]="'./assets/images/svg/member/liveCasino.svg'"
+                      ></svg-icon>
+                      <!-- 娱乐城: 5-->
+                      <svg-icon
+                        *ngIf="isGameIcon([5], item[th.value])"
+                        [ngbPopover]="showGameMaker([5], item[th.value])"
+                        triggers="mouseenter:mouseleave"
+                        [svgStyle]="{ 'width.px': 25 }"
+                        [src]="'./assets/images/svg/member/entertainment.svg'"
+                      ></svg-icon>
+                      <!-- 棋牌: 6 -->
+                      <svg-icon
+                        *ngIf="isGameIcon([6], item[th.value])"
+                        [ngbPopover]="showGameMaker([6], item[th.value])"
+                        triggers="mouseenter:mouseleave"
+                        [svgStyle]="{ 'width.px': 25 }"
+                        [src]="'./assets/images/svg/member/chess.svg'"
+                      ></svg-icon>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-template #NormalTpl>
+                    {{ item[th.value] || '-' }}
+                  </ng-template>
+                </span>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

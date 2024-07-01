@@ -1,0 +1,321 @@
+<div class="bg-fff rounded px-12 py-8 d-flex flex-wrap">
+  <form-row [label]="'auManage.sys.role' | lang">
+    <ng-template>
+      <input
+        [(ngModel)]="searchKW"
+        class="form-control"
+        type="text"
+        [placeholder]="'auManage.role.enterName' | lang"
+        (keyup)="$event.keyCode === 13 && onSearch(searchKW)"
+      />
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onSearch('')">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onSearch(searchKW)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-ac flex-between">
+      <div class="title">{{ 'auManage.role.roleList' | lang }}</div>
+      <div>
+        <button (click)="add()" type="button" class="btn btn-light-primary">
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-lg vam"></svg-icon>
+          <span class="vam">{{ 'common.add' | lang }}</span>
+        </button>
+        <button type="button" class="ml-6 btn btn-light-primary" (click)="onExport()">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+          <span class="vam">{{ 'common.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-10">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th class="w-10px pe-2">
+              <div class="cell">
+                <label class="checkbox checkbox-lg">
+                  <input type="checkbox" [(ngModel)]="isCheckedAll" (change)="onCheckAll()" />
+                  <span></span>
+                </label>
+              </div>
+            </th>
+            <th class="text-nowrap">
+              <span class="cell">{{ 'auManage.role.name' | lang }}</span>
+            </th>
+            <th class="text-nowrap">
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort()">
+                  <span>{{ 'auManage.sys.openStu' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div id="triangle-up" [class.active]="sort === 'ASC'"></div>
+                    <div id="triangle-down" [class.active]="sort === 'DESC'"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'auManage.role.creater' | lang }}</span>
+            </th>
+            <th style="width: 30%">
+              <span class="cell">{{ 'auManage.role.qx' | lang }}</span>
+            </th>
+            <th class="text-nowrap">
+              <span class="cell">{{ 'auManage.sys.accList' | lang }}</span>
+            </th>
+            <th class="text-nowrap">
+              <span class="cell">{{ 'common.operate' | lang }}</span>
+            </th>
+            <th class="text-nowrap">
+              <span class="cell">{{ 'auManage.role.record' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <div class="cell">
+                <label class="checkbox checkbox-lg">
+                  <input type="checkbox" [(ngModel)]="item.checked" (change)="onItemCheck()" [checked]="item.checked" />
+                  <span></span>
+                </label>
+              </div>
+            </td>
+            <td>
+              <span class="cell">{{ item.name }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="switch switch-success">
+                  <label class="mx-auto">
+                    <input type="checkbox" (change)="onState(item)" [(ngModel)]="item.state" />
+                    <span></span>
+                  </label>
+                </span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createdUserName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <div [class.is-more]="item.isMore">
+                  <!-- 渲染权限列表 -->
+                  <ng-container *ngFor="let auth of item.permission; first as parentFirst">
+                    <!-- 有数据收起的状态 只展示第一条 -->
+                    <ng-container *ngIf="item.isMore ? true : parentFirst">
+                      <ng-container *ngFor="let sub of auth.subTitles; first as isFirst">
+                        <!-- 有数据收起的状态 只展示第一条 -->
+                        <app-auth-item
+                          [hidden]="item.isMore ? 0 : !isFirst"
+                          [title]="sub.name"
+                          [list]="sub.permissions"
+                        ></app-auth-item>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+
+                  <!-- 权限显示更多 -->
+                  <ng-container *ngIf="item.permission; else queryRoleBtn">
+                    <!-- 如果只有一条不展示 更多的操作按钮 -->
+                    <ng-container
+                      *ngIf="
+                        item.permission.length === 1 &&
+                          item.permission[0].subTitles.length === 1 &&
+                          item.permission[0].subTitles[0].permissions.length === 1;
+                        else TlMore
+                      "
+                    ></ng-container>
+
+                    <!-- 超过两条权限展示更多的操作按钮 -->
+                    <ng-template #TlMore>
+                      <div
+                        *ngIf="item.permission.length; else empty"
+                        class="show_more d-flex flex-ac"
+                        (click)="onMore(item)"
+                      >
+                        {{ item.isMore ? ('auManage.role.sq' | lang) : ('auManage.role.checkMore' | lang) }}
+                        <span class="more_icon"></span>
+                      </div>
+
+                      <ng-template #empty>-</ng-template>
+                    </ng-template>
+                  </ng-container>
+
+                  <!-- 查询权限数据 -->
+                  <ng-template #queryRoleBtn>
+                    <button class="btn btn-light" (click)="onMore(item)">{{ 'common.inquery' | lang }}</button>
+                  </ng-template>
+                </div>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="text-num" (click)="openPopup(item.id, false)">{{ item.userCount }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="edit text-nowrap" (click)="onEdit(item)">{{ 'common.edit' | lang }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="edit text-nowrap" (click)="openPopup(item.id, true)">{{ 'common.review' | lang }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30">
+        <div>
+          <mat-form-field [style.width.px]="64">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+            [isLoading]="isLoading"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 账号列表、记录弹窗组件 -->
+<ng-template #userPopup>
+  <div class="modal-content user-popup h-100">
+    <div class="modal-header" [class.isLogList]="isLogList">
+      <div class="modal-title">
+        <svg-icon
+          (click)="closeUserPopup()"
+          [src]="'./assets/images/svg/admin-close.svg'"
+          class="svg-icon cursor-pointer"
+        ></svg-icon>
+        <span class="text-vertical ml-10">{{
+          isLogList ? ('auManage.role.opRecord' | lang) : ('auManage.sys.accList' | lang)
+        }}</span>
+      </div>
+    </div>
+
+    <main class="modal-body custom-scroll-y">
+      <div class="user-popup-content custom-scroll-y">
+        <table class="table mb-0" *ngIf="isLogList">
+          <thead>
+            <tr>
+              <th>
+                <span class="cell">{{ 'auManage.role.opTime' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'auManage.role.oper' | lang }}</span>
+              </th>
+              <th style="width: 40%">
+                <span class="cell">{{ 'auManage.role.opContent' | lang }}</span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="color-222">
+            <tr *ngFor="let item of userPopupList; let i = index">
+              <td>
+                <span class="cell">{{ item.createTime | timeFormat }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.userName }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.result }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table mb-0" *ngIf="!isLogList">
+          <thead>
+            <tr>
+              <th>
+                <span class="cell">{{ 'auManage.role.username' | lang }}</span>
+              </th>
+              <th style="width: 30%">
+                <span class="cell">{{ 'auManage.role.joinTime' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'auManage.role.man' | lang }}</span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="color-222">
+            <tr *ngFor="let item of userPopupList; let i = index">
+              <td>
+                <span class="cell">{{ item.userName }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.createTime | timeFormat }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.leaderUserName }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 空显示 -->
+        <div class="container-empty" *ngIf="!userPopupList.length && !isLoading">
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt">{{ 'common.emptyText' | lang }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between flex-ac w-100 mt-8" *ngIf="userPopupList.length > 0">
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginatorPopup.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="getPopupList(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginatorPopup"
+          [isLoading]="isLoading"
+          (paginate)="getPopupList()"
+        ></app-paginator>
+      </div>
+    </main>
+  </div>
+</ng-template>

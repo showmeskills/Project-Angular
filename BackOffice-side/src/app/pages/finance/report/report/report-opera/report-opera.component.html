@@ -1,0 +1,27 @@
+<div class="d-flex flex-ac py-2 fz-16 w-50">
+  <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ titleLang | lang }}</label>
+
+  <!-- 重送查询：未结算 -->
+  <!--  *ngIf="!['Settlement'].includes(data?.status)" -->
+  <button
+    *ngIf="data?.isResend"
+    type="button"
+    class="btn btn-primary px-3 py-0 h36 mr-6 text-nowrap"
+    [style.padding.px]="6"
+    (click)="wagerSendQuery()"
+  >
+    <svg-icon [src]="'./assets/images/svg/refresh.svg'" class="svg-icon svg-icon-2x5 text-white"></svg-icon>
+    <span class="vam">{{ 'game.detail.resend_check' | lang }}</span>
+  </button>
+
+  <!-- 取消注单：未结算 -->
+  <button
+    *ngIf="!['Settlement'].includes(data?.status)"
+    type="button"
+    class="btn btn-danger px-7 py-0 h36 mr-6 text-nowrap"
+    [style.padding.px]="6"
+    (click)="openCancelModal()"
+  >
+    <span class="vam">{{ 'game.detail.cancelBet' | lang }}</span>
+  </button>
+</div>

@@ -1,0 +1,170 @@
+<div class="d-flex w-100">
+  <currency-item
+    class="currency-total"
+    name="USDT"
+    [title]="'walle.allAset' | lang"
+    [src]="'./assets/images/wallet/total.png'"
+    [value]="balanceTotal.totalByUSDT"
+  ></currency-item>
+
+  <div class="currency-list">
+    <div class="prev" (click)="onOpera(true)">
+      <svg-icon [src]="'./assets/images/svg/left-bold-rounded.svg'"></svg-icon>
+    </div>
+
+    <div class="d-flex flex-1 min-w-0">
+      <currency-item *ngFor="let item of balanceThree" [name]="item.currency" [value]="item['balance']"></currency-item>
+    </div>
+
+    <div class="next" (click)="onOpera()">
+      <svg-icon [src]="'./assets/images/svg/right-bold-rounded.svg'"></svg-icon>
+    </div>
+  </div>
+</div>
+
+<div class="bg-fff rounded px-10 py-8 mt-8">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'walle.hotList' | lang }}</div>
+  </div>
+
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th style="width: 42px"><span class="cell"></span></th>
+        <th>
+          <span class="cell">{{ 'walle.wName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.type' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.net' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.guess' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.createTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.operate' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of list">
+        <tr>
+          <td>
+            <span class="cell">
+              <svg-icon
+                (click)="item.expand = !item.expand"
+                *ngIf="!item.expand"
+                class="text-primary cursor-pointer user-select-none"
+                [src]="'./assets/images/svg/add.svg'"
+              ></svg-icon>
+              <svg-icon
+                (click)="item.expand = !item.expand"
+                *ngIf="!!item.expand"
+                class="text-primary cursor-pointer user-select-none svg-icon svg-icon-2x"
+                [src]="'./assets/images/svg/sub.svg'"
+              ></svg-icon>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="mr-6">{{ item.address }}</span>
+              <svg-icon
+                class="cursor-pointer"
+                (click)="onCopy(item.address)"
+                [src]="'./assets/images/svg/copy-solid.svg'"
+              ></svg-icon>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ 'walle.hotWalle' | lang }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.network }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.blanceByUSDT | currencyValue : 'USDT' }} USDT</span>
+          </td>
+          <td><span class="cell">-</span></td>
+          <td>
+            <span class="cell">{{ item.createdTime | timeFormat : 'YYYY-MM-DD' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span
+                class="btn btn-default btn-hover-primary"
+                (click)="router.navigate(['/wallet/hot', item.address, item.network])"
+                >{{ 'common.edit' | lang }}</span
+              >
+            </span>
+          </td>
+        </tr>
+
+        <ng-container *ngIf="item.expand && item.tokens?.length">
+          <tr class="info-row" *ngFor="let child of item.tokens">
+            <td><span class="cell"></span></td>
+            <td>
+              <span class="cell"></span>
+            </td>
+            <td><span class="cell"></span></td>
+            <td>
+              <span class="cell">
+                {{ child.coin }}
+                <img class="ml-2" [currencyIcon]="child.coin" /><span></span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ child.balance | currencyValue : child.coin }}
+                {{ child.coin }}
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span [ngSwitch]="child.status">
+                  <span class="text-yellow" *ngSwitchCase="'NotActive'">{{ 'walle.noUse' | lang }}</span>
+                  <span class="text-success" *ngSwitchCase="'Normal'">{{ 'walle.normal' | lang }}</span>
+                  <span class="text-danger" *ngSwitchCase="'Disable'">{{ 'walle.unable' | lang }}</span>
+                  <span class="text-danger" *ngSwitchCase="'Deleted'">{{ 'walle.delete' | lang }}</span>
+                </span>
+              </span>
+            </td>
+            <td><span class="cell"></span></td>
+            <td><span class="cell"></span></td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <div class="d-flex flex-between pt-10 table-footer">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

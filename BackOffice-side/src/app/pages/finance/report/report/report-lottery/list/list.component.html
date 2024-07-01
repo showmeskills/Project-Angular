@@ -1,0 +1,175 @@
+<div class="card mt-6">
+  <div class="card-body p-12">
+    <div class="d-flex flex-ac justify-content-between">
+      <h2 class="mb-0 fz-20">{{ 'game.provider.trans_list' | lang }}</h2>
+      <div>
+        <!-- 导出全部 -->
+        <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl d-inline-block"></svg-icon>
+          <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+        </button>
+        <!-- 导出 -->
+        <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl d-inline-block"></svg-icon>
+          <span class="vam">{{ 'game.provider.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'game.provider.provider' | lang }}</span>
+            </th>
+            <th style="width: 8%">
+              <span class="cell">{{ 'game.provider.trans_time' | lang }}</span>
+            </th>
+            <th style="width: 14%">
+              <span class="cell">{{ 'game.provider.orders' | lang }}</span>
+            </th>
+            <!-- 第三方订单号 -->
+            <th>
+              <span class="cell">{{ 'game.detail.third_id' | lang }}</span>
+            </th>
+            <th style="width: 7%"><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'game.info1' | lang }}</span>
+            </th>
+            <!-- <th>
+              <span class="cell">{{ 'game.info2' | lang }}</span>
+            </th> -->
+            <th style="width: 10%">
+              <span class="cell">{{ 'game.game_id' | lang }}</span>
+            </th>
+            <th style="width: 10%">
+              <span class="cell">{{ 'game.trans_content' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.trans_amount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.odds' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.win' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.result' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.statu' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <!-- 供应商 -->
+            <td>
+              <span class="cell">{{ item.gameProvider }}</span>
+            </td>
+            <!-- 交易时间 -->
+            <td>
+              <span class="cell">{{ item.betTime | timeFormat }}</span>
+            </td>
+            <!-- 订单号 -->
+            <td>
+              <span class="cell">
+                <span class="order-number" (click)="onView(item)">{{ item.orderNumber }}</span>
+              </span>
+            </td>
+            <!-- 第三方订单号 -->
+            <td>
+              <span class="cell">{{ item.wagerNumber || '-' }}</span>
+            </td>
+            <!--uid -->
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <!--信息1 -->
+            <td>
+              <span class="cell">{{ item.lotterCategory || '-' }}</span>
+            </td>
+            <!--信息2 显示联赛 -->
+            <!-- <td>
+              <span class="cell">{{ item.tournamentName || '-' }}</span>
+            </td> -->
+            <!--赛事ID -->
+            <td>
+              <span class="cell">{{ item.gameName || '-' }}</span>
+            </td>
+            <!-- 交易内容 gameDetail->PlayWay -->
+            <td>
+              <span class="cell"> {{ item.playWay || '-' }}</span>
+            </td>
+            <!-- 交易金额 -->
+            <td>
+              <span class="cell has-icon"
+                >{{ item.betAmount | currencyValue: item.currency }}
+                <img class="ml-2" [currencyIcon]="item.currency" />
+              </span>
+            </td>
+            <!--赔率 -->
+            <td>
+              <span class="cell">{{ item.odds }}</span>
+            </td>
+            <td>
+              <!-- 输赢 -->
+              <span class="cell" [winColor]="value" *win="item.payoutAmount; let value; prev as prev">
+                {{ prev
+                }}<ng-container *ngIf="value"
+                  >{{ value | currencyValue: item.currency }}<img class="ml-2" [currencyIcon]="item.currency" alt=""
+                /></ng-container>
+                <ng-container *ngIf="!value">-</ng-container>
+              </span>
+            </td>
+            <!-- 赛果 -->
+            <td>
+              <span class="cell">{{ item.gameResult ? item.gameResult : '-' }}</span>
+            </td>
+            <td>
+              <span class="cell" (click)="onView(item)" [pointer]="true" [betStatusLabel]="item.status"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty
+        *ngIf="!reportDetail.data.tradeTime[1]; else listEmptyTpl"
+        textClass="text-danger"
+        [text]="'system.export.selectTime' | lang"
+      ></empty>
+      <ng-template #listEmptyTpl>
+        <empty *ngIf="!list.length"></empty>
+      </ng-template>
+
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

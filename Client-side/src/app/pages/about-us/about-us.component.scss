@@ -1,0 +1,77 @@
+:host {
+  ::ng-deep {
+    .flex-col {
+      flex-direction: column;
+    }
+
+    div {
+      display: flex;
+    }
+
+    .ml-46 {
+      margin-left: 46px;
+    }
+
+    .ml-32 {
+      margin-left: 32px;
+    }
+
+    .mt-32 {
+      margin-top: 32px;
+    }
+
+    .mt-28 {
+      margin-top: 28px;
+    }
+
+    .mt-7 {
+      margin-top: 7px;
+    }
+
+    .pointer {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+}
+
+.top-continer {
+  padding: 21px 0px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .text {
+    font-size: 20px;
+    text-align: left;
+    color: var(--primary-color);
+  }
+
+  .top-nav {
+    width: 265px;
+    margin: auto;
+    align-items: center;
+    justify-content: space-between;
+
+    .nav-item {
+      cursor: pointer;
+      font-size: 16px;
+      // color: #707a8a;
+      color: var(--text-color-20);
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .nav-active {
+      font-size: 16px;
+      font-weight: 600;
+      // color: #1e2329;
+      color: var(--text-color);
+    }
+  }
+
+  .empty {
+    width: 100px;
+  }
+}

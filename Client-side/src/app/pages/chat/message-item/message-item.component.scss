@@ -1,0 +1,240 @@
+:host {
+  margin: 5px 14px;
+  display: flex;
+  flex-direction: column;
+  user-select: text;
+}
+
+.time-item-contaienr {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: var(--text-color-20);
+  line-height: normal;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.message-item-contaienr {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  .message-user {
+    width: 24px;
+    height: 24px;
+  }
+  .message-box {
+    padding: 10px;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: normal;
+    user-select: text !important;
+    span {
+      display: inline-block;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    span + .mix-box {
+      margin-top: 5px;
+    }
+    .mix-box + span {
+      margin-top: 5px;
+    }
+    .image-box {
+      max-width: 100%;
+      position: relative;
+      &.disabled {
+        pointer-events: none;
+        .mask * {
+          opacity: 0.6;
+        }
+      }
+      .mask {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: rgba(#000000, 0.5);
+        z-index: 2;
+        border-radius: 8px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 50px;
+          em {
+            top: 100%;
+            position: absolute;
+            font-size: 14px;
+            padding-top: 6px;
+          }
+        }
+      }
+    }
+    .file-box {
+      display: flex;
+      align-items: center;
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+      }
+      span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  }
+  .message-status {
+    min-width: 35px;
+    flex-shrink: 0;
+    &.only-text {
+      min-width: 16px;
+    }
+    > div {
+      &.fail,
+      &.success {
+        font-size: 14px;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      &.fail {
+        color: #ff0000;
+      }
+      &.success {
+        color: var(--input-border-color);
+      }
+      &.warn {
+        color: #fece31;
+      }
+      &.sending {
+        font-size: 10px;
+        color: var(--text-color-20);
+      }
+      &.progress {
+        font-size: 14px;
+        color: var(--text-color-20);
+        width: 35px;
+      }
+    }
+  }
+  &.left {
+    justify-content: flex-start;
+    .message-user {
+      order: 1;
+      margin-right: 10px;
+      align-self: flex-start;
+    }
+    .message-box {
+      order: 2;
+      border-radius: 0 8px 8px 8px;
+      background-color: var(--message-box-bgcolor);
+      color: var(--text-white-at-night);
+      ::ng-deep {
+        a {
+          color: var(--text-white-at-night);
+        }
+      }
+    }
+    .message-status {
+      order: 3;
+      margin-left: 10px;
+      > div {
+        margin-right: auto;
+        text-align: left;
+        .animation-icon-loading-dot {
+          justify-content: flex-start;
+        }
+      }
+    }
+  }
+  &.right {
+    justify-content: flex-end;
+    .message-user {
+      order: 3;
+      margin-left: 10px;
+      align-self: flex-end;
+    }
+    .message-box {
+      order: 2;
+      border-radius: 8px 8px 0px 8px;
+      background-color: var(--bg-color-10);
+      color: var(--text-color);
+      ::ng-deep {
+        a {
+          color: var(--message-box-bgcolor);
+        }
+      }
+    }
+    .message-status {
+      order: 1;
+      margin-right: 10px;
+      > div {
+        margin-left: auto;
+        text-align: right;
+        .animation-icon-loading-dot {
+          justify-content: flex-end;
+        }
+      }
+    }
+  }
+}
+
+.view-contaienr {
+  height: inherit;
+  width: inherit;
+  max-width: inherit;
+  max-height: inherit;
+  background-color: transparent !important;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  * {
+    pointer-events: all !important;
+  }
+  > i {
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    border-radius: 50px;
+    background-color: rgb(#fff, 0.5);
+    color: var(--text-color);
+    padding: 10px;
+    font-size: 30px;
+    z-index: 2;
+  }
+  .view-box {
+    margin: auto;
+    video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      @media (max-width: 767px) {
+        width: 100vw !important;
+        height: 100% !important;
+        object-fit: contain;
+      }
+    }
+  }
+}
+::ng-deep {
+  .chat-media-view-contaienr {
+    pointer-events: none !important;
+    * {
+      pointer-events: none !important;
+    }
+  }
+}

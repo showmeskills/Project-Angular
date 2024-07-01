@@ -1,0 +1,163 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12">
+  <!-- UID/用户名 -->
+  <form-row [label]="'budget.record.uidAndName' | lang" class="mr-8" [contentWidth]="250">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- VIP等级 -->
+  <!-- <form-row [label]="'common.vipLevel' | lang" class="mr-8" [contentWidth]="200">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.vipLevel" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of vipLevelList" [value]="item.value">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row> -->
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card card-body mt-8">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">
+      {{ 'member.list.banList' | lang }}
+    </div>
+
+    <div>
+      <!-- 批量移除 -->
+      <button
+        type="button"
+        class="btn btn-light btn-hover-danger px-9 fz-14 py-0 d-inline-flex flex-center h32 ml-6"
+        (click)="onDeletion(true)"
+      >
+        <svg-icon [src]="'./assets/images/svg/del.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'member.list.messageBan.batchDeletion' | lang }}</span>
+      </button>
+
+      <!-- 新增 -->
+      <button
+        type="button"
+        class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32 ml-6"
+        (click)="onAddPopup()"
+      >
+        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'member.list.messageBan.addBan' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0 mt-2" selectChildren>
+    <thead>
+      <tr>
+        <th [style.width.px]="100">
+          <span class="cell">
+            <label class="checkbox checkbox-lg">
+              <input type="checkbox" selectGroup />
+              <span></span>
+            </label>
+          </span>
+        </th>
+        <th>
+          <span class="cell">UID</span>
+        </th>
+        <!-- 用户名 -->
+        <th>
+          <span class="cell">{{ 'common.userName' | lang }}</span>
+        </th>
+        <!-- VIP等级 -->
+        <th>
+          <span class="cell">{{ 'common.vipLevel' | lang }}</span>
+        </th>
+        <!-- 创建时间 -->
+        <th>
+          <span class="cell">{{ 'member.coupon.creadTime' | lang }}</span>
+        </th>
+        <!-- 操作 -->
+        <th>
+          <span class="cell">{{ 'luckRoulette.actAction' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list; let i = index">
+        <td>
+          <span class="cell">
+            <label class="checkbox checkbox-lg">
+              <input type="checkbox" [(ngModel)]="item.checked" />
+              <span></span>
+            </label>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.userName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.vip | vipName }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createTimeStamp | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <!-- 删除 -->
+            <div class="primary operation-btn" (click)="onDeletion(false, item.uid)">
+              {{ 'common.delete' | lang }}
+            </div>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

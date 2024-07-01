@@ -1,0 +1,106 @@
+<div class="title-bar">
+  <span><em class="icon-chat"></em>{{ 'chat' | translate }}</span>
+  @if (gnService.inited && gnService.enable && gnService.swReg && !gnService.isSubscribed) {
+    <p class="noti-btn mutual-opacity" (click)="gnService.showSubscribePop()">{{ 'chat_noti_sub_tit' | translate }}</p>
+  }
+  <i class="icon-close-simple mutual-opacity" (click)="chatService.toggleChat(isH5(), false)"></i>
+</div>
+<div class="chat-list-contaienr" [class.disabled]="false" [appLoading]="!isAlive()" (click)="checkHide()">
+  <div class="user-msg-list" [class.visible]="ready">
+    <app-scrollbar (scorllDistance)="onScorllList($event)" [autoThumb]="true" #scrollbar>
+      @if (isAlive()) {
+        <div class="history-status">
+          @if (chatService.loadingHistory$ | async) {
+            <!-- 显示loading -->
+            <span class="animation-icon-loading-dot">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+          } @else if (chatService.hasMore) {
+            <!-- 显示按钮 -->
+            <span class="history-btn mutual-opacity" (click)="getHistoryBefore()">
+              {{ 'chat_more_msg_h_btn' | translate }}
+            </span>
+          } @else {
+            <!-- 显示没有更多了 -->
+            <span class="history-nomore">{{ 'no_more' | translate }}</span>
+          }
+        </div>
+      }
+      @for (item of chatService.messages; track item.seq) {
+        <app-message-item [data]="item"></app-message-item>
+      }
+    </app-scrollbar>
+  </div>
+</div>
+<div class="user-input-contaienr" [class.disabled]="!isAlive()">
+  @if (chatService.muteState$ | async) {
+    <span class="mute-tip">{{ 'send_message_no_permission' | translate }}</span>
+  } @else {
+    <div class="input-box" [class.input-scroll]="inputScroll">
+      <div class="text-box">
+        <div
+          #inputDiv
+          class="input-div"
+          [attr.contenteditable]="isAlive()"
+          [attr.placeholder]="'enter_message' | translate"
+          (paste)="onPaste($event)"
+          (input)="onInput()"
+          (keydown.enter)="enterToSend($event)"
+          (focus)="checkHide(true)"
+        ></div>
+        <div class="right-icon">
+          <i
+            class="mutual-opacity icon-emj action-icon"
+            appExpansion
+            [clickTrigger]="emojiEx$"
+            [content]="emojibox"
+            [defaultExpanded]="false"
+            (expandChange)="expandChange('emj', $event)"
+          ></i>
+        </div>
+      </div>
+      <div class="add-btn">
+        <i
+          class="mutual-opacity icon-plus action-icon"
+          appExpansion
+          [clickTrigger]="selectEx$"
+          [content]="selectbox"
+          [defaultExpanded]="false"
+          (expandChange)="expandChange('sel', $event)"
+        ></i>
+      </div>
+      <div class="send-btn" (click)="checkToSend()">
+        <i class="mutual-opacity icon-send action-icon primary"></i>
+      </div>
+    </div>
+    <div class="emoji-box" #emojibox>
+      <div class="emoji-sel">
+        @for (emoji of emojis; track $index) {
+          <span class="mutual-opacity" (click)="insertText(emoji)">{{ emoji }}</span>
+        }
+      </div>
+    </div>
+    <div class="select-box" #selectbox>
+      <div class="file-sel">
+        <label class="mutual-opacity icon-file" for="chat-file-dir-sel">
+          <input
+            type="file"
+            id="chat-file-dir-sel"
+            [accept]="chatService.imgAcceptOpt | filterByKeyValue: 'category' : 'file' | pluck: 'type' : ','"
+            (change)="checkUpload($event)"
+          />
+        </label>
+        <label class="mutual-opacity icon-img" for="chat-file-img-sel">
+          <input
+            type="file"
+            id="chat-file-img-sel"
+            [accept]="chatService.imgAcceptOpt | filterByKeyValue: 'category' : 'image' | pluck: 'type' : ','"
+            (change)="checkUpload($event)"
+          />
+        </label>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,100 @@
+<modal-title
+  [title]="
+    (id ? 'member.overview.correspondence.editCorrespondence' : 'member.overview.correspondence.addCorrespondence')
+      | lang
+  "
+  (close)="modal.dismiss()"
+></modal-title>
+
+<div class="modal-body">
+  <div class="pl-8 pr-8 pb-4">
+    <!-- 日期 -->
+    <form-row [label]="'common.date' | lang" label-width="150" [contentWidth]="250" required>
+      <ng-template>
+        <ng-container *ngIf="id; else timeTpl">
+          {{ this.data.messageBoardTime | timeFormat }}
+        </ng-container>
+        <ng-template #timeTpl>
+          <input
+            class="text-center form-control"
+            type="text"
+            selectMode="single"
+            formatLabel="yyyy-MM-dd hh:mm:ss"
+            [placeholder]="'form.chooseTime' | lang"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="time"
+          />
+          <owl-date-time pickerType="both" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </ng-template>
+    </form-row>
+
+    <!-- 类型 -->
+    <form-row [label]="'common.type' | lang" label-width="150" required>
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of categoryList">
+            <input type="radio" name="type" [value]="item.value" [(ngModel)]="category" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <form class="form w-100" [formGroup]="formGroup" #form>
+    <!-- lang-tab -->
+    <lang-tab
+      #langTab
+      formArrayName="lang"
+      [(value)]="selectLang"
+      [(selection)]="curLang"
+      (languageChange)="updateLanguageForm()"
+    >
+      <ng-template let-control="formControl">
+        <div class="pb-8" [formGroup]="control">
+          <!-- 问题 -->
+          <form-row
+            name="problem"
+            required
+            label-width="150"
+            class="pb-4"
+            [label]="'member.overview.correspondence.problem' | lang"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <textarea
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+                class="form-control resize-none"
+                type="text"
+                rows="5"
+              ></textarea>
+            </ng-template>
+          </form-row>
+
+          <!-- 回答 -->
+          <form-row
+            name="answer"
+            required
+            label-width="150"
+            class="pb-4"
+            [label]="'member.overview.correspondence.answer' | lang"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <textarea
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+                class="form-control resize-none"
+                type="text"
+                rows="5"
+              ></textarea>
+            </ng-template>
+          </form-row>
+        </div>
+      </ng-template>
+    </lang-tab>
+  </form>
+</div>
+
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

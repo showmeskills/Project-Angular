@@ -1,0 +1,150 @@
+div {
+  display: flex;
+}
+
+.container {
+  width: 482px;
+  height: 100%;
+  flex-direction: column;
+  padding: 24px 24px 21px 24px;
+
+  &:host-context(.dark) & {
+    background-color: #0f212e;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    padding: 24px;
+  }
+
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    //标题
+    .title {
+      color: var(--text-color);
+      font-size: 20px;
+    }
+
+    //关闭icon
+    .icon-close {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  .contant-colunm {
+    flex-direction: column;
+    padding-top: 44px;
+
+    @media (max-width: 767px) {
+      padding-top: 48px;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .options {
+      flex-direction: column;
+    }
+
+    .input-column {
+      flex-direction: column;
+      padding-bottom: 28px;
+
+      @media (max-width: 767px) {
+        padding-bottom: 24px;
+      }
+
+      //check box
+      .check-box-row {
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        margin-top: 8px;
+
+        ::ng-deep
+          .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate='true'])
+          ~ .mdc-checkbox__background {
+          &:host-context(.dark) & {
+            border: 1px solid #2f4553 !important;
+          }
+        }
+
+        .icon-warning {
+          font-size: 130%;
+          margin-bottom: -2px;
+
+          &::before {
+            color: var(--text-color-20);
+          }
+        }
+      }
+    }
+
+    .btn-group {
+      flex-direction: row;
+      align-items: center;
+      padding-top: 16px;
+      > * + * {
+        margin-left: 16px;
+      }
+    }
+  }
+}
+
+.error-msg-hover {
+  background-color: #5e6673;
+  padding: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+:host {
+  ::ng-deep {
+    .mdc-label {
+      white-space: normal !important;
+    }
+
+    .mdc-checkbox__background,
+    .mat-mdc-checkbox-touch-target,
+    .mdc-checkbox,
+    .mdc-checkbox__native-control {
+      width: 16px !important;
+      height: 16px !important;
+    }
+  }
+}
+
+.customize-select {
+  ::ng-deep {
+    .input-container {
+      height: 46px !important;
+    }
+
+    .c-input-text {
+      white-space: nowrap;
+      pointer-events: none;
+      padding: 6px 13px;
+      font-size: 14px;
+      color: var(--text-color);
+      padding-right: 13px + 15px + 8px;
+
+      span + span {
+        padding-left: 8px;
+        opacity: 0.5;
+      }
+
+      &.hold {
+        opacity: 0.5;
+      }
+    }
+  }
+}

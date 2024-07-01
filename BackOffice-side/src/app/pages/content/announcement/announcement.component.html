@@ -1,0 +1,253 @@
+<div class="bg-fff rounded px-12 py-8">
+  <div class="flex-1">
+    <div class="w-100 d-flex flex-wrap">
+      <div class="d-flex py-3 flex-ac mr-16">
+        <label class="mb-0 mr-6 label-title">{{ 'content.info.title' | lang }}：</label>
+        <div class="flex-1 ml-6">
+          <input
+            [style.width.px]="268"
+            class="form-control"
+            type="text"
+            placeholder=""
+            [(ngModel)]="title"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </div>
+      </div>
+
+      <div class="d-flex py-3 flex-ac mr-16">
+        <label class="mb-0 mr-6 label-title">{{ 'content.info.time' | lang }}：</label>
+        <div class="d-flex flex-ac">
+          <input
+            [style.width.px]="264"
+            class="form-control text-center"
+            type="text"
+            placeholder=""
+            selectMode="date-range"
+            [owlDateTime]="picker"
+            [owlDateTimeTrigger]="picker"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [(ngModel)]="time"
+            (dateTimeChange)="loadData(true)"
+          />
+
+          <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+        </div>
+      </div>
+
+      <div class="d-flex py-3 pb-4 flex-ac mr-16">
+        <label class="mb-0 label-title">{{ 'content.info.stu' | lang }}：</label>
+        <mat-form-field [style.margin-left.px]="15" [style.width.px]="110">
+          <mat-select class="form-control" (selectionChange)="loadData(true)" [(ngModel)]="currentStatus">
+            <mat-option *ngFor="let item of statusList" [value]="item.key">{{ item.value }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="d-flex py-3 pb-4 flex-ac">
+        <label class="mb-0 label-title">{{ 'content.info.type' | lang }}：</label>
+        <mat-form-field [style.margin-left.px]="15" [style.width.px]="lang.isLocal ? 140 : 160">
+          <mat-select class="form-control" (selectionChange)="loadData(true)" [(ngModel)]="currentCategory">
+            <mat-option *ngFor="let item of categoryList" [value]="item.key">{{ item.value }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="card-toolbar flex-1 justify-content-end d-flex py-3">
+        <button
+          class="c-btn c-btn-default mr-6"
+          [disabled]="appService.isContentLoadingSubject | async"
+          (click)="onReset()"
+        >
+          {{ 'common.reset' | lang }}
+        </button>
+        <button
+          class="c-btn c-btn-primary"
+          [disabled]="appService.isContentLoadingSubject | async"
+          (click)="loadData(true)"
+        >
+          {{ 'common.confirm' | lang }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 px-12 pt-8 pb-20">
+  <div class="d-flex flex-ac flex-between">
+    <h2 class="mb-0 fw-bolder">{{ 'content.info.list' | lang }}</h2>
+
+    <button
+      (click)="router.navigate(['/content/announcement/add'])"
+      type="button"
+      class="btn btn-light-primary px-9 fz-14 py-0 lh-30"
+    >
+      <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl vam lh-18"></svg-icon>
+      <span class="vam">{{ 'content.info.add' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="pt-5">
+    <!--begin::Datatable-->
+    <table class="table mb-0" selectChildren>
+      <thead>
+        <tr class="text-nowrap">
+          <th>
+            <span class="cell">{{ 'content.info.mer' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'content.info.title' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'content.info.type' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'content.info.topic' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'content.info.stu' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'content.info.time' | lang }}</span>
+          </th>
+          <th style="width: 250px">
+            <span class="cell">{{ 'content.info.act' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ getMerchantData(item.tenantId).name }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <div class="text-nowrap w-100 text-truncate">
+                {{ item.articleTitle }}
+              </div>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.categoryLang }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.categoryTitle }}</span>
+          </td>
+          <td class="text-nowrap">
+            <span class="cell" [ngSwitch]="item.status">
+              <span *ngSwitchCase="'Published'" class="label label-lg label-inline label-light-success">{{
+                'content.info.yiFaBu' | lang
+              }}</span>
+              <span *ngSwitchCase="'Drop'" class="label label-lg label-inline label-light-danger">{{
+                'content.info.xiaJia' | lang
+              }}</span>
+              <span *ngSwitchCase="'Unpublished'" class="label label-lg label-inline label-light-warning">{{
+                'content.info.daiFaBu' | lang
+              }}</span>
+              <span *ngSwitchCase="'Draft'" class="label label-lg label-inline label-light-warning">{{
+                'content.info.caoGao' | lang
+              }}</span>
+              <span *ngSwitchDefault class="label label-lg label-inline label-light-success">{{
+                'content.info.unknow' | lang
+              }}</span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ formatDate(item.releaseTime) }}</span>
+          </td>
+          <td class="text-nowrap">
+            <span class="cell">
+              <span class="text-left mx-auto d-inline-block">
+                <button
+                  class="btn fz-14 mx-2 py-0 lh-32 btn-primary"
+                  (click)="onOpera(warningTpl, item.id, 'publishArticle', 'content.info.faBu')"
+                >
+                  {{ 'content.info.faBu' | lang }}
+                </button>
+                <button
+                  class="btn fz-14 mx-2 py-0 lh-32 btn-default"
+                  (click)="router.navigate(['/content/announcement', item.id])"
+                >
+                  {{ 'content.info.edit' | lang }}
+                </button>
+                <button
+                  class="btn fz-14 mx-2 py-0 lh-32 btn-light-warning"
+                  (click)="onOpera(warningTpl, item.id, 'endArticle', 'content.info.end')"
+                >
+                  {{ 'content.info.end' | lang }}
+                </button>
+                <button
+                  class="btn fz-14 mx-2 py-0 lh-32 btn-light-danger"
+                  (click)="onOpera(warningTpl, item.id, 'deleteArticle', 'content.info.delete')"
+                  [class.invisible]="item.categoryCode === 3"
+                >
+                  {{ 'content.info.delete' | lang }}
+                </button>
+              </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-between pt-12 flex-ac">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'game.provider.notice' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'content.info.sure' | lang }} {{ msg | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+        {{ 'common.cancel' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c({ value: true })">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>

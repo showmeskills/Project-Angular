@@ -1,0 +1,165 @@
+<div class="card">
+  <div class="px-12 py-8 d-flex flex-wrap">
+    <form-row class="mr-18" [label]="'common.merchant' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="144">
+          <mat-select class="form-control rounded-0" [(ngModel)]="data.merchant" (selectionChange)="loadData(true)">
+            <mat-option [value]="item.id" *ngFor="let item of merchantList">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row class="mr-18" [label]="'common.currency' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="144">
+          <mat-select class="form-control rounded-0" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+            <mat-option [value]="item.code" *ngFor="let item of currencyList">
+              {{ item.code || ('common.all' | lang) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 p-8">
+  <table class="table mb-0 table-merchant">
+    <thead theadAffix>
+      <tr>
+        <th>
+          <span class="cell">{{ 'common.merchantName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.currency' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.balance' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.freezeAmount' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.operate' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of list">
+        <tr>
+          <td [attr.rowspan]="item.currencies.length + 2" class="td-merchant">
+            <span class="cell">{{ item.merchantName || '-' }}</span>
+          </td>
+          <ng-container *ngIf="!item?.currencies?.length">
+            <td><span class="cell"></span></td>
+            <td><span class="cell"></span></td>
+            <td><span class="cell"></span></td>
+            <td><span class="cell"></span></td>
+          </ng-container>
+        </tr>
+        <tr *ngFor="let child of item.currencies">
+          <td>
+            <span class="cell">
+              <img class="mr-2" [currencyIcon]="child.currency" alt="" />
+              <span>{{ child.currency }}</span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ child.balance | currencyValue : child.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ child.freezeBalance | currencyValue : child.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <button class="btn fz-14 mx-2 py-0 lh-32 btn-light" (click)="onView(item, child)">
+                {{ 'common.review' | lang }}
+              </button>
+            </span>
+          </td>
+        </tr>
+        <tr class="total">
+          <td>
+            <span class="cell">{{ 'common.total' | lang }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span>{{ item.currencies | exchangeReduceTotal : 'balance' : 'currency' | currencyValue : 'USDT' }}</span>
+              <img class="ml-2" currencyIcon="USDT" alt="" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span>{{
+                item.currencies | exchangeReduceTotal : 'freezeBalance' : 'currency' | currencyValue : 'USDT'
+              }}</span>
+              <img class="ml-2" currencyIcon="USDT" alt="" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">-</span>
+          </td>
+        </tr>
+      </ng-container>
+
+      <tr *ngIf="list.length > 1">
+        <td colspan="2">
+          <span class="cell">{{ 'common.total' | lang }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <span>{{ listFlat | exchangeReduceTotal : 'balance' : 'currency' | currencyValue : 'USDT' }}</span>
+            <img class="ml-2" currencyIcon="USDT" alt="" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <span>{{ listFlat | exchangeReduceTotal : 'freezeBalance' : 'currency' | currencyValue : 'USDT' }}</span>
+            <img class="ml-2" currencyIcon="USDT" alt="" />
+          </span>
+        </td>
+        <td>
+          <span class="cell"></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-10 table-footer">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

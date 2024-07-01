@@ -1,0 +1,79 @@
+:host {
+  display: flex;
+  height: 100%;
+}
+
+.dialogue {
+  $cur: &;
+
+  &-unread-count {
+    background: #E72222;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 14px;
+    color: #fff;
+    margin-left: 6px;
+  }
+
+  &-list {
+    flex: 0 0 312px;
+    min-width: 312px;
+  }
+
+  &-item {
+    padding: 10px;
+    transition: all ease-in .15s;
+
+    &:hover {
+      background: #f1faff;
+      border-radius: 6px;
+
+      &, #{$cur}-txt, #{$cur}-time, #{$cur}-last-msg {
+        color: var(--primary);
+      }
+    }
+
+    &.active {
+      background: var(--primary);
+      border-bottom: 1px dashed transparent;
+      border-radius: 6px;
+
+      &, #{$cur}-txt, #{$cur}-time, #{$cur}-last-msg {
+        color: #fff;
+      }
+    }
+
+  }
+
+  &-txt, &-last-msg {
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-999);
+  }
+
+  &-last {
+    height: 24px;
+    
+    &-msg {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &-avatar {
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+  
+  &-time {
+    color: #BEC1CC;
+  }
+}
+
+$color-e: #E4E6EF;
+
+.dashed-bottom {
+  border-bottom: 1px dashed $color-e;
+}

@@ -1,0 +1,153 @@
+<div class="container">
+  <div class="con-tit"><i class="icon-cunkuan"></i>暂停</div>
+  <div class="record-nav">
+    <ng-container *ngFor="let item of navList; let idx = index">
+      <customize-button
+        minWidth="80px"
+        size="small"
+        [type]="idx === activeRecordIdx ? 'default' : 'text'"
+        (onClick)="onClickRecord(idx)"
+      >
+        {{ item }}
+      </customize-button>
+    </ng-container>
+  </div>
+  <div class="content-box">
+    <ng-container *ngIf="activeRecordIdx === 0">
+      <p class="text-20">
+        您已选择暂停至2022年05月07
+        16:27，在该期限过后，您的账户可被重新激活。任何未结算的投注将被视爲有效并被结算，彩金会被添加至您的账户。
+      </p>
+      <p class="text-20">若需更改您的选项，或不希望继续，请选择“取消”。</p>
+    </ng-container>
+    <ng-container *ngIf="activeRecordIdx === 1">
+      <p class="title">当前暂停期</p>
+      <p class="title m-top-20">7天</p>
+      <p class="text-20 m-top-20">距离暂停结束 6天14小时</p>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="activeRecordIdx === 0">
+    <div class="content-box">
+      <p class="title">暂停期</p>
+      <div class="select-time">
+        <ng-container *ngFor="let item of selecTime; let idx = index">
+          <customize-button
+            minWidth="80px"
+            size="small"
+            type="text"
+            [plain]="true"
+            [active]="idx === activeTimeIdx"
+            (onClick)="onSelectTime(idx)"
+          >
+            {{ item.name }}
+          </customize-button>
+        </ng-container>
+        <ng-container *ngIf="isShowCutomizedDateRange && custmisedTime.startDate && custmisedTime.endDate">
+          <customize-button minWidth="80px" size="small" type="text" [plain]="true" [active]="true">
+            {{ custmisedTime.startDate | date : 'YYYY-MM-dd' }} ~ {{ custmisedTime.endDate | date : 'YYYY-MM-dd' }}
+          </customize-button>
+        </ng-container>
+        <p class="customize-time mutual-opacity onact96-not" (click)="openTimeSelectorDialog()">自定义</p>
+      </div>
+      <p class="title-12" *ngIf="isShowInfo">请选择一个暂停时段</p>
+      <ng-container *ngIf="!isFirstStep">
+        <div class="password">
+          <app-customize-input
+            #iPwd
+            [label]="'password_text' | translate"
+            type="password"
+            [autocomplete]="false"
+            size="medium"
+            width="100%"
+            (valueChange)="onValueChange($event)"
+          >
+            <i
+              class="onact96-not"
+              right-content
+              [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+              (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+            ></i>
+          </app-customize-input>
+        </div>
+      </ng-container>
+      <div class="submit">
+        <ng-container *ngIf="!isFirstStep">
+          <customize-button
+            [minWidth]="isH5 ? 'unset' : '140px'"
+            [width]="isH5 ? '100%' : 'unset'"
+            type="default"
+            size="medium"
+            (onClick)="onCancel()"
+          >
+            取消
+          </customize-button>
+          <customize-button
+            [disabled]="!canSubmit()"
+            [minWidth]="isH5 ? 'unset' : '140px'"
+            [width]="isH5 ? '100%' : 'unset'"
+            type="primary"
+            size="medium"
+            (onClick)="onContinue()"
+          >
+            暂停
+          </customize-button>
+        </ng-container>
+        <ng-container *ngIf="isFirstStep">
+          <customize-button
+            [minWidth]="isH5 ? '100%' : '140px'"
+            type="default"
+            size="medium"
+            [disabled]="!canContinue()"
+            (onClick)="this.isFirstStep = !this.isFirstStep"
+          >
+            继续
+          </customize-button>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #customizedTimeDialog>
+  <div class="time-selector-container">
+    <div class="time-selector-header">
+      <p class="title">自定义</p>
+      <i class="icon-close-simple onact96-not" (click)="closeDialog.close()"></i>
+    </div>
+    <p class="title-16">自定义暂停时间范围</p>
+    <div class="date-picker-range">
+      <div class="start">
+        <label class="label-text">开始时间</label>
+        <app-datepicker
+          size="medium"
+          [(dateValue)]="custmisedTime.startDate"
+          placeholder="YYYY-MM-DD"
+          (dateValueChange)="onDateValueChange()"
+        >
+        </app-datepicker>
+      </div>
+      <span class="text-14">至</span>
+      <div class="end">
+        <label class="label-text">结束时间</label>
+        <app-datepicker
+          size="medium"
+          [(dateValue)]="custmisedTime.endDate"
+          placeholder="YYYY-MM-DD"
+          (dateValueChange)="onDateValueChange()"
+        >
+        </app-datepicker>
+      </div>
+    </div>
+    <div class="dialog-sumbit">
+      <customize-button
+        size="medium"
+        type="primary"
+        width="100%"
+        [disabled]="!canSaveDialog()"
+        (onClick)="saveDialog()"
+      >
+        保存
+      </customize-button>
+    </div>
+  </div>
+</ng-template>

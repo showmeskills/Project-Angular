@@ -1,0 +1,164 @@
+:host {
+  background: #fff;
+  display: block;
+}
+
+::ng-deep {
+  .approval-apply-modal {
+    .modal-dialog {
+      max-width: 1280px;
+      min-width: 1040px;
+    }
+
+    .modal-content {
+      margin: 0 30px;
+    }
+  }
+}
+
+.tab {
+  min-width: 0;
+  line-height: 1;
+
+  &-header {
+    ::ng-deep {
+      .mat-mdc-tab-header {
+        --mdc-tab-indicator-active-indicator-height: 4px;
+        position: relative;
+        border: 0;
+
+        &::before {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          border-bottom: 4px solid #eff2f5;
+        }
+      }
+    }
+  }
+
+  &-bd {
+    display: flex;
+    flex-flow: row nowrap;
+    overflow: hidden;
+    border: 0;
+
+    &::ng-deep {
+      .mdc-tab-indicator {
+        display: none;
+      }
+
+      .mat-mdc-tab-header {
+        border-bottom: 0;
+      }
+
+      .mat-mdc-tab {
+        height: 42px;
+        opacity: 1;
+        min-width: 84px;
+        border: 1px solid transparent;
+      }
+
+      .mdc-tab--active {
+        border: 1px solid #eff2f5;
+        border-bottom: 1px solid #fff;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        color: #009ef7;
+      }
+
+      .mat-mdc-tab-body-wrapper {
+        padding: 0 0 10px 22px;
+        margin-top: -1px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border: 1px solid #eff2f5;
+      }
+
+      // 修复切换tab时，有滚动条
+      .mat-mdc-tab-body-content {
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+.download-excel {
+  color: #319ef7;
+  text-decoration: underline;
+}
+
+.catch {
+  max-height: 642px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar-thumb {
+    background: #e9edf1;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &-title {
+    height: 52px;
+    font-size: 16px;
+    margin-top: 15px;
+    line-height: 52px;
+    margin-right: 34px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #dbdeed;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.tag {
+  &-wrap {
+    margin-top: 17px;
+  }
+
+  &-add {
+    width: 42px;
+    height: 42px;
+    line-height: 1;
+    border-radius: 6px;
+    background: #f5f8fa;
+    cursor: pointer;
+  }
+
+  &-item {
+    height: 42px;
+    line-height: 1;
+    display: flex;
+    flex-flow: row nowrap;
+    white-space: nowrap;
+    word-break: break-all;
+    padding-left: 10px;
+    align-items: center;
+    background: #f5f8fa;
+    border-radius: 6px;
+    margin: 0 10px 15px;
+    user-select: none;
+    cursor: pointer;
+
+    &.special {
+      padding-right: 10px;
+    }
+  }
+
+  &-close {
+    padding: 0 8px;
+    line-height: 42px;
+  }
+}
+
+.copy {
+  position: absolute;
+  right: -40px;
+  top: 5px;
+  color: #009ef7;
+  cursor: pointer;
+}

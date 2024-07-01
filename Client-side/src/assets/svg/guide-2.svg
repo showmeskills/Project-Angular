@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 112 112">
+    <defs>
+        <linearGradient id="zl9am2jb5b" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#373d45"/>
+            <stop offset="1" stop-color="#14171b"/>
+        </linearGradient>
+        <linearGradient id="9tt90oi9jc" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#c7cbd0"/>
+            <stop offset="1" stop-color="#8e8e8e"/>
+        </linearGradient>
+        <linearGradient id="il545gduvd" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#f67552"/>
+        </linearGradient>
+        <linearGradient id="iiu5l5bs5e" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f36e4b"/>
+            <stop offset="1" stop-color="#f04e23"/>
+        </linearGradient>
+        <linearGradient id="xvpyp01lef" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#f36e4b"/>
+        </linearGradient>
+        <clipPath id="jquhk4y6ka">
+            <path data-name="联合 165" d="M0 21.689 15.615 6.074V0h12.716v10.452h-.151l.151.151L8.623 30.311z" style="fill:#e8a37d"/>
+        </clipPath>
+    </defs>
+    <g transform="translate(4855 -8172)">
+        <ellipse data-name="椭圆 119" cx="54.258" cy="53.52" rx="54.258" ry="53.52" transform="translate(-4855 8172)" style="fill:#e6e7ea"/>
+        <g data-name="蒙版组 16" transform="translate(-4834.391 8247.685)" style="clip-path:url(#jquhk4y6ka)">
+            <circle data-name="椭圆 115" cx="54.001" cy="54.001" r="54.001" transform="translate(-20.483 -76.647)" style="fill:#e8a37d"/>
+        </g>
+        <path data-name="矩形 1201" transform="rotate(135 -4094.407 3143.8)" style="fill:#e8a37d" d="M0 0h10.383v29.613H0z"/>
+        <path data-name="矩形 1210" transform="rotate(135 -4093.667 3144.418)" style="fill:#fff" d="M0 0h12.125v6.967H0z"/>
+        <path data-name="联合 162" d="M0 7.342 7.343 0l3.242 3.242h18.582L18.716 13.695l-.216-.216-6.182 6.181z" transform="translate(-4772.167 8264.34)" style="fill:url(#zl9am2jb5b)"/>
+        <path data-name="联合 163" d="M11.721 33.1V20.306l-1.866 1.866L0 12.318 11.721.6V0h33.1v33.1z" transform="translate(-4833.458 8204.698)" style="fill:url(#9tt90oi9jc)"/>
+        <path data-name="矩形 1205" d="M0 0h6.968v15.678A6.968 6.968 0 0 1 0 22.646V0z" transform="translate(-4821.74 8204.745)" style="fill:url(#zl9am2jb5b)"/>
+        <path data-name="矩形 1206" d="M0 0h6.968v22.646A6.968 6.968 0 0 1 0 15.678V0z" transform="translate(-4795.481 8204.745)" style="fill:url(#zl9am2jb5b)"/>
+        <circle data-name="椭圆 116" cx="10.452" cy="10.452" r="10.452" transform="translate(-4812.955 8180.71)" style="fill:#e8a37d"/>
+        <path data-name="减去 156" d="M2.222 16.9A10.345 10.345 0 0 1 0 10.452 10.464 10.464 0 0 1 10.452 0 10.345 10.345 0 0 1 16.9 2.222L2.223 16.894z" transform="translate(-4812.965 8180.71)" style="fill:url(#zl9am2jb5b)"/>
+        <path data-name="联合 164" d="M15.678 18.28v7.08H0V9.683h9.886L19.569 0 34.6 15.032 23.515 26.118z" transform="translate(-4819.928 8226.163)" style="fill:url(#zl9am2jb5b)"/>
+        <path data-name="路径 145" d="m0 0 6.968 8.71v27.872L0 27.872z" transform="translate(-4805.985 8211.561)" style="fill:url(#il545gduvd)"/>
+        <path data-name="路径 146" d="M8.71 0 0 8.71v27.872l8.71-8.71z" transform="translate(-4798.978 8211.561)" style="fill:url(#iiu5l5bs5e)"/>
+        <path data-name="路径 147" d="m0 0 8.71 8.71v27.872L0 27.872z" transform="translate(-4790.225 8211.561)" style="fill:url(#xvpyp01lef)"/>
+        <path data-name="路径 148" d="M8.71 0 0 8.71v27.872l8.71-8.71z" transform="translate(-4781.471 8211.561)" style="fill:url(#iiu5l5bs5e)"/>
+        <path data-name="多边形 78" d="m5.226 0 5.226 5.226-5.226 5.226L0 5.226z" transform="translate(-4775.336 8223.769)" style="fill:#e8a37d"/>
+        <path data-name="路径 149" d="M-12249.529-6786.094c-9.1 4.676-5.268 13.905 2.189 13.905h13.52v-7.289h-7.328s-6.326 1.014-3.041-1.135a457.77 457.77 0 0 1-5.34-5.481z" transform="translate(7417.637 15004.508)" style="fill:#e8a37d"/>
+        <path data-name="多边形 79" d="m5.226 0 5.226 5.226-5.226 5.226L0 5.226z" transform="translate(-4813.855 8223.769)" style="fill:#e8a37d"/>
+    </g>
+</svg>

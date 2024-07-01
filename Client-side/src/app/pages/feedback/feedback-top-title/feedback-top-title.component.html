@@ -1,0 +1,21 @@
+<div class="page-container">
+  <div class="main-container title unity-padding-web unity-padding-h5-16">
+    <div class="container">
+      <h1 [class.mutual-opacity]="isH5" class="onact96" (click)="isH5 && back()">
+        <span><i *ngIf="isH5" class="icon-back"></i></span>
+        <span>{{ title }}</span>
+      </h1>
+      <p>{{ desc }}</p>
+      <ng-content></ng-content>
+    </div>
+  </div>
+  <div *ngIf="!isH5" class="main-container nav unity-padding-web unity-padding-h5-16">
+    <div class="container">
+      <div class="mutual-opacity onact96-not" [routerLink]="'/' + appService.languageCode + '/feedback'">
+        {{ 'sen_ii' | translate }}
+      </div>
+      <i class="icon-arrow-right-simple"></i>
+      <span>{{ title }}</span>
+    </div>
+  </div>
+</div>

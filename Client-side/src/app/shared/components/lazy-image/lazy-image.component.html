@@ -1,0 +1,21 @@
+<!-- 没有图，显示骨架 -->
+<div *ngIf="!thumbDone() && !hdDone()" class="skeleton-loading" [class.hide-when-alone]="defaultShowBlock"></div>
+<!-- 清晰图 -->
+<img
+  loading="lazy"
+  draggable="false"
+  *ngIf="hdSrc() as hurl"
+  [src]="hurl"
+  (error)="hdError.set(true)"
+  (load)="hdDone.set(true)"
+  [style.z-index]="hdDone() ? 1 : 0"
+/>
+<!-- 模糊图 -->
+<img
+  draggable="false"
+  *ngIf="thumbSrc() as turl"
+  [src]="turl"
+  (error)="thumbError.set(true)"
+  (load)="thumbDone.set(true)"
+  [style.display]="hdDone() ? 'none' : 'block'"
+/>

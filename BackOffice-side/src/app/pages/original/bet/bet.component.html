@@ -1,0 +1,253 @@
+<div class="card rounded">
+  <div class="card-header py-8 d-flex flex-wrap">
+    <form-row [label]="'original.bet.originalGame' | lang" class="mr-16" [contentWidth]="150">
+      <ng-template>
+        <mat-form-field [style.width.px]="150">
+          <mat-select class="form-control" [(ngModel)]="searchData.lotteryName" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.val" *ngFor="let item of lotteryNameList">{{ item.val }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'original.bet.bettingTime' | lang" class="mr-16" [contentWidth]="150">
+      <ng-template>
+        <mat-form-field [style.width.px]="150">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="searchData.timeType"
+            (selectionChange)="onTime(searchData.timeType)"
+          >
+            <mat-option value="">{{ 'common.selectedTime.customiseTime' | lang }}</mat-option>
+            <mat-option value="0">{{ 'common.selectedTime.today' | lang }}</mat-option>
+            <mat-option value="-3">{{ 'common.selectedTime.threeDay' | lang }}</mat-option>
+            <mat-option value="-7">{{ 'common.selectedTime.sevenDay' | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'original.bet.operatingTime' | lang" label-min-width="106" class="mr-16">
+      <ng-template>
+        <div class="d-flex">
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeFrom"
+            [placeholder]="'common.startTime' | lang"
+            [style.width.px]="140"
+            [owlDateTime]="timeStart"
+            [owlDateTimeTrigger]="timeStart"
+            [(ngModel)]="time"
+            formatLabel="yyyy-MM-dd"
+            selectMode="rangeFrom"
+          />
+          <owl-date-time class="fz-20" pickerType="calendar" #timeStart></owl-date-time>
+
+          <div class="date-line lh-42"></div>
+
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeTo"
+            [placeholder]="'common.endTime' | lang"
+            [style.width.px]="140"
+            [owlDateTime]="timeEnd"
+            [owlDateTimeTrigger]="timeEnd"
+            [(ngModel)]="time"
+            formatLabel="yyyy-MM-dd"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time class="fz-20" pickerType="calendar" #timeEnd></owl-date-time>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'original.bet.userId' | lang" class="mr-16" [contentWidth]="150">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="searchData.lotteryUserId"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+    <form-row [label]="'original.bet.betNumber' | lang" class="mr-16" [contentWidth]="150">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="searchData.lotteryBetId"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'common.status' | lang" class="mr-16" [contentWidth]="150">
+      <ng-template>
+        <mat-form-field [style.width.px]="150">
+          <mat-select class="form-control" [(ngModel)]="searchData.lotteryBetStatus" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option value="0">{{ 'original.bet.unsettlement' | lang }}</mat-option>
+            <mat-option value="1">{{ 'original.bet.settled' | lang }}</mat-option>
+            <mat-option value="2">{{ 'original.bet.individualCancellation' | lang }}</mat-option>
+            <mat-option value="3">{{ 'original.bet.systemCancellation' | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="fz-20 flex-1">{{ 'original.bet.betSingleQuery' | lang }}</div>
+
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'original.bet.userId' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.handicap' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.betNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.lotteryNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.bettingContent' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.bettingAmount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.returnAmount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.bettingTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.calcuTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.status' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.bet.profit' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.lotteryUserId }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryName }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryBetId }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryIssueNumber }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryBetPlayName }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryAmount | currencyValue: item.lotteryCurrency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryBetReturnAmount | currencyValue: item.lotteryCurrency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryBetDate }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotterySettlementDate }}</span>
+            </td>
+            <td>
+              <span class="cell" [ngSwitch]="item.lotteryBetStatusCN">
+                <app-label *ngSwitchCase="'未结算'" class="cursor-pointer" minWidth="70" type="yellow"
+                  >{{ 'original.bet.unsettlement' | lang }}
+                </app-label>
+                <app-label *ngSwitchCase="'已结算'" class="cursor-pointer" minWidth="70" type="success"
+                  >{{ 'original.bet.settled' | lang }}
+                </app-label>
+                <app-label *ngSwitchCase="'个人撤单'" class="cursor-pointer" minWidth="70" type="primary"
+                  >{{ 'original.bet.individualCancellation' | lang }}
+                </app-label>
+                <app-label *ngSwitchCase="'系统撤单'" class="cursor-pointer" minWidth="70" type="primary"
+                  >{{ 'original.bet.systemCancellation' | lang }}
+                </app-label>
+              </span>
+            </td>
+            <td>
+              <!-- <span class="cell green-color" *ngIf="item.profitAndLoss > 0">{{ item.profitAndLoss }}</span>
+              <span class="cell red-color" *ngIf="item.profitAndLoss < 0">{{ item.profitAndLoss }}</span> -->
+              <ng-container *win="item.profitAndLoss; let value; prev as prev">
+                <span [winColor]="value" [winColorReverse]="true"
+                  >{{ prev }}{{ value | currencyValue: item.lotteryCurrency }}</span
+                >
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+parameters:
+  - name: condition
+    type: string
+    default: succeeded()
+
+steps:
+  - script: |
+      export PATH="$HOME/.shorebird/bin:$PATH"
+      export SHOREBIRD_TOKEN=$(shorebirdToken)
+      export FLUTTER_STORAGE_BASE_URL=https://download.shorebird.dev
+      shorebird release android --artifact apk --flutter-version 3.19.5
+    displayName: "Flutter build apk"
+    condition: ${{ parameters.condition }}
+
+  - task: AndroidSigning@3
+    inputs:
+      apkFiles: "**/*.apk"
+      apksign: true
+      apksignerKeystoreFile: "gogaming-release-key.keystore"
+      apksignerKeystorePassword: "123456"
+      apksignerKeystoreAlias: "gogaming"
+      apksignerKeyPassword: "123456"
+    continueOnError: true
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        sh merchant_scripts/rename.sh $(Build.SourcesDirectory)/$(projectName)/app/outputs/flutter-apk/app-release.apk $(build.artifactStagingDirectory) merchant-$(merchantNumber)/configs/merchant_config_$(merchantEnv).yml
+    displayName: "Copy signed APK to staging directory"
+    condition: ${{ parameters.condition }}

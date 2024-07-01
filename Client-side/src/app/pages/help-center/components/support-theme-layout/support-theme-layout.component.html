@@ -1,0 +1,48 @@
+<!-- 头部 -->
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="theme-header container">
+    <!-- 返回导航 -->
+    <div class="theme-header-left mutual-opacity onact96" (click)="goBack()">
+      <i class="icon-back"></i>
+      <span class="theme-header-title">{{ themeTitle || '' }}</span>
+    </div>
+    <!-- web头部搜索 -->
+    <div class="search-bar-container" *ngIf="!isH5">
+      <app-search-bar [type]="type"></app-search-bar>
+    </div>
+  </div>
+</div>
+
+<!-- 主体-->
+<div class="main-container inner-page unity-padding-web unity-padding-h5-16 theme-body">
+  <div class="container theme-wrap">
+    <!-- h5搜索 -->
+    <ng-container *ngIf="isH5">
+      <app-search-bar [type]="type"></app-search-bar>
+    </ng-container>
+    <!-- 所有分类 -->
+    <div class="theme-wrap-top">
+      <p class="top-title">{{ 'all_cate' | translate }}</p>
+      <ul class="top-list" *ngIf="!isH5">
+        <li class="list-item" *ngFor="let item of themeList; onact96" (click)="jumpToListPage(item)">
+          <img class="item-img" [src]="item.iconAddress + item.icon" alt="" lazy="loading" />
+          <div class="cate-name">
+            <p class="cate-name-title">{{ item.title }}</p>
+            <i class="icon-arrow"></i>
+          </div>
+          <p class="cate-descr" [innerHtml]="item.description"></p>
+        </li>
+      </ul>
+      <ul class="h5-cate-list" *ngIf="isH5">
+        <li *ngFor="let item of themeList; onact96" (click)="jumpToListPage(item)">
+          <div class="cate-name">
+            <img [src]="item.iconAddress + item.icon" alt="" lazy="loading" />
+            <p class="cate-name-title">{{ item.title }}</p>
+          </div>
+          <i class="icon-arrow"></i>
+        </li>
+      </ul>
+    </div>
+    <ng-container [ngTemplateOutlet]="footTemplate"></ng-container>
+  </div>
+</div>

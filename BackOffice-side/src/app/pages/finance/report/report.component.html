@@ -1,0 +1,32 @@
+<!-- tabs -->
+<header class="report-header">
+  <div class="tab">
+    <div
+      #targetTab
+      (click)="onNav(targetTab, i, tab.path)"
+      *ngFor="let tab of tabs; index as i"
+      class="tab-item"
+      [class.active]="activeTabIndex === i"
+    >
+      <a href="javascript: void(0);">{{ 'game.provider.tap' | lang: i }}</a>
+    </div>
+
+    <div class="tab-active" [style.width]="activeTabW + 'px'" [style.left]="activeTabLeft + 'px'"></div>
+  </div>
+
+  <div>
+    <!--<form-row class="py-0" label="{{ 'common.merchant' | lang }}">
+      <ng-template>
+        <mat-form-field [style.width.px]="110">
+          <mat-select class="form-control" [(ngModel)]="subHeader.merchantCurrentId">
+            <mat-option [value]="item.value" *ngFor="let item of subHeader.merchantList">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>-->
+  </div>
+</header>
+
+<filter-header [type]="tabs[activeTabIndex].path"></filter-header>
+
+<router-outlet></router-outlet>

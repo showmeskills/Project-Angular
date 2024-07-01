@@ -1,0 +1,313 @@
+<div class="filter-card card d-flex flex-row flex-wrap px-8 py-6">
+  <form-row [label]="'UID'" class="mr-16">
+    <ng-template>
+      <input
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+        [(ngModel)]="data.uid"
+        class="form-control rounded-0"
+        input-trim
+        [style.width.px]="200"
+        type="text"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 厂商 -->
+  <form-row [label]="'game.provider.provider' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select
+          class="form-control rounded-0"
+          [(ngModel)]="data.provider"
+          (selectionChange)="loadData(true)"
+          *search="let searchList$ of providerList; key: 'id'"
+        >
+          <input type="search" searchInput />
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of searchList$ | async" [value]="item.id">{{ item.id }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.date' | lang" class="mr-16">
+    <ng-template>
+      <input
+        class="text-center form-control rounded-0"
+        type="text"
+        [style.width.px]="200"
+        [placeholder]="'form.chooseTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card px-8 py-6 mt-6">
+  <div class="d-flex py-4">
+    <div class="flex-1 fz-18">{{ 'risk.topWin.daily' | lang }}</div>
+
+    <div class="d-flex flex-ac">
+      <span class="ml-12">
+        <span class="vam">Total Wager: {{ stat.wagerTotal | currencyValue: true }}</span>
+        <img class="mx-2" [currencyIcon]="'USDT'" />
+      </span>
+      <span class="ml-12">
+        <span class="vam">
+          <span>Total W/L: </span>
+          <ng-container *win="stat.payoutTotal; let value; prev as prev">
+            <span [winColor]="value">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+          </ng-container>
+        </span>
+        <img class="mx-2" [currencyIcon]="'USDT'" />
+      </span>
+    </div>
+  </div>
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">UID</span>
+        </th>
+        <th>
+          <span class="cell">
+            <table-sort
+              [(isAsc)]="data.isAsc"
+              [(sortCurKey)]="data.sortField"
+              [sortKey]="WinnerTopSortEnum.date"
+              (sortChange)="loadData(true)"
+              >Date</table-sort
+            >
+          </span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.regDate' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.totalDeposit' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.totalWithdraw' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'risk.ipMonitoring.totalActiveFlowUsdt' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'risk.ipMonitoring.ngrTotal' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'risk.ipMonitoring.totalBonus' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.vipLevel' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.betContent' | lang }}</span>
+        </th>
+
+        <th>
+          <span class="cell">
+            <table-sort
+              [(isAsc)]="data.isAsc"
+              [(sortCurKey)]="data.sortField"
+              [sortKey]="WinnerTopSortEnum.wager"
+              (sortChange)="loadData(true)"
+              >Wager</table-sort
+            >
+          </span>
+        </th>
+        <th>
+          <span class="cell">
+            <table-sort
+              [(isAsc)]="data.isAsc"
+              [(sortCurKey)]="data.sortField"
+              [sortKey]="WinnerTopSortEnum.payout"
+              (sortChange)="loadData(true)"
+              >W/L</table-sort
+            >
+          </span>
+        </th>
+        <th>
+          <span class="cell">
+            <table-sort
+              [(isAsc)]="data.isAsc"
+              [(sortCurKey)]="data.sortField"
+              [sortKey]="WinnerTopSortEnum.margin"
+              (sortChange)="loadData(true)"
+              >Margin</table-sort
+            >
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list; let i = index">
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.date }}</span>
+        </td>
+        <!-- 注册时间 -->
+        <td>
+          <span class="cell">{{ item.registerTime * 1000 | timeFormat }}</span>
+        </td>
+        <!-- 总存款 -->
+        <td>
+          <span class="cell">{{ item.totalDeposit | currencyValue: 'USDT' }}</span>
+          <img class="mx-2" currencyIcon="USDT" />
+        </td>
+        <!-- 总提款 -->
+        <td>
+          <span class="cell">{{ item.totalWithdraw | currencyValue: 'USDT' }}</span>
+          <img class="mx-2" currencyIcon="USDT" />
+        </td>
+        <!-- 总提款 -->
+        <td>
+          <span class="cell">{{ item.totalActiveFlowUsdt | currencyValue: 'USDT' }}</span>
+          <img class="mx-2" currencyIcon="USDT" />
+        </td>
+        <!-- 总提款 -->
+        <td>
+          <span class="cell">{{ item.ngrTotal | currencyValue: 'USDT' }}</span>
+          <img class="mx-2" currencyIcon="USDT" />
+        </td>
+        <!-- 总提款 -->
+        <td>
+          <span class="cell">{{ item.totalBonus | currencyValue: 'USDT' }}</span>
+          <img class="mx-2" currencyIcon="USDT" />
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.vipGrade | vipName }}
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <!-- 体育&电竞  1,2-->
+            <svg-icon
+              *ngIf="isGameIcon([1, 2], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([1, 2], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/sportGame.svg'"
+            ></svg-icon>
+
+            <!--  彩票3-->
+            <svg-icon
+              *ngIf="isGameIcon([3], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([3], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/lottery.svg'"
+            ></svg-icon>
+            <!--  真人4-->
+            <svg-icon
+              *ngIf="isGameIcon([4], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([4], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/liveCasino.svg'"
+            ></svg-icon>
+            <!--  娱乐城5-->
+            <svg-icon
+              *ngIf="isGameIcon([5], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([5], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/entertainment.svg'"
+            ></svg-icon>
+            <!--  棋牌6-->
+            <svg-icon
+              *ngIf="isGameIcon([6], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([6], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/chess.svg'"
+            ></svg-icon>
+          </span>
+        </td>
+
+        <td>
+          <span class="cell">
+            <span>{{ item.wager | currencyValue: true }}</span>
+            <img class="mx-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <ng-container *win="item.payout; let value; prev as prev">
+              <span [winColor]="value">{{ prev }}{{ value | currencyValue: true }}</span>
+            </ng-container>
+            <img class="mx-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <ng-container *win="item.margin * 100 || 0; let value; prev as prev">
+              <span [winColor]="value">{{ prev }}{{ value | toFormatNumberDecimal: 2 }}%</span>
+            </ng-container>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty
+    *ngIf="!data.time[1]; else listEmptyTpl"
+    textClass="text-danger"
+    [text]="'system.export.selectTime' | lang"
+  ></empty>
+  <ng-template #listEmptyTpl>
+    <empty *ngIf="!list.length"></empty>
+  </ng-template>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between flex-ac pt-12">
+    <div>
+      <mat-form-field [style.width.px]="86">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,316 @@
+<modal-title [title]="'risk.reviewFiles' | lang" (close)="modal.close()"></modal-title>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+<!-- tbas -->
+<div class="tab-wrapper px-8" *ngIf="tabs && tabs.length > 0" mat-tab-nav-bar [tabPanel]="tabPanel">
+  <div
+    class="item"
+    mat-tab-link
+    *ngFor="let item of tabs; let index = index"
+    [disableRipple]="true"
+    [active]="item.value === currentTabValue"
+    [class.active]="item.value === currentTabValue"
+    (click)="changeTab(item.value)"
+  >
+    <div class="tab-name">{{ item.lang | lang }}</div>
+  </div>
+</div>
+
+<div class="px-8 pt-8">
+  <!-- 基础 -->
+  <div *ngIf="currentTabValue === 0" class="box px-8">
+    <!-- *ngIf="data?.primaryVerificationStatus === 'S'" -->
+    <ng-container *ngIf="data?.primaryVerificationStatus === 'S'">
+      <div class="box-items py-4 d-flex">
+        <!-- 国籍： -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.countryofCitizen' | lang }}</div>
+          <div class="fz-16">{{ userDetailsInfo?.kycInfo?.countryName || '-' }}</div>
+        </div>
+        <div class="item px-4 flex-1">
+          <!-- 姓名 -->
+          <div class="fz-14 color-aaa">{{ 'payment.transactionList.name' | lang }}：</div>
+          <div class="fz-16">{{ data?.pojo?.fullName || '-' }}</div>
+        </div>
+        <div class="item px-4 flex-1">
+          <!-- 邮箱 -->
+          <div class="fz-14 color-aaa">{{ 'auManage.sys.email' | lang }}：</div>
+          <div class="fz-16">{{ userDetailsInfo?.email || '-' }}</div>
+        </div>
+        <div class="item px-4 flex-1">
+          <!-- 出生日期 -->
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.dateofBirth' | lang }}：</div>
+          <div class="fz-16">{{ data?.birthDay || '-' }}</div>
+        </div>
+      </div>
+      <div class="box-items py-4 d-flex">
+        <div class="item pr-4 flex-2">
+          <!-- 地址： -->
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.land' | lang }}:</div>
+          <div class="fz-16">{{ userDetailsInfo?.address || '-' }}</div>
+        </div>
+        <!-- 邮政编码： -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+          <div class="fz-16">{{ data?.zipCode || '-' }}</div>
+        </div>
+        <div class="item px-4 flex-1">
+          <!-- 城市 -->
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}：</div>
+          <div class="fz-16">{{ data?.city || '-' }}</div>
+        </div>
+      </div>
+      <div class="box-items py-4 d-flex">
+        <div class="item pr-4 flex-2">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+          <div class="fz-16">{{ data?.primaryVerificationTime | timeFormat }}</div>
+        </div>
+      </div>
+    </ng-container>
+    <!-- 空显示 -->
+    <!-- *ngIf="data?.primaryVerificationStatus !== 'S' && !isLoading" -->
+    <div *ngIf="data?.primaryVerificationStatus !== 'S' && !isLoading" class="container-empty" [style.height.px]="250">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 中级 -->
+  <ng-container *ngIf="currentTabValue === 1">
+    <div class="box px-8">
+      <!--  -->
+      <ng-container *ngIf="data?.intermediateVerificationStatus === 'S'">
+        <!-- 中级:中国 -->
+        <ng-container *ngIf="userDetailsInfo?.kycInfo?.countryCode === 'CN'; else noChina">
+          <div class="box-items py-4 d-flex">
+            <div class="item pr-4 flex-1">
+              <!-- 证件签发国/地区 -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+              <div class="fz-16">{{ userDetailsInfo?.kycInfo?.countryName || '-' }}</div>
+            </div>
+            <div class="item px-4 flex-1">
+              <!-- 姓名 -->
+              <div class="fz-14 color-aaa">{{ 'payment.transactionList.name' | lang }}：</div>
+              <div class="fz-16">{{ data?.pojo?.name || '-' }}</div>
+            </div>
+            <div class="item px-4 flex-1">
+              <!-- 证件号 -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.licenseNumber' | lang }}：</div>
+              <div class="fz-16">{{ data?.pojo?.idcard || '-' }}</div>
+            </div>
+            <div class="item px-4 flex-1">
+              <!-- 银行卡号 -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.bankCard' | lang }}：</div>
+              <div class="fz-16">{{ data?.pojo?.bankcard || '-' }}</div>
+            </div>
+          </div>
+          <div class="box-items py-4 d-flex">
+            <div class="item pr-4 flex-1">
+              <!-- 手机号 -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.phoneNumber' | lang }}：</div>
+              <div class="fz-16">{{ data?.pojo?.mobile || '-' }}</div>
+            </div>
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ data?.intermediateVerificationTime | timeFormat }}</div>
+            </div>
+          </div>
+        </ng-container>
+        <!-- 中级:海外 -->
+        <ng-template #noChina>
+          <div class="box-items py-4 d-flex">
+            <div class="item pr-4 flex-1">
+              <!-- 证件签发国/地区 -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+              <div class="fz-16">{{ userDetailsInfo?.kycInfo?.countryName || '-' }}</div>
+            </div>
+            <div class="item px-4 flex-1">
+              <!-- 选择发行文件 -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.selectRelease' | lang }}：</div>
+              <div class="fz-16">{{ lang.isLocal ? getIdText(data?.pojo?.idType) : data?.pojo?.idType || '-' }}</div>
+            </div>
+          </div>
+          <div class="box-items py-4">
+            <!-- 发行文件照片 -->
+            <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+            <div class="d-flex">
+              <div class="item pr-4 flex-1">
+                <div class="img-box">
+                  <img nz-image [src]="getImage(data?.pojo?.frontsideImage)" />
+                </div>
+              </div>
+              <div class="item px-4 flex-1">
+                <div class="img-box">
+                  <img nz-image [src]="getImage(data?.pojo?.backsideImage)" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box-items py-4 d-flex">
+            <div class="item pr-4 flex-2">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ data?.intermediateVerificationTime | timeFormat }}</div>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+      <!-- 空显示 -->
+      <!--   -->
+      <div
+        *ngIf="data?.intermediateVerificationStatus !== 'S' && !isLoading"
+        class="container-empty"
+        [style.height.px]="250"
+      >
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- 高级 -->
+  <div *ngIf="currentTabValue === 2" class="box px-8">
+    <!-- *ngIf="data?.advancedVerificationStatus === 'S'" -->
+    <ng-container *ngIf="data?.advancedVerificationStatus === 'S'">
+      <div class="box-items py-4 d-flex">
+        <div class="item pr-4 flex-1">
+          <!-- 国家/地区： -->
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.countryAndregioc' | lang }}</div>
+          <div class="fz-16">{{ userDetailsInfo?.kycInfo?.countryName || '-' }}</div>
+        </div>
+        <div class="item px-4 flex-2">
+          <!-- 居住地址 -->
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.address' | lang }}：</div>
+          <div class="fz-16">{{ data?.pojo?.address || '-' }}</div>
+        </div>
+        <!-- 邮政编码： -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+          <div class="fz-16">{{ data?.zipCode || '-' }}</div>
+        </div>
+        <div class="item px-4 flex-1">
+          <!-- 城市： -->
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}</div>
+          <div class="fz-16">{{ data?.city || '-' }}</div>
+        </div>
+      </div>
+      <div class="box-items py-4">
+        <div class="item pr-4 flex-1">
+          <!-- 地址上传： -->
+          <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.addressupload' | lang }}</div>
+          <div class="img-box">
+            <img nz-image [src]="getImage(data?.pojo?.networkImgeUrl)" />
+          </div>
+        </div>
+      </div>
+      <div class="box-items py-4 d-flex">
+        <div class="item pr-4 flex-2">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+          <div class="fz-16">{{ data?.advancedVerificationTime | timeFormat }}</div>
+        </div>
+      </div>
+    </ng-container>
+    <!-- 空显示 -->
+    <!--  -->
+    <div *ngIf="data?.advancedVerificationStatus !== 'S' && !isLoading" class="container-empty" [style.height.px]="250">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+  <!-- 上传指定文件 -->
+  <ng-container *ngIf="currentTabValue === 3">
+    <!-- 证件正反面 -->
+    <div class="py-4">
+      <div class="fz-14 color-aaa mb-4">{{ 'risk.documentFront' | lang }}：</div>
+      <div class="horizontal">
+        <div class="img-box mr-10">
+          <img nz-image [src]="dataList.form.frontsideImage" />
+        </div>
+        <div class="img-box">
+          <img nz-image [src]="dataList.form.backsideImage" />
+        </div>
+      </div>
+    </div>
+    <!-- 交易记录截图 -->
+    <!-- 横向滚动 -->
+    <div class="py-4">
+      <div class="fz-14 color-aaa mb-4">{{ 'risk.recordScreenshot' | lang }}：</div>
+      <div class="horizontal">
+        <!--  [style.flex]="'0 0 300px'" -->
+        <div class="img-box mr-10" *ngFor="let item of dataList.form.bankRecordImages">
+          <img nz-image [src]="item" />
+        </div>
+        <div class="img-box mr-10" *ngFor="let item of dataList.form.cryptoCurrencyRecordImages">
+          <img nz-image [src]="item" />
+        </div>
+      </div>
+    </div>
+    <!-- 个人证明视频 -->
+    <div class="py-4">
+      <div class="fz-14 color-aaa mb-4">{{ 'risk.proofVideo' | lang }}：</div>
+      <div class="item-img-detail video-box-div">
+        <!-- autoplay -->
+        <video *ngIf="dataList.form.videoUrl" class="video-body" controls>
+          <source [src]="dataList.form.videoUrl" type="video/mp4" />
+          <!-- {{ 'risk.mDetail.unsupport' | lang }} -->
+        </video>
+      </div>
+    </div>
+    <!-- 审核 -->
+    <div class="box px-8 mt-5" *ngIf="dataList?.status === 'Pending'">
+      <form-row [label]="'risk.check' | lang" label-width="140">
+        <ng-template>
+          <div class="d-flex flex-wrap">
+            <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of auditList">
+              <input type="radio" name="audit" [value]="item.value" [(ngModel)]="audit" />
+              <span class="mr-4"></span>{{ item.lang | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+      <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="audit === 'Rejected'" required>
+        <ng-template>
+          <input class="form-control w-100" type="text" [(ngModel)]="remark" />
+        </ng-template>
+      </form-row>
+    </div>
+    <!-- 审核状态 -->
+    <div class="d-flex py-4 px-8 box" *ngIf="!(dataList?.status === 'Pending')">
+      <div class="flex-1">
+        <!-- 完成时间： -->
+        <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+        <div class="fz-16">{{ dataList.auditTime | timeFormat }}</div>
+      </div>
+      <div class="flex-1 border-left pl-4">
+        <!-- 审核状态： -->
+        <div class="color-999">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+        <div class="fz-16 text-success space" *ngIf="dataList?.status === 'Finish'">
+          {{ 'member.kyc.authenticationSucceeded' | lang }}
+        </div>
+        <div class="fz-16 text-danger space" *ngIf="dataList?.status === 'Rejected'">
+          {{ 'member.kyc.authenticationFailed' | lang }}
+        </div>
+      </div>
+      <div class="flex-1 border-left pl-4" *ngIf="dataList?.status === 'Rejected'">
+        <!-- 拒绝原因 -->
+        <div class="color-999">{{ 'member.kyc.model.denialReason' | lang }}：</div>
+        <div class="d-flex">{{ dataList.remark }}</div>
+      </div>
+      <div class="flex-1 border-left pl-4">
+        <!-- 审核人： -->
+        <div class="color-999">{{ 'member.kyc.model.reviewer' | lang }}：</div>
+        <div class="fz-16">{{ dataList.auditUserName }}</div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- 按钮 -->
+<div class="modal-footer btn-wrap">
+  <button class="c-btn c-btn-primary" (click)="review()">{{ 'common.confirm' | lang }}</button>
+</div>

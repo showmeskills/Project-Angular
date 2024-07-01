@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="87.739" height="80.058">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#eff1f3"/>
+            <stop offset="1" stop-color="#d7dae5"/>
+        </linearGradient>
+        <style>
+            .cls-3{fill:#fff}
+        </style>
+    </defs>
+    <g id="Group_3514" data-name="Group 3514" transform="translate(-873.542 -501.942)">
+        <g id="Group_22" data-name="Group 22" transform="translate(890.877 501.942)">
+            <path id="Path_20" data-name="Path 20" d="m130.824-5.986-13.481-13.252a2.748 2.748 0 0 0-1.921-.762H72.341a2.912 2.912 0 0 0-1.991.815 2.472 2.472 0 0 0-.756 1.885v74.691a2.718 2.718 0 0 0 2.728 2.667H128.9a2.715 2.715 0 0 0 2.728-2.7V-4.081a2.59 2.59 0 0 0-.808-1.905z" transform="translate(-69.674 20)" style="fill:url(#linear-gradient)"/>
+            <circle id="Ellipse_12" data-name="Ellipse 12" cx="2.834" cy="2.834" r="2.834" transform="translate(64.736 39.532)" style="fill:#ebebeb"/>
+            <circle id="Ellipse_13" data-name="Ellipse 13" class="cls-3" cx="2.593" cy="2.593" r="2.593" transform="translate(40.287 61.536)"/>
+            <circle id="Ellipse_33" data-name="Ellipse 33" cx="2.093" cy="2.093" r="2.093" transform="translate(25.753 11.536)" style="opacity:.518;fill:#fff"/>
+        </g>
+        <path id="Intersection_4" data-name="Intersection 4" d="M5227.713-2365.058v-15a2.746 2.746 0 0 1 1.834.762l13.48 13.251a2.676 2.676 0 0 1 .65.986z" transform="translate(-4290.917 2882)" style="fill:#d9dce6"/>
+        <path id="Rectangle_113" data-name="Rectangle 113" class="cls-3" transform="translate(902.795 532.942)" d="M0 0h38v4H0z"/>
+        <path id="Rectangle_114" data-name="Rectangle 114" class="cls-3" transform="translate(902.795 541.942)" d="M0 0h38v4H0z"/>
+        <path id="Rectangle_115" data-name="Rectangle 115" class="cls-3" transform="translate(902.795 550.942)" d="M0 0h38v4H0z"/>
+        <path id="Union_12" data-name="Union 12" d="m5071.8-2336.465 13.96-13.96a19.949 19.949 0 0 1-3.69-11.591 20.044 20.044 0 0 1 20.043-20.043 20.044 20.044 0 0 1 20.043 20.043 20.044 20.044 0 0 1-20.043 20.043 19.948 19.948 0 0 1-10.516-2.977l-14.141 14.142zm30.313-9.01a16.541 16.541 0 0 0 16.541-16.541 16.541 16.541 0 0 0-16.541-16.54 16.541 16.541 0 0 0-16.541 16.54 16.478 16.478 0 0 0 4.078 10.875l1.591 1.59a16.476 16.476 0 0 0 10.867 4.076z" transform="translate(-4198.253 2903.624)" style="fill:#9a9baa"/>
+    </g>
+</svg>

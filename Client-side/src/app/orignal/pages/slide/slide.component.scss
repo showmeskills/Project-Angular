@@ -1,0 +1,239 @@
+:host {
+  width: 100%;
+  background-color: var(--orignal-bg);
+
+  @media (max-width: 767px) {
+    height: 100%;
+  }
+}
+
+div {
+}
+
+.wrapper {
+  display: flex;
+  width: 878px;
+  margin: 10px auto 0px;
+  /* 背景色/日间 */
+  // background: var(--orignal-bg);
+  /* 分隔线色/日间 */
+  // border: 1px solid var(--orignal-border-color);
+  // border-radius: 6px;
+  flex-direction: column;
+  position: relative;
+
+  @media (max-width: 937px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+  }
+
+  &-top {
+    padding: 10px 16px;
+
+    @media (max-width: 767px) {
+      padding-bottom: 0;
+    }
+  }
+
+  .mian {
+    padding: 10px 16px;
+    width: 100%;
+
+    .game-content.svelte-1wvo54z {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-grow: 1;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+      border-radius: 8px;
+      background-image: url(src/assets/orignal/images/slide/bg.gif);
+      background-position: center;
+      background-size: cover;
+    }
+    .gradient-overlay.svelte-1kij38k {
+      z-index: 2;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #071824, transparent, #071824);
+    }
+    .others-wrap.svelte-1kij38k {
+      z-index: 3;
+      width: 100%;
+      .numbers {
+        position: relative;
+        top: 1em;
+        right: 1em;
+        // display: flex;
+        display: flex;
+        flex-direction: row-reverse;
+        .item {
+          font-family: 'D-DIN';
+          font-size: 14px;
+          font-weight: 700;
+          padding: 0 5px;
+          height: 19px;
+          margin-left: 4px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #ffffff;
+          border-radius: 6px;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .wrap.svelte-1kij38k {
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: column;
+      flex-grow: 1;
+      width: 100%;
+      .wrap.svelte-1ovq9jb {
+        overflow: visible;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex-grow: 1;
+        position: relative;
+        width: 100%;
+        min-height: 300px;
+        .center-wrap.svelte-om7jij {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          flex: 1;
+          .centered-infinite-width.svelte-om7jij {
+            position: absolute;
+            display: flex;
+            left: 0;
+            .infinite-width-wrap.svelte-om7jij {
+              position: relative;
+              display: flex;
+              justify-content: space-between;
+              will-change: transform;
+              & > div {
+                margin-left: 10px;
+              }
+              .roll.svelte-1aanvks.svelte-1aanvks {
+                position: relative;
+                font-size: 14px;
+                color: #fff;
+                &:before {
+                  content: '';
+                  position: absolute;
+                  z-index: 1;
+                  top: 0;
+                  left: 0;
+                  border-radius: 4px;
+                  transition:
+                    box-shadow 0.2s,
+                    background 0.2s,
+                    transform 0.2s;
+                  width: 100%;
+                  height: 100%;
+                  // box-shadow: var(--shadows-md);
+                  background: #2f4553;
+                }
+                .hexagon.svelte-1aanvks.svelte-1aanvks {
+                  position: absolute;
+                  top: 35%;
+                  left: 50%;
+                  width: 80%;
+                  transform: translate(-50%, -50%);
+                  pointer-events: none;
+                }
+                .multiplier.svelte-1aanvks.svelte-1aanvks {
+                  z-index: 4;
+                  position: absolute;
+                  top: 35%;
+                  left: 50%;
+                  transform: translate(calc(-50% + 0.15ch), -50%);
+                }
+                .payout.svelte-1aanvks.svelte-1aanvks {
+                  z-index: 2;
+                  position: absolute;
+                  bottom: -1%;
+                  left: 0%;
+                  width: 100%;
+                  height: 17%;
+                  background-color: #d3c119;
+                  border-bottom-right-radius: 4px;
+                  border-bottom-left-radius: 4px;
+                }
+              }
+            }
+          }
+        }
+        .pointer.svelte-1ovq9jb {
+          position: absolute;
+          bottom: 50%;
+          left: 50%;
+          width: var(--spacing-1-5);
+        }
+      }
+    }
+
+    .others-wrap.svelte-1kij38k {
+      z-index: 3;
+      width: 100%;
+      .wrap.svelte-2ima4n {
+        text-align: right;
+        padding-right: 20px;
+        width: 100%;
+        position: relative;
+        font-weight: 600;
+        display: grid;
+        grid-gap: 10px;
+        font-size: 14px;
+        &:before {
+          content: '';
+          position: absolute;
+          height: 5px;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          background: #2e4352;
+        }
+        .svelte-test {
+          color: #ffffff;
+          font-size: 14px;
+        }
+        .progress-bar.svelte-2ima4n.svelte-2ima4n {
+          height: 5px;
+          transition: 0.1s;
+          background: #f04e23;
+          transition-timing-function: linear;
+          z-index: 100;
+          // width: 50%;
+        }
+      }
+    }
+  }
+
+  &.loading {
+    ::ng-deep orignal-bet {
+      .wrapper .top .bet-button {
+        opacity: 0.5;
+      }
+    }
+  }
+}

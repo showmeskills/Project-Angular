@@ -1,0 +1,90 @@
+:host {
+  ::ng-deep {
+    // 全局通用
+    .disabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 140px;
+
+  @media (max-width: 767px) {
+    height: 80px;
+  }
+
+  .title {
+    color: var(--text-color);
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .head-right {
+    width: 95px;
+    height: 95px;
+
+    @media (max-width: 767px) {
+      width: 50px;
+      height: 50px;
+    }
+  }
+}
+
+.card-page-container {
+  display: flex;
+  flex-direction: column;
+  padding: 48px 0 120px 0;
+}
+
+.nav-container {
+  margin-bottom: 40px;
+  @media (max-width: 767px) {
+    display: none;
+    margin-bottom: 0px;
+  }
+}
+
+.top-btns {
+  display: flex;
+  align-items: center;
+  > * + * {
+    margin-left: 30px;
+  }
+  @media (max-width: 767px) {
+    width: 100%;
+    margin-bottom: 3px;
+    > * + * {
+      margin-left: 15px;
+    }
+  }
+  .btn-text {
+    position: relative;
+    &:not(.vi) {
+      @media (max-width: 767px) {
+        max-width: 100px;
+        margin: auto;
+        white-space: nowrap;
+      }
+    }
+
+    &.active {
+      font-weight: bold;
+      @media (max-width: 767px) {
+        &::after {
+          position: absolute;
+          content: '';
+          bottom: -10px;
+          left: 0;
+          height: 2px;
+          width: 100%;
+          background: var(--primary-color);
+        }
+      }
+    }
+  }
+}

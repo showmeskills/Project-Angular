@@ -1,0 +1,37 @@
+@import '../components/variables.bootstrap';
+
+/**
+  三角形
+ */
+@mixin triangle($border: #a1a5b7, $border-active: $primary) {
+  .triangle {
+    margin-left: 5px;
+    margin-right: 8px;
+    vertical-align: middle;
+
+    &-up {
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-bottom: 4px solid $border;
+
+      &.active {
+        border-bottom: 4px solid $border-active;
+      }
+    }
+
+    &-down {
+      margin-top: 2px;
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 4px solid $border;
+
+      &.active {
+        border-top: 4px solid $border-active;
+      }
+    }
+  }
+}

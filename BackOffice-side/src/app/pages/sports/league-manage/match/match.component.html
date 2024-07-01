@@ -1,0 +1,407 @@
+<div class="modal-content">
+  <modal-title title="联赛匹配" (close)="modal.dismiss()"></modal-title>
+
+  <div class="modal-body pt-0">
+    <!-- 步骤条 -->
+    <div class="w-100 mb-5 d-flex flex-ac justify-content-between step">
+      <div class="d-flex flex-ac step-item" [class.active]="item.value <= curStepValue" *ngFor="let item of stepList">
+        <div class="number">{{ item.value }}</div>
+        <div class="fz-16">{{ item.name }}</div>
+      </div>
+    </div>
+
+    <ng-container [ngSwitch]="curStepValue">
+      <!-- 一：搜索联赛 -->
+      <ng-container *ngSwitchCase="1">
+        <div class="fz-18 color-aaa">待匹配联赛</div>
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th><span class="cell">球种</span></th>
+              <th><span class="cell">联赛名</span></th>
+              <th><span class="cell">英文名</span></th>
+              <th><span class="cell">数据商ID</span></th>
+              <th><span class="cell">数据商</span></th>
+              <th><span class="cell">队伍数量</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="cell">
+                  <svg-icon
+                    class="svg-icon svg-icon-2x5"
+                    [src]="'./assets/images/svg/sports/icon-category-0.svg'"
+                  ></svg-icon>
+                </span>
+              </td>
+              <td>
+                <span class="cell">英格兰足球超级联赛</span>
+              </td>
+              <td>
+                <span class="cell">Premier League</span>
+              </td>
+              <td>
+                <span class="cell">BG123456</span>
+              </td>
+              <td>
+                <span class="cell">Betgenius</span>
+              </td>
+              <td>
+                <span class="cell">36</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <form-row class="mb-4 mt-4" label="类型" label-width="70">
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of typeList">
+                <input type="radio" name="type" [value]="item.value" [(ngModel)]="type" />
+                <span class="mr-4"></span>{{ item.name }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <div class="d-flex flex-ac justify-content-between">
+          <div class="fz-18 color-aaa">搜寻联赛</div>
+          <form-wrap [style.width.px]="280">
+            <svg-icon
+              [src]="'./assets/images/svg/admin-search.svg'"
+              class="svg-icon svg-icon-2x5 svg-icon-primary"
+            ></svg-icon>
+            <input
+              class="form-control"
+              autocomplete="off"
+              type="text"
+              [(ngModel)]="leagueSearch"
+              placeholder="请输入联赛名称或ID查询"
+            />
+          </form-wrap>
+        </div>
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th><span class="cell">球种</span></th>
+              <th><span class="cell">联赛名</span></th>
+              <th><span class="cell">英文名</span></th>
+              <th><span class="cell">联赛ID</span></th>
+              <th><span class="cell">队伍数量</span></th>
+              <th><span class="cell">操作</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of [1, 2, 3, 4, 5, 6]">
+              <td>
+                <span class="cell">
+                  <svg-icon
+                    class="svg-icon svg-icon-2x5"
+                    [src]="'./assets/images/svg/sports/icon-category-0.svg'"
+                  ></svg-icon>
+                </span>
+              </td>
+              <td>
+                <span class="cell">英格兰足球超级联赛</span>
+              </td>
+              <td>
+                <span class="cell">Premier League</span>
+              </td>
+              <td>
+                <span class="cell">BG123456</span>
+              </td>
+              <td>
+                <span class="cell">36</span>
+              </td>
+              <td>
+                <span class="cell">
+                  <label class="checkbox checkbox-lg">
+                    <input type="checkbox" [checked]="false" />
+                    <span class="mr-4"></span>
+                  </label>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <!-- 二：基本资料 -->
+      <ng-container *ngSwitchCase="2">
+        <div class="step2-top" style="border-bottom: 1px dashed #e4e6ef">
+          <div class="fz-16 color-aaa mb-8">待匹配联赛资料</div>
+          <div class="d-flex" style="border-bottom: 1px dashed #e4e6ef">
+            <svg-icon
+              class="svg-icon svg-icon-8x pl-5 pr-15"
+              [src]="'./assets/images/svg/sports/polygon.svg'"
+            ></svg-icon>
+            <div class="flex-1 fz-16">
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">球种:</div>
+                  足球
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">代码:</div>
+                  BG123456
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">联赛:</div>
+                  英格兰足球超级联赛
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">来源:</div>
+                  <div class="source">BG</div>
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">英文:</div>
+                  Premier League
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">赛季:</div>
+                  2021/20222
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-8">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa">国别:</div>
+                  大不列颠国协-英格兰地区
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">球队:</div>
+                  36
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step2-bottom mt-8">
+          <div class="fz-16 color-aaa mb-8">映射联赛资料</div>
+          <div class="d-flex">
+            <svg-icon
+              class="svg-icon svg-icon-8x pl-5 pr-15"
+              [src]="'./assets/images/svg/sports/polygon-1.svg'"
+            ></svg-icon>
+            <div class="flex-1 fz-16">
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">球种:</div>
+                  足球
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">代码:</div>
+                  BG123456
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">联赛:</div>
+                  英格兰足球超级联赛
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">来源:</div>
+                  <div class="source mr-2">BG</div>
+                  <div class="source mr-2">BG</div>
+                  <div class="source mr-2">BG</div>
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">英文:</div>
+                  Premier League
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">赛季:</div>
+                  <mat-form-field>
+                    <mat-select class="form-control" [(ngModel)]="season">
+                      <mat-option value="">全部</mat-option>
+                      <mat-option *ngFor="let item of seasonList" [value]="item.value">{{ item.name }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa">国别:</div>
+                  大不列颠国协-英格兰地区
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">球队:</div>
+                  36
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-15">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa">权重:</div>
+                  001
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">底图:</div>
+                  <img [src]="'./assets/images/svg/sports/bottom.png'" />
+                </div>
+              </div>
+              <div class="w-100 d-flex flex-ac mb-8">
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa">累计交易:</div>
+                  2,780,000.00
+                </div>
+                <div class="d-flex flex-ac flex-1">
+                  <div class="color-aaa mr-2">累计派彩:</div>
+                  1,600,000.00
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- 三：返还率/风险 -->
+      <ng-container *ngSwitchCase="3">
+        <div class="step3">
+          <div class="fz-18 color-aaa mb-5">返还率/风险设定</div>
+          <div class="w-100 d-flex">
+            <div class="step3-left mr-13">
+              <div class="w-100 step3-left-top mb-13">
+                <div class="fz-16 mb-8">单场风险承受力</div>
+                <div class="fz-18">¥1,600,000.00</div>
+              </div>
+              <div class="w-100 step3-left-bottom">
+                <div class="fz-16 mb-8">基础返还率</div>
+                <div class="fz-18">0.9575</div>
+              </div>
+            </div>
+            <div class="step3-right">
+              <div class="step3-right-item mb-5" style="background: #f1faff">
+                <div class="fz-16 ml-10 mt-5 mb-1">超早盘</div>
+                <div class="fz-18 text-center pl-14">0.95(-0.0075)</div>
+              </div>
+              <div class="step3-right-item mb-5" style="background: #f1faff">
+                <div class="fz-16 ml-10 mt-5 mb-1">早盘</div>
+                <div class="fz-18 text-center pl-14">0.95(-0.0075)</div>
+              </div>
+              <div class="step3-right-item mb-5" style="background: #e8fff3">
+                <div class="fz-16 ml-10 mt-5 mb-1">今日</div>
+                <div class="fz-18 text-center pl-14">0.95(±0)</div>
+              </div>
+              <div class="step3-right-item mb-5" style="background: #fff5f8">
+                <div class="fz-16 ml-10 mt-5 mb-1">滚球</div>
+                <div class="fz-18 text-center pl-14">0.96(0.0025)</div>
+              </div>
+              <div class="step3-right-item mb-5" style="background: #e8fff3">
+                <div class="fz-16 ml-10 mt-5 mb-1">冠军</div>
+                <div class="fz-18 text-center pl-14">0.95(-0.0075)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- 四：队伍列表 -->
+      <ng-container *ngSwitchCase="4">
+        <div class="step4">
+          <div class="fz-18 color-aaa mb-5">队伍列表</div>
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th><span class="cell"></span></th>
+                <th><span class="cell">代码</span></th>
+                <th><span class="cell"></span></th>
+                <th><span class="cell">队伍名称</span></th>
+                <th><span class="cell"></span></th>
+                <th><span class="cell">国别/地区</span></th>
+                <th><span class="cell">操作</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of [1, 2, 3, 4, 5, 6]">
+                <td>
+                  <span class="cell">
+                    <svg-icon
+                      *ngIf="item === 1"
+                      class="svg-icon svg-icon-2x cursor-pointer"
+                      [src]="'./assets/images/svg/sports/step4-add.svg'"
+                    ></svg-icon>
+                    <svg-icon
+                      *ngIf="item !== 1"
+                      class="svg-icon svg-icon-2x cursor-pointer"
+                      [src]="'./assets/images/svg/sports/step4-reduce.svg'"
+                    ></svg-icon>
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">GB0003334</span>
+                  <span class="cell" *ngIf="item !== 1">BR03334</span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <svg-icon
+                      class="svg-icon svg-icon-2x"
+                      [src]="'./assets/images/svg/sports/step4-icon.svg'"
+                    ></svg-icon>
+                  </span>
+                </td>
+                <td>
+                  <span class="cell"> 威康比流浪者 </span>
+                  <span class="cell" *ngIf="item !== 1"> 威康比流浪者 </span>
+                </td>
+                <td>
+                  <span class="cell">Wycombe Wanderers FC</span>
+                  <span class="cell" *ngIf="item !== 1">Wycombe Wanderers FC</span>
+                </td>
+                <td>
+                  <span class="cell"> 英格兰 </span>
+                  <span class="cell" *ngIf="item !== 1"> 英格兰 </span>
+                </td>
+                <td>
+                  <span class="cell"></span>
+                  <span class="cell" *ngIf="item !== 1">
+                    <div class="cursor-pointer" style="color: #009ef7">重新匹配</div>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+      <!-- 五：完成匹配 -->
+      <ng-container *ngSwitchCase="5">
+        <div class="step5">
+          <img [src]="'./assets/images/svg/sports/step5-down.png'" [style.wdith.px]="233" />
+          <div class="mb-4 mt-12">
+            已成功将
+            <span class="mx-2" style="color: #009ef7">Betgenius-BG123456</span>
+            联赛
+          </div>
+          <div>
+            匹配至GB联赛数据库，联赛ID:
+            <span class="mx-2" style="color: #009ef7">GB123456</span>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- c-btn-default btn-light -->
+  <div class="modal-footer btn-wrap">
+    <ng-container *ngIf="curStepValue !== 5; else step5">
+      <button *ngIf="curStepValue === 1" type="button" class="c-btn btn c-btn-default" (click)="modal.dismiss()">
+        取消
+      </button>
+      <button
+        *ngIf="curStepValue > 1 && curStepValue < 5"
+        type="button"
+        class="c-btn btn c-btn-default"
+        (click)="stepReturn()"
+      >
+        上一步
+      </button>
+      <button *ngIf="curStepValue < 4" type="button" class="c-btn btn btn-primary" (click)="stepEnter()">下一步</button>
+      <button *ngIf="curStepValue === 4" type="button" class="c-btn btn btn-primary" (click)="stepEnter()">提交</button>
+    </ng-container>
+    <ng-template #step5>
+      <button type="button" class="c-btn btn btn-primary" (click)="modal.close()">关闭</button>
+    </ng-template>
+  </div>
+</div>

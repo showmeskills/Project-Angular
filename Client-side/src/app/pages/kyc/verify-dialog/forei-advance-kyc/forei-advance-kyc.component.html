@@ -1,0 +1,128 @@
+<div class="advance-container">
+  <!-- 标题栏 -->
+  <div class="header-container">
+    <div class="title-line">
+      <div class="dailog-header">{{ 'adv_ver' | translate }}</div>
+      <i class="icon-close-simple mutual-opacity onact96-not" [class.disabled]="submitLoading" (click)="close()"></i>
+    </div>
+    <p class="title">{{ 'proof_wealth' | translate }}</p>
+  </div>
+
+  <div class="content-container">
+    <app-customize-form-group [column]="true" marginTop="24px">
+      <app-customize-select
+        [label]="'source_wealth' | translate"
+        width="100%"
+        defaultText=""
+        [multipleChoice]="true"
+        [inputTemplate]="inputTemplate"
+        [optionsTemplate]="optionsTemplate"
+        [disabled]="submitLoading || isLocked"
+      ></app-customize-select>
+    </app-customize-form-group>
+    <div class="upload-container" *ngIf="isShowUpload">
+      <app-scrollbar>
+        <div class="document">
+          <div [class.document-item]="item.value.isSelected" *ngFor="let item of kycUtils.userDocuments | keyvalue">
+            <ng-container *ngIf="item.value.isSelected">
+              <p class="document-title">{{ item.value.documents.title | translate }}</p>
+              <P class="document-tips-1">{{ 'docs_tips' | translate }}</P>
+              <div class="document-tips-2">
+                <p *ngFor="let intro of item.value.documents.intro">· {{ intro | translate }}</p>
+              </div>
+              <ng-container
+                *ngTemplateOutlet="fileUpload; context: { uploadDocuments: item.value.documents, key: item.key }"
+              ></ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </app-scrollbar>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <p class="limit-tips" *ngIf="isShowUpload">*{{ 'upl_limits' | translate }}</p>
+    <customize-button
+      *ngIf="!isShowUpload"
+      size="large"
+      width="100%"
+      type="primary"
+      [disabled]="!canNext"
+      (onClick)="isShowUpload = true"
+      >{{ 'next_step' | translate }}</customize-button
+    >
+    <customize-button
+      *ngIf="isShowUpload"
+      size="large"
+      width="100%"
+      type="primary"
+      [disabled]="!canSubmit || submitLoading"
+      [loading]="submitLoading"
+      (onClick)="submit()"
+      >{{ 'sub' | translate }}</customize-button
+    >
+    <div class="bottom-tips">
+      <img lazy="loading" src="assets/images/kyc/dun.svg" />
+      <p class="txt">
+        {{ 'secure_info' | translate }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<ng-template #inputTemplate>
+  <ng-container *ngFor="let item of kycUtils.userDocuments | keyvalue">
+    <ng-container *ngIf="item.value.isSelected">
+      <p class="selected-item">{{ item.value.label | translate }}</p>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #optionsTemplate>
+  <div class="customize-options">
+    <div
+      class="option-item"
+      [style.order]="item.value.order"
+      [class.active]="item.value.isSelected"
+      *ngFor="let item of kycUtils.userDocuments | keyvalue"
+    >
+      <mat-checkbox [checked]="item.value.isSelected" (change)="onChangeValue(item.key)">
+        {{ item.value.label | translate }}
+      </mat-checkbox>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #fileUpload let-uploadDocuments="uploadDocuments" let-key="key">
+  <div class="images-conatiner">
+    <div class="upload-lists">
+      <div
+        class="list-item mutual-opacity"
+        [class.disable]="uploadDocuments.loading && index !== uploadDocuments.currentIndex"
+        *ngFor="let img of uploadDocuments.uploads; let index = index"
+      >
+        <ng-container *ngIf="uploadDocuments.loading && index === uploadDocuments.currentIndex">
+          <div class="skeleton-loading"></div>
+        </ng-container>
+        <object [type]="img.fileType.type" [data]="img.url | safe" (load)="onLoad(key)" (error)="onLoad(key)"></object>
+        <ng-container *ngIf="!uploadDocuments.loading">
+          <i class="clear icon-close-simple mutual-opacity gray-color onact96-not" (click)="removeItem(key, index)"></i>
+        </ng-container>
+      </div>
+      <!-- 前台只支持 上传一张图片 因为后台 还没不支持多图 -->
+      <div
+        class="upload-box mutual-opacity onact96-not"
+        [class.disabled]="uploadDocuments.loading"
+        *ngIf="!uploadDocuments.uploads.length"
+      >
+        <input type="file" #input (change)="uploadImages(input, key)" />
+        <ng-container *ngIf="uploadDocuments.loading">
+          <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+        </ng-container>
+        <ng-container *ngIf="!uploadDocuments.loading">
+          <i class="icon-exit"></i>{{ 'up_files' | translate }}
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>

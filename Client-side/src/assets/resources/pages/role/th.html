@@ -1,0 +1,64 @@
+<div class="top-role-container">
+  <!-- 好友介绍 -->
+  <div class="introduction-body">
+    <div class="introduction-img img-box">
+      <img src="assets/images/friend/role-img-0.png" alt='' lazy='loading' />
+    </div>
+    <div class="introduction-uc">
+      <div class="introduction-title-uc">กฎ บทนำ</div>
+      <div class="introduction-context-uc">
+        <p>ผู้เชิญสามารถแบ่งปันค่าคอมมิชชั่นที่ได้รับกับผู้ได้รับเชิญ และกำหนดอัตราส่วนการแบ่งปันด้วยตนเองดังนี้</p>
+        <p>1. หากผู้เชิญเป็นผู้ใช้ทั่วไป "อัตราส่วนส่วนลดค่าคอมมิชชัน" คือ 2‰ และผู้เชิญสามารถตั้งค่าการคืนธุรกรรมได้
+          0‰, 0.5‰, 1‰</p>
+        <p>2. หากผู้เชิญเป็นสมาชิกพันธมิตร "อัตราการคืนเงิน" คือ 2‰ และผู้เชิญสามารถกำหนด
+          "อัตราการคืนเงินสำหรับการทำธุรกรรมของผู้ได้รับเชิญ" ได้ห้าระดับเป็น 0‰, 0.5‰, 1‰, 1.5‰, 2‰</p>
+        <p>เวลากิจกรรม: ตั้งแต่วันที่ 30 มิถุนายน พ.ศ. 2565</p>
+      </div>
+    </div>
+  </div>
+  <div class="links-uc">
+    <ul>
+      <li class="mid-li">
+        <p><span class="linked">></span>>> สร้างลิงค์อ้างอิงพิเศษ</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-1.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>><span class="linked">></span>> เชิญเพื่อน ๆ</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-2.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>>><span class="linked">></span> รวยไปด้วยกัน</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-3.png" alt='' lazy='loading' />
+        </div>
+      </li>
+    </ul>
+  </div>
+  <p class="introduction-title-uc">คำอธิบายเหตุการณ์:</p>
+  <!-- 好友介绍 -->
+  <div class="introduction-context-uc" *ngIf="whichRouter == 'friend'">
+    <p>1. อัตราส่วนเงินคืนจะคำนวณตามเวลาจริง และเงินคืนจะถูกส่งคืนไปยังบัญชีของผู้เชิญหรือผู้ได้รับเชิญภายใน 24 ชั่วโมง
+    </p>
+    <p>2.ค่าคอมมิชชั่นรีเบตและค่ารีเบทที่อ้างอิงจะคำนวณจากมูลค่าการซื้อขายที่แท้จริงของผู้ใช้
+      สำหรับวิธีการคำนวณมูลค่าการซื้อขายที่ได้ผล โปรดดูที่:<span class="linked"
+        data-page='{{onJunmpToPage}}'>{{rebLinkName1}}</span>
+    </p>
+    <p>3.ผู้ได้รับเชิญต้องใช้ลิงก์อ้างอิงพิเศษ (รหัส QR, ID) เพื่อลงทะเบียนเพื่อรับเงินคืนตามสัดส่วนที่ตรงกัน หากคุณป้อน
+      ID ผู้แนะนำเดิมโดยตรงเมื่อลงทะเบียน คุณจะไม่สามารถรับเงินคืนได้</p>
+    <p>4. ไม่มีการจำกัดจำนวนเพื่อนที่ได้รับเชิญสำหรับบัญชีเดียว</p>
+    <p>5. เงินคืนจะไม่เพิ่มขีดจำกัดการถอน</p>
+    <p>6.{Brand} จะปรับอัตราส่วนเงินคืนตามสถานการณ์จริงในอนาคต และขอสงวนสิทธิ์ในการปรับกฎกิจกรรม </p>
+    <p>7.{Brand} ไม่อนุญาตให้ผู้ใช้เชิญตัวเองผ่านหลายบัญชี เมื่อตรวจสอบแล้ว การคืนเงินทั้งหมดจะถูกยกเลิก
+      และการส่งคืนการอ้างอิงของบัญชีที่ได้รับเชิญจะถูกยกเลิกด้วย</p>
+    <p>8.กรณีอื่นๆ ที่เงินคืนจะถูกยกเลิก:<span class="linked" data-page={{onJunmpToPage}}>{{rebLinkName1}}</span>
+    </p>
+  </div>
+  <p class="introduction-title-uc">*{{attentionTitle}}</p>
+  <div class="introduction-context-uc">
+    {{attentionContext}}
+  </div>
+</div>

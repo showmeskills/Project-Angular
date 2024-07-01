@@ -1,0 +1,400 @@
+div {
+  display: flex;
+}
+
+:host {
+  display: flex;
+}
+
+.pending {
+  color: var(--primary-color) !important;
+}
+
+.decline {
+  color: rgba(207, 48, 74, 1);
+}
+
+.status-success {
+  color: #02c076;
+}
+
+.poa-id-title {
+  white-space: nowrap;
+}
+
+.supply {
+  margin-right: 6px;
+}
+
+.poa-id-status {
+  margin-left: 6px;
+}
+
+.upload-click {
+  align-items: center;
+  flex-wrap: wrap;
+  .upload-btn {
+    align-items: center;
+    padding: 6px;
+    margin-left: 6px;
+    border: solid 1px var(--default-border-color);
+    background: var(--bg-color-10);
+  }
+
+  .icon-exit {
+    transform: rotate(270deg);
+    margin: 0 6px;
+    color: var(--primary-color);
+  }
+}
+
+.page-contant {
+  flex-direction: column;
+  width: 100%;
+
+  .bold-label {
+    font-size: 20px;
+    font-weight: 500;
+    padding-bottom: 14px;
+    align-items: center;
+    justify-content: space-between;
+
+    //----------审核中
+    .pending-time {
+      position: absolute;
+      color: #ff580e;
+      font-size: 14px;
+      align-items: center;
+      height: 36px;
+      border-top-left-radius: 23px;
+      border-bottom-left-radius: 23px;
+      background-color: #f9eee2;
+      padding: 0 14px;
+      white-space: nowrap;
+      right: -16px;
+
+      .watch-icon {
+        background-size: 100%;
+        height: 20px;
+        width: 20px;
+        margin-right: 8px;
+        background-image: url(src/assets/images/kyc/timer.svg);
+      }
+    }
+
+    .re-status {
+      align-items: center;
+      .icon-close-simple {
+        margin: 5px 6px 0 0;
+        font-size: 12px;
+        &::before {
+          color: var(--text-white-at-night);
+          background-color: var(--primary-color);
+          padding: 2px;
+          border-radius: 50%;
+        }
+      }
+      .re-status-txt {
+        font-size: 14px;
+        color: #ff5555;
+        text-decoration: underline #ff5555;
+      }
+    }
+
+    //认证成功
+    .succ-status {
+      height: 36px;
+      border-top-left-radius: 23px;
+      border-bottom-left-radius: 23px;
+      align-items: center;
+      background-color: #e2f9ef;
+      color: #02c076;
+      font-size: 14px;
+      padding: 0 14px;
+      position: absolute;
+      right: -16px;
+
+      //认证成功会显示
+      .succ-btn {
+        background-image: url(src/assets/images/kyc/correct-green.svg);
+        background-size: 100%;
+        height: 16px;
+        margin-right: 0.67rem;
+        background-repeat: no-repeat;
+        width: 16px;
+      }
+    }
+  }
+
+  .info-row {
+    flex-direction: row;
+    font-size: 14px;
+    padding-bottom: 20px;
+
+    &.hide {
+      display: none;
+    }
+
+    &.none-p {
+      padding-bottom: 0;
+    }
+
+    &.last-child {
+      display: none;
+    }
+
+    .info-text {
+      color: var(--text-color-20);
+    }
+
+    .icon-edit-simple,
+    .icon-location,
+    .icon-time,
+    .icon-phone,
+    .icon-bankcard,
+    .icon-ic,
+    .icon-face,
+    .icon-basic {
+      background-size: 100%;
+      height: 14px;
+      width: 14px;
+      margin-right: 10px;
+      background-repeat: no-repeat;
+    }
+
+    .icon-edit-simple {
+      background-image: url(src/assets/images/kyc/edit.png);
+    }
+
+    .icon-time {
+      background-image: url(src/assets/images/kyc/time.png);
+      padding-bottom: 16px;
+    }
+
+    .icon-location {
+      background-image: url(src/assets/images/kyc/add_ic.png);
+    }
+
+    .icon-phone {
+      background-size: 12px 12px;
+      background-image: url(src/assets/images/kyc/phone.png);
+    }
+
+    .icon-bankcard {
+      background-size: 12px 13px;
+      background-image: url(src/assets/images/kyc/bankcard.png);
+    }
+
+    .icon-face {
+      background-image: url(src/assets/images/kyc/face_ic.png);
+    }
+
+    .icon-ic {
+      background-image: url(src/assets/images/kyc/ic_1.png);
+    }
+
+    .icon-basic {
+      background-image: url(src/assets/images/kyc/basic.png);
+    }
+  }
+
+  .infor-container {
+    // padding-bottom: 20px;
+    color: var(--text-color-20);
+    font-size: 14px;
+    flex-direction: column;
+
+    .add-top-border {
+      padding-top: 20px;
+      border-top: 1px solid #ebecf0;
+
+      &:host-context(.dark) & {
+        border-top-color: var(--default-border-color);
+      }
+    }
+
+    .offset-right {
+      padding-left: 10px;
+    }
+
+    .info-column {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-bottom: 0;
+
+      .height {
+        height: 20px;
+        align-items: center;
+      }
+
+      .succ-btn {
+        background-image: url(src/assets/images/kyc/cerrect.png);
+        background-size: 100%;
+        height: 20px;
+        margin-right: 0.67rem;
+        background-repeat: no-repeat;
+        width: 20px;
+      }
+
+      .header-row {
+        padding-bottom: 20px;
+
+        //间隙
+        .gap {
+          background-size: 100%;
+          height: 16px;
+          margin-right: 0.4rem;
+          padding-left: 16px;
+          padding-bottom: 1px;
+          width: 16px;
+        }
+      }
+
+      .acinfor-row {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        > * + * {
+          margin-bottom: 6px;
+        }
+        .acinfor-text {
+          line-height: 1.48;
+          font-size: 14px;
+          color: var(--text-color-30);
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  ///---------认证部分
+  .btn-container {
+    border-top: 1px solid #ebecf0;
+    padding-top: 20px;
+    flex-direction: column;
+
+    &:host-context(.dark) & {
+      border-top-color: var(--default-border-color);
+    }
+
+    &.hide {
+      display: none;
+    }
+
+    .info-row {
+      align-items: center;
+    }
+
+    // buttom
+    .pending-time {
+      color: #ff580e;
+      text-decoration: underline #ff580e;
+
+      .watch-icon {
+        background-size: 100%;
+        height: 20px;
+        width: 20px;
+        margin-right: 8px;
+        background-image: url(src/assets/images/kyc/timer.svg);
+      }
+    }
+
+    .margin-t {
+      margin: 16px 0;
+
+      //------------已完成
+      .pass-btn {
+        color: #02c076 !important;
+        background-color: #e2f9ef !important;
+        pointer-events: none;
+      }
+
+      //------------ 审核中
+      .pending-btn {
+        background-color: #f9eee2 !important;
+        color: #ff580e !important;
+        pointer-events: none;
+      }
+
+      //------------
+      .reject-btn {
+        color: orange !important;
+      }
+
+      //------------去认证
+      .initial-btn {
+        background-color: #ff580e !important;
+        color: var(--text-white-at-night) !important;
+      }
+
+      .invalid-btn {
+        pointer-events: none;
+      }
+
+      .initial-btn,
+      .invalid-btn {
+        width: 100%;
+        height: 46px;
+        border-radius: 4px;
+        border-color: transparent;
+        background-color: #eaecef;
+        color: #b9bfc8;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 46px;
+        text-align: center;
+
+        &:host-context(.dark) & {
+          color: var(--text-color-10);
+          background-color: var(--input-border-color);
+        }
+
+        &.margin-t {
+          margin: 10px 0;
+        }
+      }
+
+      .reject-btn,
+      .pending-btn,
+      .pass-btn {
+        width: 100%;
+        height: 46px;
+        border-radius: 25px;
+        //background-color: #e2f9ef;
+        border-color: transparent;
+        font-weight: 300;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 10px 0;
+        line-height: 46px;
+        align-items: center;
+      }
+    }
+
+    //安全提示
+    .notice-row {
+      flex-direction: row;
+      width: 100%;
+      font-size: 12px;
+      align-items: center;
+      color: var(--text-color-20);
+
+      .safety-i {
+        background-position: center center;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        height: 18px;
+        width: 16px;
+        margin-right: 10px;
+        background-image: url(src/assets/images/kyc/safety.png);
+      }
+
+      .notice-text {
+        font-size: 12px;
+        color: #959cbd;
+      }
+    }
+  }
+}

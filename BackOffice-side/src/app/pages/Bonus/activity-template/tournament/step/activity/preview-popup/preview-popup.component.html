@@ -1,0 +1,198 @@
+<modal-title [title]="'member.activity.sencli12.preview' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body p-8">
+  <ng-container [formGroup]="formGroup" *ngIf="formGroup">
+    <lang-tab #langTab formArrayName="lang" [(value)]="selectLang" [edit]="false">
+      <ng-template let-control="formControl">
+        <div [formGroup]="control">
+          <!-- 标题 -->
+          <form-row name="title" [label]="'common.title' | lang" label-width="180" required>
+            <ng-template let-control="formControl">
+              {{ control.value || '-' }}
+            </ng-template>
+          </form-row>
+
+          <!-- 副标题 -->
+          <form-row name="subTitle" [label]="'member.activity.sencli12.subName' | lang" label-width="180">
+            <ng-template let-control="formControl">
+              {{ control.value || '-' }}
+            </ng-template>
+          </form-row>
+
+          <!-- T & C -->
+          <form-row name="tc" [label]="'T & C'" label-width="180" required>
+            <ng-template let-control="formControl">
+              <div class="word-break lh-1 pt-5" [innerHTML]="control.value || '-'"></div>
+            </ng-template>
+          </form-row>
+        </div>
+      </ng-template>
+    </lang-tab>
+  </ng-container>
+
+  <div class="pl-8 mt-5">
+    <!-- 营销图 -->
+    <form-row [label]="'member.activity.sencli12.thumbnails' | lang" label-width="180">
+      <ng-template>
+        <upload [style.height.px]="180" [readonly]="true" [value]="stepOneInfo?.thumbnails"> </upload>
+      </ng-template>
+    </form-row>
+
+    <!-- 产品 -->
+    <form-row [label]="'member.activity.sencli12.product' | lang" [label-width]="180">
+      <ng-template>
+        {{ stepTwoInfo?.provider || '-' }}
+      </ng-template>
+    </form-row>
+
+    <!-- 类型 -->
+    <form-row [label]="'common.type' | lang" [label-width]="180">
+      <ng-template>
+        {{ 'Tournament' }}
+      </ng-template>
+    </form-row>
+
+    <!-- 开始/结束时间 -->
+    <form-row [label]="'member.activity.sencli12.startEndDate' | lang" [label-width]="180">
+      <ng-template> {{ stepTwoInfo?.tmpStartTime || '-' }}~{{ stepTwoInfo?.tmpEndTime || '-' }} </ng-template>
+    </form-row>
+
+    <!-- 通知时间 -->
+    <form-row [label]="'member.activity.sencli12.notificationTime' | lang" label-width="180">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <!-- 活动开始前几小时 -->
+          <div class="d-flex flex-ac mr-20">
+            <span>{{ stepTwoInfo?.tmpBeginShowHours }}H</span>
+            <div class="ml-6 color-aaa">{{ 'member.activity.sencli12.hoursBeforeTheCampaign' | lang }}</div>
+          </div>
+
+          <!-- 活动结束后几小时 -->
+          <div class="d-flex flex-ac mr-10">
+            <span>{{ stepTwoInfo?.tmpEndShowHours }}H</span>
+            <div class="ml-6 color-aaa">{{ 'member.activity.sencli12.hoursafterTheCampaign' | lang }}</div>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 条件 -->
+    <form-row [label]="'member.activity.sencli12.criteria' | lang" label-width="180">
+      <ng-template>
+        {{ lang.isLocal ? getCriteria(stepTwoInfo?.rankType)?.name : getCriteria(stepTwoInfo?.rankType)?.lang }}
+      </ng-template>
+    </form-row>
+
+    <!-- 最低下注金额 -->
+    <form-row [label]="'member.activity.sencli12.minbet' | lang" label-width="180">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          {{ stepTwoInfo?.minBetUsdt | currencyValue: true }}
+          <img class="ml-2" [currencyIcon]="'USDT'" />
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 游戏列表 -->
+    <form-row [label]="'member.activity.sencli12.gameList' | lang" label-width="180">
+      <ng-template>
+        <!-- 标签 -->
+        <form-row [label]="'member.activity.sencli12.byLabel' | lang" label-width="120" class="pt-0 mb-2">
+          <ng-template>
+            <div class="d-flex flex-ac flex-wrap" style="gap: 8px">
+              <div
+                class="d-flex flex-ac px-5 h42"
+                style="background: #f5f8fa; border-radius: 6px"
+                *ngFor="let item of selectedLabelList"
+              >
+                <img class="lh-1 pr-4" *ngIf="item?.icon" [src]="item.icon | host" width="18" height="18" />
+                {{ item?.name || '-' }}
+              </div>
+
+              <div *ngIf="!selectedLabelList.length">-</div>
+            </div>
+          </ng-template>
+        </form-row>
+        <!-- 游戏 -->
+        <form-row [label]="'member.activity.sencli12.byGameCode' | lang" label-width="120" class="pt-0 mb-2">
+          <ng-template>
+            <div class="d-flex flex-ac flex-wrap" style="gap: 8px">
+              <div
+                class="d-flex flex-ac px-5 h42"
+                style="background: #f5f8fa; border-radius: 6px"
+                *ngFor="let item of selectedGameList"
+              >
+                {{ item?.name || '-' }}
+              </div>
+
+              <div *ngIf="!selectedGameList.length">-</div>
+            </div>
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </form-row>
+
+    <!-- 国家限制 -->
+    <form-row [label]="'member.activity.sencli12.countryRestrictions' | lang" label-width="180">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap" style="gap: 8px">
+          <div
+            class="d-flex flex-ac px-5 h42"
+            style="background: #f5f8fa; border-radius: 6px"
+            *ngFor="let item of selectCountryList"
+          >
+            <i class="pr-4" [iconCountry]="item.countryEnName"></i>
+            {{ lang.isLocal ? item.countryName : item.countryEnName }}
+          </div>
+
+          <div *ngIf="!selectCountryList.length">-</div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 玩家限制 -->
+    <form-row [label]="'member.activity.sencli12.playerRestrictions' | lang" label-width="180">
+      <ng-template>
+        <div style="word-break: break-all">
+          {{
+            stepTwoInfo?.uidType === 1
+              ? ('member.activity.sencli12.whitelistPlayer' | lang) + '：'
+              : stepTwoInfo?.uidType === 2
+                ? ('member.activity.sencli12.blacklistPlayer' | lang) + '：'
+                : ''
+          }}
+          {{ memberManualRemark || '-' }}
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 奖池 -->
+    <form-row [label]="'member.activity.sencli12.prizePool' | lang" label-width="180" required>
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap mb-4" *ngFor="let item of prizePoolList; index as i">
+          <!-- 名次 -->
+          <span class="color-aaa">{{ 'member.activity.sencli9.ranking' | lang }}</span>
+          <div class="text-center" [style.width.px]="80">{{ item.rankNumStart }}</div>
+          -
+          <div class="text-center" [style.width.px]="80">{{ item.rankNumEnd }}</div>
+
+          <!-- 奖品：现金券的固定金额，实物 -->
+          <div class="fz-16 mr-4 d-flex flex-ac" *ngIf="item.prizeData?.id">
+            {{ item.prizeData?.prizeName || '-' }}
+            <!-- 金额显示 -->
+            <ng-container *ngIf="item.prizeData?.amountType === PrizeAmountType.Fixed">
+              （
+              {{ item.prizeData?.amount }}
+              <img [currencyIcon]="item.prizeData?.currency" currencySize="20" class="mx-2" />
+              {{ item.prizeData?.currency }}
+              ）
+            </ng-container>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+</div>
+
+<!-- 按钮组 -->
+<modal-footer [confirmShow]="false" (dismiss)="modal.dismiss()"></modal-footer>

@@ -1,0 +1,270 @@
+<div class="main" [class.is-readonly]="isReadonly" [formGroup]="formGroup">
+  <!-- 语言是否用于判断资格 -->
+  <ng-template #langSuffixTpl>
+    <div class="flex-1 justify-content-end flex-row d-flex">
+      <label form-row [label]="'luckRoulette.langJudgment' | lang" class="py-0 pl-4" line-height="38px">
+        <ng-template>
+          <label class="switch switch-success" *ngIf="!isReadonly">
+            <input type="checkbox" [formControl]="formGroup.controls.langJudgement" />
+            <span></span>
+          </label>
+          <span *ngIf="isReadonly">{{
+            formGroup.getRawValue().langJudgement ? ('game.open' | lang) : ('game.off' | lang)
+          }}</span>
+        </ng-template>
+      </label>
+    </div>
+  </ng-template>
+
+  <!-- 验证表单 -->
+  <lang-tab
+    [(value)]="selectLang"
+    [(selection)]="curLang"
+    (languageChange)="updateLanguageForm()"
+    [edit]="!isReadonly"
+    [suffixTpl]="langSuffixTpl"
+  >
+    <ng-template let-i="i" let-current="current">
+      <ng-container *ngFor="let item of langArrayForm.controls">
+        <ng-container [formGroup]="item" *ngIf="item.value.languageCode === current.code">
+          <!-- 活动名称 -->
+          <form-row
+            name="activityName"
+            required
+            [label]="'luckRoulette.eventName' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterEventName' | lang }"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <input
+                *ngIf="!isReadonly; else showTpl"
+                [formControl]="control"
+                [class.is-invalid]="invalid"
+                class="form-control"
+                type="text"
+                [placeholder]="'luckRoulette.max40' | lang"
+                [maxlength]="40"
+              />
+              <ng-template #showTpl>{{ control.value }}</ng-template>
+            </ng-template>
+          </form-row>
+
+          <!-- 活动子名称 -->
+          <form-row
+            name="activitySubName"
+            [label]="'luckRoulette.subEventName' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterSubName' | lang }"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <input
+                *ngIf="!isReadonly; else showTpl"
+                [class.is-invalid]="invalid"
+                class="form-control"
+                type="text"
+                [placeholder]="'luckRoulette.max20' | lang"
+                [formControl]="control"
+                [maxlength]="20"
+              />
+              <ng-template #showTpl>{{ control.value }}</ng-template>
+            </ng-template>
+          </form-row>
+
+          <!-- 玩法规则-->
+          <form-row
+            name="rule"
+            [label]="'luckRoulette.eventRules' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterEventRules' | lang }"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <ueditor
+                *ngIf="!isReadonly; else showTpl"
+                type="Bonus"
+                class="form-control rounded border-1 h-auto"
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+              ></ueditor>
+              <ng-template #showTpl>
+                <div class="word-break lh-1 pt-5" [innerHTML]="control.value"></div>
+              </ng-template>
+            </ng-template>
+          </form-row>
+
+          <!-- 宣传语 -->
+          <form-row
+            name="description"
+            [label]="'luckRoulette.promotion' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterPromotion' | lang }"
+            class="pb-4"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <textarea
+                *ngIf="!isReadonly; else showTpl"
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+                class="form-control resize-none"
+                type="text"
+                rows="3"
+              ></textarea>
+              <ng-template #showTpl>
+                <div class="lh-28 py-3 text-break" [style.white-space]="'pre-line'">{{ control.value }}</div>
+              </ng-template>
+            </ng-template>
+          </form-row>
+        </ng-container>
+      </ng-container>
+    </ng-template>
+  </lang-tab>
+
+  <!-- 参赛时间 -->
+  <form-row
+    [label]="'luckRoulette.partTime' | lang"
+    label-width="150"
+    class="ml-8 mt-5"
+    [control]="formGroup.controls.time"
+    required
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="d-flex">
+        <input
+          *ngIf="!isReadonly; else showTpl"
+          class="form-control text-center"
+          type="text"
+          selectMode="range"
+          [placeholder]="'form.chooseTime' | lang"
+          [style.width.px]="290"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          [formControl]="control"
+          [class.is-invalid]="invalid"
+        />
+        <ng-template #showTpl>
+          <ng-container *ngIf="control.value?.[0] || control.value?.[1]">
+            {{ control.value?.[0] | timeFormat }} ~
+            {{ control.value?.[1] | timeFormat }}
+          </ng-container>
+        </ng-template>
+        <owl-date-time class="fz-20" #picker></owl-date-time>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 活动重复周期 -->
+  <form-row name="repeatCycle" class="ml-8" [label]="'luckRoulette.repeatCycle' | lang" label-width="150">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="d-flex flex-wrap">
+        <label
+          class="radio radio-lg lh-32 my-2 fz-16 mr-12"
+          *ngFor="let item of repeatCycleList"
+          [attrDisabled]="isReadonly"
+        >
+          <input type="radio" name="repeatCycle" [value]="item.value" [formControl]="control" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+
+      <!-- 每周 -->
+      <div class="d-flex flex-wrap" *ngIf="ActivityCycleEnum.Week === control.value">
+        <label class="checkbox checkbox-lg mr-8 fz-16">
+          <input type="checkbox" [selectList]="formGroup.controls.weekRange" [selectAll]="weekList" selectKey="num" />
+          <span class="mr-4"></span>{{ 'common.all' | lang }}
+        </label>
+        <label class="checkbox checkbox-lg mr-8 fz-16" *ngFor="let item of weekList">
+          <input
+            type="checkbox"
+            [checkboxArrayControl]="$any(formGroup.controls.weekRange)"
+            [checkboxArrayValue]="item.num"
+          />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+
+      <!-- 每月 -->
+      <div class="d-flex flex-wrap" *ngIf="ActivityCycleEnum.Month === control.value">
+        <label class="checkbox checkbox-lg mr-8 fz-16">
+          <input
+            type="checkbox"
+            [selectList]="formGroup.controls.monthRange"
+            [selectAll]="monthList"
+            selectKey="value"
+          />
+          <span class="mr-4"></span>{{ 'common.all' | lang }}
+        </label>
+        <label class="checkbox checkbox-lg mr-8 fz-16" *ngFor="let item of monthList" [style.width.px]="50">
+          <input
+            type="checkbox"
+            [checkboxArrayControl]="$any(formGroup.controls.monthRange)"
+            [checkboxArrayValue]="item.value"
+          />
+          <span class="mr-4"></span>{{ item.name }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 券码开关 -->
+  <!--  <form-row-->
+  <!--    [control]="formGroup.get('discountEnable')"-->
+  <!--    class="mb-10 ml-8"-->
+  <!--    [label]="'luckRoulette.vouSwitch' | lang"-->
+  <!--    label-width="150"-->
+  <!--  >-->
+  <!--    <ng-template let-control="formControl">-->
+  <!--      <label class="switch switch-success" *ngIf="!isReadonly; else showTpl">-->
+  <!--        <input type="checkbox" [formControl]="control" />-->
+  <!--        <span></span>-->
+  <!--      </label>-->
+  <!--      <ng-template #showTpl>{{ (control.value ? 'common.enable' : 'common.disable') | lang }}</ng-template>-->
+  <!--    </ng-template>-->
+  <!--  </form-row>-->
+
+  <!-- 按钮组 -->
+  <div class="modal-footer btn-wrap mt-12">
+    <!--    <ng-container *ngIf="!isReadonly; else showTpl">-->
+    <!--      <ng-container *ngIf="!!id">-->
+    <!--        <button-->
+    <!--          type="button"-->
+    <!--          class="c-btn btn btn-primary"-->
+    <!--          [class.disabled]="appService.loading$ | async"-->
+    <!--          (click)="onSubmit()"-->
+    <!--        >-->
+    <!--          {{ 'common.save' | lang }}-->
+    <!--        </button>-->
+    <!--        <button-->
+    <!--          type="button"-->
+    <!--          class="c-btn btn btn-default"-->
+    <!--          (click)="jump('qualifications')"-->
+    <!--          [class.disabled]="appService.loading$ | async"-->
+    <!--        >-->
+    <!--          {{ 'luckRoulette.next' | lang }}-->
+    <!--        </button>-->
+    <!--      </ng-container>-->
+    <!--      <ng-container *ngIf="!id">-->
+    <!--        <button-->
+    <!--          type="button"-->
+    <!--          class="c-btn btn btn-primary"-->
+    <!--          (click)="onSubmit()"-->
+    <!--          [class.disabled]="appService.loading$ | async"-->
+    <!--        >-->
+    <!--          {{ 'luckRoulette.next' | lang }}-->
+    <!--        </button>-->
+    <!--      </ng-container>-->
+    <!--    </ng-container>-->
+    <button
+      type="button"
+      *ngIf="!isReadonly; else showTpl"
+      class="c-btn btn btn-primary"
+      (click)="onSubmit()"
+      [class.disabled]="appService.loading$ | async"
+    >
+      {{ 'luckRoulette.next' | lang }}
+    </button>
+    <ng-template #showTpl>
+      <button class="c-btn btn btn-primary" type="button" (click)="jump('qualifications')">
+        {{ 'luckRoulette.next' | lang }}
+      </button>
+    </ng-template>
+  </div>
+</div>

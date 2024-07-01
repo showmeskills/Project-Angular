@@ -1,0 +1,32 @@
+@use 'sass:math';
+.container {
+  padding-top: 50px;
+  padding-bottom: 120px;
+  .error-msg {
+    color: var(--txt-err-color);
+    font-size: 14px;
+    line-height: 14px;
+    margin-top: 4px;
+    margin-bottom: 18px;
+  }
+  .form-clonum {
+    max-width: 370px;
+    margin: auto;
+    @media (max-width: 767px) {
+      max-width: 100%;
+    }
+    .verify-container {
+      margin-top: 25px;
+      ::ng-deep {
+        app-verify-code {
+          label {
+            color: var(--text-color-20);
+          }
+        }
+      }
+    }
+    .final-btn {
+      margin-top: 60px;
+    }
+  }
+}

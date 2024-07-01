@@ -1,0 +1,14 @@
+<div class="tab-btn-box">
+  <ul class="tab-btn-list">
+    <li
+      (click)="onNav(i, tab.path)"
+      *ngFor="let tab of tabs; index as i"
+      class="tab-item"
+      [class.active]="activeTabIndex === i"
+    >
+      {{ tab.lang | lang }}
+    </li>
+  </ul>
+</div>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,175 @@
+<div class="page-container">
+  <app-header-title-bar [title]="'bind_google' | translate" [clickForRouterBack]="true"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <mat-horizontal-stepper
+        linear
+        labelPosition="bottom"
+        [disableRipple]="isRipple"
+        matStepperIcon="edit"
+        #stepper
+        class="line-selected-{{ stepper.selectedIndex }}"
+      >
+        <!--step1 : 下载App-->
+        <mat-step label="{{ 'download_app' | translate }}">
+          <div class="form-clonum">
+            <div class="form-group">
+              <app-download-page></app-download-page>
+              <customize-button
+                class="next-btn"
+                type="primary"
+                size="large"
+                width="100%"
+                (onClick)="goForward(stepper)"
+                >{{ 'next' | translate }}</customize-button
+              >
+            </div>
+          </div>
+        </mat-step>
+        <!--step2 : 扫描二维码-->
+        <mat-step label="{{ 'scan_qr' | translate }}">
+          <div class="form-clonum">
+            <div class="form-group page-center">
+              <app-scan-page [googleValideCode]="googleValideCode" [googleValidekey]="googleValidekey"></app-scan-page>
+              <div class="btn-group">
+                <customize-button size="large" width="100%" (onClick)="goBack(stepper)"
+                  >{{ 'previous' | translate }}
+                </customize-button>
+                <customize-button type="primary" size="large" width="100%" (onClick)="goForward(stepper)">
+                  {{ 'next' | translate }}</customize-button
+                >
+              </div>
+            </div>
+          </div>
+        </mat-step>
+        <!--step3 : 备份密钥-->
+        <mat-step label="{{ 'bp_key' | translate }}">
+          <div class="form-clonum">
+            <div class="form-group page-center">
+              <app-dackup-key [googleValidekey]="googleValidekey"></app-dackup-key>
+              <div class="btn-group">
+                <customize-button size="large" width="100%" (onClick)="goBack(stepper)"
+                  >{{ 'previous' | translate }}
+                </customize-button>
+                <customize-button type="primary" size="large" width="100%" (onClick)="goForward(stepper)">
+                  {{ 'next' | translate }}</customize-button
+                >
+              </div>
+            </div>
+          </div>
+        </mat-step>
+        <!--step4 : 绑定谷歌验证-->
+        <mat-step label="{{ 'bind_google' | translate }}">
+          <div class="form-clonum">
+            <div class="header">
+              {{ 'veri_acc' | translate }}
+            </div>
+            <div class="form-group">
+              <ng-container *ngIf="isBindMobile">
+                <!--otp验证-->
+                <app-verify-code
+                  [otpType]="otpType"
+                  [inputLabel]="'p_code' | translate"
+                  [authStatus]="authStatus"
+                  [tips]="
+                    ('enter_phone' | translate) +
+                    userAccountInfor.areaCode +
+                    ' ' +
+                    userAccountInfor.mobile +
+                    ('ver_code' | translate)
+                  "
+                  (onChangeAuthStatus)="onfirstSendAuthcode()"
+                  (verfityInputSuccess)="onOtpCode($event)"
+                >
+                </app-verify-code>
+              </ng-container>
+              <ng-container *ngIf="!isBindMobile">
+                <app-customize-input
+                  [size]="'large'"
+                  [label]="'password' | translate"
+                  [error]="!!password && !$any(iPwd).isValid"
+                  #iPwd
+                  [type]="'password'"
+                  [(value)]="password"
+                  (onFocus)="onFocus(iPwd)"
+                  (onBlur)="onBlur(iPwd)"
+                  (onChange)="onPasswordInput(iPwd)"
+                >
+                  <i
+                    class="onact96-not"
+                    right-content
+                    [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+                    (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+                  ></i>
+                </app-customize-input>
+                <!-- 输入框下面的错误信息 -->
+                <div class="error-msg">
+                  {{ 'enter_pwd' | translate }}
+                </div>
+              </ng-container>
+            </div>
+            <div class="form-group margin-top-20">
+              <!--谷歌验证码-->
+              <app-customize-input
+                [size]="'large'"
+                [label]="'google_code' | translate"
+                [max]="6"
+                [error]="!!googleCaptcha && googleCaptcha.length !== 6"
+                #iGoogleCaptcha
+                [type]="'number'"
+                [autocomplete]="false"
+                (keyup.enter)="checkToSubmit(stepper)"
+                [(value)]="googleCaptcha"
+                (onFocus)="onFocus(iGoogleCaptcha)"
+                (onBlur)="onBlur(iGoogleCaptcha)"
+                (onChange)="onPasswordInput(iGoogleCaptcha)"
+              >
+              </app-customize-input>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg">
+                {{ 'enter_google_code' | translate }}
+              </div>
+              <div class="btn-group">
+                <customize-button size="large" width="100%" (onClick)="goBack(stepper)"
+                  >{{ 'previous' | translate }}
+                </customize-button>
+                <customize-button
+                  type="primary"
+                  size="large"
+                  [disabled]="!next()"
+                  [loading]="isLoading"
+                  width="100%"
+                  (onClick)="goForward(stepper)"
+                >
+                  {{ 'next' | translate }}</customize-button
+                >
+              </div>
+            </div>
+          </div>
+        </mat-step>
+        <!--step5 : 成功-->
+        <mat-step label="{{ 'complete' | translate }}">
+          <div class="form-clonum">
+            <div class="form-group">
+              <app-success-verification
+                [header]="'auth_bound' | translate"
+                [successText]="'bound_account_success' | translate"
+              >
+              </app-success-verification>
+              <customize-button class="back-btn" type="primary" size="large" width="100%" (onClick)="handleback()">
+                {{ 'return' | translate }}</customize-button
+              >
+            </div>
+          </div>
+        </mat-step>
+        <!--步骤条显示-->
+        <ng-template matStepperIcon="number" let-index="index">
+          <mat-icon>{{ index + 1 }}</mat-icon>
+        </ng-template>
+        <ng-template matStepperIcon="edit" let-index="index">
+          <mat-icon>{{ index + 1 }}</mat-icon>
+        </ng-template>
+      </mat-horizontal-stepper>
+    </div>
+  </div>
+</div>

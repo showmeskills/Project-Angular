@@ -1,0 +1,127 @@
+<div class="main-container top-container unity-padding-web">
+  <img class="top-img" src="assets/images/responsible-gambling/top-bg.png" lazy="loading" alt="" />
+  <div class="top-banner container">
+    <div class="left">
+      <p class="left-text">{{ 'resp_gam_sentence' | translate }}</p>
+      <customize-button class="left-btn" minWidth="110px" size="small" type="primary" (onClick)="commingSoon()">
+        {{ 'view_more' | translate }}
+      </customize-button>
+    </div>
+    <img class="right" src="assets/images/responsible-gambling/person.png" lazy="loading" alt="" />
+  </div>
+</div>
+
+<!-- <div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container tool-section">
+    <p class="title">
+      <span class="text">{{ 'resp_sent' | translate }}</span>
+    </p>
+    <div class="tool-list">
+      <div
+        class="tool-list-item mutual-opacity onact96"
+        *ngFor="let item of toolList"
+        (click)="onToolcommingSoon(item.text)"
+      >
+        <img [src]="item.url" alt="" lazy="loading" />
+        <p class="text">{{ item.text | translate }}</p>
+        <p class="info">{{ item.info | translate }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-container mid-container">
+  <img class="mid-banner" src="assets/images/responsible-gambling/mid-bottom-bg.svg" alt="" lazy="loading" />
+  <p class="title">{{ 'resp_gam_sentence' | translate }}</p>
+  <p class="info mutual-opacity onact96-not" (click)="commingSoon()">{{ 'real' | translate }}</p>
+</div>
+
+<div class="main-container unity-padding-web">
+  <div class="container banner-one">
+    <ng-container *ngIf="!isH5">
+      <ng-container
+        *ngTemplateOutlet="
+          bannerText;
+          context: {
+            txt: 'protect_young' | translate,
+            txtTwo: 'under_eighteen' | translate,
+            txtTh: 'view_more' | translate
+          }
+        "
+      ></ng-container>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="isH5">
+    <ng-container
+      *ngTemplateOutlet="
+        bannerText;
+        context: {
+          txt: 'protect_young' | translate,
+          txtTwo: 'under_eighteen' | translate,
+          txtTh: 'view_more' | translate
+        }
+      "
+    ></ng-container>
+  </ng-container>
+</div>
+
+<div class="main-container unity-padding-web">
+  <div class="container banner-one banner-two">
+    <ng-container *ngIf="!isH5">
+      <ng-container
+        *ngTemplateOutlet="
+          bannerText;
+          context: {
+            txt: 'help' | translate,
+            txtTwo: 'help_sup' | translate,
+            txtTh: 'view_more' | translate
+          }
+        "
+      ></ng-container>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="isH5">
+    <ng-container
+      *ngTemplateOutlet="
+        bannerText;
+        context: {
+          txt: 'help' | translate,
+          txtTwo: 'help_sup' | translate,
+          txtTh: 'view_more' | translate
+        }
+      "
+    ></ng-container>
+  </ng-container>
+</div>
+
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container organization">
+    <p class="title">{{ 'help_org' | translate }}</p>
+    <p class="txt">{{ ' rg_intro' | translate }}</p>
+    <div class="img-group">
+      <img src="assets/images/responsible-gambling/left-img.svg" alt="" lazy="loading" />
+      <img src="assets/images/responsible-gambling/right-img.png" alt="" lazy="loading" />
+    </div>
+    <customize-button
+      class="btm-txt"
+      size="small"
+      minWidth="130px"
+      type="text"
+      [plain]="true"
+      [active]="true"
+      (onClick)="commingSoon()"
+    >
+      {{ 'check_all' | translate }}
+    </customize-button>
+  </div>
+</div> -->
+
+<!-- <ng-template #bannerText let-txt="txt" let-txtTwo="txtTwo" let-txtTh="txtTh">
+  <div class="right-info">
+    <p class="text-one">{{ txt }}</p>
+    <p class="text-two">{{ txtTwo }}</p>
+    <p class="text-three mutual-opacity onact96-not" (click)="commingSoon()">{{ 'view_more' | translate }}</p>
+  </div>
+</ng-template> -->
+
+<app-new-deposit-limit></app-new-deposit-limit>

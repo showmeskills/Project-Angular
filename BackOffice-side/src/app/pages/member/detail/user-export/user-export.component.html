@@ -1,0 +1,135 @@
+<modal-title (close)="modal.dismiss()">{{ 'member.detail.statementTitle' | lang }}</modal-title>
+
+<div class="p-10">
+  <div class="fz-16 color-333 pb-4">{{ 'member.detail.statementTime' | lang }}</div>
+
+  <!-- 按每日导出 -->
+  <ng-template #everyDayTpl>
+    <div class="d-flex flex-wrap">
+      <label class="radio radio-lg lh-32 my-2 fz-16">
+        <input type="radio" name="timeRange" [value]="TimeType.Day" [(ngModel)]="data.timeType" />
+        <span class="mr-4"></span>{{ 'member.detail.statementDay' | lang: { $defaultValue: '-' } }}
+      </label>
+    </div>
+  </ng-template>
+  <form-row [label-width]="lang.isLocal ? 'auto' : '180px'" [label]="everyDayTpl">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.dayTime"
+        [min]="dayMin"
+        [max]="dayMax"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <!-- 按每月导出 -->
+  <ng-template #everyMonthTpl>
+    <div class="d-flex flex-wrap">
+      <label class="radio radio-lg lh-32 my-2 fz-16">
+        <input type="radio" name="timeRange" [value]="TimeType.Month" [(ngModel)]="data.timeType" />
+        <span class="mr-4"></span>{{ 'member.detail.statementMonth' | lang: { $defaultValue: '-' } }}
+      </label>
+    </div>
+  </ng-template>
+  <form-row [label-width]="lang.isLocal ? 'auto' : '180px'" [label]="everyMonthTpl">
+    <ng-template>
+      <!--      <mat-date-range-input [formGroup]="data.monthTime" [rangePicker]="dp">-->
+      <!--        <input matStartDate [formControl]="data.monthTime!.controls.start" placeholder="Start date" />-->
+      <!--        <input matEndDate [formControl]="data.monthTime!.controls.end" placeholder="End date" />-->
+      <!--      </mat-date-range-input>-->
+
+      <!--      <mat-datepicker #dp startView="multi-year" (monthSelected)="setMonthAndYear($event, dp)"> </mat-datepicker>-->
+
+      <div class="d-flex flex-ac">
+        <div class="user-export-month-input form-control d-flex flex-ac flex-1">
+          <input
+            [min]="monthMin"
+            [max]="monthMax"
+            readonly
+            matInput
+            [matDatepicker]="dpStart"
+            [formControl]="monthFG.controls!.start"
+          />
+
+          <mat-datepicker-toggle matSuffix [for]="dpStart">
+            <svg-icon matDatepickerToggleIcon [src]="'./assets/images/svg/date-line.svg'"></svg-icon>
+          </mat-datepicker-toggle>
+
+          <mat-datepicker
+            #dpStart
+            startView="multi-year"
+            (monthSelected)="setMonthAndYear($event, dpStart, monthFG.controls!.start)"
+            panelClass="month-picker"
+          >
+          </mat-datepicker>
+        </div>
+
+        <span class="fz-16 mx-5">-</span>
+
+        <div class="user-export-month-input form-control d-flex flex-ac flex-1">
+          <input
+            [min]="monthMin"
+            [max]="monthMax"
+            readonly
+            matInput
+            [matDatepicker]="dpEnd"
+            [formControl]="monthFG.controls!.end"
+          />
+
+          <mat-datepicker-toggle matSuffix [for]="dpEnd">
+            <svg-icon matDatepickerToggleIcon [src]="'./assets/images/svg/date-line.svg'"></svg-icon>
+          </mat-datepicker-toggle>
+
+          <mat-datepicker
+            #dpEnd
+            startView="multi-year"
+            (monthSelected)="setMonthAndYear($event, dpEnd, monthFG.controls!.end)"
+            panelClass="month-picker"
+          >
+          </mat-datepicker>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 按每年导出 -->
+  <ng-template #everyYearTpl>
+    <div class="d-flex flex-wrap">
+      <label class="radio radio-lg lh-32 my-2 fz-16">
+        <input type="radio" name="timeRange" [value]="TimeType.Year" [(ngModel)]="data.timeType" />
+        <span class="mr-4"></span>{{ 'member.detail.statementYear' | lang: { $defaultValue: '-' } }}
+      </label>
+    </div>
+  </ng-template>
+  <form-row [label-width]="lang.isLocal ? 'auto' : '180px'" [label]="everyYearTpl">
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <label class="checkbox checkbox-lg fz-16 mr-8" *ngFor="let item of yearList">
+          <input
+            type="checkbox"
+            [value]="item.value"
+            [checkboxArrayControl]="data.yearTime"
+            [checkboxArrayValue]="item.value"
+          />
+          <span class="mr-4"></span>{{ item.value.get('year') }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+</div>
+
+<modal-footer
+  dismissKey="preview"
+  confirmKey="exportData"
+  (confirm)="onSubmit()"
+  (dismiss)="onSubmit(true)"
+></modal-footer>

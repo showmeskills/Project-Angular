@@ -1,0 +1,138 @@
+<div class="owl-dt-calendar-control">
+  <!-- focus when keyboard tab (http://kizu.ru/en/blog/keyboard-only-focus/#x) -->
+  <button
+    class="owl-dt-control owl-dt-control-button owl-dt-control-arrow-button"
+    type="button"
+    tabindex="0"
+    [style.visibility]="showControlArrows ? 'visible' : 'hidden'"
+    [disabled]="!prevButtonEnabled()"
+    [attr.aria-label]="prevButtonLabel"
+    (click)="previousClicked()"
+  >
+    <span class="owl-dt-control-content owl-dt-control-button-content" tabindex="-1">
+      <!-- <editor-fold desc="SVG Arrow Left"> -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="100%" height="100%">
+        <path
+          d="M0 4.95 4.95 0l.707.707L1.414 4.95l4.243 4.243-.707.707z"
+          transform="translate(4.464 2.201)"
+          style="fill-rule: evenodd; clip-rule: evenodd"
+        />
+      </svg>
+
+      <!-- </editor-fold> -->
+    </span>
+  </button>
+  <div class="owl-dt-calendar-control-content">
+    <button
+      class="owl-dt-control owl-dt-control-button owl-dt-control-period-button"
+      type="button"
+      tabindex="0"
+      [attr.aria-label]="periodButtonLabel"
+      (click)="toggleViews()"
+    >
+      <span class="owl-dt-control-content owl-dt-control-button-content" tabindex="-1">
+        {{ periodButtonText }}
+      </span>
+    </button>
+
+    <button
+      class="owl-dt-control owl-dt-control-button owl-dt-control-period-button"
+      type="button"
+      tabindex="0"
+      (click)="toggleMonthViews()"
+    >
+      <span class="owl-dt-control-content owl-dt-control-button-content" tabindex="-1">
+        {{ period2ButtonText }}
+      </span>
+    </button>
+  </div>
+
+  <ng-content *ngIf="selectMode !== 'date-range'" select="owl-date-time-timer"></ng-content>
+
+  <button
+    class="owl-dt-control owl-dt-control-button owl-dt-control-arrow-button"
+    type="button"
+    tabindex="0"
+    [style.visibility]="showControlArrows ? 'visible' : 'hidden'"
+    [disabled]="!nextButtonEnabled()"
+    [attr.aria-label]="nextButtonLabel"
+    (click)="nextClicked()"
+  >
+    <span class="owl-dt-control-content owl-dt-control-button-content" tabindex="-1">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="100%" height="100%">
+        <path
+          d="M0 4.95 4.95 0l.707.707L1.414 4.95l4.243 4.243-.707.707z"
+          transform="rotate(180 4.768 5.9)"
+          style="fill-rule: evenodd; clip-rule: evenodd"
+        />
+      </svg>
+      <!-- </editor-fold> -->
+    </span>
+  </button>
+</div>
+<div class="owl-dt-calendar-main" cdkMonitorSubtreeFocus [ngSwitch]="currentView" tabindex="-1">
+  <owl-date-time-month-view
+    *ngSwitchCase="'month'"
+    [pickerMoment]="pickerMoment"
+    [firstDayOfWeek]="firstDayOfWeek"
+    [selected]="selected"
+    [selecteds]="selecteds"
+    [selectMode]="selectMode"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [dateFilter]="dateFilter"
+    [hideOtherMonths]="hideOtherMonths"
+    (pickerMomentChange)="handlePickerMomentChange($event)"
+    (selectedChange)="dateSelected($event)"
+    (userSelection)="userSelected()"
+  ></owl-date-time-month-view>
+
+  <owl-date-time-year-view
+    *ngSwitchCase="'year'"
+    [pickerMoment]="pickerMoment"
+    [selected]="selected"
+    [selecteds]="selecteds"
+    [selectMode]="selectMode"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [dateFilter]="dateFilter"
+    (keyboardEnter)="focusActiveCell()"
+    (pickerMomentChange)="handlePickerMomentChange($event)"
+    (monthSelected)="selectMonthInYearView($event)"
+    (change)="goToDateInView($event, 'month')"
+  ></owl-date-time-year-view>
+
+  <owl-date-time-multi-year-view
+    *ngSwitchCase="'multi-years'"
+    [pickerMoment]="pickerMoment"
+    [selected]="selected"
+    [selecteds]="selecteds"
+    [selectMode]="selectMode"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [dateFilter]="dateFilter"
+    (keyboardEnter)="focusActiveCell()"
+    (pickerMomentChange)="handlePickerMomentChange($event)"
+    (yearSelected)="selectYearInMultiYearView($event)"
+    (change)="goToDateInView($event, isInRangeMode ? 'multi-months' : 'month')"
+    (selectedChange)="dateSelected($event)"
+    (userSelection)="userSelected()"
+  ></owl-date-time-multi-year-view>
+
+  <owl-date-time-multi-month-view
+    *ngSwitchCase="'multi-months'"
+    [pickerMoment]="pickerMoment"
+    [selected]="selected"
+    [selecteds]="selecteds"
+    [selectMode]="selectMode"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [dateFilter]="dateFilter"
+    (keyboardEnter)="focusActiveCell()"
+    (pickerMomentChange)="handlePickerMomentChange($event)"
+    (monthSelected)="selectMonthInYearView($event)"
+    (change)="goToDateInView($event, 'month')"
+    (selectedChange)="dateSelected($event)"
+    (userSelection)="userSelected()"
+  ></owl-date-time-multi-month-view>
+</div>

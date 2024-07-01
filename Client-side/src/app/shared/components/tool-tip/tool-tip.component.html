@@ -1,0 +1,41 @@
+<div
+  class="onact96"
+  [intersectionObserver]="intersectionObserver"
+  (intersectFullChange)="onIntersectFullChange($event)"
+  [intersectionObserver-config]="tooltipsConfig"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  class="tooltip-origin"
+  (mouseenter)="!copyMode && showPop()"
+  (mouseleave)="!copyMode && closePop(150)"
+  (click)="copyMode && copy()"
+>
+  <ng-content select="[origin]"></ng-content>
+  <ng-container *ngIf="copyMode === 'icon'">
+    <i class="{{ copyIcon }} mutual-opacity"></i>
+  </ng-container>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayOpen]="state ?? tooltipStatus"
+>
+  <div
+    [class]="tooltipClass ? 'tooltip-block' : 'tooltip-none'"
+    (mouseenter)="!copyMode && showPop(false)"
+    (mouseleave)="!copyMode && closePop()"
+    class="tooltip-container"
+    [class.arrow]="arrow"
+  >
+    <div class="tooltip-content" [class.arrow]="arrow" [class.light]="light" [style.max-width]="overlayMaxWidth">
+      <ng-content select="[tooltip]"></ng-content>
+      <ng-container *ngIf="copyMode">
+        <div class="tooltip-info">
+          {{ copySuccess }}
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

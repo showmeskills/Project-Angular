@@ -1,0 +1,159 @@
+div {
+  display: flex;
+}
+
+.container {
+  width: 485px;
+  height: 444px;
+  flex-direction: column;
+
+  &:host-context(.dark) & {
+    background-color: var(--bg-color-20);
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    height: 504px;
+  }
+
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 20px 24px;
+
+    @media (max-width: 767px) {
+      padding: 24px 16px 17px 16px;
+    }
+
+    //标题
+    .title {
+      // color: #1e2329;
+      font-size: 20px;
+      color: var(--text-color);
+    }
+
+    //关闭icon
+    .icon-close {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  //内容
+  .contants-clounm {
+    flex-direction: column;
+    align-items: center;
+    color: #1e2329;
+    font-size: 14px;
+    overflow: hidden;
+    position: relative;
+    app-scrollbar {
+      width: 100%;
+    }
+
+    .notice-box {
+      align-self: center;
+      line-height: 1.43;
+      text-align: left;
+      // padding: 0 24px;
+      // padding-bottom: 20px;
+      color: #15bf7b;
+      background-color: rgba($color: #15bf7b, $alpha: 0.1);
+      border-radius: 4px;
+      width: 90%;
+      padding: 14px 0 14px 15px;
+      align-items: center;
+      margin-bottom: 12px;
+
+      @media (max-width: 767px) {
+        min-width: 312px;
+      }
+
+      .notice {
+        margin-left: 10px;
+      }
+    }
+
+    .item-clounm {
+      cursor: pointer;
+      flex-direction: column;
+      height: 81px;
+      justify-content: center;
+      padding-left: 24px;
+      width: 100%;
+
+      &.disable {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 767px) {
+        margin: 0 16px;
+        padding: 0 16px;
+        height: 88px;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
+      &.select:not(.disable),
+      &:hover:not(.disable) {
+        background-color: #f5f5f5;
+
+        &:host-context(.dark) & {
+          background-color: #2f4553;
+        }
+      }
+
+      .border-line {
+        // border-bottom: 1px solid #eaecef;
+        border-bottom: 1px solid var(--default-border-color);
+        height: 100%;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+
+        :last-child {
+          border-bottom: unset;
+        }
+
+        .row-1 {
+          align-items: center;
+
+          &:host-context(.dark) & {
+            color: #fff;
+          }
+
+          .label {
+            padding: 7px;
+            color: #1e2329;
+            font-size: 12px;
+            background-color: #eaecef;
+            border-radius: 5px;
+            margin-left: 10px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            opacity: 0.5;
+          }
+        }
+
+        .text-lighter {
+          color: #707a8a;
+          padding-top: 6px;
+
+          &:host-context(.dark) & {
+            color: var(--text-color-20);
+          }
+        }
+      }
+    }
+  }
+}

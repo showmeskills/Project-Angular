@@ -1,0 +1,63 @@
+::ng-deep {
+  .aside-minimize:not(.aside-minimize-hover) app-aside-dynamic {
+    .version {
+      display: none;
+    }
+  }
+}
+
+:host {
+  .aside {
+    height: 100%;
+
+    .aside-menu {
+      margin: 0;
+    }
+  }
+
+  // fixed text line break issue on minimized aside hover
+  .menu-text {
+    white-space: nowrap;
+  }
+
+  .brand-logo {
+    font-size: 16px;
+    justify-content: flex-start;
+    flex: 1;
+    color: white;
+    overflow: hidden;
+    align-items: center;
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 46px;
+      //margin-right: 10px;
+    }
+  }
+
+  .version {
+    //display: flex;
+    //justify-content: center;
+    padding-left: 60px;
+    color: rgb(206, 206, 206);
+    font-size: 14px;
+    flex: 1;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    background-color: #1e1e2d;
+    padding-top: 10px;
+    padding-bottom: 20px;
+
+    .text {
+      margin-right: 10px;
+    }
+  }
+
+  .third-submenu {
+    .menu-link {
+      padding-left: 81px !important;
+    }
+  }
+}

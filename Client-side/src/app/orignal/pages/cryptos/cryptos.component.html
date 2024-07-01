@@ -1,0 +1,112 @@
+<div class="wrapper" [class.loading]="loading">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="cryptos"
+      [isFast]="true"
+      [(isFastBet)]="isFastBet"
+      [(isAnimation)]="isAnimation"
+      [(fairnessData)]="fairnessData"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+  <div class="cryptos_mian">
+    <div class="cryptos__top">
+      <div class="coefficients" (mouseleave)="closePop()">
+        <div
+          class="coefficient-item"
+          *ngFor="let item of coefficients; let index = index"
+          (mouseenter)="showPop(index)"
+          [class.current]="item.hover"
+        >
+          <div class="dots_o">
+            <div
+              *ngFor="let jtem of item.dots; let index = index"
+              [class.first]="jtem == 1"
+              [class.second]="jtem == 2"
+              [class]="
+                jtem == 1
+                  ? item.classBg.length > 0
+                    ? 'bg_' + item.classBg[0]
+                    : ''
+                  : jtem == 2
+                  ? item.classBg.length > 1
+                    ? 'bg_' + item.classBg[1]
+                    : ''
+                  : ''
+              "
+            ></div>
+          </div>
+          <span>{{ item.rate }}x</span>
+          <div class="detail" *ngIf="item.hover && !isH5">
+            <div class="detail__column">
+              <p class="label">{{ 'get_gain' | translate }}</p>
+              <div class="input">
+                <span class="currency">
+                  <img width="16" height="16" [src]="currentCurrencyData?.icon" class="currency__icon" />
+                  <div class="currency__balances-wrap">
+                    <div class="currency__balances">
+                      <span class="currency__balances--balance"
+                        ><span class="font-digits"
+                          >{{ item.winAmount }}<span>{{ item.endAmount }}</span></span
+                        ></span
+                      >
+                    </div>
+                  </div></span
+                >
+              </div>
+            </div>
+            <div class="detail__column">
+              <p class="label">{{ 'probability' | translate }}</p>
+              <div class="input">
+                <p>{{ item.odds }}</p>
+                <span>%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cryptos-board" [class.animation]="isAnimation">
+        <div class="bord-item" *ngFor="let item of coins; let index = index">
+          <div class="bord-item__coin">
+            <img *ngIf="item.showCoin" [src]="'assets/orignal/images/cryptos/' + item.coin + '.webp'" />
+          </div>
+          <div class="bord-item__bottom">
+            <img
+              class="svg-bottom"
+              [src]="'assets/orignal/images/cryptos/' + (item.macth ? item.coin : 'default') + '_' + theme + '.png'"
+            />
+          </div>
+        </div>
+
+        <div style="width: 0px; height: 0px; overflow: hidden">
+          <img src="assets/orignal/images/cryptos/default_moon.png" alt="" />
+          <img src="assets/orignal/images/cryptos/default_sun.png" alt="" />
+          <img src="assets/orignal/images/cryptos/0.webp" alt="" />
+          <img src="assets/orignal/images/cryptos/1.webp" alt="" />
+          <img src="assets/orignal/images/cryptos/2.webp" alt="" />
+          <img src="assets/orignal/images/cryptos/3.webp" alt="" />
+          <img src="assets/orignal/images/cryptos/4.webp" alt="" />
+          <img src="assets/orignal/images/cryptos/5.webp" alt="" />
+          <img src="assets/orignal/images/cryptos/6.webp" alt="" />
+          <img src="assets/orignal/images/cryptos/7.webp" alt="" />
+          <img
+            *ngFor="let item of [].constructor(6); let index = index"
+            [src]="'assets/orignal/images/cryptos/' + item + '_' + theme + '.png'"
+          />
+        </div>
+      </div>
+      <!---->
+    </div>
+  </div>
+
+  <orignal-bet
+    type="cryptos"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [(rate)]="rate"
+    [operate]="operate"
+    [isDice]="false"
+  ></orignal-bet>
+</div>

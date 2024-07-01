@@ -1,0 +1,23 @@
+trigger:
+  - uat-2
+
+variables:
+  merchantNumber: 2
+  merchantEnv: 'uat'
+  projectName: 'build'
+  repoName: 'gogaming_app'
+  fullBuild: true
+  fullRebuild: false
+  certSecureFile: 'merchant-2.p12'
+  provProfileSecureFile: 'merchant-2.mobileprovision'
+  exportOptionsPlist: 'merchant-2/sources/exportOptions.plist'
+  shorebirdToken: 1//0evEMITZyyW6yCgYIARAAGA4SNwF-L9IrrerlUg9JmpgJS6uG6IyLMw5eFDEZE0dhZFtJ1nHsWWLuBzpODAAQXphEDSbaqEqBYHA
+
+pool:
+  vmImage: "macOS-13"
+
+jobs:
+  - job: main
+    timeoutInMinutes: 150
+    steps:
+      - template: ../start.yml

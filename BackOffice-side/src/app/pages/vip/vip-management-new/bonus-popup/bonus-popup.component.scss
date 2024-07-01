@@ -1,0 +1,114 @@
+:host {
+  [prefix],
+  [suffix] {
+    line-height: 40px;
+    color: rgba(#a1a5b7, 0.8);
+  }
+
+  form-wrap {
+    height: 40px;
+
+    &::ng-deep {
+      label.form-field {
+        padding: 0 4px;
+      }
+
+      input {
+        padding: 0 2px;
+        height: 30px;
+        line-height: 30px;
+      }
+    }
+  }
+}
+
+.base {
+  padding: 10px 20px 0;
+  border-radius: 6px;
+  border: 1px solid #e3e6e9;
+
+  &-header {
+    padding: 10px 0px;
+    border-bottom: 1px dashed #e5e5e5;
+  }
+
+  &-row,
+  &-content,
+  &-content-wrap {
+    display: flex;
+  }
+
+  &-content,
+  &-content-wrap {
+    flex-flow: row wrap;
+  }
+
+  &-content-wrap {
+    padding: 15px 0px;
+  }
+
+  &-row {
+    margin: 8px 0;
+    min-width: 0;
+    flex: 3 3 33.33333333%;
+  }
+
+  &-title {
+    flex: 0 0 150px;
+  }
+}
+
+.level-table {
+  width: 100%;
+  table-layout: fixed;
+  .level-table-fisrt {
+    td {
+      .cell {
+        margin-top: 10px;
+        color: #363636;
+        background: #f3f6f9;
+        min-height: 35px !important;
+        line-height: 35px !important;
+      }
+      &:first-child {
+        .cell {
+          padding-left: 20px;
+          justify-content: normal;
+        }
+      }
+      &:last-child {
+        .cell {
+          // border-top-right-radius: 14px;
+          // border-bottom-right-radius: 14px;
+        }
+      }
+    }
+  }
+
+  td,
+  th {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+  }
+
+  th {
+    padding: 0px;
+
+    &:last-child {
+      width: 40px;
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        padding: 0px;
+        .cell {
+          padding: 0 5px;
+          min-height: 45px;
+          line-height: 45px;
+        }
+      }
+    }
+  }
+}

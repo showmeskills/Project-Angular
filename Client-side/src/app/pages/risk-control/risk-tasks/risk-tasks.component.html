@@ -1,0 +1,46 @@
+<div class="task-container" [appLoading]="loading" [class.min]="!showList">
+  <div class="header">
+    <div>{{ 'verify_task' | translate }}</div>
+    <div class="header-right">
+      <!-- 最小化icon -->
+      <div (click)="showList = false" *ngIf="showList"><span></span></div>
+      <i class="icon-maximize" *ngIf="!showList" (click)="showList = true"></i>
+      <i class="icon-close-simple" (click)="close()"></i>
+    </div>
+  </div>
+  <div class="content" *ngIf="!loading && showList">
+    <ng-container *ngFor="let item of riskService.riskTaskList; let i = index">
+      <div class="step">
+        <input
+          #stepper
+          type="checkbox"
+          class="step-node-{{ i }} node"
+          [class.done]="item.isAuthentication"
+          [checked]="item.isAuthentication"
+        />
+        <label class="icon-correct" *ngIf="item.isAuthentication"></label>
+
+        <div class="task" [class.done]="item.isAuthentication">
+          <div class="left-txt">
+            <i [class]="item.icon"></i>
+            {{ item.authenticationType }}
+          </div>
+          <customize-button
+            class="btn"
+            min-width="80px"
+            size="small"
+            [type]="checkIfClickable(i) ? 'primary' : 'default'"
+            [disabled]="!checkIfClickable(i)"
+            *ngIf="!item.isAuthentication"
+            (onClick)="jumpToPage(item.value)"
+          >
+            {{ 'verification' | translate }}
+          </customize-button>
+          <div *ngIf="item.isAuthentication">
+            <i class="icon-correct"></i>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

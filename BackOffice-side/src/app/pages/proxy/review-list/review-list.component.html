@@ -1,0 +1,394 @@
+<nav-header [showRemove]="isReviewed">
+  <div class="ml-8 cursor-pointer d-flex flex-ac">
+    <mat-form-field [style.width.px]="114">
+      <mat-select
+        class="fz-14 px-4 team-select"
+        [(ngModel)]="proxyService.curTeamId"
+        [style.height.px]="34"
+        [placeholder]="'marketing.list.selectTeam' | lang"
+        [class.is-invalid]="!+proxyService.curTeamId"
+      >
+        <mat-option *ngFor="let item of proxyService.teamList" [value]="item.id">{{ item.groupName }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</nav-header>
+
+<div class="bg-fff d-flex flex-wrap px-12 py-8">
+  <form-row [label]="'marketing.list.channelManager' | lang">
+    <ng-template>
+      <input
+        class="form-control"
+        [placeholder]="'marketing.pendingList.enterManagerID' | lang"
+        type="text"
+        [style.width.px]="248"
+        [(ngModel)]="data.channelManager"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 代理ID 请输入代理ID-->
+  <form-row [label]="'marketing.list.agentID' | lang">
+    <ng-template>
+      <input
+        class="form-control"
+        [placeholder]="'marketing.pendingList.enterAgentID' | lang"
+        type="text"
+        [style.width.px]="200"
+        [(ngModel)]="data.proxyId"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 申请日期 -->
+  <form-row [label]="'marketing.pendingList.dateApplication' | lang">
+    <ng-template>
+      <div class="d-flex">
+        <input
+          [style.width.px]="264"
+          class="form-control text-center"
+          type="text"
+          placeholder=""
+          selectMode="date-range"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [(ngModel)]="data.applyTimeBeginTime"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card px-12 py-8 mt-8" [selectChildren]="true">
+  <div class="d-flex">
+    <div class="flex-1 d-flex flex-ac">
+      <div [hidden]="!isReviewed">
+        <div class="fz-20 fw-bolder">{{ 'marketing.pendingList.auditRecord' | lang }}</div>
+      </div>
+    </div>
+
+    <div>
+      <span class="btn btn-default ml-4 px-7" [class.btn-primary]="!isReviewed" (click)="onTab(false)">{{
+        'marketing.pendingList.expiredCoup' | lang
+      }}</span>
+      <span class="btn btn-default ml-4 px-7" [class.btn-primary]="isReviewed" (click)="onTab(true)">{{
+        'marketing.pendingList.audited' | lang
+      }}</span>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2 px-3">
+    <!-- 待审核 -->
+    <table class="table mb-0" *ngIf="!isReviewed">
+      <thead>
+        <tr>
+          <!--        <th><span class="cell">-->
+          <!--          <label class="checkbox checkbox-lg"><input type="checkbox" selectGroup /><span></span></label>-->
+          <!--        </span></th>-->
+          <th>
+            <span class="cell">{{ 'marketing.list.team' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.list.channelManager' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.list.agentID' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.applicationType' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.userDeposits' | lang }}$</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.userAmount' | lang }}$</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.userWinlose' | lang }}$</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.applicationTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.operating' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.team || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.channelManager || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.proxyId }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.applyType">
+              <!-- 代理申请 -->
+              <span *ngSwitchCase="1" class="proxy-type" (click)="router.navigate(['/proxy/review', item.id])">{{
+                'marketing.pendingList.proxyApplication' | lang
+              }}</span>
+              <span *ngSwitchCase="2" class="proxy-type">{{ 'marketing.pendingList.memberRemoval' | lang }}</span>
+              <span *ngSwitchCase="3" class="proxy-type">{{ 'marketing.pendingList.dayEnd' | lang }}</span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.deposit | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.transaction | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <ng-container *win="item.winOrLoss; let value; prev as prev">
+              <span class="cell" [winColor]="value">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+            </ng-container>
+          </td>
+          <td>
+            <span class="cell">{{ item.applyTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell text-nowrap">
+              <!-- 分配渠道经理 -->
+              <span
+                *ngIf="item.applyType === 1 && !item.channelManager; else agNoTpl"
+                class="btn btn-default btn-hover-primary px-6"
+                (click)="onDistribute(item)"
+                >{{ 'marketing.pendingList.channelManager' | lang }}</span
+              >
+
+              <ng-template #agNoTpl>
+                <!-- 进行代理申请 -->
+                <!-- 批准/拒绝 -->
+                <span
+                  *ngIf="item.applyType === 1 && item.channelManager"
+                  (click)="router.navigate(['/proxy/review', item.id])"
+                  class="btn btn-default btn-hover-primary px-6"
+                  >{{ 'marketing.pendingList.Approve/Reject' | lang }}</span
+                >
+
+                <!-- 弹出会员移除 -->
+                <span
+                  *ngIf="item.applyType === 2"
+                  (click)="onOpenReview(reviewTpl, item)"
+                  class="btn btn-default btn-hover-primary px-6"
+                  >{{ 'marketing.pendingList.Approve/Reject' | lang }}</span
+                >
+
+                <!-- 日结 -->
+                <span
+                  *ngIf="item.applyType === 3"
+                  (click)="onOpenReview(reviewTpl, item)"
+                  class="btn btn-default btn-hover-primary px-6"
+                  >{{ 'marketing.pendingList.Approve/Reject' | lang }}</span
+                >
+              </ng-template>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 已审核 -->
+    <table class="table mb-0" *ngIf="isReviewed">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'marketing.list.team' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.list.channelManager' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.list.agentID' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.applicationType' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.userDeposits' | lang }}$</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.userAmount' | lang }}$</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.userWinlose' | lang }}$</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.applicationTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.reviewTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.reviewer' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.team || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.channelManager || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.proxyId }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.applyType">
+              <span *ngSwitchCase="1" class="proxy-type" (click)="router.navigate(['/proxy/review', item.id])">{{
+                'marketing.pendingList.proxyApplication' | lang
+              }}</span>
+              <span *ngSwitchCase="2">{{ 'marketing.pendingList.memberRemoval' | lang }}</span>
+              <span *ngSwitchCase="3">{{ 'marketing.pendingList.dayEnd' | lang }}</span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.deposit | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.transaction ? (item.transaction | currencyValue: 'USDT') : 0 }}</span>
+          </td>
+          <td>
+            <ng-container *win="item.winOrLoss; let value; prev as prev">
+              <span class="cell" [winColor]="value">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+            </ng-container>
+          </td>
+          <td>
+            <span class="cell">{{ item.applyTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.auditTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.reviewer }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.state">
+              <app-label *ngSwitchCase="0" type="yellow">{{ 'marketing.pendingList.expiredCoup' | lang }}</app-label>
+              <app-label *ngSwitchCase="1" type="success">{{ 'marketing.pendingList.by' | lang }}</app-label>
+              <app-label *ngSwitchCase="2" type="danger">{{ 'marketing.pendingList.refuse' | lang }}</app-label>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between flex-ac pt-4 px-3">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="isLoading"
+      ></app-paginator>
+    </div>
+  </div>
+</div>
+
+<!-- 批准、拒绝弹窗 -->
+<ng-template #reviewTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title" [ngSwitch]="currentItem.applyType">
+      <span *ngSwitchCase="1">{{ 'marketing.pendingList.proxyApplication' | lang }}</span>
+      <span *ngSwitchCase="2">{{ 'marketing.pendingList.memberRemoval' | lang }}</span>
+      <span *ngSwitchCase="3">{{ 'marketing.pendingList.dayEnd' | lang }}</span
+      >{{ 'marketing.pendingList.Approve/Reject' | lang }}
+    </div>
+    <!--begin::Close-->
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+    <!--end::Close-->
+  </div>
+
+  <div class="p-10 px-12">
+    <div class="d-flex">
+      <form-row class="flex-1" [label]="'marketing.list.agentID' | lang">{{ currentItem.proxyId }}</form-row>
+      <form-row class="flex-1" [label]="'marketing.pendingList.applicationType' | lang">
+        <ng-template [ngSwitch]="currentItem.applyType">
+          <span *ngSwitchCase="1">{{ 'marketing.pendingList.proxyApplication' | lang }}</span>
+          <span *ngSwitchCase="2">{{ 'marketing.pendingList.memberRemoval' | lang }}</span>
+          <span *ngSwitchCase="3">{{ 'marketing.pendingList.dayEnd' | lang }}</span>
+        </ng-template>
+      </form-row>
+    </div>
+    <div class="d-flex">
+      <form-row class="flex-1" [label]="'marketing.pendingList.userDeposits' | lang">{{
+        currentItem.deposit | currencyValue: 'USDT'
+      }}</form-row>
+      <form-row class="flex-1" [label]="'marketing.pendingList.userAmount' | lang"
+        >¥{{ currentItem.transaction | currencyValue: 'USDT' }}</form-row
+      >
+    </div>
+    <div class="d-flex">
+      <form-row class="flex-1" [label]="'marketing.pendingList.userWinlose' | lang">{{
+        currentItem.winOrLoss || 0
+      }}</form-row>
+      <form-row class="flex-1" [label]="'marketing.pendingList.applicationTime' | lang">{{
+        currentItem.applyTime | timeFormat
+      }}</form-row>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="onReviewProcess(false, c)">
+      {{ 'marketing.pendingList.refuse' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="onReviewProcess(true, c)">
+      {{ 'marketing.pendingList.approve' | lang }}
+    </button>
+  </div>
+</ng-template>

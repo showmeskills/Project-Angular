@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="54" height="56" viewBox="0 0 54 56">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e6e8ea;
+      }
+
+      .cls-2 {
+        fill: #8e96a2;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-5 {
+        fill: #f04e23;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#f04e23"/>
+      <stop offset="1" stop-color="#ff896c" stop-opacity="0.502"/>
+    </linearGradient>
+  </defs>
+  <g id="组_8386" data-name="组 8386" transform="translate(-1820 -1194)">
+    <g id="组_238" data-name="组 238" transform="translate(23934 -6103)">
+      <rect id="矩形_424" data-name="矩形 424" class="cls-1" width="54" height="36" rx="1" transform="translate(-22114 7308)"/>
+      <rect id="矩形_425" data-name="矩形 425" class="cls-2" width="54" height="8" transform="translate(-22114 7315)"/>
+      <rect id="矩形_426" data-name="矩形 426" class="cls-3" width="30" height="4" transform="translate(-22110 7336)"/>
+      <rect id="矩形_427" data-name="矩形 427" class="cls-3" width="8" height="4" transform="translate(-22072 7336)"/>
+      <path id="多边形_37" data-name="多边形 37" class="cls-1" d="M2,0,4,2,2,4,0,2Z" transform="translate(-22107.5 7297)"/>
+      <path id="多边形_38" data-name="多边形 38" class="cls-1" d="M1.5,0,3,1.5,1.5,3,0,1.5Z" transform="translate(-22076 7346)"/>
+      <path id="多边形_39" data-name="多边形 39" class="cls-3" d="M1.5,0,3,1.5,1.5,3,0,1.5Z" transform="translate(-22068 7325)"/>
+      <g id="组_238-2" data-name="组 238" transform="translate(-22857 11843)">
+        <path id="路径_13752" data-name="路径 13752" class="cls-4" d="M8,0A8,8,0,1,1,0,8,8,8,0,0,1,8,0Z" transform="translate(759 -4542)"/>
+        <circle id="椭圆_62" data-name="椭圆 62" class="cls-5" cx="6" cy="6" r="6" transform="translate(761 -4540)"/>
+      </g>
+      <g id="组_239" data-name="组 239" transform="translate(-22834 11868)">
+        <circle id="椭圆_60" data-name="椭圆 60" class="cls-4" cx="6" cy="6" r="6" transform="translate(758 -4543)"/>
+        <circle id="椭圆_62-2" data-name="椭圆 62" class="cls-5" cx="4" cy="4" r="4" transform="translate(760 -4541)"/>
+      </g>
+      <g id="组_240" data-name="组 240" transform="translate(-22868 11878)">
+        <circle id="椭圆_60-2" data-name="椭圆 60" class="cls-4" cx="9" cy="9" r="9" transform="translate(758 -4543)"/>
+        <circle id="椭圆_62-3" data-name="椭圆 62" class="cls-5" cx="7" cy="7" r="7" transform="translate(760 -4541)"/>
+      </g>
+    </g>
+  </g>
+</svg>

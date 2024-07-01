@@ -1,0 +1,105 @@
+<!-- 空内容展示 -->
+<div class="upload-empty" [hidden]="!!value || uploadState">
+  <ng-container
+    [ngTemplateOutlet]="defaultContent?.templateRef || defaultView"
+    [ngTemplateOutletContext]="{ $implicit: limitSize | bytes }"
+  ></ng-container>
+  <ng-template #defaultView>
+    <svg-icon [src]="'./assets/images/svg/upload.svg'" class="svg-icon svg-icon-4x"></svg-icon>
+
+    <div style="margin-left: 4px; line-height: 1.4" *ngIf="!isDisabled; else disableTextTpl">
+      <!-- 点击上传 -->
+      <div class="upload-empty-title">{{ 'components.clickUpload' | lang }}</div>
+      <span class="upload-empty-desc">{{ desc }}</span>
+      <!-- 内 -->
+      <div class="upload-empty-txt" *ngIf="limit && showLimitText">
+        {{ limitSize | bytes }}{{ 'components.Inside' | lang }}
+      </div>
+    </div>
+    <ng-template #disableTextTpl>
+      <div class="upload-empty-title" *ngIf="!value">{{ 'components.noImage' | lang }}</div>
+      <div class="upload-empty-title" *ngIf="value">{{ 'components.disabledUpload' | lang }}</div>
+    </ng-template>
+  </ng-template>
+</div>
+
+<div class="upload-file" (click)="!isDisabled && fileDom.click()" [class.cursor-pointer]="!(isDisabled && !value)">
+  <input
+    type="file"
+    class="upload-file-inp"
+    autocomplete="off"
+    #fileDom
+    (click)="onFileInputClick($event)"
+    (change)="onChangeValue(fileDom, fileDom.files!?.[0])"
+    [hidden]="disabled || disabledInput"
+    [accept]="acceptFile"
+  />
+</div>
+
+<!-- 上传后展示 -->
+<div class="upload-wrap" [style.padding]="padding" [hidden]="!value || uploadState">
+  <div class="upload-thumbnail">
+    <div class="w-100 h-100 position-relative">
+      <div *ngIf="showClear && !isDisabled" class="upload-thumbnail-close" (click)="onChangeValue(fileDom)"></div>
+
+      <!-- 图片预览 -->
+      <div *ngIf="isImg" class="rounded overflow-hidden position-relative h-100" (click)="onPreview(previewURL)">
+        <img [src]="previewURL | safeUrl" alt="" class="position-relative upload-cover" />
+        <img [src]="previewURL | safeUrl" alt="" class="upload-cover-bg" />
+      </div>
+
+      <!-- 视频预览 -->
+      <video *ngIf="isVideo" [src]="previewURL | safeUrl" (click)="onPreview(videoPreview)"></video>
+
+      <!-- pdf预览 -->
+      <div *ngIf="isPdf" class="d-flex flex-center flex-column h-100 cursor-pointer" (click)="onPDFPreview()">
+        <svg-icon [src]="'./assets/images/svg/upload-pdf.svg'" class="svg-icon svg-icon-4x"></svg-icon>
+        <div class="text-nowrap text-truncate w-100 text-center mt-2 text-primary fz-14 opacity-75">
+          {{ 'components.clickView' | lang }}
+        </div>
+      </div>
+
+      <!-- 默认文件：无法预览 -->
+      <div *ngIf="!(isImg || isVideo || isPdf)" class="d-flex flex-center flex-column h-100">
+        <svg-icon [src]="'./assets/images/svg/upload.svg'" class="svg-icon svg-icon-4x"></svg-icon>
+        <div class="w-100">
+          <div class="text-nowrap text-truncate w-100 text-center mt-2">
+            {{ filename ? filename : ('components.file' | lang) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 进度条 -->
+<div class="upload-wrap d-flex flex-center flex-column" [style.padding]="padding" *ngIf="uploadState">
+  <div
+    class="upload-progress-text"
+    [class.success]="uploadState.state === 'DONE'"
+    [class.danger]="uploadState.state === 'FAILED'"
+  >
+    <span>{{ (uploadState.loaded | bytes) || '0kb' }}</span>
+    <span *ngIf="uploadState.total"> / {{ +uploadState.total | bytes }}</span>
+  </div>
+
+  <div
+    class="upload-progress-wrap"
+    [class.upload-progress-success]="uploadState.state === 'DONE'"
+    [class.upload-progress-danger]="uploadState.state === 'FAILED'"
+  >
+    <div class="upload-progress-track">
+      <div class="upload-progress" [style.width.%]="uploadState.progress"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 退拽提示 松开进行上传 -->
+<div class="upload-drag" [hidden]="!isDrag" (dragleave)="onDragLeave($event)">
+  {{ 'components.releaseUpload' | lang }}
+</div>
+
+<!-- 视频浮层预览 -->
+<ng-template #videoPreview>
+  <video [src]="previewURL | safeUrl" style="width: 600px; height: 320px" controls="true"></video>
+</ng-template>

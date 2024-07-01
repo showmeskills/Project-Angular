@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+}
+
+.prize-type {
+  flex: 0 0 130px;
+  border-right: 1px solid #e4e6ef;
+}
+
+::ng-deep {
+  .cdk-overlay-container-modal .cdk-global-overlay-wrapper .cdk-overlay-pane {
+    &.cdk-overlay-pane-select-prize {
+      height: calc(100% - 100px);
+      margin-top: 50px;
+      margin-bottom: 50px;
+      max-height: 1000px;
+      min-height: 600px;
+
+      .prize-select {
+        flex: 1 1 100%;
+        min-height: 0;
+      }
+    }
+  }
+}

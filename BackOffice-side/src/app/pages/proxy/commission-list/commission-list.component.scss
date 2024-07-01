@@ -1,0 +1,51 @@
+:host {
+}
+
+form-row {
+  margin-right: 52px;
+}
+
+.line {
+  display: inline-block;
+  line-height: 18px;
+  vertical-align: middle;
+  width: 1px;
+  height: 18px;
+  background: #222;
+}
+
+.commission-month {
+  line-height: 1;
+}
+
+mat-datepicker-toggle {
+  ::ng-deep {
+    .mat-button-wrapper {
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+}
+
+::ng-deep {
+  .month-picker {
+    .mat-calendar-period-button {
+      pointer-events: none;
+    }
+
+    abbr {
+      cursor: default;
+    }
+  }
+}
+
+.team-select {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  &.is-invalid {
+    border-color: #f64e60;
+  }
+}

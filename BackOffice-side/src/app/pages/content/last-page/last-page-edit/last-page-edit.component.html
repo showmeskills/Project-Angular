@@ -1,0 +1,242 @@
+<!-- 主题文字类型 -->
+<div class="card" *ngIf="type === 'theme'">
+  <div class="card-body">
+    <h2 class="color-111 mb-8 fz-18 fw-bolder">{{ 'content.foot.editItem' | lang }}</h2>
+    <div [formGroup]="formGroup" *ngIf="formGroup">
+      <form-row [label]="'content.foot.ziTitle' | lang" name="title" label-width="202" required>
+        <ng-template let-invalid="invalid">
+          <input
+            class="form-control w-100"
+            type="text"
+            formControlName="title"
+            autocomplete="off"
+            [placeholder]="'content.foot.titleMore' | lang"
+            [class.is-invalid]="invalid"
+          />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'content.foot.art' | lang" name="url" label-width="202">
+        <ng-template>
+          <input class="form-control w-100" type="text" formControlName="url" autocomplete="off" />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'content.foot.openWay' | lang" label-width="202" required>
+        <ng-template>
+          <div class="d-flex flex-wrap py-2 lh-32">
+            <label class="radio radio-lg radio-success mr-16 fz-16">
+              <input type="radio" name="open" [value]="false" formControlName="open" />
+              <span class="mr-4"></span>{{ 'content.foot.current' | lang }}
+            </label>
+            <label class="radio radio-lg radio-success mr-16 fz-16">
+              <input type="radio" name="open" [value]="true" formControlName="open" />
+              <span class="mr-4"></span>{{ 'content.foot.open' | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+    <div class="btn-wrap d-flex flex-center mt-12">
+      <button class="c-btn c-btn-default" (click)="onBack()">{{ 'common.back' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onSubmitTheme()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- 主题icon类型 -->
+<div class="card" *ngIf="type === 'theme-icon'">
+  <div class="card-body">
+    <h2 class="color-111 mb-8 fz-18 fw-bolder">{{ 'content.foot.editItem' | lang }}</h2>
+    <div [formGroup]="formGroup" *ngIf="formGroup">
+      <form-row [label]="'content.foot.ziTitle' | lang" name="icon" label-width="202" required>
+        <ng-template let-invalid="invalid">
+          <upload
+            type="Footer"
+            [style.width.px]="150"
+            desc="100x100"
+            [limit]="100"
+            formControlName="title"
+            [class.is-invalid]="invalid"
+          ></upload>
+        </ng-template>
+      </form-row>
+
+      <form-row label="URL" name="url" label-width="202">
+        <ng-template>
+          <input class="form-control w-100" type="text" formControlName="url" autocomplete="off" />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'content.foot.openWay' | lang" label-width="202" required>
+        <ng-template>
+          <div class="d-flex flex-wrap py-2 lh-32">
+            <label class="radio radio-lg radio-success mr-16 fz-16">
+              <input type="radio" name="open" [value]="false" formControlName="open" />
+              <span class="mr-4"></span>{{ 'content.foot.current' | lang }}
+            </label>
+            <label class="radio radio-lg radio-success mr-16 fz-16">
+              <input type="radio" name="open" [value]="true" formControlName="open" />
+              <span class="mr-4"></span>{{ 'content.foot.open' | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+    <div class="btn-wrap d-flex flex-center mt-12">
+      <button class="c-btn c-btn-default" (click)="onBack()">{{ 'common.back' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onSubmitTheme()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- 牌照类型 -->
+<div class="card" *ngIf="type === 'license'">
+  <div class="card-body">
+    <h2 class="color-111 mb-8 fz-18 fw-bolder">{{ 'content.foot.editPai' | lang }}</h2>
+    <div class="w-100" [formGroup]="formGroup" *ngIf="formGroup">
+      <div class="lang-hd">
+        <div class="mr-4 d-flex">
+          <div
+            class="lang-hd-item"
+            [class.active]="curValue === item.value"
+            *ngFor="let item of tabList; let i = index"
+            (click)="onTab(item)"
+          >
+            {{ item.lang | lang }}
+          </div>
+        </div>
+      </div>
+
+      <div class="lang-bd pb-0">
+        <ng-container *ngIf="curValue === 1">
+          <form-row
+            [label]="'content.foot.pPic' | lang"
+            name="icon"
+            label-width="202"
+            required
+            [invalidFeedback]="{ required: ('content.foot.choosePic' | lang) }"
+          >
+            <ng-template let-invalid="invalid">
+              <upload
+                type="Footer"
+                [style.width.px]="290"
+                [style.height.px]="140"
+                desc="164x34"
+                [limit]="100"
+                formControlName="icon"
+                [class.is-invalid]="invalid"
+              ></upload>
+            </ng-template>
+          </form-row>
+
+          <form-row label="URL" name="url1" label-width="202">
+            <ng-template>
+              <input class="form-control w-100" type="text" formControlName="url1" autocomplete="off" />
+            </ng-template>
+          </form-row>
+
+          <form-row
+            [label]="'content.foot.openWay' | lang"
+            label-width="202"
+            required
+            name="open1"
+            [invalidFeedback]="{ required: ('content.foot.pChoose' | lang) }"
+          >
+            <ng-template>
+              <div class="d-flex flex-wrap py-2 lh-32">
+                <label class="radio radio-lg radio-success mr-16 fz-16">
+                  <input type="radio" name="open1" [value]="false" formControlName="open1" />
+                  <span class="mr-4"></span>{{ 'content.foot.current' | lang }}
+                </label>
+                <label class="radio radio-lg radio-success mr-16 fz-16">
+                  <input type="radio" name="open1" [value]="true" formControlName="open1" />
+                  <span class="mr-4"></span>{{ 'content.foot.open' | lang }}
+                </label>
+              </div>
+            </ng-template>
+          </form-row>
+
+          <form-row
+            [label]="'content.foot.sf' | lang"
+            label-width="202"
+            required
+            name="judicial1"
+            [invalidFeedback]="{ required: 'content.foot.chooseSf' | lang }"
+          >
+            <ng-template>
+              <div class="d-flex flex-wrap py-2 lh-32">
+                <label class="radio radio-lg radio-success mr-16 fz-16" *ngFor="let area of areaList">
+                  <input type="radio" name="judicial1" [value]="area.id" formControlName="judicial1" />
+                  <span class="mr-4"></span>{{ area.name }}
+                </label>
+              </div>
+            </ng-template>
+          </form-row>
+        </ng-container>
+
+        <ng-container *ngIf="curValue === 2">
+          <form-row
+            [label]="'content.foot.pLink' | lang"
+            name="code"
+            label-width="202"
+            required
+            [invalidFeedback]="{ required: ('content.foot.enterP' | lang) }"
+          >
+            <ng-template let-invalid="invalid">
+              <input class="form-control w-100" formControlName="code" [class.is-invalid]="invalid" />
+            </ng-template>
+          </form-row>
+
+          <form-row label="URL" name="url2" label-width="202">
+            <ng-template>
+              <input class="form-control w-100" type="text" formControlName="url2" autocomplete="off" />
+            </ng-template>
+          </form-row>
+
+          <form-row
+            [label]="'content.foot.openWay' | lang"
+            label-width="202"
+            required
+            name="open2"
+            [invalidFeedback]="{ required: ('content.foot.pChoose' | lang) }"
+          >
+            <ng-template>
+              <div class="d-flex flex-wrap py-2 lh-32">
+                <label class="radio radio-lg radio-success mr-16 fz-16">
+                  <input type="radio" name="open2" [value]="false" formControlName="open2" />
+                  <span class="mr-4"></span>{{ 'content.foot.current' | lang }}
+                </label>
+                <label class="radio radio-lg radio-success mr-16 fz-16">
+                  <input type="radio" name="open2" [value]="true" formControlName="open2" />
+                  <span class="mr-4"></span>{{ 'content.foot.open' | lang }}
+                </label>
+              </div>
+            </ng-template>
+          </form-row>
+
+          <form-row
+            [label]="'content.foot.sf' | lang"
+            label-width="202"
+            required
+            name="judicial2"
+            [invalidFeedback]="{ required: 'content.foot.chooseSf' | lang }"
+          >
+            <ng-template>
+              <div class="d-flex flex-wrap py-2 lh-32">
+                <label class="radio radio-lg radio-success mr-16 fz-16" *ngFor="let area of areaList">
+                  <input type="radio" name="judicial2" [value]="area.id" formControlName="judicial2" />
+                  <span class="mr-4"></span>{{ area.name }}
+                </label>
+              </div>
+            </ng-template>
+          </form-row>
+        </ng-container>
+      </div>
+    </div>
+    <div class="btn-wrap d-flex flex-center mt-12">
+      <button class="c-btn c-btn-default" (click)="onBack()">{{ 'common.back' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onSubmitLicense()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>

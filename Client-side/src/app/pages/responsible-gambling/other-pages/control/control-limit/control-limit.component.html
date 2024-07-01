@@ -1,0 +1,28 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container limit-container">
+    <ng-container *ngFor="let item of contextArr; let i = index">
+      <div class="top" [class.m-top-20]="i === 1">
+        <img [src]="item.url" alt="" lazy="loading" />
+        <div class="right">
+          <p class="text-20">{{ item.title }}</p>
+        </div>
+      </div>
+      <div class="flex-layout">
+        <p class="text-14 m-top" *ngFor="let text of item.context">
+          {{ text }}
+        </p>
+        <div class="flex-box m-top">
+          <customize-button minWidth="127px" [plain]="true" [active]="true" size="small" type="text">
+            {{ item.btnText }}
+          </customize-button>
+        </div>
+      </div>
+    </ng-container>
+    <div class="bottom">
+      <span class="bottom-text">
+        <span class="text-16">{{ 'next_p' | translate }}</span>
+        <span class="mutual-opacity page">{{ 'question' | translate }}</span>
+      </span>
+    </div>
+  </div>
+</div>

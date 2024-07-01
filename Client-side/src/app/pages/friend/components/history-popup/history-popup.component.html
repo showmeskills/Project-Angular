@@ -1,0 +1,74 @@
+<div class="history-container">
+  <div class="history-wrapper">
+    <div class="history-header">
+      <p class="title">{{ 'export_all00' | translate }}</p>
+      <i class="icon-close-simple onact96-not" (click)="close()"></i>
+    </div>
+    <div class="history-body">
+      <p class="text">{{ 'export_all01' | translate }}</p>
+      <!-- select 区域 -->
+      <div class="select-field">
+        <div class="selet-field-left">
+          <div class="select">
+            <app-customize-select
+              [(value)]="selectedDate"
+              [label]="'time_range_tip00' | translate"
+              [options]="dateList"
+              [valueKey]="'value'"
+              [textKey]="'name'"
+              width="245px"
+            ></app-customize-select>
+          </div>
+          <div class="select">
+            <app-customize-select
+              [(value)]="selectAccountType"
+              [label]="'acc_type00' | translate"
+              [options]="accountTypeList"
+              [valueKey]="'value'"
+              [textKey]="'name'"
+              width="245px"
+            ></app-customize-select>
+          </div>
+        </div>
+        <div class="select-field-right">
+          <div class="select">
+            <app-customize-select
+              [(value)]="selectType"
+              [label]="'type' | translate"
+              [options]="typeList"
+              [valueKey]="'value'"
+              [textKey]="'name'"
+              width="245px"
+            ></app-customize-select>
+          </div>
+        </div>
+      </div>
+      <!-- 导出按钮 -->
+      <div class="export-button">
+        <customize-button width="100%" size="large" type="primary">{{ 'export00' | translate }}</customize-button>
+      </div>
+      <!-- 展示搜索结果 -->
+      <div class="result">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'appli_time00' | translate }}</th>
+              <th>{{ 'dates' | translate }}</th>
+              <th>{{ 'type' | translate }}</th>
+              <th>{{ 'acc_type00' | translate }}</th>
+              <th>{{ 'status' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="false">
+            <tr></tr>
+          </tbody>
+        </table>
+        <app-empty *ngIf="true" [icon]="'assets/images/card-center/empty.png'" [text]="'暂无记录'"> </app-empty>
+      </div>
+      <!-- 底部文字 -->
+      <div class="history-text">
+        {{ 'time_range_tip01' | translate }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,529 @@
+<modal-title type="drawer" (close)="modal.dismiss()">{{ 'risk.unnormal' | lang }}</modal-title>
+
+<main class="px-8 pt-12 pb-16 custom-scroll-y">
+  <!-- 头像 + 个人信息 -->
+  <div class="d-flex">
+    <div class="detail-avatar">
+      <img class="detail-avatar-face w-100 h-100" [src]="getAvatar()" />
+      <div class="d-flex flex-center detail-online">
+        <ng-container *ngFor="let status of statusListCopy">
+          <div
+            *ngIf="status.categoryDescription === userDetailsInfo.status"
+            [class.green]="status.categoryCode === 'Normal'"
+            [class.red]="status.categoryCode === 'Disable'"
+            [class.yellow]="status.categoryCode !== 'Disable' && status.categoryCode !== 'Normal'"
+          ></div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="min-w-0">
+      <div class="d-flex flag flex-wrap">
+        <span class="detail-name">{{ userDetailsInfo?.name }}</span>
+        <span class="detail-uid">UID {{ userDetailsInfo?.uid }}</span>
+        <span class="detail-vip">
+          {{ userDetailsInfo?.vip | vipName }}
+        </span>
+        <svg-icon
+          *ngIf="userDetailsInfo?.bindMobile"
+          [svgStyle]="{ 'width.px': 30 }"
+          [src]="'./assets/images/svg/member/phone.svg'"
+        ></svg-icon>
+        <svg-icon
+          *ngIf="userDetailsInfo?.bindGoogle2FA"
+          [svgStyle]="{ 'width.px': 30 }"
+          [src]="'./assets/images/svg/member/google.svg'"
+        ></svg-icon>
+
+        <span class="ml-2" style="width: 22px; height: 22px" *ngIf="userDetailsInfo.kycInfo?.countryEnName">
+          <i class="country countryIcon" [class]="'country-' + userDetailsInfo.kycInfo?.countryEnName"></i>
+        </span>
+        <!--          <svg-icon [svgStyle]="{ 'width.px': 30 }" [src]="'./assets/images/svg/member/national.svg'"></svg-icon>-->
+        <span class="primary-label px-2 ml-2">{{ userDetailsInfo.kycInfo?.kycGrade }}</span>
+        <span class="fz-16 ml-2 text-nowrap">{{ userDetailsInfo.kycInfo?.actualName }}</span>
+
+        <ng-container [ngSwitch]="userDetailsInfo.kycInfo?.idType">
+          <!-- 驾驶证 -->
+          <svg-icon
+            *ngSwitchCase="'DRIVING_LICENSE'"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'./assets/images/svg/member/car.svg'"
+          ></svg-icon>
+          <!-- 银行卡 -->
+          <svg-icon
+            *ngSwitchCase="'ID_CARD'"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'./assets/images/svg/member/card.svg'"
+          ></svg-icon>
+          <!-- 护照 -->
+          <svg-icon
+            *ngSwitchCase="'PASSPORT'"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'./assets/images/svg/member/passport.svg'"
+          ></svg-icon>
+        </ng-container>
+
+        <!-- 绑定银行卡信息 -->
+        <svg-icon
+          *ngIf="userDetailsInfo.bindBankCard"
+          [svgStyle]="{ 'width.px': 30 }"
+          [src]="'./assets/images/svg/member/bank-card.svg'"
+          [ngbTooltip]="bankTpl"
+          placement="bottom"
+        ></svg-icon>
+
+        <!-- 绑定虚拟币钱包 -->
+        <svg-icon
+          *ngIf="userWallet?.length || bindWallet?.length"
+          [svgStyle]="{ 'width.px': 30 }"
+          [src]="'./assets/images/svg/member/bit.svg'"
+          [autoClose]="'outside'"
+          [ngbPopover]="virtualTpl"
+          placement="bottom"
+        ></svg-icon>
+      </div>
+
+      <div class="d-flex mt12">
+        <span class="detail-point"><span></span></span>
+
+        <span class="ml6 detail-last">
+          <span class="mr-10">
+            {{ 'member.overview.registeredDate' | lang }}
+            {{ userDetailsInfo?.createTime ? (userDetailsInfo?.createTime | timeFormat) : '-' }}
+          </span>
+          <span class="mr-10"
+            >IP： {{ userDetailsInfo?.lastLoginInfo?.ip || '-' }} ({{
+              userDetailsInfo?.lastLoginInfo?.zone || '-'
+            }})</span
+          >
+          <span class="mr-10">
+            {{ 'member.overview.device' | lang }}: {{ userDetailsInfo?.lastLoginInfo?.source }}
+          </span>
+          <span class="mr-10 color-222" *ngIf="userDetailsInfo?.superiorAgent">
+            {{ 'member.overview.invite' | lang }}: {{ userDetailsInfo.superiorAgent }}
+          </span>
+        </span>
+      </div>
+
+      <div class="d-flex mt-2">
+        <div class="mr-12 color-aaa">
+          <span>{{ 'auManage.sys.email' | lang }}: </span>
+          <span>{{ userDetailsInfo.email || '-' }}</span>
+        </div>
+        <div class="mr-12 color-aaa">
+          <span>{{ 'payment.bankManage.address' | lang }}: </span>
+          <span>{{ userDetailsInfo.address || '-' }}</span>
+        </div>
+        <div class="mr-12 color-aaa">
+          <span>{{ 'budget.record.phoneNum' | lang }}: </span>
+          <span>{{ userDetailsInfo.mobile || '-' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 各存款明细 -->
+  <div class="d-flex flex-wrap w-100 flex-1 mt-2">
+    <div
+      *ngFor="let item of balanceList"
+      (click)="openBalanceDetail(item.detailKey, item.lang)"
+      class="detail-count-item"
+    >
+      <p *ngIf="item.valueKey === 'xxx'; else tpl">NaN</p>
+      <ng-template #tpl>
+        <p>${{ userDetailsInfo?.[item.valueKey] | currencyValue: 'USDT' }}</p>
+      </ng-template>
+      <div class="d-flex">
+        <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType' | lang: item.lang }}</span>
+        <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+      </div>
+    </div>
+
+    <div class="detail-count-item" (click)="openBalanceDetail('xxx', 'totalRank')">
+      <p>{{ userDetailsInfo?.xxx | toFormatNumberDecimal | toFormatMoney }}th</p>
+      <div class="d-flex">
+        <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.totalRank' | lang }}</span>
+        <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+      </div>
+    </div>
+
+    <div class="detail-count-item" (click)="openBalanceDetail('credit', 'creditLevel')">
+      <p>{{ userDetailsInfo?.credit | toFormatNumberDecimal | toFormatMoney }}</p>
+      <div class="d-flex">
+        <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.creditLevel' | lang }}</span>
+        <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+      </div>
+    </div>
+
+    <div class="detail-count-item" (click)="openBalanceDetail('freezeAmount', 'freeze')">
+      <p>${{ userDetailsInfo?.freezeAmountTotal | currencyValue: 'USDT' }}</p>
+      <div class="d-flex">
+        <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.freeze' | lang }}</span>
+        <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+      </div>
+    </div>
+
+    <div class="detail-count-item" (click)="openBalanceDetail('handlingFee', 'remainingFee')">
+      <p>${{ userDetailsInfo?.handlingFeeTotal | currencyValue: 'USDT' }}</p>
+      <div class="d-flex">
+        <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.remainingFee' | lang }}</span>
+        <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- 登陆IP/设备指纹 -->
+  <div class="flex-fill mt-8">
+    <table class="table mb-0 device-ip-table">
+      <thead>
+        <tr style="background-color: #fbfcfd">
+          <!-- 时间 -->
+          <th>
+            <span class="cell">{{ 'common.date' | lang }}</span>
+          </th>
+          <!-- 类型 -->
+          <th>
+            <span class="cell">{{ 'common.type' | lang }}</span>
+          </th>
+          <!-- IP -->
+          <th>
+            <span class="cell">IP</span>
+          </th>
+          <!-- 设备指纹 -->
+          <th>
+            <span class="cell">{{ 'risk.deviceFingerprint' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of deviceIpList">
+          <td>
+            <span class="cell">{{ item.createTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.source">
+              <!-- 注册 -->
+              <ng-container *ngSwitchCase="'Register'">
+                {{ 'risk.register' | lang }}
+              </ng-container>
+              <!-- 登录 -->
+              <ng-container *ngSwitchCase="'Login'">
+                {{ 'allPop.loginEnter' | lang }}
+              </ng-container>
+              <!-- 存款 -->
+              <ng-container *ngSwitchCase="'Deposit'">
+                {{ 'game.proxy.deposit' | lang }}
+              </ng-container>
+              <!-- 提款 -->
+              <ng-container *ngSwitchCase="'Withdraw'">
+                {{ 'game.proxy.withdraw' | lang }}
+              </ng-container>
+              <ng-container *ngSwitchDefault>-</ng-container>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.ip || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.fingerprint || '-' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!deviceIpList.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-5 table-footer" *ngIf="deviceIpList.length > 0">
+      <div></div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="deviceIpPaginator"
+          (paginate)="getDeviceIpList()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+
+  <!-- 交易概览 -->
+  <div class="mt-8">
+    <div class="plane">
+      <div class="px-8 py-4 d-flex" [class]="'circle-' + (i + 1)" *ngFor="let item of grid; index as i">
+        <div class="fz-16 flex-1">
+          <div *ngIf="item.titleMap">{{ item.titleMap | lang }}</div>
+          <div class="fst-italic" *ngIf="!item.titleMap">{{ item.title }}</div>
+          <div class="mt-2" [style.color]="item.color">
+            <span class="vam">{{
+              [5, 6].includes(item.id) ? (item?.value | currencyValue: 'USDT') : (item?.value | integer)
+            }}</span>
+            <span class="vam">{{ item.suffix }}</span>
+            <img class="vam ml-2" *ngIf="[5, 6].includes(item.id)" currencyIcon="USDT" [currencySize]="'18px'" />
+          </div>
+        </div>
+        <pp-progress
+          type="circle"
+          trackColor="#fff"
+          [color]="item.color"
+          [percentage]="item?.value"
+          [width]="42"
+          [strokeWidth]="4"
+        >
+          <ng-template progressText>
+            <span class="color-333 fz-12">
+              {{ item?.value | integer }}
+              {{ item.suffix }}
+            </span>
+          </ng-template>
+        </pp-progress>
+      </div>
+
+      <div class="px-8 py-4 custom-scroll-y circle-8" [style.height.px]="67">
+        <div class="fz-16">
+          <div>{{ 'member.detail.currency' | lang }}</div>
+          <div class="mt-2">
+            <img *ngFor="let item of allWalletList" [currencyIcon]="item.currency" currencySize="18" class="mr-2" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 d-flex" [style.height.px]="275" style="background: #f9fcff">
+      <div class="flex-1" *ngIf="providerStatList.length">
+        <table class="table transaction-table">
+          <tbody>
+            <ng-container *ngFor="let item of providerStatList; index as i">
+              <tr *ngIf="!(i % 2)">
+                <td>
+                  <span class="cell">
+                    <img [iconSrc]="item.webLogo" iconSize="18px" class="mr-2" />
+                    <span>{{ item.providerName || '-' }}</span>
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span>{{ item.activeFlowTotal | currencyValue: 'USDT' }}</span>
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <ng-container *win="item.payoutTotal; let value; prev as prev">
+                      <span [winColor]="value" [winColorReverse]="true"
+                        >{{ prev }}{{ value | currencyValue: 'USDT' }}</span
+                      >
+                    </ng-container>
+
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span>
+                      <!-- arthur: 非体育和电竞类的厂商，不需要显示取消数，只需要显示总数 -->
+                      <ng-container *ngIf="['SportsBook', 'Esports'].includes(item.gameCategory)">
+                        {{ item.cancelCount || '-' }}/
+                      </ng-container>
+                      {{ item.wagerCount || '-' }}
+                    </span>
+                    <svg-icon class="ml-2" [src]="'./assets/images/svg/member/doc.svg'"></svg-icon>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex-1" *ngIf="providerStatList.length">
+        <table class="table transaction-table">
+          <tbody>
+            <ng-container *ngFor="let item of providerStatList; index as i">
+              <tr *ngIf="i % 2">
+                <td>
+                  <span class="cell">
+                    <img [iconSrc]="item.webLogo" iconSize="18px" class="mr-2" />
+                    <span>{{ item.providerName || '-' }}</span>
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span>{{ item.activeFlowTotal | currencyValue: 'USDT' }}</span>
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <ng-container *win="item.payoutTotal; let value; prev as prev">
+                      <span [winColor]="value" [winColorReverse]="true"
+                        >{{ prev }}{{ value | currencyValue: 'USDT' }}</span
+                      >
+                    </ng-container>
+
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span
+                      ><!-- arthur: 非体育和电竞类的厂商，不需要显示取消数，只需要显示总数 -->
+                      <ng-container *ngIf="['SportsBook', 'Esports'].includes(item.gameCategory)">
+                        {{ item.cancelCount || '-' }}/
+                      </ng-container>
+                      {{ item.wagerCount || '-' }}
+                    </span>
+                    <svg-icon class="ml-2" [src]="'./assets/images/svg/member/doc.svg'"></svg-icon>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="container-empty h-100 w-100" *ngIf="!providerStatList.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </div>
+    <!-- 页码 -->
+    <div class="d-flex flex-between py-5 table-footer" *ngIf="providerStatList.length > 0">
+      <div></div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="getProviderStatList()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+
+  <!-- 审核结果 -->
+  <div class="mt-8">
+    <div class="mb-10">
+      <div class="fz-18 fw-bolder">{{ 'risk.auditReason' | lang }}：</div>
+      <div class="fz-16 ml-14 mt-5 text-danger">{{ data?.detail?.reason || '-' }}</div>
+    </div>
+    <div class="fz-18 fw-bolder mb-5">{{ 'member.kyc.model.auditResults' | lang }}：</div>
+    <div class="d-flex flex-between flex-ac h40 lh-40 audit-item" *ngFor="let item of authenticateList">
+      <div>{{ item.authenticationType }}</div>
+      <img
+        *ngIf="item.isAuthentication; else Authentication"
+        class="mr-4"
+        iconSrc="/assets/images/svg/monitor-abnormal-yes.svg"
+      />
+      <ng-template #Authentication>
+        <label class="checkbox checkbox-lg px-4 h42">
+          <input type="checkbox" [(ngModel)]="item.required" />
+          <span class="mr-5"></span>
+          {{ 'risk.mandatoryAuth' | lang }}
+        </label>
+      </ng-template>
+    </div>
+  </div>
+</main>
+
+<div class="popup-footer">
+  <div class="px-8 py-5">
+    <!-- 审核 -->
+    <ng-container *ngIf="['Pending', 'Processing'].includes(status); else detailTep">
+      <form-row [label]="'risk.check' | lang" label-width="140">
+        <ng-template>
+          <div class="d-flex flex-wrap">
+            <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of auditList">
+              <input type="radio" name="audit" [value]="item.value" [(ngModel)]="audit" />
+              <span class="mr-4"></span>{{ item.lang | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+      <form-row
+        [label]="'risk.remark' | lang"
+        label-width="140"
+        [contentWidth]="450"
+        *ngIf="audit === 'Rejected'"
+        required
+      >
+        <ng-template>
+          <input class="form-control w-100" type="text" [(ngModel)]="remark" />
+        </ng-template>
+      </form-row>
+    </ng-container>
+    <!-- 详情 -->
+    <ng-template #detailTep>
+      <form-row [label]="'risk.check' | lang" label-width="140">
+        <ng-template>
+          {{ data?.status === 'Finish' ? ('risk.passing' | lang) : ('risk.noPass' | lang) }}
+        </ng-template>
+      </form-row>
+      <div class="d-flex flex-ac">
+        <form-row class="flex-1" [label]="'risk.checkTime' | lang" label-width="140">
+          <ng-template> {{ (data?.modifiedTime | timeFormat) || '-' }} </ng-template>
+        </form-row>
+        <form-row class="flex-1" [label]="'risk.viewr' | lang" label-width="140">
+          <ng-template> {{ data?.modifiedUserName || '-' }} </ng-template>
+        </form-row>
+      </div>
+      <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="data?.status === 'Rejected'">
+        <ng-template> {{ data?.remark || '-' }} </ng-template>
+      </form-row>
+    </ng-template>
+  </div>
+  <modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>
+</div>
+
+<!-- 银行卡浮层 -->
+<ng-template #bankTpl>
+  <div class="px-6">
+    <div class="lh-48 bank-item" *ngFor="let item of bankList">
+      <img class="rounded-circle vam" iconSrc="https://via.placeholder.com/18x18" iconSize="18px" alt="" />
+      <span class="ml-2 mr-7 vam">{{ item.bankName }}</span>
+      <span class="vam">{{ item.cardNum }}</span>
+    </div>
+
+    <span *ngIf="!bankList?.length">{{ 'common.emptyText' | lang }}</span>
+  </div>
+</ng-template>
+
+<!-- 虚拟币浮层 -->
+<ng-template #virtualTpl>
+  <ng-template #renderAddress let-addressList>
+    <div class="border-top">
+      <div class="bank-item" *ngFor="let item of addressList">
+        <div class="lh-30">
+          <img
+            class="vam mr-2"
+            *ngIf="item.currentName"
+            [currencyIcon]="item.currentName"
+            alt=""
+            [currencySize]="'18px'"
+          />
+          <span class="vam fz-14">{{ item.network }}</span>
+        </div>
+        <form-wrap>
+          <span class="text-truncate">{{ item.address }}</span>
+          <ng-container suffix>
+            <span class="btn btn-outline-primary" (click)="onCopy(item.address)">{{ 'common.copy' | lang }}</span>
+          </ng-container>
+        </form-wrap>
+      </div>
+
+      <div *ngIf="!addressList?.length" class="color-999 fz-12 py-4 text-center">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </ng-template>
+
+  <div class="px-4 text-left">
+    <div>
+      <div class="py-3 fz-14">{{ 'member.detail.userWallet' | lang }}</div>
+      <ng-container *ngTemplateOutlet="renderAddress; context: { $implicit: userWallet }"></ng-container>
+    </div>
+
+    <div class="pt-4">
+      <div class="py-3 fz-14">{{ 'member.detail.boundWallet' | lang }}</div>
+      <ng-container *ngTemplateOutlet="renderAddress; context: { $implicit: bindWallet }"></ng-container>
+    </div>
+  </div>
+</ng-template>

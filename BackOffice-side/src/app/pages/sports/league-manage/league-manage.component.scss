@@ -1,0 +1,131 @@
+.status {
+  .item {
+    display: flex;
+    align-items: center;
+    padding: 7px 25px;
+    height: 34px;
+    border-radius: 6px;
+    color: #7e8299;
+    background: #f5f8fa;
+    font-size: 14px;
+    margin-right: 10px;
+    cursor: pointer;
+
+    &:hover {
+      &.success {
+        color: #199ef7;
+      }
+      &.fail {
+        color: #f64e60;
+      }
+    }
+
+    &.active {
+      &.success {
+        background-color: #199ef7;
+      }
+      &.fail {
+        background-color: #f64e60;
+      }
+      color: #fff;
+
+      &:hover {
+        color: #fff !important;
+      }
+    }
+  }
+}
+
+.league-content {
+  height: 862px;
+  margin-top: 16px;
+  &-left {
+    flex: 0 0 400px;
+    height: 100%;
+    margin-right: 16px;
+    display: flex;
+    flex-direction: column;
+    .left-head {
+      .head-right {
+        height: 60px;
+        .sort {
+          width: 52px;
+          height: 34px;
+          line-height: 34px;
+          text-align: center;
+          background: #f5f8fa;
+          color: #b6bbce;
+          font-size: 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          &.active {
+            background: rgba($color: #009ef7, $alpha: 0.1);
+            color: #009ef7;
+          }
+        }
+      }
+    }
+    .left-content {
+      flex: 1;
+      .item {
+        height: 40px;
+        border-bottom: 1px solid #e4e6ef;
+      }
+    }
+  }
+  &-right {
+    flex: 1;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    .svg-icon svg g path {
+      fill: #494b74;
+    }
+    .right-table {
+      flex: 1;
+      .table {
+        height: 100%;
+        // 设置tbody下tr 的间隔色
+        tbody {
+          tr {
+            &:nth-child(2n-1) {
+              background: rgba($color: #f1faff, $alpha: 0.4);
+            }
+          }
+        }
+      }
+      // 设置tbody滚动条
+      .table {
+        tbody {
+          height: calc(100% - 66px);
+          display: block;
+        }
+        thead,
+        tbody tr {
+          display: table;
+          width: 100%;
+          table-layout: fixed;
+          text-align: center;
+        }
+
+        thead {
+          width: calc(100% - 6px);
+        }
+      }
+    }
+  }
+}
+
+.scroll-y {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(50, 50, 50, 0.3);
+    border-radius: 6px;
+  }
+}

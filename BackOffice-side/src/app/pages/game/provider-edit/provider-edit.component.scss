@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+.provider-edit-wrap {
+  box-shadow: 0 10px 30px 0 rgba(82, 63, 105, 0.05);
+}
+
+.form-control-show {
+  background: #fff;
+  border: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 42px;
+}
+
+.open-way {
+  border-radius: 5px;
+  .way-title {
+    align-self: start;
+  }
+
+  .open-ways {
+    .way-item {
+      display: flex;
+      .main-title {
+        width: 66px;
+        align-items: center;
+        display: flex;
+        color: #969bad;
+      }
+      .sub-title {
+        width: 35px;
+      }
+      .opt {
+        display: flex;
+        .opt-item {
+          flex-wrap: wrap;
+        }
+      }
+    }
+  }
+  ::ng-deep {
+    .mat-select-trigger {
+      border: 4px solid #f3f6f9;
+      width: 200px;
+      height: 40px;
+      border-radius: 7px;
+      background-color: #f3f6f9;
+    }
+  }
+}

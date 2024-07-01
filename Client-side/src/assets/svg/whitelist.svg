@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#ff7e10"/>
+            <stop offset="1" stop-color="#f5432c"/>
+        </linearGradient>
+        <style>
+            .cls-3{fill:#54616f}.cls-4{fill:#fff}
+        </style>
+    </defs>
+    <g id="Group_3526" data-name="Group 3526" transform="translate(-405 -297)">
+        <path id="Rectangle_1960" data-name="Rectangle 1960" transform="translate(405 297)" style="fill:none" d="M0 0h22v22H0z"/>
+        <g id="Group_3416" data-name="Group 3416" transform="translate(-6228 -614)">
+            <path id="Rectangle_1968" data-name="Rectangle 1968" transform="translate(6636 913)" style="fill:url(#linear-gradient)" d="M0 0h16v19H0z"/>
+            <path id="Rectangle_1969" data-name="Rectangle 1969" class="cls-3" transform="translate(6640 913)" d="M0 0h8v2H0z"/>
+            <g id="Group_3415" data-name="Group 3415" transform="translate(-1 1)">
+                <path id="Rectangle_1971" data-name="Rectangle 1971" class="cls-4" transform="rotate(45 2208.53 8476.646)" d="M0 0h6v2H0z"/>
+                <path id="Rectangle_1972" data-name="Rectangle 1972" class="cls-4" transform="rotate(135 3134.858 1837.232)" d="M0 0h10v2H0z"/>
+            </g>
+            <path id="Rectangle_1970" data-name="Rectangle 1970" class="cls-3" transform="translate(6643 911)" d="M0 0h2v2H0z"/>
+        </g>
+    </g>
+</svg>

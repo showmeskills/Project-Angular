@@ -1,0 +1,29 @@
+<div class="verify-container">
+  <app-scrollbar [appLoading]="kycPopupLoading">
+    <ng-container *ngIf="!kycPopupLoading">
+      <ng-container [ngSwitch]="orderStep">
+        <ng-container *ngSwitchCase="1">
+          <app-primary-kyc></app-primary-kyc>
+        </ng-container>
+        <ng-container *ngSwitchCase="2">
+          <app-forei-primary-kyc></app-forei-primary-kyc>
+        </ng-container>
+        <ng-container *ngSwitchCase="3">
+          <app-mid-kyc-validation></app-mid-kyc-validation>
+        </ng-container>
+        <ng-container *ngSwitchCase="4">
+          <app-forei-mid-kyc
+            [supplymentaryDocs]="data.supplymentaryDocs"
+            [isFailedProcess]="data.isFailedProcess"
+          ></app-forei-mid-kyc>
+        </ng-container>
+        <ng-container *ngSwitchCase="5">
+          <app-advance-kyc></app-advance-kyc>
+        </ng-container>
+        <ng-container *ngSwitchCase="6">
+          <app-forei-advance-kyc></app-forei-advance-kyc>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </app-scrollbar>
+</div>

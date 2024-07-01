@@ -1,0 +1,90 @@
+<div class="page-container">
+  <!-- 头部 -->
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container header-container">
+      <div class="left">
+        <p class="text">{{ 'settings' | translate }}</p>
+      </div>
+      <i class="icon-big-setting"></i>
+    </div>
+  </div>
+
+  <!-- 信息 -->
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-16 body-container">
+    <div class="setting-container container">
+      <ng-container *ngFor="let item of mainThemeList">
+        <ng-container
+          *ngTemplateOutlet="
+            settingThemeTemplate;
+            context: {
+              title: item.title,
+              subThemeList: item.subThemeList
+            }
+          "
+        ></ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- 偏好主题 -->
+<ng-template #settingThemeTemplate let-title="title" let-subThemeList="subThemeList">
+  <p class="title">{{ title }}</p>
+  <ng-container *ngFor="let item of subThemeList">
+    <div class="setting-item" [appLoading]="item.loading">
+      <div class="setting-item-left">
+        <i [class]="item.settingIcon" class="w-22-h-22"></i>
+        <div class="text-group">
+          <p class="text-title">{{ item.settingTitle }}</p>
+          <p class="text-desc">{{ item.settingDesc }}</p>
+        </div>
+      </div>
+      <div class="setting-item-right">
+        <div class="current-setting" *ngIf="item.isShowNormal">
+          <ng-container *ngIf="!item.isCurrency">
+            <div class="icon-box">
+              <i [class]="item.isShowCorrectIcon ? 'icon-correct' : 'icon-error'"></i>
+            </div>
+          </ng-container>
+          <ng-container *ngFor="let settingItem of item.settingItem; let i = index">
+            <p class="activity-text" *ngIf="settingItem.active && !item.currency">
+              {{ settingItem.name }}
+              {{ item.settingItem.length - 1 !== i ? ',' : '' }}
+            </p>
+          </ng-container>
+        </div>
+        <div class="current-setting" *ngIf="!item.isShowNormal">
+          <div class="img-box" *ngIf="!item.isCurrency">
+            <img [src]="item.settingItem.url" lazy="loading" alt="" />
+          </div>
+          <div class="default-currency" *ngIf="item.isCurrency">
+            <ng-container *ngIf="!item.loading">
+              <img class="currency-icon" [src]="item.settingItem.currency | currencyIcon" loading="lazy" alt="" />
+              <p class="activity-text">{{ item.settingItem.currency }}</p>
+            </ng-container>
+            <i class="animation-icon-loading-dot" *ngIf="item.loading"><i></i><i></i><i></i></i>
+          </div>
+        </div>
+        <ng-container *ngIf="item.btnNormal">
+          <customize-button
+            class="btn-down"
+            minWidth="80px"
+            size="small"
+            (onClick)="onSetting(item.setIdx, item.settingTitle, item.settingItem)"
+          >
+            {{ 'manage_button' | translate }}</customize-button
+          >
+        </ng-container>
+        <ng-container *ngIf="!item.btnNormal">
+          <mat-slide-toggle
+            [disableRipple]="item.loading"
+            id="switch-slider"
+            [checked]="item.isEnableCreit"
+            (change)="toggle($event)"
+          >
+          </mat-slide-toggle>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

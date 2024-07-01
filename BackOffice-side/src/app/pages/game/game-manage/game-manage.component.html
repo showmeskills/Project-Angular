@@ -1,0 +1,478 @@
+<div class="card">
+  <div class="card-body">
+    <div class="fz-20 mb-10">{{ 'game.list' | lang }}</div>
+    <div [class.disabled]="isHomeSort">
+      <!-- 游戏类别 -->
+      <form-row
+        [label]="'game.provider.type' | lang"
+        label-width="220"
+        [class.disabled]="isProviderSort || isLabelSort"
+      >
+        <ng-template>
+          <div class="d-flex flex-ac flex-wrap select-box">
+            <div
+              class="select"
+              [ngClass]="{ active: item.code === data.category }"
+              *ngFor="let item of categoryList"
+              (click)="selectTypeSearch('category', item.code)"
+            >
+              {{ item.description }}
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 供应商 -->
+      <form-row [label]="'game.provider.provider' | lang" label-width="220" [class.disabled]="isLabelSort">
+        <ng-template>
+          <div class="d-flex flex-ac flex-wrap select-box">
+            <div
+              class="select"
+              [ngClass]="{ active: providerListCom[0].providerCatId === data.provider }"
+              *ngIf="!isProviderSort"
+              (click)="selectTypeSearch('provider', providerListCom[0].providerCatId)"
+            >
+              {{ providerListCom[0].providerName }}
+            </div>
+            <ng-container *ngFor="let item of providerListCom; let first = first">
+              <div
+                class="select"
+                [ngClass]="{ active: item.providerCatId === data.provider }"
+                *ngIf="!first"
+                triggers="mouseenter:mouseleave"
+                [ngbPopover]="showMaker(item)"
+                (click)="selectTypeSearch('provider', item.providerCatId)"
+              >
+                {{ item.providerName }}
+              </div>
+            </ng-container>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 游戏标签 -->
+      <form-row [label]="'game.provider.game_label' | lang" label-width="220" [class.disabled]="isProviderSort">
+        <ng-template>
+          <div class="d-flex flex-ac flex-wrap select-box">
+            <ng-container
+              *ngFor="let item of !labelexpand ? gameLabelList : gameLabelList.slice(0, 30); let first = first"
+            >
+              <div
+                *ngIf="!isLabelSort ? true : first ? false : true"
+                class="select"
+                [ngClass]="{ active: item.code === data.gameLabel }"
+                (click)="selectTypeSearch('gameLabel', item.code, item)"
+              >
+                {{ item.description }}
+              </div>
+            </ng-container>
+
+            <div class="expand" *ngIf="gameLabelList.length > 30" (click)="labelexpand = !labelexpand">
+              <svg-icon
+                class="svg-icon svg-icon-2x"
+                [class]="labelexpand ? 'open' : 'back'"
+                [src]="'./assets/images/svg/triangle.svg'"
+              ></svg-icon>
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 状态 -->
+      <form-row
+        [label]="'game.provider.statu' | lang"
+        label-width="220"
+        [class.disabled]="isProviderSort || isLabelSort"
+      >
+        <ng-template>
+          <div class="d-flex flex-ac flex-wrap select-box">
+            <div
+              class="select"
+              [ngClass]="{ active: item.code === data.status }"
+              *ngFor="let item of gameStatusList"
+              (click)="selectTypeSearch('status', item.code)"
+            >
+              {{ item.description }}
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 排序 -->
+      <form-row
+        [label]="'payment.currency.sort' | lang"
+        label-width="220"
+        [class.disabled]="isProviderSort || isLabelSort"
+      >
+        <ng-template>
+          <div class="d-flex flex-ac flex-wrap select-box">
+            <div
+              class="select"
+              [ngClass]="{ active: item.value === data.searchSort }"
+              *ngFor="let item of searchSortList"
+              (click)="selectTypeSearch('sort', item.value)"
+            >
+              {{ item.lang | lang }}
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 搜索 -->
+      <div class="d-flex flex-ac" [class.disabled]="isProviderSort || isLabelSort">
+        <form-row [label]="'common.search' | lang" label-width="220" class="mr-4">
+          <ng-template>
+            <form-wrap [style.width.px]="240">
+              <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x"></svg-icon>
+              <input
+                class="form-control"
+                autocomplete="off"
+                type="text"
+                [(ngModel)]="data.gameName"
+                [placeholder]="'game.manage.keyword' | lang"
+                (keyup)="$event.keyCode === 13 && loadData(true)"
+              />
+            </form-wrap>
+          </ng-template>
+        </form-row>
+        <div class="btn btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-ac flex-between my-10 w-100">
+      <div class="fz-20" [style.width.px]="220">{{ 'game.provider.game_list' | lang }}</div>
+
+      <div class="d-flex flex-ac flex-wrap" *ngIf="batchType; else noPause">
+        <span class="btn btn-light-primary px-9" (click)="batchConfirm()">{{ 'game.provider.confirm' | lang }}</span>
+        <span class="ml-8 btn btn-default px-9 mr-20" (click)="batchancel()">{{ 'game.manage.cancel' | lang }}</span>
+      </div>
+
+      <ng-template #noPause>
+        <div class="d-flex flex-ac flex-wrap" style="gap: 15px; justify-content: flex-end">
+          <!-- 排序 -->
+          <button
+            type="button"
+            [cdkMenuTriggerFor]="sortMenu"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/game-sort.svg'"></svg-icon>
+            <span>{{ 'payment.currency.sort' | lang }}</span>
+          </button>
+
+          <ng-template #sortMenu>
+            <div class="example-menu" cdkMenu>
+              <button
+                class="example-menu-item"
+                cdkMenuItem
+                *ngFor="let item of sortTypeList"
+                (click)="batch('sort', item.value)"
+              >
+                {{ item.name }}
+              </button>
+            </div>
+          </ng-template>
+
+          <!-- 下载游戏 -->
+          <button
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+            (click)="onDownloadGame()"
+          >
+            <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            <span>{{ 'game.provider.down_game' | lang }}</span>
+          </button>
+
+          <!-- 下载模板 -->
+          <button
+            type="button"
+            [batchUpload]
+            [tenantId]="subHeaderService.merchantCurrentId"
+            [downloadGameTpl]="true"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+          >
+            <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            <span>{{ 'game.provider.down_temp' | lang }}</span>
+          </button>
+
+          <!-- 批量上传游戏 -->
+          <button
+            [batchUpload]
+            [batchEditGame]="true"
+            (uploadCallback)="loadData(true)"
+            batchUploadType="Games"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+            <span>{{ 'game.provider.game_upload' | lang }}</span>
+          </button>
+
+          <!-- 批量上传图片 -->
+          <button
+            [batchUpload]
+            batchUploadType="Games"
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+            <span>{{ 'game.provider.pic_upload' | lang }}</span>
+          </button>
+
+          <!-- 批量热门 -->
+          <button
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+            (click)="batch('hot')"
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+            <span>{{ 'game.manage.batch_hot' | lang }}</span>
+          </button>
+
+          <!-- 批量下架 -->
+          <button
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+            (click)="batch('pause')"
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/pause.svg'"></svg-icon>
+            <span>{{ 'game.manage.batch_pase' | lang }}</span>
+          </button>
+
+          <!-- 新增游戏 -->
+          <button
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+            (click)="
+              router.navigate(['/game/manage/edit'], {
+                queryParams: { tenantId: subHeaderService.merchantCurrentId }
+              })
+            "
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+            <span>{{ 'game.manage.add_game' | lang }}</span>
+          </button>
+
+          <!-- 人工智能 -->
+          <button
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+            (click)="openAIPopup()"
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/game-ai.svg'"></svg-icon>
+            <span>{{ 'game.manage.ai_settings' | lang }}</span>
+          </button>
+
+          <!-- 添加标签游戏 -->
+          <button
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+            [disabled]="data.gameLabel ? false : true"
+            (click)="openGameLabelPopup()"
+          >
+            <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+            <span>{{ 'game.manage.tagsGame' | lang }}</span>
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="d-flex flex-ac flex-between pb-10">
+      <div class="f-14 color-aaa">{{ 'game.provider.game_total' | lang }} {{ total }}</div>
+      <form-row *ngIf="!batchType" label="Sort by">
+        <ng-template>
+          <mat-form-field [style.width.px]="140">
+            <mat-select class="form-control" [(ngModel)]="data.sort" (selectionChange)="loadData(true)">
+              <mat-option *ngFor="let item of sortList" [value]="item.value">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex flex-ac flex-wrap game-box">
+      <div
+        class="game-box-item mb-3"
+        *ngFor="let item of list; let i = index"
+        [draggable]="batchType === 'sort' ? true : false"
+        (dragstart)="dragStarted(i)"
+        (dragenter)="dragMoved(i)"
+        (dragend)="dragEnded()"
+      >
+        <div
+          class="w-100 item-img"
+          (mouseover)="darkGameId = item.id"
+          (mouseleave)="darkGameId = ''"
+          (click)="selectPauseIsHot(item.id)"
+        >
+          <img class="w-100 h-100" [src]="getGameImg(item)" />
+
+          <!-- 查看详情 -->
+          <div
+            *ngIf="darkGameId === item.id && !batchType"
+            class="dark detail"
+            (click)="
+              router.navigate(['/game/manage/edit'], {
+                queryParams: { id: item.id, tenantId: subHeaderService.merchantCurrentId }
+              })
+            "
+          >
+            <span>{{ 'game.manage.look_det' | lang }}</span>
+          </div>
+
+          <!-- 暂停/维护 展示 -->
+          <div
+            class="pause"
+            *ngIf="['Offline', 'Maintenance'].includes(item.status || item.providerStatus); else hideGame"
+          >
+            <div class="pause-box">
+              <svg-icon class="svg-icon svg-icon-5x" [src]="'./assets/images/svg/pause.svg'"></svg-icon>
+              <div *ngIf="['Offline', 'Maintenance'].includes(item.providerStatus)">
+                {{ 'game.provider.title' | lang
+                }}{{ (item.providerStatus === 'Offline' ? 'game.provider.drop' : 'game.provider.maintain') | lang }}
+              </div>
+              <div *ngIf="['Offline', 'Maintenance'].includes(item.status)">
+                {{ 'common.game' | lang
+                }}{{ (item.status === 'Offline' ? 'game.provider.drop' : 'game.provider.maintain') | lang }}
+              </div>
+              <div *ngIf="!item.isShow">
+                {{ 'game.provider.hidden' | lang }}
+              </div>
+            </div>
+          </div>
+          <!-- 隐藏 游戏 -->
+          <ng-template #hideGame>
+            <div class="pause" *ngIf="!item.isShow">
+              {{ 'game.provider.hidden' | lang }}
+            </div>
+          </ng-template>
+
+          <!-- 批量 暂停/热门 -->
+          <div *ngIf="['pause', 'hot'].includes(this.batchType) && pauseIsHotIdList.includes(item.id)" class="dark">
+            <svg-icon class="svg-icon svg-icon-3x" [src]="'./assets/images/svg/game-pause-yes.svg'"></svg-icon>
+          </div>
+
+          <!-- 拖拽排序 -->
+          <div *ngIf="batchType === 'sort' && darkGameId === item.id" class="dark drag-item">
+            <svg-icon class="svg-icon svg-icon-3x" [src]="'./assets/images/svg/game-sort-drag.svg'"></svg-icon>
+          </div>
+
+          <!-- 排序输入框 -->
+          <form-wrap *ngIf="batchType === 'sort' && darkGameId === item.id" class="sort-input">
+            <input
+              class="form-control fz-14 w-100"
+              [style.height.px]="30"
+              autocomplete="off"
+              type="text"
+              [value]="item.sort"
+              [(ngModel)]="list[i].sort"
+              input-float
+            />
+            <span class="text-primary cursor-pointer fz-14" (click)="numberSort(item)">{{
+              'common.confirm' | lang
+            }}</span>
+          </form-wrap>
+        </div>
+        <div class="w-100 item-bottom">
+          <!-- 游戏名称 -->
+          <div
+            class="f-16 color-aaa mt-2 mb-2 w-100 item-title"
+            (mouseenter)="showTooltip('gameName')"
+            (mouseleave)="hideTooltip('gameName')"
+          >
+            {{ getGameName(item, 'gameName') || ('game.noneName' | lang) }}
+          </div>
+          <div *ngIf="showTooltips['gameName'] && getGameName(item, 'gameName').length >= 10" class="title-tips">
+            {{ getGameName(item, 'gameName') }}
+          </div>
+
+          <div class="f-16 color-aaa mb-2 d-flex flex-center">
+            <!-- 派彩金额  -->
+            <div (mouseenter)="showTooltip('payoutAmount')" (mouseleave)="hideTooltip('payoutAmount')">
+              {{ item.payoutAmount | currencyValue: 'USDT' }}
+              <img class="mx-2 mb-1 ml-0" [currencyIcon]="'USDT'" />
+              <div *ngIf="showTooltips['payoutAmount']" class="title-tips total-payout">
+                {{ 'game.payAmt' | lang }}{{ item.payoutAmount | currencyValue: 'USDT' }}
+                <img class="mx-2 mb-1 ml-0" [currencyIcon]="'USDT'" />
+              </div>
+            </div>
+            <!-- 实际庄家优势 -->
+            <div (mouseenter)="showTooltip('bankerAdvantage')" (mouseleave)="hideTooltip('bankerAdvantage')">
+              {{ item.bankerAdvantage }}%
+              <div *ngIf="showTooltips['bankerAdvantage']" class="title-tips banker-adv">
+                {{ 'game.bankAdv' | lang }}{{ item.bankerAdvantage }}%
+              </div>
+            </div>
+          </div>
+          <!-- 人均注金及累计交易人数 -->
+          <div
+            class="f-16 color-aaa mb-2 text-center"
+            (mouseenter)="showTooltip('totalTransactions')"
+            (mouseleave)="hideTooltip('totalTransactions')"
+          >
+            {{ item.averageBetAmount | currencyValue: 'USDT' }}/{{ item.totalTransactions }}
+            <div *ngIf="showTooltips['totalTransactions']" class="title-tips ave-txn">
+              {{ 'game.aveBetTxn' | lang }}{{ item.averageBetAmount | currencyValue: 'USDT' }}/{{
+                item.totalTransactions
+              }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!isLoading">
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'game.provider.none_info_now' | lang }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="total && !noListFlag" class="f-14 text-center cursor-pointer text-primary" (click)="getMoreList()">
+        {{ 'game.manage.load_more' | lang }}
+      </div>
+
+      <div *ngIf="noListFlag && list.length" class="f-14 text-center color-aaa">{{ 'game.manage.no_more' | lang }}</div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #gamePauseTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'game.manage.file_up' | lang" (close)="d()"></modal-title>
+    <div class="modal-body">
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+      <div class="d-flex flex-ac justify-content-end color-aaa mt-10">
+        <div class="mr-8">{{ 'game.manage.upling' | lang }} 4/7</div>
+        <div>{{ 'game.manage.fail_text' | lang }} 0</div>
+      </div>
+    </div>
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #imgPauseTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'game.manage.pic_up' | lang" (close)="d()"></modal-title>
+    <div class="modal-body">
+      <div class="progress-bar">
+        <div class="progress success"></div>
+      </div>
+      <div class="d-flex flex-ac justify-content-end color-aaa mt-10">
+        <div class="mr-8">{{ 'game.manage.upling' | lang }} 7/7</div>
+        <div>{{ 'game.manage.fail_text' | lang }} 7</div>
+      </div>
+      <div class="color-aaa mt-10 mb-5">{{ 'game.manage.fail_pic' | lang }}</div>
+      <div class="fail-img-bx custom-scroll-y">
+        <div class="img-title" *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7]">40010_123_zh-cn_web.jpg</div>
+      </div>
+    </div>
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

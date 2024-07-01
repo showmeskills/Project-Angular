@@ -1,0 +1,395 @@
+<div class="container">
+  <div class="content-box">
+    <ng-container *ngIf="!isH5; else H5page">
+      <div class="search-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <!--资产-->
+          <app-customize-select
+            [(value)]="selectedAssetType"
+            [label]="'asset' | translate"
+            [options]="assetTypeOptions"
+            [valueKey]="'value'"
+            [textKey]="'name'"
+            (onSelect)="assetTypeChange()"
+          ></app-customize-select>
+          <!--币种-->
+          <app-customize-select
+            [(value)]="selectedCurrency"
+            [label]="'curr' | translate"
+            [options]="
+              currencies | filterByKeyValue : 'isDigital' : selectedAssetType === 'crypto' | unshift : allCoinItem
+            "
+            [valueKey]="'currency'"
+            [textKey]="'currency'"
+          ></app-customize-select>
+          <!--范围-->
+          <app-customize-select
+            [(value)]="selectedTimeValue"
+            [label]="'scope' | translate"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [options]="timeOptions"
+          ></app-customize-select>
+          <!--状态-->
+          <app-customize-select
+            [(value)]="selectedStatus"
+            [label]="'status' | translate"
+            [options]="statusList | unshift : allSatatusItem"
+            [valueKey]="'code'"
+            [textKey]="'description'"
+          >
+          </app-customize-select>
+
+          <div class="form-group-align margin-right-auto">
+            <customize-button size="small" type="text" (onClick)="reset()" [plain]="true">
+              {{ 'reset' | translate }}
+            </customize-button>
+            <customize-button size="small" type="text" (onClick)="searchLoadData()" [plain]="true" [active]="true">
+              {{ 'filter' | translate }}
+            </customize-button>
+          </div>
+
+          <div class="form-group-align link-group">
+            <app-tool-tip>
+              <span origin class="link mutual-opacity onact96-not" (click)="openApplication()">{{
+                'receive_dep' | translate
+              }}</span>
+              <span tooltip>
+                <em>{{ 'sub_com' | translate }}</em>
+                <em class="theme-color mutual-opacity onact96-not" (click)="openApplication()">{{
+                  'com_now' | translate
+                }}</em></span
+              >
+            </app-tool-tip>
+            <div class="export mutual-opacity">
+              <!-- TODO: lris反馈暂无此功能，暂时蔽掉 -->
+              <!-- <div class="export-icon"></div>
+              <div class="export-text">{{'export_dep'|translate}}</div> -->
+            </div>
+          </div>
+        </app-customize-form-group>
+      </div>
+      <!--LIST-->
+      <div class="data-list" [appLoading]="loading">
+        <!--web 法币-->
+        <ng-container *ngIf="selectedAssetType === 'currency'; else cryptoPage">
+          <table *ngIf="currencyHistory.length > 0">
+            <thead>
+              <th>{{ 'dates' | translate }}</th>
+              <th>{{ 'order' | translate }}</th>
+              <th>{{ 'amount' | translate }}</th>
+              <th>{{ 'pay_method' | translate }}</th>
+              <th>{{ 'status' | translate }}</th>
+              <th>{{ 'voucher' | translate }}</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of currencyHistory">
+                <td>{{ item.date | mdate : 'YYYY-MM-DD HH:mm' }}</td>
+                <td>{{ item.orderNum }}</td>
+                <td>
+                  <p class="text">{{ item.receiveAmount }}</p>
+                  <img class="currency-img" [src]="item.currency | currencyIcon" />
+                </td>
+                <td>{{ item.paymentMethod }}</td>
+                <td>
+                  {{ item.statusName }}
+                </td>
+                <td>{{ (item.isVoucher ? 'used' : 'inused') | translate }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!--空页面-->
+          <app-empty *ngIf="currencyHistory.length <= 0 && !loading"></app-empty>
+        </ng-container>
+        <!-- web 数字货币 -->
+        <ng-template #cryptoPage>
+          <ul class="cryptoContainer" *ngIf="cryptoHistory.length > 0 && !isH5">
+            <li class="item" *ngFor="let item of cryptoHistory">
+              <div class="item-top">
+                <p>
+                  {{ item.amount | currencyValue : item.currency }} {{ item.currency }}
+                  <img [src]="item.currency | currencyIcon" />
+                </p>
+                <span [ngClass]="[getStatusTemplate(item.status)?.calss]">
+                  {{ item.statusName }}
+                </span>
+              </div>
+              <ul class="item-bottom" [class.no-txid]="!item.txid">
+                <li class="group">
+                  <span>{{ item.date | mdate : 'YYYY-MM-DD HH:mm' }}</span>
+                </li>
+                <li class="group network-group">
+                  <span>{{ 'trans_network' | translate }}：</span>
+                  <p>
+                    <span>{{ item.network }}</span>
+                  </p>
+                </li>
+                <li class="group addresse-group">
+                  <span>{{ 'address' | translate }}：</span>
+                  <p>
+                    <span class="addresse">{{ item.address }}</span>
+                    <!-- <i class="icon-link"></i> -->
+                    <app-tool-tip [copyMode]="'icon'" [copyContent]="item.address"></app-tool-tip>
+                  </p>
+                </li>
+                <li class="group txid-group">
+                  <ng-container *ngIf="item.txid">
+                    <span>{{ 'tx_ad' | translate }}：</span>
+                    <p>
+                      <span class="addresse">{{ getAddresseElipsis(item.txid) }}</span>
+                      <!-- <i class="icon-link"></i> -->
+                      <app-tool-tip [copyMode]="'icon'" [copyContent]="item.txid"></app-tool-tip>
+                    </p>
+                  </ng-container>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <!--空页面-->
+          <app-empty *ngIf="cryptoHistory.length <= 0 && !loading"></app-empty>
+        </ng-template>
+        <!--分页-->
+        <app-paginator
+          *ngIf="currencyHistory.length > 0 || cryptoHistory.length > 0"
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="onSearch()"
+        >
+        </app-paginator>
+      </div>
+    </ng-container>
+    <!--H5-->
+    <ng-template #H5page>
+      <div class="search-bar search-bar-h5" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [width]="'40vw'"
+            [fixedHeight]="true"
+            [(value)]="selectedAssetType"
+            [label]="'asset' | translate"
+            [options]="assetTypeOptions"
+            [valueKey]="'value'"
+            [textKey]="'name'"
+            (onSelect)="assetTypeChange()"
+          >
+          </app-customize-select>
+          <div class="form-group-align margin-left-auto">
+            <i class="search-h5-bar-filter icon-filter mutual-opacity onact96-not" (click)="openh5Filter()"></i>
+          </div>
+        </app-customize-form-group>
+        <div class="link-group">
+          <span class="link mutual-opacity onact96-not" (click)="openApplication()">{{
+            'receive_dep' | translate
+          }}</span>
+        </div>
+      </div>
+      <!--法币 H5-->
+      <ng-container *ngIf="selectedAssetType === 'currency'; else cryptoPage">
+        <ul class="currencyContainer-H5" *ngIf="currencyHistory.length > 0">
+          <li class="item" *ngFor="let item of currencyHistory">
+            <div class="group first">
+              <span>{{ 'deposit' | translate }}</span>
+              <p class="onact96-not" [ngClass]="[getStatusTemplate(item.status)?.calss]" (click)="openh5Detail(item)">
+                {{ item.statusName }}
+                <i class="icon-arrow-right-simple"></i>
+              </p>
+            </div>
+            <div class="group">
+              <span>{{ 'dates' | translate }}：</span>
+              <p>{{ item.date | mdate : 'YYYY-MM-DD HH:mm' }}</p>
+            </div>
+            <div class="group">
+              <span>{{ 'amount' | translate }}：</span>
+              <p>
+                {{ item.receiveAmount }}
+                <img [src]="item.currency | currencyIcon" />
+              </p>
+            </div>
+            <div class="group">
+              <span>{{ 'pay_method' | translate }}：</span>
+              <p>{{ item.paymentMethod }}</p>
+            </div>
+            <div class="group">
+              <span>{{ 'order' | translate }}：</span>
+              <p>{{ item.orderNum }}</p>
+            </div>
+          </li>
+        </ul>
+        <app-empty *ngIf="currencyHistory.length <= 0 && !loading"></app-empty>
+      </ng-container>
+      <!--数字货币 H5-->
+      <ng-template #cryptoPage>
+        <ul class="cryptoContainer-H5" *ngIf="cryptoHistory.length > 0">
+          <li class="item" *ngFor="let item of cryptoHistory">
+            <div class="group item-top">
+              <div class="item-top-left">
+                <p>
+                  {{ item.amount | currencyValue : item.currency }} {{ item.currency }}
+                  <img [src]="item.currency | currencyIcon" />
+                </p>
+                <span [ngClass]="[getStatusTemplate(item.status)?.calss]">
+                  {{ item.statusName }}
+                </span>
+              </div>
+              <div class="item-top-right">
+                <span>{{ 'trans_network' | translate }}：</span>
+                <p>{{ item.network }}</p>
+              </div>
+            </div>
+            <div class="group item-center">
+              <span>{{ 'address' | translate }}：</span>
+              <p>{{ getAddresseElipsis(item.address) }}</p>
+              <div class="item-center-right">
+                <!-- <i class="icon-link"></i> -->
+                <app-tool-tip [copyMode]="'icon'" [copyContent]="item.address"></app-tool-tip>
+              </div>
+            </div>
+            <div class="group item-center" *ngIf="item.txid">
+              <span>{{ 'tx_ad' | translate }}：</span>
+              <p>{{ getAddresseElipsis(item.txid) }}</p>
+              <div class="item-center-right">
+                <!-- <i class="icon-link"></i> -->
+                <app-tool-tip [copyMode]="'icon'" [copyContent]="item.txid"></app-tool-tip>
+              </div>
+            </div>
+            <div class="group item-bottom">
+              <span>{{ item.date | mdate : 'YYYY-MM-DD HH:mm' }}</span>
+              <div class="item-bottom-right onact96" (click)="openh5Detail(item)">
+                <i class="icon-right-arrow"></i>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <app-empty *ngIf="cryptoHistory.length <= 0 && !loading"></app-empty>
+      </ng-template>
+      <!--paginator-->
+      <app-paginator
+        *ngIf="currencyHistory.length > 0 || cryptoHistory.length > 0"
+        [(page)]="paginator.page"
+        [total]="paginator.total"
+        [pageSize]="paginator.pageSize"
+        [disabled]="loading"
+        [loading]="loading"
+        (onPageChange)="onSearch()"
+      >
+      </app-paginator>
+    </ng-template>
+  </div>
+</div>
+
+<!-- h5选择选项弹窗模板 -->
+<ng-template #h5Filter>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="h5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <!--币种-->
+        <app-customize-select
+          [(value)]="selectedCurrency"
+          [label]="'asset' | translate"
+          [options]="
+            currencies | filterByKeyValue : 'isDigital' : selectedAssetType === 'crypto' | unshift : allCoinItem
+          "
+          [valueKey]="'currency'"
+          [textKey]="'currency'"
+        ></app-customize-select>
+        <!--范围-->
+        <app-customize-select
+          [(value)]="selectedTimeValue"
+          [(timeValue)]="selectedTime"
+          [timeDance]="true"
+          [label]="'scope' | translate"
+          [options]="timeOptions"
+        ></app-customize-select>
+        <!--状态-->
+        <app-customize-select
+          [(value)]="selectedStatus"
+          [label]="'status' | translate"
+          [options]="statusList | unshift : allSatatusItem"
+          [valueKey]="'code'"
+          [textKey]="'description'"
+        >
+        </app-customize-select>
+      </app-customize-form-group>
+      <div class="popup-btn-group">
+        <customize-button width="100%" (onClick)="reset()">
+          {{ 'reset' | translate }}
+        </customize-button>
+        <customize-button
+          class="popup-btn-margin-left"
+          type="primary"
+          width="100%"
+          (onClick)="h5FilterPopup.close(); searchLoadData()"
+        >
+          {{ 'filter' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- h5详情弹窗模板 -->
+<ng-template #detailData>
+  <div class="h5-detail-popup" *ngIf="selectedItem">
+    <div class="title">
+      <span>{{ 'dep_det' | translate }}</span>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="detailDataPopup.close()"></i>
+    </div>
+    <ul class="info-box">
+      <li class="group">
+        <p>{{ 'dates' | translate }}</p>
+        <span>{{ selectedItem.date | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+      </li>
+      <li class="group" *ngIf="selectedAssetType === 'currency'">
+        <p>{{ 'order' | translate }}</p>
+        <span>{{ selectedItem.orderNum }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'type' | translate }}</p>
+        <span>{{ 'deposit' | translate }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'curr' | translate }}</p>
+        <span>{{ selectedItem.currency }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'amount' | translate }}</p>
+        <span>{{ selectedAssetType === 'crypto' ? selectedItem.amount : selectedItem.receiveAmount }}</span>
+      </li>
+      <li class="group" *ngIf="selectedAssetType === 'crypto'">
+        <p>{{ 'address' | translate }}</p>
+        <span>
+          <span class="addresse">{{ selectedItem.address }}</span>
+          <!-- <i class="icon-link"></i> -->
+          <app-tool-tip [copyMode]="'icon'" [copyContent]="selectedItem.address"></app-tool-tip>
+        </span>
+      </li>
+      <li class="group" *ngIf="selectedAssetType === 'crypto' && selectedItem.txid">
+        <p>TxID</p>
+        <span>
+          <span class="addresse">{{ selectedItem.txid }}</span>
+          <!-- <i class="icon-link"></i> -->
+          <app-tool-tip [copyMode]="'icon'" [copyContent]="selectedItem.txid"></app-tool-tip>
+        </span>
+      </li>
+      <li class="group" *ngIf="selectedAssetType === 'currency'">
+        <p>{{ 'pay_method' | translate }}</p>
+        <span>{{ selectedItem.paymentMethod }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'status' | translate }}</p>
+        <span>{{ selectedItem.statusName }}</span>
+      </li>
+      <li class="group" *ngIf="selectedAssetType === 'currency'">
+        <p>{{ 'voucher' | translate }}</p>
+        <span>{{ (selectedItem.isVoucher ? 'used' : 'inused') | translate }}</span>
+      </li>
+    </ul>
+  </div>
+</ng-template>

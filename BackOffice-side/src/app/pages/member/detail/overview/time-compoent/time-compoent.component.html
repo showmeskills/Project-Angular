@@ -1,0 +1,37 @@
+<form-row [label]="'member.overview.disableTime' | lang" label-width="140" labelStyle="fontSize:14px">
+  <ng-template>
+    <div class="d-flex flex-ac">
+      <label class="radio radio-lg mr-12">
+        <input type="radio" [name]="timeMode.name" value="specify" [(ngModel)]="timeMode.allowTimeType" />
+        <span class="mr-4"></span>{{ 'member.overview.specifiedTime' | lang }}
+      </label>
+      <label class="radio radio-lg mr-12">
+        <input type="radio" [name]="timeMode.name" value="lifelong" [(ngModel)]="timeMode.allowTimeType" />
+        <span class="mr-4"></span>{{ 'member.overview.lifelong' | lang }}
+      </label>
+    </div>
+    <!-- 时间组件 -->
+    <div class="d-flex" *ngIf="timeMode.allowTimeType === 'specify'">
+      <!-- 独立 formatLabel="yyyy-MM-dd" -->
+      <input
+        [style.width.px]="210"
+        class="form-control text-center"
+        type="text"
+        [placeholder]="'member.overview.pleaseChooseTime' | lang"
+        [style.width.px]="280"
+        [style.height.px]="38"
+        selectMode="date-range"
+        [owlDateTime]="picker"
+        [owlDateTimeTrigger]="picker"
+        rangeSeparator="-"
+        [(ngModel)]="timeMode.time"
+        [min]="min"
+        readonly
+      />
+      <!-- (dateTimeChange)="checkTime()" -->
+      <owl-date-time pickerType="both" class="fz-20" #picker></owl-date-time>
+    </div>
+    <!-- over -->
+  </ng-template>
+</form-row>
+<!-- <div *ngIf="picker.invalid && picker.errors.owlDateTimeMin">Date Time value must after {{ min | date: 'medium' }}</div> -->

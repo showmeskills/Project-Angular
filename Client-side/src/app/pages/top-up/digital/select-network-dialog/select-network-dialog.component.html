@@ -1,0 +1,91 @@
+<div class="dialog-container" [appLoading]="isLoading">
+  <div class="header-row">
+    <span class="title">{{ 'sel_net' | translate }}</span>
+    <i class="icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="contants-clounm">
+    <div class="notice-row" *ngIf="data.selectedCurrency && data.addressValied">
+      <div class="notice-box">
+        <span class="icon-toast-success"></span>
+        <p class="notice-in">{{ 'auto_fil' | translate }}</p>
+      </div>
+    </div>
+    <p class="notice">{{ 'net_note' | translate }}</p>
+    <div class="list-wrap">
+      <app-scrollbar>
+        <div *ngIf="data.isDeposit; else noDigtal" class="block-div">
+          <ng-container *ngFor="let item of tokenNetworksFlatDigital">
+            <div class="select-row onact96" (click)="handleSelect(item)">
+              <div class="border-line">
+                <div class="order-bottom">
+                  <div class="infor">
+                    <div class="row-1">
+                      <span class="span-1">{{ item.networkInfo.name }}</span>
+                    </div>
+                    <span>{{ item.networkInfo.desc }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <ng-template #noDigtal>
+          <ng-container *ngFor="let item of tokenNetworksFlat">
+            <div
+              class="select-row onact96"
+              [class.select]="item.isSelected"
+              (click)="handleSelect(item)"
+              [class.disable]="!item.isValied"
+            >
+              <div class="border-line">
+                <div class="order-bottom">
+                  <div class="infor">
+                    <div class="row-1">
+                      <span class="span-1">{{ item.name }}</span>
+                      <span class="label" *ngIf="!item.isValied">{{ 'mismatch00' | translate }}</span>
+                    </div>
+                    <span>{{ item.desc }}</span>
+                  </div>
+                  <div class="rate-clounm">
+                    <!--预计到账时间:目前需求暂时写死为2分钟-->
+                    <p>
+                      {{ 'est_arr' | translate }}
+                      <span class="txt"
+                        >≈ {{ item.withdrawArrivalTime == 0 ? 2 : item.withdrawArrivalTime
+                        }}{{ 'minu' | translate }}</span
+                      >
+                    </p>
+                    <p class="min-w">
+                      {{ 'fee' | translate }}
+                      <span class="txt"
+                        >{{ item.withdrawFee | currencyValue: item.name }} {{ item.name }} ( ≈
+                        {{ item.transferAmount | currencyValue: 'USDT' : undefined : undefined : 2 }} USDT)
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-template>
+        <app-empty
+          *ngIf="
+            !isLoading &&
+            ((data.isDeposit && tokenNetworksFlatDigital.length < 1) ||
+              (!data.isDeposit && tokenNetworksFlat.length < 1))
+          "
+          [icon]="'assets/images/maintain_icon.svg'"
+          [text]="'in_maint' | translate"
+        >
+          <span>{{ 'in_maint_con' | translate }}</span>
+        </app-empty>
+      </app-scrollbar>
+    </div>
+  </div>
+
+  <div class="footer" *ngIf="!data.isDeposit">
+    <a class="mutual-opacity link onact96-a" [href]="'faq_link' | translate"
+      ><span>{{ 'fee_desc' | translate }}</span></a
+    >
+  </div>
+</div>

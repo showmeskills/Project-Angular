@@ -1,0 +1,34 @@
+<modal-title [title]="'nav.agentTransfer' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body">
+  <form class="form w-100 px-8" [formGroup]="formGroup" #form>
+    <!-- UID -->
+    <form-row [label]="'UID'" name="uid" label-width="150" required>
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input class="form-control" type="text" [class.is-invalid]="invalid" [formControl]="control" />
+      </ng-template>
+    </form-row>
+
+    <!-- 绑定代理上级 -->
+    <form-row [label]="'system.agentTransfer.bindAgentSuperior' | lang" name="superUid" label-width="150" required>
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input class="form-control" type="text" [class.is-invalid]="invalid" [formControl]="control" />
+      </ng-template>
+    </form-row>
+
+    <!-- 备注 -->
+    <form-row [label]="'budget.remarks' | lang" name="remark" label-width="150">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <textarea
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          class="form-control resize-none"
+          type="text"
+          rows="5"
+        ></textarea>
+      </ng-template>
+    </form-row>
+  </form>
+</div>
+
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

@@ -1,0 +1,76 @@
+<div class="page-container">
+  <!-- 顶部 -->
+  <div
+    class="main-container unity-padding-web inner-page activity-top"
+    [ngClass]="{ 'no-processing': !(betFreeJackpotService.isProcessing$ | async), 'no-logined': !logined }"
+  >
+    <div class="container">
+      <img
+        ng
+        class="activity-theme-bg"
+        [src]="baseInfo?.picture"
+        *ngIf="!!(betFreeJackpotService.isProcessing$ | async) && logined"
+      />
+      <div class="tit">
+        {{ 'win_free_10_btc' | translate }}
+      </div>
+      <div class="desc">{{ titleText }}{{ 'usdt_bk_jop_03' | translate }}</div>
+      <div class="time-box" *ngIf="!!(betFreeJackpotService.isProcessing$ | async)">
+        <label>{{ 'distance_jop' | translate }}</label>
+        <div class="times">
+          <div class="time">
+            <span>{{ timeData.leftd }}</span>
+            <em>{{ 'day_jop' | translate }}</em>
+          </div>
+          <div class="time">
+            <span>{{ timeData.lefth }}</span>
+            <em>{{ 'hour_unit' | translate }}</em>
+          </div>
+          <div class="time">
+            <span>{{ timeData.leftm }}</span>
+            <em>{{ 'minu' | translate }}</em>
+          </div>
+          <div class="time">
+            <span>{{ timeData.lefts }}</span>
+            <em>{{ 'second_unit' | translate }}</em>
+          </div>
+        </div>
+      </div>
+      <div class="join-box" *ngIf="!!(betFreeJackpotService.isProcessing$ | async) && logined">
+        <customize-button size="large" routerLink="now" type="primary">{{ btnText }}</customize-button>
+        <span class="help-link onact96-not mutual-opacity" routerLink="caption">{{
+          'how_pt_win_jop' | translate
+        }}</span>
+      </div>
+      <div class="join-box" *ngIf="!logined">
+        <customize-button size="large" (click)="goLogin()" type="primary">{{
+          'login_jop_play' | translate
+        }}</customize-button>
+      </div>
+      <div class="tabs">
+        <div class="tab mutual-opacity onact96-not" routerLink="home" routerLinkActive="active">
+          {{ 'race_reward' | translate }}
+        </div>
+        <div class="tab mutual-opacity onact96-not" routerLink="now" routerLinkActive="active">
+          {{ 'cur_quz_jop' | translate }}
+        </div>
+        <div class="tab mutual-opacity onact96-not" routerLink="history" routerLinkActive="active">
+          {{ 'his_quz_jop' | translate }}
+        </div>
+        <div class="tab mutual-opacity onact96-not" routerLink="rank" routerLinkActive="active">
+          {{ 'rank_jop' | translate }}
+        </div>
+        <div class="tab mutual-opacity onact96-not" routerLink="caption" routerLinkActive="active">
+          {{ 'eve_desc00' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 主体内容 -->
+  <div
+    class="main-container main-router-container unity-padding-web unity-padding-h5-16 inner-page activity-main"
+    [appLoading]="appLoading"
+  >
+    <router-outlet *ngIf="!appLoading"></router-outlet>
+  </div>
+</div>

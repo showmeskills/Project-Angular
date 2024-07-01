@@ -1,0 +1,26 @@
+<div class="wrap" *ngIf="list.length">
+  <svg-icon
+    [style.visibility]="list.length > 1 ? 'visible' : 'hidden'"
+    (click)="onChange(true)"
+    [src]="'./assets/images/svg/left-bold.svg'"
+    class="svg-icon svg-icon-3x text-primary"
+  ></svg-icon>
+
+  <div class="img-wrap" (click)="openPreview()">
+    <span class="img-wrap-relative">
+      <img class="vam" *ngIf="curURL" [src]="curURL | host | safe : 'url'" alt="" />
+      <div *ngIf="showClear" class="img-close" (click)="onRemove($event)"></div>
+    </span>
+  </div>
+
+  <svg-icon
+    [style.visibility]="list.length > 1 ? 'visible' : 'hidden'"
+    (click)="onChange(false)"
+    [src]="'./assets/images/svg/right-bold.svg'"
+    class="svg-icon svg-icon-3x text-primary"
+  ></svg-icon>
+</div>
+
+<!--<div class="img-cover-wrap">-->
+<!--  <img *ngIf="curURL" [src]="curURL | host | safe: 'url'" alt="" class="img-cover-bg" />-->
+<!--</div>-->

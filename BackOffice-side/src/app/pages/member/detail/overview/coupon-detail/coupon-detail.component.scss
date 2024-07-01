@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex-flow: column nowrap;
+
+  main {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.coupon-header {
+  height: 210px;
+  background: url(/assets/images/bonus/coupon-bg.png) no-repeat center top / cover;
+}

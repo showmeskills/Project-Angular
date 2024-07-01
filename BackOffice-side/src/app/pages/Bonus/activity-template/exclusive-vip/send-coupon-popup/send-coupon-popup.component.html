@@ -1,0 +1,146 @@
+<modal-title [title]="'member.activity.sencli16.sendPrizes' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body">
+  <!-- 活动名称 -->
+  <form-row [label]="'member.activity.sencli12.campaignName' | lang" label-width="150">
+    <ng-template>
+      <div class="d-flex flex-ac flex-between">
+        {{ data?.activityName || '-' }}
+
+        <div class="fz-14 text-danger text-right lh-1">
+          <div>
+            {{ 'member.activity.sencli16.sendNumberTips' | lang: { n: data?.tmpSendNum } }}
+          </div>
+          <div class="mt-2" *ngIf="amountLimitData?.isNeedLimit">
+            {{ 'member.coupon.model.sentToAmount' | lang }}
+            {{ amountLimitData?.availableAmount | currencyValue: true }}
+            {{ 'USDT' }}
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 发送对象 -->
+  <form-row [label]="'member.coupon.model.sendObject' | lang" label-width="150" required>
+    <ng-template>
+      <!-- tab -->
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of sendList">
+          <input type="radio" name="send" [value]="item.value" [(ngModel)]="send" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+
+      <div [style.height.px]="330" [ngSwitch]="send">
+        <!-- 选择会员 -->
+        <ng-container *ngSwitchCase="1">
+          <div class="d-flex flex-ac">
+            <button
+              type="button"
+              class="btn btn-light-primary px-9 fz-14 py-2 mr-8"
+              (click)="onOpenMemberSelectPopup()"
+            >
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              <span class="vam">{{ 'member.coupon.model.chooseMember' | lang }}</span>
+            </button>
+            <!-- 已选择N个会员渠道  -->
+            <div class="color-aaa">
+              {{ 'member.coupon.model.chosen' | lang }}{{ memberSelectedList.length
+              }}{{ 'member.coupon.model.members' | lang }}
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberSelectedList; let i = index">
+              <span>{{ item.name || item.uact || '-' }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberSelectedList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- 选择会员 -->
+        <ng-container *ngSwitchCase="2">
+          <div class="d-flex flex-ac">
+            <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 mr-8" (click)="onMemberChannelPopup()">
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              <span class="vam">{{ 'member.coupon.model.chooseChannel' | lang }}</span>
+            </button>
+            <!-- 已选择N个会员 -->
+            <div class="color-aaa">
+              {{ 'member.coupon.model.chosen' | lang }}{{ channelList.length
+              }}{{ 'member.coupon.model.memberChannels' | lang }}
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of channelList; let i = index">
+              <span>{{ item.inviteCode || '-' }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="channelList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- 手动输入 -->
+        <ng-container *ngSwitchCase="3">
+          <!-- 请输入用户UID(以符号 ; 做拼接) -->
+          <div class="color-aaa">{{ 'member.coupon.model.pleaseEnterInfo' | lang }}</div>
+          <textarea
+            [style.height.px]="290"
+            type="text"
+            class="form-control resize-none"
+            autocomplete="off"
+            [(ngModel)]="memberManualRemark"
+            input-trim
+          ></textarea>
+        </ng-container>
+
+        <!-- 上传名单 -->
+        <ng-container *ngSwitchCase="4">
+          <div class="d-flex flex-ac">
+            <upload
+              class="mt-5 mb-5 mr-15"
+              [style.height.px]="50"
+              mark="file"
+              desc="Excel/xlsx"
+              [customUpload]="customUpload"
+              [accept]="['Excel', 'xlsx']"
+              [showLimitText]="false"
+              [limit]="2048"
+            ></upload>
+            <!-- 下载模板表格 -->
+            <span class="download" (click)="downloadTemplate()">{{ 'member.coupon.model.downloadForm' | lang }}</span>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberManualUploadList; index as i">
+              <span>{{ item?.uact || item?.uid }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberManualUploadList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+</div>
+
+<!-- 按钮组 -->
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

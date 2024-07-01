@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.item {
+  background: #fff;
+  height: 90px;
+  border-radius: 6px;
+  margin: 0 15px;
+}
+
+.tab {
+  cursor: pointer;
+
+  &-active {
+    color: #009ef7;
+    border-bottom: 2px solid #0093f7;
+  }
+}

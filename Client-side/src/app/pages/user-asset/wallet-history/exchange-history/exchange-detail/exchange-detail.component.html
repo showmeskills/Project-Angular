@@ -1,0 +1,28 @@
+<div class="main-container">
+  <div class="header-row">
+    <span class="title">{{ 'wd_details' | translate }}</span>
+    <i class="icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="contants-clounm">
+    <div class="infor-row">
+      <span>{{ 'order' | translate }}</span>
+      <span>D123456789</span>
+    </div>
+    <div class="infor-row offset-height">
+      <span class="min-txt">{{ 'status' | translate }}</span>
+      <span class="status">{{ data.item.status }}</span>
+    </div>
+    <div class="infor-row">
+      <span>{{ 'date' | translate }}</span>
+      <span class="data">{{ data.item.date }}</span>
+    </div>
+    <div class="infor-row">
+      <span>{{ 'ocq' | translate }}</span>
+      <span class="data">1000 CNY</span>
+    </div>
+    <div class="infor-row">
+      <span>{{ 'ecq' | translate }}</span>
+      <span class="coin"> 1000 CNY </span>
+    </div>
+  </div>
+</div>

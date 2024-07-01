@@ -1,0 +1,431 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.main-container {
+  .container {
+    height: 100%;
+
+    > .title {
+      font-size: 32px;
+      color: #fff;
+      font-weight: 600;
+      padding: 30px 0;
+      text-align: center;
+      line-height: normal;
+
+      @media (max-width: 767px) {
+        font-size: 20px;
+        padding: 20px 0 22px;
+      }
+    }
+  }
+}
+
+.line1 {
+  height: 476px;
+  background: url(src/assets/images/feedback/bg1.png) center / cover no-repeat;
+
+  .container {
+    background: url(src/assets/images/feedback/bg1a.svg) right bottom no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    @media (max-width: 1024px) {
+      background-size: 58%;
+    }
+
+    .content-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 50%;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: -37%;
+        right: -20%;
+        top: -4%;
+        bottom: 0;
+        pointer-events: none;
+        background: url(src/assets/images/feedback/bg1b.svg) top center / contain no-repeat;
+      }
+
+      > h1 {
+        color: #fff;
+        font-size: calc(25px + 1vw);
+        font-weight: 600;
+        line-height: 1.2;
+
+        @media (min-width: 1920px) {
+          font-size: 50px;
+        }
+      }
+
+      > p {
+        margin-top: 25px;
+        font-size: 16px;
+        // font-weight: 600;
+        color: rgba(#fff, 0.6);
+        line-height: 1.6;
+      }
+
+      > div {
+        font-size: 16px;
+        color: var(--primary-color-85);
+        display: flex;
+        flex-direction: column;
+        @include polyfills.flex-gap(15px, 'column nowrap');
+        margin-top: 65px;
+      }
+
+      .btn {
+        font-size: 14px;
+        padding: 0 6px 3px 11px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        @include polyfills.flex-gap(6px, 'row nowrap');
+        border-radius: 4px;
+        border: solid 1px var(--primary-color-85);
+
+        i {
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    height: 418px;
+    background: #0e0f13 url(src/assets/images/feedback/bg1a-h5.jpg) center / cover no-repeat;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      background: url(src/assets/images/feedback/bg1b-h5.svg) right bottom no-repeat;
+    }
+
+    .container {
+      background: none;
+      justify-content: flex-start;
+      align-items: center;
+
+      .content-box {
+        width: 100%;
+        max-width: none;
+        padding-top: 38px;
+
+        &::before {
+          content: none;
+        }
+
+        > h1 {
+          font-size: 28px;
+        }
+
+        > p {
+          font-size: 12px;
+        }
+
+        > div {
+          font-size: 12px;
+          margin-top: 50px;
+        }
+      }
+    }
+  }
+}
+
+.line2 {
+  height: 493px;
+  background-color: #0b0f12;
+
+  @media (max-width: 767px) {
+    height: 338px;
+  }
+
+  .group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 0 120px;
+
+    @media (max-width: 1350px) {
+      padding: 0 3vw;
+    }
+
+    @media (max-width: 767px) {
+      padding: 0;
+    }
+  }
+
+  .btn-item {
+    flex: 1;
+    min-width: 40%;
+    padding: 30px 20px 30px 30px;
+    border-radius: 4px;
+    border: solid 1px var(--primary-color-85);
+    cursor: pointer;
+    transition: opacity 0.2s;
+    will-change: opacity;
+    color: #fff;
+    min-height: 136px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    @include polyfills.flex-gap(6px, 'row nowrap');
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background-image: linear-gradient(137deg, #f3714f 38%, #ff5529 74%);
+      z-index: -1;
+      width: 0;
+      transition: width 0.2s;
+      will-change: width;
+    }
+
+    @media (max-width: 767px) {
+      min-height: 108px;
+      padding: 8px 0;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      @include polyfills.flex-gap(13px, 'column nowrap');
+      line-height: 1.3;
+
+      p {
+        font-size: 20px;
+        font-weight: 600;
+
+        @media (max-width: 767px) {
+          font-size: 14px;
+          font-weight: normal;
+        }
+      }
+
+      span {
+        font-size: 14px;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+      }
+    }
+
+    > i {
+      width: 66px;
+      height: 66px;
+      background-image: url(src/assets/images/feedback/tj_sprites.png);
+      background-repeat: no-repeat;
+      flex-shrink: 0;
+
+      @media (max-width: 767px) {
+        order: -1;
+      }
+
+      &.btn-1 {
+        background-position: -0px -0px;
+      }
+
+      &.btn-2 {
+        background-position: -132px -0px;
+      }
+
+      &.btn-3 {
+        background-position: -264px -0px;
+      }
+
+      &.btn-4 {
+        background-position: -396px -0px;
+      }
+    }
+
+    @media (any-hover: hover) {
+      &:hover {
+        &::before {
+          width: 100%;
+        }
+
+        > div {
+          span {
+            opacity: 1;
+          }
+        }
+
+        > i {
+          &.btn-1 {
+            background-position: -66px -0px;
+          }
+
+          &.btn-2 {
+            background-position: -198px -0px;
+          }
+
+          &.btn-3 {
+            background-position: -330px -0px;
+          }
+
+          &.btn-4 {
+            background-position: -462px -0px;
+          }
+        }
+      }
+    }
+
+    @media (any-hover: none) {
+      &:active {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+.line3 {
+  min-height: 564px;
+  background: url(src/assets/images/feedback/bg2.png) center / cover no-repeat;
+  color: #aeb4bc;
+
+  .step {
+    display: flex;
+    font-size: 14px;
+    flex-wrap: wrap;
+
+    @media (max-width: 767px) {
+      width: 260px;
+      margin: auto;
+    }
+
+    .step-gap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #707070;
+        margin-bottom: calc(20px + 1em);
+        margin-left: 8%;
+        margin-right: 8%;
+
+        @media (max-width: 1100px) {
+          margin-left: 8px;
+          margin-right: 8px;
+        }
+
+        @media (max-width: 767px) {
+          margin-bottom: calc(10px + 1em);
+        }
+      }
+
+      &.special {
+        @media (max-width: 767px) {
+          flex: 0 0 100%;
+          height: 96px;
+
+          &::before {
+            margin: auto !important;
+            transform: rotate(-45deg);
+            left: 40%;
+            right: 40%;
+          }
+        }
+      }
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      @include polyfills.flex-gap(20px, 'column nowrap');
+
+      @media (max-width: 767px) {
+        @include polyfills.flex-gap-unset('column nowrap');
+        @include polyfills.flex-gap(10px, 'column nowrap');
+      }
+
+      img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+
+        @media (max-width: 767px) {
+          width: 90px;
+          height: 90px;
+        }
+      }
+    }
+  }
+
+  .text {
+    font-size: 16px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    @include polyfills.flex-gap(45px, 'column nowrap');
+    margin-bottom: 40px;
+    margin-top: 55px;
+
+    @media (max-width: 767px) {
+      font-size: 12px;
+      @include polyfills.flex-gap-unset('column nowrap');
+      @include polyfills.flex-gap(30px, 'column nowrap');
+      margin-top: 25px;
+    }
+
+    p {
+      width: 80%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: -10px;
+      margin-left: -8px;
+
+      > span {
+        margin-top: 10px;
+        margin-left: 8px;
+      }
+
+      @media (max-width: 767px) {
+        width: 100%;
+        flex-direction: column;
+      }
+    }
+
+    .link-text {
+      color: var(--primary-color);
+      text-decoration: underline;
+
+      @media (max-width: 767px) {
+        font-size: 14px;
+      }
+    }
+  }
+}

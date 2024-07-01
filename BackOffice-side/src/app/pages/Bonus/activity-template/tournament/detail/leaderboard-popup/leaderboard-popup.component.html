@@ -1,0 +1,124 @@
+<modal-title [title]="'member.activity.sencli12.leaderboard' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body p-4">
+  <div class="d-flex justify-content-end">
+    <!-- 下载 -->
+    <button type="button" class="c-btn c-btn-primary h42" (click)="onExport()">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl mr-2"></svg-icon>
+      {{ 'common.download' | lang }}
+    </button>
+  </div>
+
+  <div class="flex-fill mt-4">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 名次 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencli12.rank' | lang }}</span>
+          </th>
+          <!-- 国家 -->
+          <th>
+            <span class="cell">{{ 'common.country' | lang }}</span>
+          </th>
+          <!-- UID -->
+          <th>
+            <span class="cell">{{ 'UID' }}</span>
+          </th>
+          <!-- 得分 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'member.activity.sencli12.score' | lang }}</span>
+                <!-- <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.order === 'score' && sortData.isAsc"></div>
+                  <div class="triangle-down" [class.active]="sortData.order === 'score' && !sortData.isAsc"></div>
+                </span> -->
+              </span>
+            </span>
+          </th>
+          <!-- 奖金（USDT） -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'member.activity.sencli12.prize' | lang }}</span>
+                <!-- <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.order === 'prize' && sortData.isAsc"></div>
+                  <div class="triangle-down" [class.active]="sortData.order === 'prize' && !sortData.isAsc"></div>
+                </span> -->
+              </span>
+            </span>
+          </th>
+          <!-- 奖金（默认货币）-->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'member.activity.sencli12.prizePlayerCurrency' | lang }}</span>
+                <!-- <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.order === 'endTime' && sortData.isAsc"></div>
+                  <div class="triangle-down" [class.active]="sortData.order === 'endTime' && !sortData.isAsc"></div>
+                </span> -->
+              </span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.rankNumber | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.position || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.uid || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.rankScore | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell"
+              >{{ item.amountUSDT | currencyValue: true }} <img class="ml-2" [currencyIcon]="'USDT'"
+            /></span>
+          </td>
+          <td>
+            <span class="cell"
+              >{{ item.amount | currencyValue: item.currency }} <img class="ml-2" [currencyIcon]="item.currency"
+            /></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between table-footer py-5 pl-2" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 按钮组 -->
+<!-- <modal-footer [confirmShow]="false" (dismiss)="modal.dismiss()"></modal-footer> -->

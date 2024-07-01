@@ -1,0 +1,111 @@
+@font-face {
+  font-family: "orignal-iconfont";
+  src: url(./icon-orignal.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="orignal-icon-"],
+[class*="orignal-icon-"] {
+  font-family: "orignal-iconfont" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*----------------- 自定义图标 START --------------------*/
+/* 提示 */
+.orignal-icon-tip:before {
+  content: "\e001";
+}
+
+/* 公平性 */
+.orignal-icon-fairness:before {
+  content: "\e002";
+}
+
+/* 即开 */
+.orignal-icon-fast:before {
+  content: "\e003";
+}
+
+/*  ？图标 */
+.orignal-icon-help:before {
+  content: "\e004";
+}
+
+/* 声音 */
+.orignal-icon-voice:before {
+  content: "\e005";
+}
+
+/* 热键 */
+.orignal-icon-calendar:before {
+  content: "\e006";
+}
+
+/* 实时图表 */
+.orignal-icon-trend:before {
+  content: "\e007";
+}
+
+/* 关闭 */
+.orignal-icon-close:before {
+  content: "\e008";
+}
+
+/* 复制 */
+.orignal-icon-copy:before {
+  content: "\e009";
+}
+
+/* 静音 */
+.orignal-icon-mute:before {
+  content: "\e010";
+}
+
+/* 循环 */
+.orignal-icon-circle:before {
+  content: "\e011";
+}
+
+/* 循环重复 */
+.orignal-icon-circle-overlapping:before {
+  content: "\e012";
+}
+
+/* 刷新 */
+.orignal-icon-circle-fresh::before {
+  content: "\e013";
+}
+
+/* 向下箭头 */
+.orignal-icon-down::before {
+  content: "\e014";
+}
+
+/* 向上箭头 */
+.orignal-icon-up::before {
+  content: "\e015";
+}
+
+/* 等于 */
+.orignal-icon-equal::before {
+  content: "\e016";
+}
+
+/* \ue017 */
+.orignal-icon-back::before {
+  content: "\e017";
+}
+
+/* \ue018 */
+.orignal-icon-undo::before {
+  content: "\e018";
+}

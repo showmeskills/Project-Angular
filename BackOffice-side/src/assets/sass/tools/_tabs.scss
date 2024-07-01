@@ -1,0 +1,143 @@
+@mixin tabs($prefix: 'tabs', $color-primary: #009ef7) {
+  @if ($prefix != '') {
+    .#{$prefix} {
+      width: 100%;
+      min-height: 40px;
+      padding-left: 30px;
+      padding-right: 30px;
+
+      &-item {
+        position: relative;
+        flex-direction: column;
+        min-width: 58px;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        margin-right: 20px;
+        overflow: visible;
+        cursor: pointer;
+        @extend %hd-item !optional;
+
+        &-name {
+          font-size: 16px;
+          color: #969bad;
+        }
+
+        //选中
+        &.active,
+        &.active .#{$prefix}-item-name,
+        &.mat-tab-label-active .#{$prefix}-item-name {
+          color: $color-primary !important;
+        }
+
+        @media (hover: hover) {
+          &:hover,
+          &:hover .#{$prefix}-item-name {
+            color: $color-primary !important;
+          }
+        }
+
+        &:first-child {
+          margin-left: 5px;
+          transition: none;
+        }
+
+        &:last-child {
+          margin-right: 5px;
+        }
+      }
+
+      // matTab组件样式覆盖
+      &::ng-deep {
+        .mat-mdc-tab-links,
+        .mat-tab-links {
+          height: 100%;
+        }
+
+        .mat-ink-bar {
+          display: flex;
+          background-color: transparent;
+
+          &::before {
+            content: '';
+            width: 4px;
+            height: 2px;
+            border-radius: 5px;
+            position: relative;
+            flex: 1;
+            margin: 0 4px;
+            background-color: $color-primary;
+          }
+        }
+
+        .mat-mdc-tab-link,
+        .mat-tab-link {
+          opacity: 1;
+          height: auto;
+          padding: 0 4px 0 4px;
+
+          .mdc-tab-indicator__content--underline {
+            border-color: $color-primary;
+          }
+        }
+      }
+
+      @content;
+    }
+  } @else if($prefix == '') {
+    @error 'prefix is empty';
+  }
+}
+
+@mixin tab-line($prefix: 'tab') {
+  .#{$prefix}-hd {
+    display: flex;
+    flex-flow: row nowrap;
+    border: 0;
+    @extend %hd !optional;
+
+    &-item {
+      min-width: 60px;
+      height: 38px;
+      line-height: 38px;
+      text-align: center;
+      font-size: 16px;
+      color: #373a49;
+      cursor: pointer;
+      border: 1px solid transparent;
+      @extend %hd-item !optional;
+
+      &.mat-tab-link:not(.mat-tab-disabled) {
+        opacity: 1;
+      }
+
+      &.active,
+      &.mdc-tab--active,
+      &.mat-tab-label-active {
+        color: #009ef7;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border: 1px solid #eff2f5;
+        border-bottom: 1px solid #fff;
+      }
+    }
+
+    ::ng-deep {
+      .mat-ink-bar, .mdc-tab-indicator {
+        display: none;
+      }
+    }
+  }
+
+  .#{$prefix}-bd {
+    padding: 20px;
+    margin-top: -1px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border: 1px solid #eff2f5;
+
+    @extend %bd !optional;
+  }
+
+  @content;
+}

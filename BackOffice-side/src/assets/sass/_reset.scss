@@ -1,0 +1,51 @@
+/****************************************
+ * RESET CSS 重置样式                    *
+ ****************************************/
+
+/**
+ * Edge修改密码输入框默认显示可视明文密码眼睛按钮
+ */
+::-ms-reveal {
+  display: none;
+}
+
+/****************************************
+ * mat-mdc-tab样式覆盖
+ ***************************************/
+//.mat-mdc-tab.mdc-tab,
+//.mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab,
+//.mat-mdc-tab-header.mat-mdc-tab-nav-bar-stretch-tabs .mat-mdc-tab-link {
+//  flex-grow: 0 !important;
+//}
+
+.mat-mdc-tab-nav-bar,
+.mat-mdc-tab-header {
+  border-bottom: 1px solid #ebedf3;
+}
+
+.mdc-tab.mat-mdc-tab-link:hover .mdc-tab__ripple::before {
+  opacity: 0;
+}
+/****************************************
+ * mat-select-arrow 样式覆盖
+ ***************************************/
+.mat-select-arrow,
+.mat-mdc-select-arrow {
+  border: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  background: url('/assets/images/svg/triangle.svg') !important;
+
+  svg {
+    display: none;
+  }
+}
+
+/****************************************
+ * mat-mdc-option 样式覆盖
+ ***************************************/
+.mat-mdc-option {
+  --mdc-typography-body1-font-size: 14px;
+  --mdc-typography-body1-line-height: 20px;
+  --mdc-typography-body1-letter-spacing: 0;
+}

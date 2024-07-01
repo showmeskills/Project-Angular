@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="94.828" height="95.026" viewBox="0 0 94.828 95.026">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#929aa5"/>
+            <stop offset="1" stop-color="#778190"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-2" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#76808f"/>
+            <stop offset="1" stop-color="#76808f"/>
+        </linearGradient>
+        <style>
+            .cls-4{fill:#15bf7b}
+        </style>
+    </defs>
+    <g id="Group_4122" data-name="Group 4122" transform="translate(-4912.414 1899)">
+        <g id="Group_4122-2" data-name="Group 4122" transform="translate(-2883.391 -1997)">
+            <path id="Path_5183" data-name="Path 5183" d="M2317.549 84.715v67.95l41 27.076 41-27.076v-67.95z" transform="translate(5482.451 13.285)" style="fill:url(#linear-gradient)"/>
+            <path id="Path_5184" data-name="Path 5184" d="M2328.549 96.1v49.72l30 19.812 30-19.812V96.1z" transform="translate(5482.451 13.285)" style="fill:url(#linear-gradient-2)"/>
+            <path id="Rectangle_1957" data-name="Rectangle 1957" transform="rotate(45 3769.734 9527.249)" style="fill:#e6e8ea" d="M0 0h22.488v22.488H0z"/>
+            <g id="Group_4118" data-name="Group 4118" transform="translate(6217.438 -78.491)">
+                <circle id="Ellipse_20" data-name="Ellipse 20" class="cls-4" cx="17.5" cy="17.5" r="17.5" transform="translate(1634 232)"/>
+                <path id="Union_3" data-name="Union 3" d="M8.254 18.424H0v-3.252h8.254V0h3.1v18.424z" transform="rotate(45 540.537 2115.213)" style="fill:#fff"/>
+            </g>
+        </g>
+        <path id="Rectangle_2141" data-name="Rectangle 2141" class="cls-4" transform="rotate(45 4734.861 5008)" d="M0 0h6v6H0z"/>
+        <path id="Rectangle_2142" data-name="Rectangle 2142" class="cls-4" transform="rotate(45 4755.668 5107.448)" d="M0 0h4v4H0z"/>
+        <path id="Rectangle_2143" data-name="Rectangle 2143" class="cls-4" transform="rotate(90 3370.707 1546.707)" d="M0 0h5v5H0z"/>
+    </g>
+</svg>

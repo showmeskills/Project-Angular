@@ -1,0 +1,107 @@
+<div class="page-container">
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container">
+      <!-- <div class="top-banner">
+        <div>{{ 'responsible' | translate }}</div>
+        <span>{{ 'responsibly' | translate }}</span>
+      </div> -->
+
+      <div class="context-box">
+        <div class="c_t">{{ 'deposit_Limit' | translate }}</div>
+        <div class="c_c">
+          <p>{{ 'limit_how_can' | translate }}</p>
+          <p>
+            {{ 'you_can_change_24' | translate }}
+          </p>
+        </div>
+        <div class="c_m">
+          @for (item of limitData; track $index) {
+            <div>
+              <app-customize-input
+                size="medium"
+                [label]="item.label"
+                [placeholder]="'no_limit_r' | translate"
+                [(value)]="item.value"
+                type="number"
+                [valueRightIcon]="'USDT' | currencyIcon"
+                [hasClear]="false"
+                (onBlur)="onBlur(item.value, $index)"
+              >
+                <i class="onact96-not" [hidden]="item.preset" right-content>
+                  @if (item.value) {
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      class="jss113 test-MDeleteBtn"
+                      (click)="delLimit($index)"
+                    >
+                      <path
+                        d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18ZM20,6H16V5a3,3,0,0,0-3-3H11A3,3,0,0,0,8,5V6H4A1,1,0,0,0,4,8H5V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8h1a1,1,0,0,0,0-2ZM10,5a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1V6H10Zm7,14a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17Zm-3-1a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z"
+                      ></path>
+                    </svg>
+                  } @else {
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      class="jss113 test-MDeleteBtn"
+                      disabled="disabled"
+                    >
+                      <path
+                        d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18ZM20,6H16V5a3,3,0,0,0-3-3H11A3,3,0,0,0,8,5V6H4A1,1,0,0,0,4,8H5V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8h1a1,1,0,0,0,0-2ZM10,5a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1V6H10Zm7,14a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17Zm-3-1a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z"
+                      ></path>
+                    </svg>
+                  }
+                </i>
+                <i class="onact96-not add" [hidden]="item.preset" right-content (click)="onAdd($index)">+</i>
+                <i class="onact96-not del" [hidden]="item.preset" right-content (click)="onDel($index)">-</i>
+              </app-customize-input>
+              @if (item.presetTime) {
+                <p class="tips">
+                  @if (item.preset) {
+                    {{ 'limit_will_be_changed' | translate: item.dailyVal : item.preset }}
+                  } @else {
+                    {{ 'limit_will_be_changed_no' | translate: item.dailyVal }}
+                  }
+                  {{ item.presetTime | mdate: 'YYYY-MM-DD HH:mm:ss' }}.
+                  <span (click)="onCancelRequest($index)">{{ 'unpreset_btn' | translate }}</span>
+                </p>
+              }
+              @if (item.tip24) {
+                <p class="tips error">
+                  {{ 'update_again_24' | translate }}
+                </p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="context-box">
+        <div class="c_t">{{ 'self_exclusion' | translate }}</div>
+        <div class="c_c">
+          <p>{{ 'six_months_or_longer' | translate }}</p>
+        </div>
+        <div class="c_m">
+          <div>
+            <customize-button class="options" [plain]="true" type="primary" size="medium" (click)="onOptions()">{{
+              'self_exclude_btn' | translate
+            }}</customize-button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="c_m">
+          <div></div>
+          <customize-button
+            [loading]="submitLoading"
+            style="margin-top: 10px"
+            type="primary"
+            size="medium"
+            (click)="submit()"
+            >{{ 'save_btn_r' | translate }}</customize-button
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

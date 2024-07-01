@@ -1,0 +1,33 @@
+<div class="bank-cards-container">
+  <!--标题栏-->
+  <div class="header-container">
+    <div class="header">{{ 'choose_bank' | translate }}</div>
+    <span class="icon-close onact96-not" (click)="close()"></span>
+  </div>
+  <!--银行卡选单-->
+  <div class="bank-list-wrapper">
+    <div class="bank-list">
+      <div #iBank *ngFor="let key of bankCardKeys" class="bank-container" id="{{ key }}">
+        <h3 class="section-header">{{ key }}</h3>
+        <ul>
+          <li *ngFor="let item of bankCardLists[key]" (click)="handelBankSelect(item)" class="onact96">
+            <div class="info">
+              <img src="../../../../assets/images/bank/gongshang.png" />
+              <span>{{ item['value'] }}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!--alphabet-bar-->
+    <div class="alphabet-bar">
+      <a
+        *ngFor="let key of bankCardKeys"
+        class="alphabet onact96-not"
+        id="{{ key }}"
+        (click)="handleAlphabetSelect($event)"
+        >{{ key }}</a
+      >
+    </div>
+  </div>
+</div>

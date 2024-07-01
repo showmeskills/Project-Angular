@@ -1,0 +1,83 @@
+:host {
+  display: block;
+}
+
+/**
+ * 我方发送消息的className
+ */
+$selfClass: 'im-self';
+
+.#{$selfClass} {
+  flex-flow: row-reverse nowrap;
+}
+
+.im-msg {
+  color: var(--color-999);
+  background: #fff;
+  border-radius: 8px 8px 8px 0;
+  padding: 10px;
+  word-break: break-all;
+  white-space: pre-line;
+  line-height: 16px;
+  max-width: 100%;
+  text-wrap: wrap;
+  //display: inline-flex;
+  //flex-flow: row wrap;
+
+  &::ng-deep {
+    .msg-link {
+      color: #009EF7;
+      text-decoration: underline !important;
+    }
+  }
+
+  .#{$selfClass} & {
+    border-radius: 8px 8px 0 8px;
+  }
+
+  &-wrap {
+    align-items: flex-start;
+  }
+
+  &-primary {
+    color: #fff;
+    background: #009EF7;
+
+    &::ng-deep {
+      .msg-link {
+        color: #fff;
+      }
+    }
+  }
+
+  &-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 0;
+    padding: 0;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  &-box {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    max-width: 68%;
+
+    .#{$selfClass} & {
+      justify-content: flex-end;
+    }
+  }
+
+  &-ft {
+    font-size: 12px;
+    color: var(--color-bbb);
+    line-height: 1;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,17 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container help-container">
+    <p class="text-20">{{ 'respon_qy' | translate }}</p>
+    <p class="text-16 m-top-20">{{ 'respon_qz' | translate }}</p>
+    <div class="flex-layout m-top-30" *ngFor="let item of contentArr; let i = index">
+      <p class="cycle-number">{{ i + 1 }}</p>
+      <p class="text-16">{{ item }}</p>
+    </div>
+    <p class="text-20 m-top-20">{{ 'respon_pa' | translate }}</p>
+    <div class="text-16 m-top-20">
+      <app-customize-text [text]="footerText"></app-customize-text>
+    </div>
+    <div class="text-16 m-top-20">
+      <app-customize-text [text]="footerTextTwo"></app-customize-text>
+    </div>
+  </div>
+</div>

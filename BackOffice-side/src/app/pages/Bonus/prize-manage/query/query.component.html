@@ -1,0 +1,227 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 活动名称 -->
+    <form-row [label]="'member.activity.sencliCommon.eventName' | lang" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.title"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row label="UID" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 发放时间 -->
+    <form-row [label]="'member.giveOut.IssuanceTime' | lang" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.giveOut.deliveryTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <!-- 奖品类型 -->
+    <!-- <form-row [label]="'luckRoulette.drawRecord.prizeType' | lang" label-width="110" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.type" (selectionChange)="loadData(true)">
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of typeListCom" [value]="item.value">{{ item.lang | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row> -->
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'member.giveOut.title' | lang }}</div>
+
+    <div>
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 奖品 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.prize' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('uid')">
+                <span>UID</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="data.order === 'uid' && data.isAsc"></div>
+                  <div class="triangle-down" [class.active]="data.order === 'uid' && !data.isAsc"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 奖品类型 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.drawRecord.prizeType' | lang }}</span>
+          </th>
+          <!-- 配置 -->
+          <th>
+            <span class="cell">{{ 'system.merchants.config' | lang }}</span>
+          </th>
+          <!-- 金额 -->
+          <th>
+            <span class="cell">{{ 'common.amount' | lang }}</span>
+          </th>
+          <!-- 发放方式 -->
+          <th>
+            <span class="cell">{{ 'member.activity.prizeCommon.distribution' | lang }}</span>
+          </th>
+          <!-- 活动标题 -->
+          <th style="width: 20%">
+            <span class="cell">{{ 'member.giveOut.eventTitle' | lang }}</span>
+          </th>
+          <!-- 状态 -->
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+          <!-- 发放时间 -->
+          <th>
+            <span class="cell">{{ 'member.giveOut.IssuanceTime' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.prizeName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell blue" (click)="onCopy(item.uid)">{{ item.uid || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ prizeService.getPrizeName(prizeTypeList, item.prizeType) }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item | prizeConfig }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <ng-container *ngIf="[1, 2, 3].includes(item.prizeType); else noAmount">
+                {{ item.amount | currencyValue: item.currency }}
+                <img class="ml-2" [currencyIcon]="item.currency" />
+              </ng-container>
+              <ng-template #noAmount>-</ng-template>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{
+                item.sendType
+                  ? ((item.sendType === 1
+                      ? 'member.activity.prizeCommon.needToCollect'
+                      : 'member.activity.prizeCommon.directIssue'
+                    ) | lang)
+                  : ''
+              }}
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.activityName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.cardStatus">
+              <!-- 待领取 -->
+              <app-label *ngSwitchCase="'Unclaimed'" type="success">{{
+                'member.giveOut.pendingCollection' | lang
+              }}</app-label>
+              <!-- 已领取 -->
+              <app-label *ngSwitchCase="'Received'" type="primary">{{ 'member.giveOut.received' | lang }}</app-label>
+              <!-- 已失效 -->
+              <app-label *ngSwitchCase="'Invalid'" type="yellow">{{ 'member.giveOut.expired' | lang }}</app-label>
+              <!-- 使用中 -->
+              <app-label *ngSwitchCase="'InUse'" type="info">{{ 'member.giveOut.Using' | lang }}</app-label>
+              <!-- 已使用 -->
+              <app-label *ngSwitchCase="'Used'" type="yellow">{{ 'member.giveOut.Used' | lang }}</app-label>
+              <span *ngSwitchDefault>-</span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.sendTime | timeFormat }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

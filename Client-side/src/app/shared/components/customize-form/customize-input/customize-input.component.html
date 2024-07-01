@@ -1,0 +1,62 @@
+<div *ngIf="true" class="input-container {{ size }}">
+  <div class="input-label" *ngIf="label">
+    {{ label }}<span class="required" *ngIf="required">*</span> <em>{{ notice }}</em>
+  </div>
+  <div
+    class="input-box"
+    [class.fixed-height]="fixedHeight"
+    [style.width]="width"
+    (mouseenter)="hov = true"
+    (mouseleave)="hov = false"
+  >
+    <div class="left-content" *ngIf="leftIcon">
+      <ng-container *ngTemplateOutlet="iconTemp; context: { icon: leftIcon }"></ng-container>
+    </div>
+
+    <div class="input-area">
+      <div class="custom-value" *ngIf="value && valueRightIcon && type !== 'password'">
+        <span>{{ value }}</span>
+        <ng-container *ngTemplateOutlet="iconTemp; context: { icon: valueRightIcon }"></ng-container>
+      </div>
+      <input
+        (keydown)="onKeyDown.emit($event)"
+        [intersectionObserver]="autoScroll"
+        (intersectChange)="inEye = $event"
+        [type]="type"
+        [maxlength]="max"
+        (focus)="_onFocus(input)"
+        (blur)="_onBlur(input)"
+        [autocomplete]="autocomplete && !readonly ? 'on' : type === 'password' ? 'new-password' : 'off'"
+        [ngModel]="value"
+        (ngModelChange)="change($event)"
+        [placeholder]="placeholder"
+        [readonly]="readonly || disabled || loading"
+        #input
+      />
+    </div>
+
+    <div class="right-content">
+      <i *ngIf="loading" class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+      <i
+        *ngIf="hasClear && value && !readonly && !disabled && !loading && (foc || hov)"
+        class="icon-clear-fill onact96-not"
+        (click)="$event.stopPropagation(); change(''); autoFocus && focus()"
+      ></i>
+      <i *ngIf="isH5 && scanQr" class="icon-scan-qr" (click)="scan()"></i>
+      <ng-content select="[right-content]"></ng-content>
+    </div>
+  </div>
+
+  <div class="error-info" *ngIf="errorTxt">{{ errorTxt }}</div>
+
+  <ng-content select="[info]"></ng-content>
+</div>
+
+<ng-template #iconTemp let-icon="icon">
+  <ng-container *ngIf="icon.includes('.'); else iconClassTemp">
+    <img [src]="icon" />
+  </ng-container>
+  <ng-template #iconClassTemp>
+    <i class="{{ icon }}"></i>
+  </ng-template>
+</ng-template>

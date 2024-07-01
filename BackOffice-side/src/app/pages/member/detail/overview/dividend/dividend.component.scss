@@ -1,0 +1,21 @@
+:host {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  flex-flow: column nowrap;
+}
+
+.label.label-lg {
+  height: 34px;
+
+  &.label-light-danger {
+    background: #fff5f8;
+    color: #f1416c;
+  }
+
+  &.label-light-warning {
+    background: #fff8dd;
+    color: #ffc700;
+  }
+}

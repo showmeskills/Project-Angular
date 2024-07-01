@@ -1,0 +1,11 @@
+{
+  "/im/api": {
+    "target": "http://sit.newplatformadmin.gbfine.com",
+    "secure": false
+  },
+  "/im/ws": {
+    "target": "ws://sit.newplatformadmin.gbfine.com",
+    "secure": false,
+    "ws": true
+  }
+}

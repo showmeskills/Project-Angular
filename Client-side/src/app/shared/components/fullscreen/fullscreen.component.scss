@@ -1,0 +1,40 @@
+.full-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.46);
+  border-radius: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cfd2d6;
+  font-size: 20px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  will-change: opacity;
+  padding: 4px 10px;
+
+  > * + * {
+    margin-left: 4px;
+  }
+
+  &.sport-position {
+    @media (min-width: 768px) {
+      bottom: 14px;
+      right: 70px;
+    }
+  }
+
+  .btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.active {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,113 @@
+<div
+  class="tournament-popup-container animate__zoomIn_light animate__animated animate__fast"
+  *ngIf="show && !isH5()"
+  cdkDrag
+  cdkDragRootElement="app-statistics-panel"
+  cdkDragBoundary="body"
+  #dragCom="cdkDrag"
+  [cdkDragFreeDragPosition]="defaultDragPosition"
+  [intersectionObserver]="true"
+  (intersectChange)="intersectChange$.next($event)"
+  [appLoading]="loading"
+>
+  <ng-container *ngTemplateOutlet="rankTmp"></ng-container>
+</div>
+
+<ng-container *ngIf="isH5()">
+  <div class="tournament-popup-container" [appLoading]="loading">
+    <ng-container *ngTemplateOutlet="rankTmp"></ng-container>
+  </div>
+</ng-container>
+
+<ng-template #rankTmp>
+  <div class="popup-header">
+    <div class="header-details">
+      <i class="icon-tournamen-flag"></i>
+      <p class="title">{{ 'tournament' | translate }}</p>
+    </div>
+    <i class="icon-close-simple mutual-opacity onact96-not" (click)="closePopup()"></i>
+  </div>
+  <ng-container *ngIf="renderTournament() && renderTournament().length > 1">
+    <div class="arrow-group">
+      <!-- 上一页 -->
+      <div class="control-left onact96" (click)="previous()" [class.disabled]="renderCurrentIndex() === 0">
+        <i class="icon-arrow-bold-left"></i>
+      </div>
+      <!-- 下一页 -->
+      <div
+        class="control-right onact96"
+        (click)="next()"
+        [class.disabled]="renderCurrentIndex() === renderTournament().length - 1"
+      >
+        <i class="icon-arrow-bold-right"></i>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="renderTournament()?.length; else defaultEmpty">
+    <div class="popup-banner">
+      <img class="banner-img" src="assets/images/activity/tournament/popup-img.png" />
+      <div class="banner-info">
+        <p class="banner-title">{{ renderTournament()[renderCurrentIndex()].activityName || '' }}</p>
+        <p class="banner-sub-title">{{ renderTournament()[renderCurrentIndex()].activitySubName || '' }}</p>
+      </div>
+      <i class="icon-right-arrow mutual-opacity onact96-not" (click)="onGoTournament()"></i>
+    </div>
+    <div class="popup-timer" *ngIf="renderTournament()[renderCurrentIndex()].remainingTime">
+      <p class="timer-title">{{ 'end_in' | translate }}</p>
+      <app-tournament-timer [calcTimer]="renderTournament()[renderCurrentIndex()].remainingTime"></app-tournament-timer>
+    </div>
+    <div class="popup-rank-list">
+      <app-scrollbar>
+        <table *ngIf="renderTournament()[renderCurrentIndex()]?.pageTable?.records?.length; else emtpyRank">
+          <thead>
+            <th *ngFor="let title of ['rank_a', 'gamer', 'bonus_t', 'score']">
+              {{ title | translate }}
+            </th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let rank of renderTournament()[renderCurrentIndex()]?.pageTable?.records; let index = index"
+              [class.high-light]="rank.uid === renderTournament()[renderCurrentIndex()].currentUserRank?.uid"
+            >
+              <td>{{ rank.rankNumber || '' }}</td>
+              <td>{{ rank.userName || ('invisible' | translate) }}</td>
+              <td class="amount-color">
+                {{ rank.amount || 0 | transToDefaultCurrency : rank?.currency || 'USDT' }}
+                <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+              </td>
+              <td>{{ rank.rankScore || 0 | currencyValue : 'CNY' : undefined : undefined : 2 }}</td>
+            </tr>
+            <tr class="high-light" *ngIf="renderUserRank()">
+              <td>{{ renderTournament()[renderCurrentIndex()].currentUserRank?.rankNumber || 0 }}</td>
+              <td>
+                {{ renderTournament()[renderCurrentIndex()].currentUserRank?.userName || ('invisible' | translate) }}
+              </td>
+              <td class="amount-color">
+                {{
+                  renderTournament()[renderCurrentIndex()].currentUserRank?.amount || 0
+                    | transToDefaultCurrency
+                      : renderTournament()[renderCurrentIndex()].currentUserRank?.currency || 'USDT'
+                }}
+                <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+              </td>
+              <td>
+                {{
+                  renderTournament()[renderCurrentIndex()].currentUserRank?.rankScore || 0
+                    | currencyValue : 'CNY' : undefined : undefined : 2
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #emtpyRank>
+          <app-empty *ngIf="!loading" [text]="'no_tournament_rank' | translate"></app-empty>
+        </ng-template>
+      </app-scrollbar>
+    </div>
+  </ng-container>
+  <ng-template #defaultEmpty>
+    <div class="empty-container">
+      <app-empty *ngIf="!loading" [text]="'no_tournaments' | translate"></app-empty>
+    </div>
+  </ng-template>
+</ng-template>

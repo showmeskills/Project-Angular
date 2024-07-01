@@ -1,0 +1,38 @@
+<modal-title
+  [title]="'payment.transactionList.repairDigitalOrderStatus' | lang"
+  (close)="modalRef.dismiss()"
+></modal-title>
+
+<div class="p-8 pt-6" [formGroup]="formGroup">
+  <form-row name="merchant" [label]="'common.merchant' | lang" label-width="96px">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <mat-form-field class="w-100">
+        <mat-select
+          class="form-control rounded-0"
+          [placeholder]="'form.chooseTips' | lang : { label: 'common.merchant' | lang }"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        >
+          <mat-option [value]="item.id" *ngFor="let item of merchantList">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row name="order" [label]="'common.order' | lang" label-width="96px">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        class="form-control rounded-0 w-100"
+        input-trim
+        type="text"
+        [placeholder]="'form.enterTips' | lang : { label: 'common.order' | lang }"
+        [class.is-invalid]="invalid"
+        [formControl]="control"
+      />
+    </ng-template>
+  </form-row>
+
+  <div class="fz-16 text-danger mt-4">{{ 'payment.transactionList.infoIsTrue' | lang }}</div>
+</div>
+
+<modal-footer dismissClose (confirm)="onSubmit()"></modal-footer>

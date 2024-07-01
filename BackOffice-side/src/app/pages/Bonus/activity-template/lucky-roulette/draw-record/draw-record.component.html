@@ -1,0 +1,209 @@
+<modal-title *ngIf="isModal" [title]="'luckRoulette.winningDetails' | lang" (close)="modal.dismiss()"></modal-title>
+<div class="card py-8 px-12 mb-8" *ngIf="!isModal">
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 参与状态 -->
+    <form-row class="mr-16" [label]="'luckRoulette.drawRecord.partStu' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="116">
+          <mat-select class="form-control mr-10" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+            <mat-option *ngFor="let item of statusList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 抽奖时间 -->
+    <form-row class="mr-16" [label]="'luckRoulette.drawRecord.drawTime' | lang">
+      <ng-template>
+        <input
+          [(ngModel)]="data.time"
+          class="form-control text-center"
+          type="text"
+          selectMode="range"
+          [placeholder]="'luckRoulette.drawRecord.drawTime' | lang"
+          [style.width.px]="200"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          formatLabel="yyyy-MM-dd"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <!-- 参与用户ID -->
+    <form-row class="mr-16" [label]="'luckRoulette.drawRecord.userId' | lang">
+      <ng-template>
+        <input
+          class="form-control"
+          [style.width.px]="160"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+          type="text"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 奖品名称 -->
+    <form-row class="mr-16" [label]="'luckRoulette.drawRecord.prizeName' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="160">
+          <mat-select class="form-control mr-10" [(ngModel)]="data.prizeId" (selectionChange)="loadData(true)">
+            <mat-option [value]="0">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of prizeList" [value]="item.prizeId">
+              {{ item.prizeName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 奖品类型 -->
+    <form-row class="mr-16" [label]="'luckRoulette.drawRecord.prizeType' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="160">
+          <mat-select class="form-control mr-10" [(ngModel)]="data.prizeType" (selectionChange)="loadData(true)">
+            <mat-option *ngFor="let item of prizeTypeList" [value]="item.prizeTypeValue">
+              {{ item.prizeTypeName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 重置和确认-->
+    <div class="btn-wrap py-2 mt-3">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="p-12 bg-fff">
+  <!-- 抽奖记录 -->
+  <div *ngIf="!isModal" class="mb-6 d-flex flex-wrap">
+    <div class="fz-20 flex-1">{{ 'luckRoulette.drawRecord.drawRecord' | lang }}</div>
+    <div>
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'luckRoulette.drawRecord.prizeName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">
+            <span class="cursor-pointer" (click)="onSort('uid')">
+              <span>UID</span>
+              <span class="triangle d-inline-block ml-2">
+                <div class="triangle-up" [class.active]="data.sort === 'uid' && data.isAsc === true"></div>
+                <div class="triangle-down" [class.active]="data.sort === 'uid' && data.isAsc === false"></div>
+              </span>
+            </span>
+          </span>
+        </th>
+        <th>
+          <span class="cell">{{ 'luckRoulette.drawRecord.prizeType' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.amount' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'luckRoulette.drawRecord.drawTime' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list; let i = index">
+        <td>
+          <span class="cell">{{ item.prizeName }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.prizeTypeName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <ng-container
+              *ngIf="
+                [
+                  PrizeType.Cash,
+                  PrizeType.Credit,
+                  PrizeType.SvipEXP,
+                  PrizeType.AfterCash,
+                  PrizeType.NonStickyBonus,
+                  PrizeType.StickyBonus
+                ].includes(item.prizeType);
+                else noAmount
+              "
+            >
+              {{ item.sendAmount | currencyValue: item.sendCurrency }}
+              <img class="ml-2" [currencyIcon]="item.sendCurrency" />
+            </ng-container>
+            <ng-template #noAmount>-</ng-template>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.drawTime | timeFormat }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between flex-ac pt-12">
+    <div>
+      <mat-form-field [style.width.px]="86">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>
+
+<modal-footer
+  class="modal-footer border-0"
+  *ngIf="isModal"
+  (confirm)="modal.dismiss()"
+  (dismiss)="modal.dismiss()"
+></modal-footer>

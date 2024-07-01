@@ -1,0 +1,40 @@
+:host {
+  position: relative;
+
+  > a {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    cursor: pointer;
+
+    & + .logo,
+    & + .logo-img {
+      transition: opacity 0.2s;
+      will-change: opacity;
+    }
+
+    @media (any-hover: hover) {
+      &:hover + .logo,
+      &:hover + .logo-img {
+        opacity: 0.8;
+      }
+    }
+
+    @media (any-hover: none) {
+      &:active + .logo,
+      &:active + .logo-img {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+.logo {
+  background-color: var(--primary-color);
+}
+
+.logo-img {
+}

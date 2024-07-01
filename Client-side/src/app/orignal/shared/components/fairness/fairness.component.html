@@ -1,0 +1,645 @@
+<div class="fairness">
+  <div class="title">
+    <span>{{ 'fairness' | translate }}</span>
+    <i class="orignal-icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="wrapper" [appLoading]="loading">
+    <div class="form">
+      <div class="item">
+        <div class="item-title">
+          <span>{{ 'new_client_torrent' | translate }}</span>
+          <div
+            *ngIf="selectedLottery != 'CRASH' && selectedLottery != 'CIRCLE' && selectedLottery != 'SLIDE'"
+            (click)="changeSeed()"
+            class="op onact96-not"
+          >
+            {{ 'exchange' | translate }}
+          </div>
+        </div>
+        <div class="item-content textarea">
+          <input
+            class="des input-box"
+            type="text"
+            name="copyInput"
+            id="numberPublicKey"
+            [(ngModel)]="valData.numberPublicKey"
+            maxlength="64"
+            [readonly]="selectedLottery == 'CRASH' || selectedLottery == 'CIRCLE' || selectedLottery == 'SLIDE'"
+            (blur)="setnumberPub()"
+            (input)="checkTo($event)"
+          />
+          <i
+            class="orignal-icon-copy onact96-not"
+            (click)="copyLink('numberPublicKey')"
+            *ngIf="valData.numberPublicKey"
+          ></i>
+        </div>
+      </div>
+      <div class="sub">
+        {{ 'history_number' | translate }}
+        <i class="icon-refresh onact96-not" (click)="getDiceHistory()"></i>
+      </div>
+      <div class="item item-only">
+        <!-- <div class="item-title">{{'history_number' | translate}}</div> -->
+        <div class="item-content item_game">
+          <mat-select
+            class="d-flex"
+            [(value)]="selectedLottery"
+            (selectionChange)="getDiceHistory()"
+            disableOptionCentering="true"
+            panelClass="do-select"
+            class="do-select"
+          >
+            <mat-option [value]="item.SourceCode" *ngFor="let item of lotteryList"
+              >{{ item.Name || item.MutilLangName }}
+            </mat-option>
+          </mat-select>
+        </div>
+        <div class="item-content item_history">
+          <mat-select
+            [(value)]="selectedHistory"
+            panelClass="do-select"
+            class="do-select"
+            (selectionChange)="numChange()"
+            disableOptionCentering="true"
+          >
+            <mat-option [value]="item.numberPublicKey" *ngFor="let item of historyList">
+              <div *ngIf="data.type != 'plinko'">
+                {{ item?.lotteryBetDetail || item?.lotteryIssueNumberData }}
+                {{ (item?.lotteryBetDate || item?.lotteryIssueNumberStartTime) * 1000 | mdate: 'YYYY-MM-DD HH:mm:ss' }}
+              </div>
+              <div *ngIf="data.type == 'plinko'">
+                [{{ item.lotteryBetDetail }},{{ item.lotteryOdds }}]
+                {{ (item?.lotteryBetDate || item?.lotteryIssueNumberStartTime) * 1000 | mdate: 'YYYY-MM-DD HH:mm:ss' }}
+              </div>
+            </mat-option>
+          </mat-select>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-title">{{ 'client_torrent' | translate }}</div>
+        <div class="item-content key">
+          <input
+            class="input-box"
+            type="text"
+            id="valNumberPublicKey"
+            [(ngModel)]="valData.valNumberPublicKey"
+            readonly="readonly"
+          />
+          <i
+            class="orignal-icon-copy onact96-not"
+            (click)="copyLink('valNumberPublicKey')"
+            *ngIf="valData.valNumberPublicKey"
+          ></i>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-title">{{ 'serve_torrent' | translate }}</div>
+        <div class="item-content key">
+          <input
+            class="input-box"
+            type="text"
+            id="valNumberSecretKey"
+            [(ngModel)]="valData.valNumberSecretKey"
+            readonly="readonly"
+          />
+          <i
+            class="orignal-icon-copy onact96-not"
+            (click)="copyLink('valNumberSecretKey')"
+            *ngIf="valData.valNumberSecretKey"
+          ></i>
+        </div>
+      </div>
+    </div>
+    <div class="button onact96">
+      <div (click)="compute()" [class.enabled]="loader">
+        <span *ngIf="!loader">{{ 'start_compute' | translate }}</span>
+        <div class="bet-loading" *ngIf="loader">
+          <i class="animation-lottery-icon-loading-dot"><i></i><i></i><i></i></i>
+        </div>
+      </div>
+    </div>
+    <!-- dice，crash 计算展示 -->
+    <div
+      class="result"
+      *ngIf="
+        valData.resultTql &&
+        selectedLottery != 'MINES' &&
+        selectedLottery != 'HILO' &&
+        selectedLottery != 'PLINKO' &&
+        selectedLottery != 'STAIRS' &&
+        selectedLottery != 'CIRCLE' &&
+        selectedLottery != 'WHEEL' &&
+        selectedLottery != 'LIMBO' &&
+        selectedLottery != 'CRYPTOS' &&
+        selectedLottery != 'TOWER' &&
+        selectedLottery != 'BACCARAT' &&
+        selectedLottery != 'SPACEDICE' &&
+        selectedLottery != 'BLACKJACK' &&
+        selectedLottery != 'COINFLIP' &&
+        selectedLottery != 'SLIDE' &&
+        selectedLottery != 'TEEMO'
+      "
+    >
+      <div class="result-title">{{ 'casino_seeds' | translate }}</div>
+      <div class="result-content">{{ result?.hashSecretKey }}</div>
+      <div class="result-title">{{ 'casino_seeds_16_to_10' | translate }}</div>
+      <div class="result-content">
+        <span *ngFor="let item of result?.details; let i = index"> {{ item.hashStr }} = {{ item.hashNum }}; </span>
+      </div>
+      <div class="result-title">{{ 'start_compute' | translate }}</div>
+      <div class="result-content">
+        <div *ngFor="let item of result?.details; let i = index">{{ item.calculationFormula[1] }};</div>
+      </div>
+      <div class="result-title">{{ 'result' | translate }}</div>
+      <div class="result-content">
+        <div>{{ result.numberValue }}</div>
+      </div>
+    </div>
+    <!-- mines计算展示 -->
+    <div class="result" *ngIf="valData.resultTql && (selectedLottery == 'MINES' || selectedLottery == 'TEEMO')">
+      <div class="result-title">{{ 'casino_seeds' | translate }}</div>
+      <div *ngFor="let item of result?.hashSHA256Str; let i = index" style="margin-bottom: 15px">
+        <div class="result-title">HMAC_SHA256(::{{ i }})</div>
+        <div class="result-content">{{ item }}</div>
+      </div>
+      <div class="result-title">{{ 'casino_seeds_16_to_10' | translate }}</div>
+      <div class="result-grid-content">
+        <span *ngFor="let item of result?.hashData; let i = index">
+          {{ 'no' | translate }}{{ i + 1 }}{{ 'group' | translate }} {{ item.hashStr }} = {{ item.hashNum }}
+        </span>
+      </div>
+      <div class="result-title">{{ 'start_compute' | translate }}</div>
+      <div class="result-content">
+        <div *ngFor="let item of result?.hashData; let i = index" style="margin-bottom: 15px">
+          {{ 'no' | translate }}{{ i + 1 }}{{ 'group' | translate }} {{ item.calculationFormula[1] }};
+        </div>
+      </div>
+
+      <div class="result-title">{{ 'numbers_to_shuffle' | translate }}</div>
+      <div class="result-row-content">
+        <div class="row" *ngFor="let item of result?.dataValues; let i = index">
+          <span *ngFor="let itemCheck of item.checkNumbers; let j = index">{{ itemCheck }}</span>
+          <span
+            *ngFor="let itemUnCheck of item.unCheckListNumbers; let j = index"
+            [class.blue]="itemUnCheck == item.checkValue"
+            >{{ itemUnCheck }}</span
+          >
+        </div>
+      </div>
+
+      <div class="result-title">{{ 'result' | translate }}</div>
+      <div class="result-content">
+        <div>{{ result.values }}</div>
+      </div>
+    </div>
+
+    <!-- hilo计算展示 -->
+    <div
+      class="result"
+      *ngIf="
+        valData.resultTql &&
+        (selectedLottery == 'HILO' || selectedLottery == 'BACCARAT' || selectedLottery == 'BLACKJACK')
+      "
+    >
+      <div class="result-content card-linner" *ngIf="selectedLottery == 'HILO'">
+        <div class="" *ngFor="let item of result.values.split(','); let i = index">
+          <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+          <div class="card-back" [class]="'card-back_' + cardData[item].color">
+            <span>{{ cardData[item].num }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="result-content card-linner"
+        *ngIf="selectedLottery == 'BACCARAT' || selectedLottery == 'BLACKJACK'"
+        [class.bjcls]="selectedLottery == 'BLACKJACK'"
+      >
+        <div *ngIf="selectedLottery == 'BACCARAT'">
+          <div class="top_test">{{ 'p_table' | translate }}</div>
+          <div class="" *ngFor="let item of result.playerValue.split(','); let i = index">
+            <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+            <div class="card-back" [class]="'card-back_' + cardData[item].color">
+              <span>{{ cardData[item].num }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selectedLottery == 'BLACKJACK'">
+          <div class="top_test">{{ 'p_table' | translate }}</div>
+          <div class="blackjack_card">
+            <div class="" *ngFor="let jtem of result.playerValue; let i = index">
+              <div class="blackjack_card_item">
+                <div class="" *ngFor="let item of jtem.split(','); let i = index">
+                  <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+                  <div class="card-back" [class]="'card-back_' + cardData[item].color">
+                    <span>{{ cardData[item].num }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="linner"></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="top_test">{{ 'b_table' | translate }}</div>
+          <div class="" *ngFor="let item of result.bankerValue.split(','); let i = index">
+            <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+            <div class="card-back" [class]="'card-back_' + cardData[item].color">
+              <span>{{ cardData[item].num }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="result-title">{{ 'result' | translate }}</div>
+      <div class="result-content card-linner">
+        <div class="test" *ngFor="let item of result.values.split(','); let i = index">
+          <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+          <div class="card-test">
+            <span>{{ item }}</span>
+          </div>
+          <div class="card-test">
+            <span>{{ cardData[item].cnColor }}{{ cardData[item].num }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-title">{{ 'casino_seeds' | translate }}</div>
+      <div *ngFor="let item of result?.hashSHA256Str; let i = index" style="margin-bottom: 15px">
+        <div class="result-title">HMAC_SHA256(::{{ i }})</div>
+        <div class="result-content">{{ item }}</div>
+      </div>
+
+      <div class="result-title">{{ 'byte_number' | translate }}</div>
+      <div class="result-content card-linner">
+        <div class="test" *ngFor="let item of result?.hashData" style="margin-bottom: 15px">
+          <div class="result-content" *ngFor="let val of item.calculationValues; let i = index">
+            <span *ngIf="selectedLottery == 'HILO'">{{ i != 0 ? (i != 4 ? '+' : '=') : '' }}{{ val }}</span>
+            <span *ngIf="selectedLottery == 'BACCARAT' || selectedLottery == 'BLACKJACK'"
+              >{{ i != 0 ? (i != 5 ? '+' : '=') : '' }}{{ val }}</span
+            >
+            <span>{{ item.calculationFormula[i] }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- plinko计算展示 -->
+    <div
+      class="result"
+      *ngIf="
+        valData.resultTql &&
+        (selectedLottery == 'PLINKO' ||
+          selectedLottery == 'WHEEL' ||
+          selectedLottery == 'LIMBO' ||
+          selectedLottery == 'CRYPTOS' ||
+          selectedLottery == 'SPACEDICE' ||
+          selectedLottery == 'COINFLIP')
+      "
+    >
+      <div class="result-title">{{ 'result' | translate }}</div>
+      <div
+        class="result-content"
+        *ngIf="selectedLottery != 'CRYPTOS' && selectedLottery != 'SPACEDICE' && selectedLottery != 'COINFLIP'"
+      >
+        <div>{{ selectedLottery == 'PLINKO' ? result.playIndex : result.values }}</div>
+      </div>
+      <div class="result-content card-linner no-scroll" *ngIf="selectedLottery == 'PLINKO'">
+        <div class="test" *ngFor="let item of result.multiplierList; let i = index">
+          <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+          <div class="card-test">
+            <span [class.blue]="item.index == result.values">{{ item.index }}</span>
+          </div>
+          <div class="card-test">
+            <span [class.blue]="item.index == result.values">{{ item.multiplier }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="result-content card-linner coin no-scroll" *ngIf="selectedLottery == 'COINFLIP'">
+        <div class="test" *ngFor="let item of result.values; let i = index">
+          <div class="card-test">
+            <img [src]="'/assets/orignal/images/coinflip/' + (item == '1' ? 'front' : 'back') + '.svg'" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="result-content card-linner no-scroll" *ngIf="selectedLottery == 'WHEEL'">
+        <div class="test" *ngFor="let item of result.multiplierList.index; let i = index">
+          <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+          <div class="card-test">
+            <span [class.blue]="item == result.values">{{ item }}</span>
+          </div>
+          <div class="card-test">
+            <span [class.blue]="item == result.values">{{ result.multiplierList.multiplier[i] }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-title">{{ 'casino_seeds' | translate }}</div>
+      <div *ngFor="let item of result?.hashSHA256Str; let i = index" style="margin-bottom: 15px">
+        <div class="result-title">HMAC_SHA256(::{{ i }})</div>
+        <div class="result-content card-linner">
+          <div class="test" *ngFor="let j of item.split(' '); let jndex = index">
+            <div class="card-test">
+              <span>{{ j }}</span>
+            </div>
+            <div class="card-test" *ngIf="result.hashNumStr?.length && result.hashNumStr[i]">
+              <span>{{ result.hashNumStr[i].split(' ')[jndex] }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-title">
+        {{ 'byte_number' | translate }}
+        <span *ngIf="selectedLottery == 'COINFLIP'">({{ 'coinflip_number' | translate }})</span>
+      </div>
+      <div class="result-content card-linner">
+        <div class="test" *ngFor="let item of result?.hashData" style="margin-bottom: 15px">
+          <div class="result-content" *ngFor="let val of item.calculationValues; let i = index">
+            <!-- <span>{{ i != 0 ? (i != 4 ? '+' : '=') : '' }}{{ val }}</span> -->
+            <ng-container *ngIf="selectedLottery == 'SPACEDICE' || selectedLottery == 'COINFLIP'; else notMoved">
+              <span>{{ i != 0 ? (i != 5 ? '+' : '=') : '' }}{{ val }}</span>
+            </ng-container>
+            <ng-template #notMoved>
+              <span>{{ i != 0 ? (i != 4 ? '+' : '=') : '' }}{{ val }}</span>
+            </ng-template>
+            <span>{{ item.calculationFormula[i] }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-title" *ngIf="selectedLottery == 'LIMBO'">{{ 'result' | translate }}</div>
+      <div class="result-content" *ngIf="selectedLottery == 'LIMBO'">
+        <div>{{ result.expression }}</div>
+      </div>
+    </div>
+
+    <!-- STAIRS计算展示 -->
+    <div class="result" *ngIf="valData.resultTql && selectedLottery == 'STAIRS'">
+      <div class="result-title">{{ 'casino_seeds' | translate }}</div>
+      <div *ngFor="let item of result?.hashSHA256Str; let i = index" style="margin-bottom: 15px">
+        <div class="result-title">HMAC_SHA256(::{{ i }})</div>
+        <div class="result-content card-linner">
+          <div class="test" *ngFor="let j of item.split(' '); let jndex = index">
+            <div class="card-test">
+              <span>{{ j }}</span>
+            </div>
+            <div class="card-test" *ngIf="result.hashNumStr?.length && result.hashNumStr[i]">
+              <span>{{ result.hashNumStr[i].split(' ')[jndex] }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="result-title">{{ 'casino_seeds_16_to_10' | translate }}</div>
+      <div class="result-grid-content">
+        <span *ngFor="let item of result?.hashData; let i = index">
+          {{ 'no' | translate }}{{ i + 1 }}{{ 'group' | translate }} {{ item.hashStr }} = {{ item.hashNum }}
+        </span>
+      </div>
+      <div class="result-title">{{ 'byte_number' | translate }}</div>
+      <div class="result-content card-linner">
+        <div class="test" *ngFor="let item of result?.hashData; let j = index" style="margin-bottom: 15px">
+          <div class="result-content">{{ 'no' | translate }}{{ j + 1 }}{{ 'group' | translate }}</div>
+          <div class="result-content" *ngFor="let val of item.calculationValues; let i = index">
+            <span>{{ i != 0 ? (i != 5 ? '+' : '=') : '' }}{{ val }}</span>
+            <span>{{ item.calculationFormula[i] }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="result-title">{{ 'numbers_to_shuffle' | translate }}</div>
+      <div
+        class="result-row-content"
+        style="margin-bottom: 10px"
+        *ngFor="let mitem of result?.dataValues; let i = index"
+      >
+        <div class="row" *ngFor="let item of mitem">
+          <ng-container *ngIf="i != 2 && i != 6">
+            <span *ngFor="let itemCheck of item.checkNumbers; let j = index">{{ itemCheck }}</span>
+            <span
+              *ngFor="let itemUnCheck of item.unCheckListNumbers; let j = index"
+              [class.blue]="itemUnCheck == item.checkValue"
+              >{{ itemUnCheck }}</span
+            >
+          </ng-container>
+          <ng-container *ngIf="i == 2">
+            <span *ngFor="let itemCheck of item.checkNumbers; let j = index">{{ itemCheck + 1 }}</span>
+            <span
+              *ngFor="let itemUnCheck of item.unCheckListNumbers; let j = index"
+              [class.blue]="itemUnCheck + 1 == item.checkValue + 1"
+              >{{ itemUnCheck + 1 }}</span
+            >
+          </ng-container>
+          <ng-container *ngIf="i == 6">
+            <span *ngFor="let itemCheck of item.checkNumbers; let j = index">{{ itemCheck + 3 }}</span>
+            <span
+              *ngFor="let itemUnCheck of item.unCheckListNumbers; let j = index"
+              [class.blue]="itemUnCheck + 3 == item.checkValue + 3"
+              >{{ itemUnCheck + 3 }}</span
+            >
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="result-title">{{ 'result' | translate }}</div>
+      <div class="result-content">
+        <div>{{ result.values }}</div>
+      </div>
+    </div>
+
+    <!-- CIRCLE计算展示 -->
+    <div class="result circle" *ngIf="valData.resultTql && (selectedLottery == 'CIRCLE' || selectedLottery == 'SLIDE')">
+      <div class="result-title">{{ 'casino_seeds' | translate }}</div>
+      <div *ngFor="let item of result?.hashSHA256Str; let i = index" style="margin-bottom: 15px">
+        <!-- <div class="result-title"> HMAC_SHA256(::{{i}})</div> -->
+        <div class="result-content card-linner">
+          <div class="test" *ngFor="let j of item.split(' '); let jndex = index">
+            <div class="card-test">
+              <span>{{ j }}</span>
+            </div>
+            <div class="card-test" *ngIf="result.hashNumStr?.length && result.hashNumStr[i]">
+              <span>{{ result.hashNumStr[i].split(' ')[jndex] }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="result-title">{{ 'casino_seeds_16_to_10' | translate }}</div>
+      <div class="result-grid-content">
+        <span *ngFor="let item of result?.hashData; let i = index"> {{ item.hashStr }} = {{ item.hashNum }} </span>
+      </div>
+      <div class="result-title">{{ 'byte_number' | translate }}</div>
+      <div class="result-content card-linner">
+        <div class="test" *ngFor="let item of result?.hashData; let j = index" style="margin-bottom: 15px">
+          <div class="result-content" *ngFor="let val of item.calculationValues; let i = index">
+            <span>{{ i != 0 ? (i != 5 ? '+' : '=') : '' }}{{ val }}</span>
+            <span>{{ item.calculationFormula[i] }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="result-title" *ngIf="selectedLottery == 'CIRCLE'">{{ 'circle_color' | translate }}</div>
+      <div class="result-row-content circle-row" style="margin-bottom: 10px" *ngIf="selectedLottery == 'CIRCLE'">
+        <div>
+          <div class="yellow"></div>
+          <div>0</div>
+        </div>
+        <div>
+          <div class="green"></div>
+          <div>1 9 11 19 21 33 35 43 45 53</div>
+        </div>
+        <div>
+          <div class="red"></div>
+          <div>3 5 7 13 15 17 23 25 27 29 31 37 39 41 47 49 51</div>
+        </div>
+        <div>
+          <div class="gray"></div>
+          <div>2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52</div>
+        </div>
+      </div>
+
+      <div class="result-title">{{ 'result' | translate }}</div>
+      <div class="result-content circle-row">
+        <div>
+          <div>{{ result.values }}</div>
+          <div class="yellow" *ngIf="result.values === '0'"></div>
+          <div
+            class="green"
+            *ngIf="['1', '9', '11', '19', '21', '33', '35', '43', '45', '53'].includes(result.values)"
+          ></div>
+          <div
+            class="red"
+            *ngIf="
+              [
+                '3',
+                '5',
+                '7',
+                '13',
+                '15',
+                '17',
+                '23',
+                '25',
+                '27',
+                '29',
+                '31',
+                '37',
+                '39',
+                '41',
+                '47',
+                '49',
+                '51'
+              ].includes(result.values)
+            "
+          ></div>
+          <div
+            class="gray"
+            *ngIf="
+              [
+                '2',
+                '4',
+                '6',
+                '8',
+                '10',
+                '12',
+                '14',
+                '16',
+                '18',
+                '20',
+                '22',
+                '24',
+                '26',
+                '28',
+                '30',
+                '32',
+                '34',
+                '36',
+                '38',
+                '40',
+                '42',
+                '44',
+                '46',
+                '48',
+                '50',
+                '52'
+              ].includes(result.values)
+            "
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOWER计算展示 -->
+    <div class="result" *ngIf="valData.resultTql && selectedLottery == 'TOWER'">
+      <div class="result-title">{{ 'casino_seeds' | translate }}</div>
+      <div *ngFor="let item of result?.hashSHA256Str; let i = index" style="margin-bottom: 15px">
+        <div class="result-title">HMAC_SHA256(::{{ i }})</div>
+        <div class="result-content card-linner">
+          <div class="test" *ngFor="let j of item.split(' '); let jndex = index">
+            <div class="card-test">
+              <span>{{ j }}</span>
+            </div>
+            <div class="card-test" *ngIf="result.hashNumStr?.length && result.hashNumStr[i]">
+              <span>{{ result.hashNumStr[i].split(' ')[jndex] }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="result-title">{{ 'casino_seeds_16_to_10' | translate }}</div>
+      <div class="result-grid-content">
+        <span *ngFor="let item of result?.hashData; let i = index">
+          {{ 'no' | translate }}{{ i + 1 }}{{ 'group' | translate }} {{ item.hashStr }} = {{ item.hashNum }}
+        </span>
+      </div>
+      <div class="result-title">{{ 'byte_number' | translate }}</div>
+      <div class="result-content card-linner">
+        <div class="test" *ngFor="let item of result?.hashData; let j = index" style="margin-bottom: 15px">
+          <div class="result-content">{{ 'no' | translate }}{{ j + 1 }}{{ 'group' | translate }}</div>
+          <div class="result-content" *ngFor="let val of item.calculationValues; let i = index">
+            <span>{{ i != 0 ? (i != 5 ? '+' : '=') : '' }}{{ val }}</span>
+            <span>{{ item.calculationFormula[i] }}</span>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="result-title">{{ 'numbers_to_shuffle' | translate }}</div>
+      <div
+        class="result-row-content"
+        style="margin-bottom: 10px"
+        *ngFor="let mitem of result?.dataValues; let i = index"
+      >
+        <div class="row" *ngFor="let item of mitem">
+          <ng-container *ngIf="i != 2 && i != 6">
+            <span *ngFor="let itemCheck of item.checkNumbers; let j = index">{{ itemCheck }}</span>
+            <span
+              *ngFor="let itemUnCheck of item.unCheckListNumbers; let j = index"
+              [class.blue]="itemUnCheck == item.checkValue"
+              >{{ itemUnCheck }}</span
+            >
+          </ng-container>
+          <ng-container *ngIf="i == 2">
+            <span *ngFor="let itemCheck of item.checkNumbers; let j = index">{{ itemCheck + 1 }}</span>
+            <span
+              *ngFor="let itemUnCheck of item.unCheckListNumbers; let j = index"
+              [class.blue]="itemUnCheck + 1 == item.checkValue + 1"
+              >{{ itemUnCheck + 1 }}</span
+            >
+          </ng-container>
+          <ng-container *ngIf="i == 6">
+            <span *ngFor="let itemCheck of item.checkNumbers; let j = index">{{ itemCheck + 3 }}</span>
+            <span
+              *ngFor="let itemUnCheck of item.unCheckListNumbers; let j = index"
+              [class.blue]="itemUnCheck + 3 == item.checkValue + 3"
+              >{{ itemUnCheck + 3 }}</span
+            >
+          </ng-container>
+        </div>
+      </div> -->
+
+      <div class="result-title">{{ 'result' | translate }}</div>
+      <div class="result-content">
+        <div>{{ result.values }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" [class.show]="isToastShow">
+  <div class="success"></div>
+  <div class="txt">{{ 'copy_success' | translate }}</div>
+</div>

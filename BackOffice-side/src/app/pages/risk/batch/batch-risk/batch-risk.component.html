@@ -1,0 +1,117 @@
+<div class="card p-8">
+  <form-row [label]="'budget.uploadForm' | lang" label-width="107" [control]="formGroup.controls.excel">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="d-flex flex-wrap">
+        <div>
+          <upload
+            mark="file"
+            class="mr-30"
+            [style.height.px]="80"
+            [accept]="['xlsx']"
+            [showLimitText]="false"
+            [desc]="''"
+            [limit]="2048"
+            [customRequestSteam]="uploadExcelStream"
+            [class.is-invalid]="invalid"
+            [formControl]="control"
+            (change)="onUploadChange($event)"
+            (clear)="clearExcel()"
+          ></upload>
+
+          <div class="invalid-feedback lh-1n" *ngIf="invalid">{{ 'budget.PleaseUploadForm' | lang }}</div>
+        </div>
+
+        <div class="d-flex flex-column flex-bt lh-1n fz-16 w-100 flex-1 text-nowrap py-2" style="height: 58px">
+          <div class="d-flex w-100">
+            <div class="flex-1"></div>
+            <div>
+              <span class="cursor-pointer download-excel mr-15" (click)="downloadTemplate()">{{
+                'risk.batch.downloadTemplate' | lang
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  {{ isUploading ? ('budget.parsingLoading' | lang) : '' }}
+  <div class="catch mt-17" *ngIf="data.list.length">
+    <div>
+      <div class="d-flex">
+        <div class="flex-1 fz-18 color-999 border-bottom lh-42">{{ data.batchId || '-' }}</div>
+
+        <!--              <svg-icon-->
+        <!--                src="./assets/images/svg/admin-close.svg"-->
+        <!--                class="svg-icon svg-icon-lg px-4 cursor-pointer"-->
+        <!--                (click)="removeBatch(i)"-->
+        <!--              ></svg-icon>-->
+      </div>
+
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">#</span>
+            </th>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'risk.batch.riskLevel' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.remarks' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.operate' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of data.list; index as i">
+            <td>
+              <span class="cell">{{ i + 1 }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{
+                item.riskLevel ? ('risk.batch.riskLevelChange' | lang) + item.riskLevel : ''
+              }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.remarks }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon
+                  src="./assets/images/svg/admin-close.svg"
+                  class="svg-icon svg-icon-lg px-4 cursor-pointer"
+                  (click)="removeBatch(i)"
+                ></svg-icon>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 空显示 -->
+  <empty *ngIf="data.batchId && !list.length" [text]="'form.dataEmpty' | lang" [style.height.px]="180"></empty>
+
+  <!-- 提交 -->
+  <div class="btn-wrap justify-content-center py-12">
+    <button
+      type="button"
+      class="c-btn btn btn-primary"
+      (click)="submit()"
+      [disabled]="appService.isContentLoadingSubject | async"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,388 @@
+<div class="page-container">
+  <div class="main-container">
+    <div class="container">
+      <div class="title">
+        <span>{{ 'dc_add_management' | translate }}</span>
+        <ng-container
+          *ngTemplateOutlet="addBtn; context: { show: !isH5 && !editMode && tableData.length > 0, minWidth: '100px' }"
+        >
+        </ng-container>
+      </div>
+
+      <!-- 管理控制栏 -->
+      <div class="control-bar">
+        <div class="white-tips" [class.disabled]="checkStatusloading">
+          <i [class]="whiteliststatus ? 'icon-toast-success' : 'icon-clear-fill'"></i>
+          <span>{{ whiteliststatus ? ('w_on' | translate) : ('w_off' | translate) }}</span>
+          <i
+            class="mutual-opacity icon-warning onact96-not"
+            (click)="tooltip.toggle()"
+            #tooltip="matTooltip"
+            matTooltip="{{ 'protect_safe' | translate }}"
+            matTooltipPosition="above"
+            matTooltipClass="generally-tooltip"
+          ></i>
+        </div>
+        <span class="white-set mutual-opacity onact96-not" (click)="goToSetWhiteliststatus()">{{
+          'ws' | translate
+        }}</span>
+        <customize-button
+          type="text"
+          size="small"
+          [active]="true"
+          [plain]="true"
+          *ngIf="tableData.length > 0 && !editMode"
+          (onClick)="editMode = true"
+          >{{ 'management' | translate }}
+        </customize-button>
+      </div>
+
+      <!-- 搜索过滤栏 -->
+      <div class="search-bar" [class.disabled]="editMode || loading">
+        <app-customize-form-group [marginBottom]="isH5 ? '15px' : '24px'">
+          <ng-container *ngIf="!isH5">
+            <ng-container *ngTemplateOutlet="searchOptions; context: {}"></ng-container>
+          </ng-container>
+          <!-- 地址搜索筛选（h5和web位置都不变） -->
+          <app-customize-input
+            width="17em"
+            [label]="isH5 ? '' : ('search' | translate)"
+            [placeholder]="'add_search' | translate"
+            [fixedHeight]="true"
+            [autocomplete]="false"
+            [leftIcon]="'icon-search'"
+            [onChangeDebounceTime]="500"
+            (onChange)="loadAddressList()"
+            [(value)]="searchAddress"
+          >
+          </app-customize-input>
+          <i *ngIf="isH5" class="search-bar-filter icon-filter mutual-opacity onact96-not" (click)="openh5Filter()"></i>
+        </app-customize-form-group>
+      </div>
+
+      <!-- 正文内容 -->
+      <div class="content-box" [appLoading]="loading">
+        <!-- 批量编辑栏 -->
+        <div class="edit-bar" *ngIf="editMode">
+          <ng-container *ngIf="!isH5">
+            <ng-container *ngTemplateOutlet="selectAllCheckbox"></ng-container>
+            <span *ngIf="selectLength > 0"
+              >{{ 'have_select' | translate }}{{ selectLength }}{{ 'add_wish' | translate }}</span
+            >
+            <ng-container *ngTemplateOutlet="batchBtns"></ng-container>
+          </ng-container>
+          <!-- 完成按钮位置web/h5基本不变 -->
+          <customize-button
+            class="edit-done-btn"
+            type="text"
+            size="small"
+            [active]="true"
+            [plain]="true"
+            (onClick)="finish()"
+            >{{ 'finish' | translate }}</customize-button
+          >
+        </div>
+
+        <!-- 正文数据列表 -->
+        <table *ngIf="tableData.length > 0">
+          <thead *ngIf="!isH5">
+            <th width="1%" *ngIf="editMode"></th>
+            <th>{{ 'add_remark' | translate }}</th>
+            <th>{{ 'whitelist' | translate }}</th>
+            <th>{{ 'type' | translate }}</th>
+            <th>{{ 'curr' | translate }}</th>
+            <th>{{ 'address' | translate }}</th>
+            <th>{{ 'trans_network' | translate }}</th>
+            <th *ngIf="!editMode">{{ 'action' | translate }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of tableData" [class.editMode]="editMode" (click)="editMode && selectItem(item)">
+              <!-- web选择 -->
+              <td class="td-checkbox" *ngIf="!isH5 && editMode">
+                <mat-checkbox [disableRipple]="true" [checked]="item.select"></mat-checkbox>
+              </td>
+
+              <td class="multifunction">
+                <!-- h5选择 -->
+                <mat-checkbox *ngIf="isH5 && editMode" [disableRipple]="true" [checked]="item.select"></mat-checkbox>
+                <!-- web/h5 地址备注 -->
+                <span
+                  #remarkBox
+                  appLifeObserve
+                  (lifeChange)="$event && checkSize(remarkBox, remarkText, remarkTooltip)"
+                  class="textover15"
+                  (click)="remarkTooltip.toggle()"
+                  #remarkTooltip="matTooltip"
+                  matTooltip="{{ item.remark }}"
+                  matTooltipPosition="above"
+                  matTooltipClass="generally-tooltip"
+                  [matTooltipDisabled]="true"
+                >
+                  <em #remarkText>{{ item.remark }}</em>
+                </span>
+                <!-- h5单个编辑 -->
+                <div *ngIf="isH5 && !editMode" tabindex="-1" (blur)="item.expand = false">
+                  <i
+                    class="edit-icon icon-three-dot mutual-opacity"
+                    (click)="$event.preventDefault(); item.expand = !item.expand"
+                  ></i>
+                  <ng-container *ngIf="item.expand">
+                    <ng-container *ngTemplateOutlet="editPop; context: { item: item }"></ng-container>
+                  </ng-container>
+                </div>
+              </td>
+              <td [attr.data-label]="'whitelist' | translate" class="has-data-label">
+                {{ item.isWhiteList ? ('whitelist' | translate) : ('no_whitelist' | translate) }}
+              </td>
+              <td [attr.data-label]="'type' | translate" class="has-data-label">
+                <!-- 电子钱包类型 -->
+                <ng-container *ngIf="item.paymentMethod">
+                  {{ paymentMethod | filterByKeyValue : 'code' : item.paymentMethod : 'name' : item.paymentMethod }}
+                </ng-container>
+                <!-- 数字货币类型 -->
+                <ng-container *ngIf="!item.paymentMethod">
+                  {{ (item.currency ? 'general_add' : 'common_add') | translate }}
+                </ng-container>
+              </td>
+              <td [attr.data-label]="'curr' | translate" class="has-data-label">
+                <div class="currency-box">
+                  <!-- 币种（为空时是数字通用地址） -->
+                  <img class="currencies-icon" *ngIf="item.currency" [src]="item.currency | currencyIcon" />
+                  {{ item.currency || '-' }}
+                </div>
+              </td>
+              <td [attr.data-label]="'address' | translate" class="has-data-label">
+                <span class="textover20">{{ item.address }}</span>
+              </td>
+              <td [attr.data-label]="'trans_network' | translate" class="has-data-label">
+                {{ item.network || '-' }}
+              </td>
+
+              <!-- web单个编辑 -->
+              <td class="has-pop" *ngIf="!isH5 && !editMode" tabindex="-1" (blur)="item.expand = false">
+                <span class="mutual-opacity" [class.active]="item.expand" (click)="item.expand = !item.expand">
+                  {{ 'edit' | translate }}
+                </span>
+                <ng-container *ngIf="item.expand">
+                  <ng-container *ngTemplateOutlet="editPop; context: { item: item }"></ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <app-empty
+          *ngIf="tableData.length <= 0 && !loading"
+          [text]="'save' | translate"
+          [smallText]="true"
+          icon="assets/images/manage-empty.png"
+        >
+          <ng-container
+            *ngIf="!isH5"
+            [ngTemplateOutlet]="addBtn"
+            [ngTemplateOutletContext]="{ show: true, minWidth: '100%' }"
+          ></ng-container>
+        </app-empty>
+
+        <!-- tableData.length > 0 -->
+        <!-- h5的底部添加按钮 动态视口检测是否定位 -->
+        <ng-container *ngIf="isH5 && !editMode && bottomBarActive">
+          <!-- trigger 触发偏移计算 ： 50 底部菜单高度 + 8 距离底部菜单间距 + 48 悬浮内容高度 + 15 悬浮内容在文本流里时的上间距 -->
+          <div
+            class="intersectionObserver-trigger"
+            (intersectFullChange)="h5BottomOperateAreaintersectChange($event)"
+            [intersectionObserver]="true"
+            [intersectionObserver-config]="{ offset: '0px 0px -121px 0px' }"
+          ></div>
+          <div
+            class="h5BottomOperateArea animate__animated animate__fadeInUp animate__faster"
+            [class.sticky]="h5BottomOperateAreaSticky"
+          >
+            <ng-container
+              *ngTemplateOutlet="
+                addBtn;
+                context: {
+                  show: true,
+                  minWidth: '100%'
+                }
+              "
+            ></ng-container>
+          </div>
+        </ng-container>
+
+        <!-- h5点击管理后底部菜单 -->
+        <ng-container *ngIf="isH5 && editMode">
+          <!-- trigger 触发偏移计算 ： 50 底部菜单高度 + 8 距离底部菜单间距 + 32 悬浮内容高度 + 15 悬浮内容在文本流里时的上间距 -->
+          <div
+            class="intersectionObserver-trigger"
+            (intersectFullChange)="h5BottomOperateAreaintersectChange($event)"
+            [intersectionObserver]="true"
+            [intersectionObserver-config]="{ offset: '0px 0px -105px 0px' }"
+          ></div>
+          <div
+            class="h5BottomOperateArea h5BatchBtns animate__animated animate__fadeInUp animate__faster"
+            [class.sticky]="h5BottomOperateAreaSticky"
+          >
+            <ng-container *ngTemplateOutlet="selectAllCheckbox"></ng-container>
+            <ng-container *ngTemplateOutlet="batchBtns; context: { small: true }"></ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 添加地址的按钮 -->
+<ng-template #addBtn let-show="show" let-minWidth="minWidth">
+  <customize-button
+    *ngIf="show"
+    type="primary"
+    size="medium"
+    [disabled]="selectloading"
+    [minWidth]="minWidth"
+    (onClick)="handleAdd()"
+  >
+    {{ 'add_address' | translate }}</customize-button
+  >
+</ng-template>
+
+<!-- 全选的按钮 -->
+<ng-template #selectAllCheckbox>
+  <mat-checkbox
+    [disableRipple]="true"
+    [checked]="selectAll"
+    [indeterminate]="someSelect()"
+    (change)="selectAllItem($event.checked)"
+    >{{ 'select_all' | translate }}</mat-checkbox
+  >
+</ng-template>
+
+<!-- 批量、加入、移出、删除按钮 -->
+<ng-template #batchBtns let-small="small">
+  <customize-button
+    size="small"
+    [type]="isH5 ? 'primary' : 'text'"
+    [plain]="isH5 ? false : true"
+    [active]="isH5 ? false : true"
+    [disabled]="selectLength < 1"
+    (onClick)="handleInOutMultiple(true)"
+  >
+    {{ 'join_whitelist' | translate }}
+  </customize-button>
+
+  <customize-button
+    size="small"
+    [type]="isH5 ? 'primary' : 'text'"
+    [plain]="isH5 ? false : true"
+    [active]="isH5 ? false : true"
+    [disabled]="selectLength < 1"
+    (onClick)="handleInOutMultiple(false)"
+  >
+    {{ 'remove_whitelist' | translate }}
+  </customize-button>
+
+  <customize-button
+    size="small"
+    [type]="isH5 ? 'primary' : 'text'"
+    [plain]="isH5 ? false : true"
+    [active]="isH5 ? false : true"
+    [disabled]="selectLength < 1"
+    (onCLick)="handleDelMultiple()"
+  >
+    {{ 'delete' | translate }}
+  </customize-button>
+</ng-template>
+
+<!-- 单个编辑的小弹框 -->
+<ng-template #editPop let-item="item">
+  <div class="edit-pop">
+    <div class="mutual-opacity" (click)="$event.stopPropagation(); handleInOut(item, !item.isWhiteList)">
+      {{ item.isWhiteList ? ('remove_whitelist' | translate) : ('join_whitelist' | translate) }}
+    </div>
+    <div class="mutual-opacity" (click)="$event.stopPropagation(); handleDel(item)">{{ 'delete' | translate }}</div>
+  </div>
+</ng-template>
+
+<!-- h5选择选项弹窗模板 -->
+<ng-template #h5FilterPopupTemplate>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="h5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <ng-container *ngTemplateOutlet="searchOptions; context: {}"></ng-container>
+      </app-customize-form-group>
+      <div class="popup-btn-group">
+        <customize-button width="100%" size="medium" (onClick)="resetH5Filter()">
+          {{ 'reset' | translate }}
+        </customize-button>
+        <customize-button
+          width="100%"
+          size="medium"
+          type="primary"
+          (onClick)="h5FilterPopup.close(); loadAddressList()"
+          >{{ 'filter' | translate }}</customize-button
+        >
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 筛选选项（h5出现在筛选弹窗内，web出现在表格上方） -->
+<ng-template #searchOptions>
+  <app-customize-select
+    [label]="'pay_methods' | translate"
+    [width]="isH5 ? '' : '11em'"
+    (onSelect)="onSelectChange(!this.isH5, true)"
+    [(value)]="selectedAddressType"
+    [options]="addressType"
+    [disabled]="selectloading"
+  >
+  </app-customize-select>
+  <app-customize-select
+    *ngIf="selectedAddressType === '1'"
+    [width]="isH5 ? '' : '11em'"
+    [label]="'type' | translate"
+    (onSelect)="onSelectChange(!this.isH5)"
+    [(value)]="selectedType"
+    [options]="searchType"
+    [disabled]="selectloading"
+  >
+  </app-customize-select>
+  <app-customize-select
+    *ngIf="selectedAddressType === '2'"
+    [width]="isH5 ? '' : '11em'"
+    [label]="'type' | translate"
+    [textKey]="'name'"
+    [valueKey]="'code'"
+    (onSelect)="onSelectChange(!this.isH5, true)"
+    [(value)]="selectedpaymentMethod"
+    [options]="paymentMethod | unshift : allPaymentMethod"
+    [disabled]="selectloading"
+  >
+  </app-customize-select>
+  <app-customize-select
+    [label]="'curr' | translate"
+    [width]="isH5 ? '' : '11em'"
+    [iconKey]="'icon'"
+    [textKey]="'currency'"
+    [valueKey]="'currency'"
+    [showFilter]="true"
+    (onSelect)="onSelectChange(!this.isH5)"
+    [(value)]="selectedCoinType"
+    [options]="realCurrencies | unshift : allCoinItem"
+    [disabled]="selectloading"
+  >
+  </app-customize-select>
+  <app-customize-select
+    [width]="isH5 ? '' : '11em'"
+    [label]="'whitelist' | translate"
+    (onSelect)="onSelectChange(!this.isH5)"
+    [(value)]="selectedWhitelist"
+    [options]="searchWhitelist"
+    [disabled]="selectloading"
+  >
+  </app-customize-select>
+</ng-template>

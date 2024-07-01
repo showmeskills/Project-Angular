@@ -1,0 +1,10 @@
+.export-table-wrap {
+  overflow-x: auto;
+
+  th {
+    min-width: 120px;
+  }
+  .table tbody tr:nth-child(even) {
+    background: rgba(242, 248, 255, 1);
+  }
+}

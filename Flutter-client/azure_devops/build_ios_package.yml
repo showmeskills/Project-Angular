@@ -1,0 +1,47 @@
+parameters:
+  - name: condition
+    type: string
+    default: succeeded()
+
+steps:
+  - script: |
+      export PATH="$HOME/.shorebird/bin:$PATH"
+      export SHOREBIRD_TOKEN=$(shorebirdToken)
+      export FLUTTER_STORAGE_BASE_URL=https://download.shorebird.dev
+      shorebird release ios --no-codesign --flutter-version 3.19.5
+    displayName: "Flutter build ipa"
+    condition: ${{ parameters.condition }}
+
+  - task: InstallAppleCertificate@2
+    inputs:
+      certSecureFile: $(certSecureFile)
+      certPwd: '123'
+      keychain: 'temp'
+    displayName: "InstallAppleCertificate"
+
+  - task: InstallAppleProvisioningProfile@1
+    inputs:
+      provisioningProfileLocation: 'secureFiles'
+      provProfileSecureFile: $(provProfileSecureFile)
+      removeProfile: false
+    displayName: "InstallAppleProvisioningProfile"
+
+  - task: Xcode@5
+    inputs:
+      actions: 'build'
+      configuration: 'Release'
+      sdk: 'iphoneos'
+      xcWorkspacePath: 'ios/Runner.xcworkspace'
+      scheme: 'Runner'
+      packageApp: true
+      exportPath: "$(projectName)"
+      exportOptions: 'plist'
+      exportOptionsPlist: $(exportOptionsPlist)
+      args: 'CODE_SIGNING_ALLOWED=No'
+    displayName: "Sign XCode"
+    condition: ${{ parameters.condition }}
+
+  - script: |
+      sh merchant_scripts/rename.sh $(Build.SourcesDirectory)/$(projectName)/gogaming_app.ipa $(build.artifactStagingDirectory) merchant-$(merchantNumber)/configs/merchant_config_$(merchantEnv).yml
+    displayName: "Copy signed IPA to staging directory"
+    condition: ${{ parameters.condition }}

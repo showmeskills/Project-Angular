@@ -1,0 +1,18 @@
+<div class="mx-3 mb-6 flex-1 p-6 rounded bg-fff" style="min-height: 70px" *ngFor="let item of list; index as i">
+  <span class="flex-1 fz-16" [style]="{ color: getTtileColor(i) }">
+    {{ 'member.list.act' + item.gameCategory | lang }}
+  </span>
+
+  <div class="fz-14 flex-1 pt-6">
+    <div class="d-flex">
+      <span class="flex-1">{{ item.activeFlowTotal | currencyValue: 'USDT' }}</span>
+      <span>{{ item.wagerCount | toFormatMoney }}</span>
+    </div>
+    <div class="d-flex flex-btc">
+      <ng-container *win="item.payoutTotal; let value; prev as prev">
+        <span [winColor]="value">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+      </ng-container>
+      <span>{{ item.payoutFlowRate || '-' }}%</span>
+    </div>
+  </div>
+</div>

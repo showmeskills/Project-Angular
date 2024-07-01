@@ -1,0 +1,77 @@
+:host {
+  @media (max-width: 767px) {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 1001;
+  top: 0;
+  color: #fff;
+  font-size: 16px;
+  padding-left: 20px;
+  padding-top: 30px;
+
+  i {
+    color: #76808f;
+    font-size: 16px;
+  }
+  div {
+    font-size: 24px;
+    padding-left: 12.5px;
+  }
+}
+
+.icon-qr-scanner {
+  color: #fff;
+}
+
+.file {
+  position: absolute;
+  z-index: 1002;
+  background-color: #474d57;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: calc(50% - 25px);
+  bottom: 12%;
+  .icon-png {
+    color: #eaecef;
+    font-size: 24px;
+  }
+
+  input {
+    position: absolute;
+    top: 0;
+    width: inherit;
+    height: inherit;
+    opacity: 0;
+    z-index: 2;
+  }
+}
+
+::ng-deep {
+  ngx-scanner-qrcode {
+    position: absolute !important;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+
+    video {
+      height: 100%;
+    }
+  }
+}

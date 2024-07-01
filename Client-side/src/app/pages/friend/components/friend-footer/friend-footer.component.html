@@ -1,0 +1,17 @@
+<div class="footer">
+  <div class="footer-container">
+    <p class="title">{{ title }}</p>
+    <p class="small-title" *ngIf="smallTitle">{{ smallTitle }}</p>
+    <div class="flex">
+      <customize-button
+        class="join-button"
+        type="primary"
+        [minWidth]="isH5 ? '30%' : '15%'"
+        size="medium"
+        (onClick)="jumpToPage()"
+      >
+        {{ btnName }}</customize-button
+      >
+    </div>
+  </div>
+</div>

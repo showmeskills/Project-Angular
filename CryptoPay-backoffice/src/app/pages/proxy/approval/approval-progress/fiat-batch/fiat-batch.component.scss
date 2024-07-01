@@ -1,0 +1,76 @@
+:host {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 20px 45px;
+
+  &.is-simple {
+    flex-flow: column nowrap;
+    margin-right: 0;
+
+    .item {
+      flex: 1;
+      margin-right: 0;
+
+      &-simple {
+        margin-top: -20px;
+        margin-bottom: -10px;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.item {
+  flex: 1 1 calc(50% - 50px);
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  margin-right: 50px;
+  max-width: 44%;
+
+  &.empty {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 0;
+  }
+
+  &.warning {
+    background: rgba(255, 248, 221, 0.3);
+
+    .info-title {
+      color: #eaad0c;
+    }
+  }
+
+  &.success {
+    background: rgba(232, 255, 243, 0.3);
+
+    .info-title {
+      color: #50cd89;
+    }
+  }
+
+  &.fail {
+    background: rgba(255, 232, 237, 0.3);
+
+    .info-title {
+      color: #ff4167;
+    }
+  }
+}
+
+.info-title {
+  font-size: 18px;
+  line-height: 42px;
+  padding: 5px 0;
+}
+
+form-row ::ng-deep {
+  .label-wrap {
+    line-height: 20px !important;
+    padding-top: 10px;
+  }
+}

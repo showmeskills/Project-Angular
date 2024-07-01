@@ -1,0 +1,124 @@
+<div class="voucher-container" [class.disable]="voucherLoading">
+  <ng-container *ngIf="selectDepositBonusService.isOpenCouponCodeDeposit; else defaultVoucherSelection">
+    <div class="voucher-swtich-btn">
+      <customize-button
+        [size]="'large'"
+        width="100%"
+        [type]="switchBtnIndex === index ? 'default' : 'text'"
+        [plain]="true"
+        *ngFor="let item of switchBtn; let index = index"
+        (onClick)="onSwitchBonusType(index)"
+        [disabled]="couponLoading"
+      >
+        {{ item }}
+      </customize-button>
+    </div>
+    <ng-container [ngSwitch]="switchBtnIndex">
+      <ng-container *ngSwitchCase="0">
+        <ng-container
+          *ngTemplateOutlet="
+            voucherList;
+            context: {
+              label: ''
+            }
+          "
+        ></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="1">
+        <app-customize-input
+          size="large"
+          [type]="'text'"
+          [max]="12"
+          [width]="'100%'"
+          [value]="couponValue"
+          (onChange)="onCoupnValueChange($event)"
+          [loading]="couponLoading"
+          [disabled]="couponLoading"
+          [placeholder]="'exchange_input_tips' | translate"
+        >
+          <p
+            right-content
+            *ngIf="couponValue.length >= 4 && !couponLoading && !verifySuccess"
+            class="verify-btn mutual-opacity"
+            (click)="onGetCouponCode()"
+          >
+            {{ 'voucher_verify' | translate }}
+          </p>
+          <p right-content class="verify-btn mutual-opacity" *ngIf="verifySuccess" (click)="onReset()">
+            {{ 're_enter' | translate }}
+          </p>
+        </app-customize-input>
+        <ng-container *ngIf="otherDepositElement; else defaultMinDepositElement">
+          <ng-container *ngTemplateOutlet="otherDepositElement"></ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #defaultVoucherSelection>
+  <ng-container
+    *ngTemplateOutlet="
+      voucherList;
+      context: {
+        label: 'select_bonus_act' | translate
+      }
+    "
+  ></ng-container>
+</ng-template>
+
+<ng-template #voucherList let-label="label">
+  <div class="select-bonus">
+    <app-customize-select
+      [fixedHeight]="false"
+      [width]="'100%'"
+      [label]="label"
+      [disabled]="voucherLoading"
+      [inputTemplate]="inputTemplate"
+      (onClickInput)="openBonusPopup($event)"
+    >
+    </app-customize-select>
+    <ng-container *ngIf="otherDepositElement; else defaultMinDepositElement">
+      <ng-container *ngTemplateOutlet="otherDepositElement"></ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #inputTemplate>
+  <!--已选择-->
+  <ng-container *ngIf="renderSelectedVourcher(); else default">
+    <div class="selected-row">
+      {{ renderSelectedVourcher()?.bonusActivityName || '' }},
+      <ng-container [ngSwitch]="renderSelectedVourcher()?.prizeAmountType">
+        <ng-container *ngSwitchCase="0">
+          {{ renderSelectedVourcher()?.freeSpinTimes || 0 }} {{ 'num_times' | translate }}
+        </ng-container>
+        <ng-container *ngSwitchCase="1">{{ renderSelectedVourcher()?.bonusFixedUsdt }} USDT </ng-container>
+        <ng-container *ngSwitchCase="2">
+          <ng-container *ngIf="depositType === 'faitDeposit'; else otherDeposit">
+            {{ renderSelectedVourcher()?.returnPercentage || 0 }}%, {{ 'max' | translate
+            }}{{ renderSelectedVourcher()?.bonusMaxUsdt || 0 }} USDT
+          </ng-container>
+          <ng-template #otherDeposit> {{ renderSelectedVourcher()?.returnPercentage || 0 }}% </ng-template>
+        </ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+  <!-- 初始：未选时 -->
+  <ng-template #default>
+    <ng-container *ngIf="!voucherLoading">
+      <span class="default-text" *ngIf="renderVoucherList(); else selectBonus">{{ 'no_bon_sel_t' | translate }}</span>
+      <ng-template #selectBonus>
+        <span class="default-text">- {{ 'select_bonus' | translate }} -</span>
+      </ng-template>
+    </ng-container>
+    <i class="animation-icon-loading-dot" *ngIf="voucherLoading"><i></i><i></i><i></i></i>
+  </ng-template>
+</ng-template>
+
+<ng-template #defaultMinDepositElement>
+  <div class="min-deposit" *ngIf="renderSelectedMinDeposit() && depositType !== 'faitDeposit'">
+    {{ 'mini_deposit' | translate }} {{ renderSelectedMinDeposit()?.minDepositUsdt }}
+    <img class="icon" [src]="'USDT' | currencyIcon" />
+  </div>
+</ng-template>

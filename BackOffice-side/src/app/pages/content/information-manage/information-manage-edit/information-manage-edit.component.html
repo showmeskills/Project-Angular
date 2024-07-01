@@ -1,0 +1,213 @@
+<form [formGroup]="formGroup" *ngIf="defaultForm">
+  <h2 class="color-111 mb-10 fz-18 fw-bolder">{{ 'conten.mainSet' | lang }}</h2>
+
+  <div class="d-flex py-2">
+    <label class="form-title fz-16" style="flex: 0 0 220px"
+      >{{ 'conten.mer' | lang }} <span class="text-danger">*</span>：</label
+    >
+
+    <div class="flex-1">
+      <div *ngIf="isEdit; else addMerchant" [style.line-height.px]="42" [style.width.px]="270" class="fz-16">
+        {{ curMerchant.name }}
+      </div>
+
+      <ng-template #addMerchant>
+        <mat-form-field [style.width.px]="270">
+          <mat-select
+            class="form-control"
+            [class.is-invalid]="validator.isControlInvalid('merchant')"
+            formControlName="merchant"
+            (selectionChange)="onMerchantChange($event)"
+          >
+            <mat-option *ngFor="let item of merchantList" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="is-invalid"></div>
+        <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'merchant')">
+          {{ 'conten.chooserMer' | lang }}
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="d-flex py-2" *ngIf="formGroup.value['merchant']">
+    <label class="form-title fz-16" style="flex: 0 0 220px"
+      >{{ 'conten.type' | lang }} <span class="text-danger">*</span>：</label
+    >
+
+    <div class="flex-1">
+      <div class="d-flex flex-1 flex-wrap" style="line-height: 42px">
+        <div *ngIf="isEdit; else addType">
+          <span class="fz-16">{{ categoryName }}</span>
+        </div>
+
+        <ng-template #addType>
+          <label class="radio radio-lg mr-12 fz-14" *ngFor="let item of categoryList">
+            <input
+              name="type"
+              type="radio"
+              [value]="item.key"
+              formControlName="type"
+              (change)="onTypeChange(item.key)"
+            />
+            <span class="mr-4"></span>{{ lang.isLocal ? item.value : item.key }}
+          </label>
+        </ng-template>
+      </div>
+
+      <div class="is-invalid"></div>
+      <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'type')">
+        {{ 'conten.chooseType' | lang }}
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex py-2" *ngIf="formGroup.value['type'] && formGroup.value['type'] !== 'Announcement'">
+    <label class="form-title fz-16" style="flex: 0 0 220px"
+      >{{ 'conten.faType' | lang }} <span class="text-danger">*</span>：</label
+    >
+
+    <div class="flex-1">
+      <div *ngIf="isEdit; else addTheme" [style.line-height.px]="42" [style.width.px]="270" class="fz-16">
+        {{ curTheme.title || ('common.null' | lang) }}
+      </div>
+
+      <ng-template #addTheme>
+        <div class="mat-form-field-type-mat-select" [style.width.px]="270" (click)="onParent()">
+          <div
+            class="form-control d-flex cursor-pointer align-items-center"
+            [class.is-invalid]="validator.isControlInvalid('theme')"
+          >
+            <span class="flex-1">{{ curTheme.title || ('common.null' | lang) }}</span>
+            <div class="mat-select-arrow"></div>
+          </div>
+        </div>
+
+        <!--        <div class="is-invalid"></div>-->
+        <!--        <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'theme')">请选择父级主题</div>-->
+      </ng-template>
+    </div>
+  </div>
+
+  <h2 class="color-111 mt-4 mb-10 fz-18 fw-bolder">{{ 'conten.conten' | lang }}</h2>
+
+  <div class="tab mt-12 py-2">
+    <div class="tab-hd">
+      <div class="mr-4 d-flex">
+        <div
+          class="tab-hd-item"
+          [class.active]="curTab === i"
+          *ngFor="let nav of langTabList; let i = index"
+          (click)="curTab = i"
+        >
+          {{ nav.name }}
+        </div>
+      </div>
+
+      <div class="edit position-relative">
+        <button class="btn-cube sm" type="button" (click)="showEditTab = true">
+          <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+        </button>
+
+        <select-group
+          [position]="true"
+          [select]="selectLang"
+          [(show)]="showEditTab"
+          [data]="langList"
+          label="name"
+          value="code"
+          (confirm)="onLanguage($event)"
+        ></select-group>
+      </div>
+    </div>
+
+    <div class="tab-bd" formArrayName="lang">
+      <div *ngFor="let lang of langArrayForm.controls; let i = index" [hidden]="curTab !== i" [formGroupName]="i">
+        <div class="w-100 d-flex py-2">
+          <label class="mr-0 mb-0 form-title" style="flex: 0 0 200px"
+            >{{ 'conten.labels' | lang }}（{{ curLang?.name }}） <span class="text-danger">*</span>：</label
+          >
+          <div class="flex-1">
+            <input
+              type="text"
+              class="form-control"
+              autocomplete="off"
+              formControlName="title"
+              [placeholder]="'conten.maxTitle' | lang"
+              maxlength="20"
+              input-trim
+              [class.is-invalid]="validator.isControlInvalid('title', langArrayForm.controls[i])"
+            />
+
+            <div
+              class="invalid-feedback"
+              *ngIf="validator.controlHasError('required', 'title', langArrayForm.controls[i])"
+            >
+              {{ 'conten.enterTitle' | lang }}（{{ curLang?.name }}）
+            </div>
+          </div>
+        </div>
+
+        <div class="w-100 d-flex py-2" style="min-width: 0">
+          <label class="mr-0 mb-0 form-title" style="flex: 0 0 200px"
+            >{{ 'conten.content' | lang }}（{{ curLang?.name }}） <span class="text-danger">*</span>：</label
+          >
+          <div class="flex-1">
+            <!--            <div-->
+            <!--              class="form-control rounded border-1 h-auto"-->
+            <!--              [class.is-invalid]="validator.isControlInvalid('content', langArrayForm.controls[i])"-->
+            <!--              style="padding: 0 !important"-->
+            <!--            >-->
+            <!--&lt;!&ndash;              <ueditor type="Article" formControlName="content"></ueditor>&ndash;&gt;-->
+            <!--            </div>-->
+            <textarea
+              [class.is-invalid]="validator.isControlInvalid('content', langArrayForm.controls[i])"
+              class="form-control resize-none"
+              rows="10"
+              formControlName="content"
+            ></textarea>
+
+            <div
+              class="invalid-feedback"
+              *ngIf="validator.controlHasError('required', 'content', langArrayForm.controls[i])"
+            >
+              {{ 'conten.enterContent' | lang }}（{{ curLang?.name }}）
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex py-2">
+    <label class="form-title fz-16" style="flex: 0 0 220px">
+      {{ 'conten.icon' | lang }} <span class="text-danger">*</span>：</label
+    >
+
+    <div class="flex-1 ml-2">
+      <upload
+        type="Article"
+        formControlName="icon"
+        [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'gif']"
+        [style.width.px]="130"
+        [style.height.px]="130"
+        [padding]="'6px'"
+        [desc]="'300x300'"
+        [limit]="100"
+        [class.is-invalid]="validator.isControlInvalid('icon')"
+        [domain]="imgDomain"
+      ></upload>
+
+      <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'icon')">
+        {{ 'conten.upPic' | lang }}
+      </div>
+    </div>
+  </div>
+
+  <!-- 按钮组 -->
+  <div class="btn-wrap pt-12 flex-center d-flex">
+    <button class="c-btn c-btn-default ml-0" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</form>

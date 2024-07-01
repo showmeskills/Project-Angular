@@ -1,0 +1,68 @@
+<div class="wrapper">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="coinflip"
+      [isFast]="false"
+      [(isFastBet)]="isFastBet"
+      [(fairnessData)]="fairnessData"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+  <div class="mian">
+    <div class="coinflip">
+      <!-- 顶部的赛果 -->
+      <div class="numbers">
+        <ng-container *ngFor="let item of historyList">
+          <div class="item" [ngStyle]="{ 'background-color': getItemBackgroundColor(item) }">{{ item }} x</div>
+        </ng-container>
+      </div>
+      <div class="board-body">
+        <div class="game-area">
+          <span class="top">{{ 'series' | translate }}</span
+          ><span>{{ series }}</span>
+        </div>
+        <div class="coin-container">
+          <div class="coin" [class.coin_animationBack]="!isHeads" [class.coin_animationFront]="isHeads" #coin>
+            <figure class="big-coin__front"></figure>
+            <figure class="big-coin__back"></figure>
+          </div>
+        </div>
+        <div class="game-area">
+          <span class="top">{{ 'multiplier' | translate }}</span>
+          <span>X{{ rate }}</span>
+        </div>
+      </div>
+
+      <div class="bot-res">
+        <div class="item-container">
+          <div class="item" *ngFor="let item of hisResult">
+            <img [src]="'/assets/orignal/images/coinflip/' + (item ? 'front' : 'back') + '.svg'" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <orignal-bet
+    type="coinflip"
+    (toBet)="toBet($event)"
+    [rate]="rate"
+    [operate]="operate"
+    [isDice]="true"
+    (guess)="handleGuess($event)"
+    (toSubmit)="toSubmit($event)"
+    [nextMultiplier]="nextMultiplier"
+  ></orignal-bet>
+
+  <!-- <div class="toast-center" *ngIf="showWin">
+    <span class="bgm"></span>
+    <div class="txt-contant">
+      {{ rate }}X
+      <span class="t-s"><img class="currency-icon" [src]="currentCurrencyData?.icon" />{{ winToast }}</span>
+    </div>
+  </div> -->
+  <div class="win-tip" *ngIf="showWin">
+    <div>{{ rate }}X</div>
+    <div><img class="currency-icon" [src]="currentCurrencyData?.icon" />{{ winToast }}</div>
+  </div>
+</div>

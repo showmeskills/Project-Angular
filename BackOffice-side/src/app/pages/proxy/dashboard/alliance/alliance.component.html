@@ -1,0 +1,162 @@
+<header class="d-flex flex-between flex-ac">
+  <div class="tab">
+    <div class="tab-wrap">
+      <span [class.active]="curTab === 0" (click)="onChangeTab(0)" class="tab-item">{{
+        'dashboard.alliance.affiliateProgram' | lang
+      }}</span>
+    </div>
+    <div class="tab-wrap">
+      <span [class.active]="curTab === 1" (click)="onChangeTab(1)" class="tab-item">{{
+        'dashboard.alliance.referRanking' | lang
+      }}</span>
+    </div>
+  </div>
+  <!-- 查看详情 -->
+  <div class="btn btn-light-primary fz-14 px-8">{{ 'dashboard.alliance.viewDetails' | lang }}</div>
+</header>
+
+<div class="flex-fill mt-2">
+  <!-- 联盟计划排名 -->
+  <table class="table mb-0" *ngIf="curTab === 0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.proxyUID' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.channelManager' | lang }}</span>
+        </th>
+        <!-- 本月FTD -->
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.ftd' | lang }}</span>
+        </th>
+        <!-- 本月月活 -->
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.mauMonth' | lang }}</span>
+        </th>
+        <!-- 本月贡献度 -->
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.contribution' | lang }}</span>
+        </th>
+        <!-- 排名 -->
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.ranking' | lang }}</span>
+        </th>
+        <!-- 状态 -->
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.managerName }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.ftd }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.active }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.contribution }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.top }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <span *ngIf="!+item.status">0</span>
+            <span *ngIf="item.status > 0" class="label label-lg label-inline label-light-primary px-10 fw-bolder">{{
+              item.status
+            }}</span>
+            <span *ngIf="item.status < 0" class="label label-lg label-inline label-light-danger px-10 fw-bolder">{{
+              item.status
+            }}</span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 推荐好友排名 -->
+  <table class="table mb-0" *ngIf="curTab === 1">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.referrerId' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.newFirstDeposit' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.activeOffline' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.totalTransaction' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'dashboard.alliance.commission' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.newDeposit | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.active | toFormatMoney }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.trade | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.commission | currencyValue: 'USDT' }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-between flex-ac">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+      [isLoading]="isLoading"
+    ></app-paginator>
+  </div>
+</div>

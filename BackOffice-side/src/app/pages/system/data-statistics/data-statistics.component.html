@@ -1,0 +1,22 @@
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+<div class="card">
+  <!-- tbas -->
+  <div class="tab-wrapper px-8" *ngIf="tabs && tabs.length > 0" mat-tab-nav-bar [tabPanel]="tabPanel">
+    <div
+      class="item"
+      mat-tab-link
+      *ngFor="let item of tabs; let index = index"
+      [disableRipple]="true"
+      [active]="item.path === currentTabPath"
+      [class.active]="item.path === currentTabPath"
+      (click)="changeTabIndex(item.path)"
+    >
+      <div class="tab-name">{{ item.lang | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-12">
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,173 @@
+@if (data && direction) {
+  @if (data.showTime) {
+    <div class="time-item-contaienr">
+      {{ data.createTime | friendlyTime }}
+    </div>
+  }
+  <div class="message-item-contaienr {{ direction }}">
+    @if (direction === 'left') {
+      <div class="message-user">
+        <img [src]="'assets/images/chat/cs_avatar.png' | preferWebp" alt="" />
+      </div>
+    }
+    <div class="message-box">
+      <p>
+        @for (item of contents; track $index) {
+          @switch (item.msgType) {
+            @case (0) {
+              <!-- 纯文本 -->
+              <span [innerHTML]="item.content | linkClickAble | toHtmlElement"></span>
+            }
+            @case (1) {
+              <!-- 图片 -->
+              <ng-container
+                *ngTemplateOutlet="
+                  img;
+                  context: { asset: data.asset | filterByKeyValue: 'fId' : item.assetid : '_SELF' }
+                "
+              ></ng-container>
+            }
+            @case (3) {
+              <!-- 视频 -->
+              <ng-container
+                *ngTemplateOutlet="
+                  video;
+                  context: { asset: data.asset | filterByKeyValue: 'fId' : item.assetid : '_SELF' }
+                "
+              ></ng-container>
+            }
+            @case (7) {
+              <!-- 无预览的文件 -->
+              <ng-container
+                *ngTemplateOutlet="
+                  file;
+                  context: { asset: data.asset | filterByKeyValue: 'fId' : item.assetid : '_SELF' }
+                "
+              ></ng-container>
+            }
+            @default {}
+          }
+        }
+      </p>
+    </div>
+    <div class="message-status" [class.only-text]="data.msgType === 0">
+      <!-- 如果是-2的时候也使用-1来匹配，多case功能未实现：https://github.com/angular/angular/issues/14659 -->
+      @switch (data.status === -2 ? -1 : data.status) {
+        @case (-1) {
+          <!-- loading状态 -->
+          @if (showLoading) {
+            <div class="sending">
+              <span class="animation-icon-loading-dot">
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+            </div>
+          }
+        }
+        @case (0) {
+          <!-- 失败状态 -->
+          @switch (data.failType) {
+            @case (3) {
+              <div class="warn">
+                <i class="icon-warn-tip"></i>
+              </div>
+            }
+            @default {
+              <div class="fail mutual-opacity" (click)="clickReSend()">
+                <i class="icon-resend"></i>
+              </div>
+            }
+          }
+        }
+        @case (1) {
+          <!-- 成功状态 -->
+          <div class="success">
+            <i class="icon-toast-success"></i>
+          </div>
+        }
+        @case (2) {
+          <!-- 上传中 -->
+          @if (showProgress) {
+            <div class="progress">{{ data.progress }}&#37;</div>
+          }
+        }
+        <!-- 不显示状态 -->
+        @default {}
+      }
+    </div>
+  </div>
+}
+
+<ng-template #img let-asset="asset">
+  <div
+    class="mix-box image-box mutual-opacity"
+    [style.width]="(asset.width || defaultWidth) + 'px'"
+    (click)="checkView(imgF, asset)"
+  >
+    <app-lazy-image
+      [lazy]="asset.url || asset.localData?.dataUrl"
+      [ratio]="(asset.width || defaultWidth) / (asset.height || defaultheight)"
+      [radius]="8"
+    ></app-lazy-image>
+  </div>
+</ng-template>
+
+<ng-template #video let-asset="asset">
+  <div
+    class="mix-box image-box mutual-opacity"
+    [style.width]="(asset.width || defaultWidth) + 'px'"
+    [class.disabled]="!asset.url && !asset.localData?.dataUrl"
+    (click)="checkView(videoF, asset)"
+  >
+    <div class="mask">
+      <i class="icon-saishi">
+        @if (asset.duration > 0) {
+          <em>{{ asset.duration | duration }}</em>
+        }
+      </i>
+    </div>
+    <app-lazy-image
+      [lazy]="asset.coverUrl || asset.localData?.thumbDataUrl"
+      [ratio]="(asset.width || defaultWidth) / (asset.height || defaultheight)"
+      [radius]="8"
+      [bgcolor]="'#000'"
+      [defaultShowBlock]="true"
+    ></app-lazy-image>
+  </div>
+</ng-template>
+
+<ng-template #file let-asset="asset">
+  <div class="mix-box file-box mutual-opacity" (click)="checkOpen(asset)">
+    <img [src]="'assets/images/chat/' + (asset.type | lowercase) + '.svg'" />
+    <span>{{ asset.name }}</span>
+  </div>
+</ng-template>
+
+<ng-template #imgF let-data>
+  <div class="view-contaienr">
+    <i class="icon-close-simple mutual-opacity" (click)="viewer?.close()"></i>
+    <div class="view-box">
+      <img
+        [src]="data.url || data.localData?.dataUrl | preferWebp: true"
+        [style.width]="(data.width || defaultWidth) + 'px'"
+        [style.height]="(data.height || defaultheight) + 'px'"
+      />
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #videoF let-data>
+  <div class="view-contaienr">
+    <i class="icon-close-simple mutual-opacity" (click)="viewer?.close()"></i>
+    <div class="view-box">
+      <video
+        autoplay
+        controls
+        [src]="data.url || data.localData?.dataUrl"
+        [style.width]="(data.width || defaultWidth) + 'px'"
+        [style.height]="(data.height || defaultheight) + 'px'"
+      ></video>
+    </div>
+  </div>
+</ng-template>

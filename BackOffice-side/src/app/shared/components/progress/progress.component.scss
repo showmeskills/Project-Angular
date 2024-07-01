@@ -1,0 +1,153 @@
+.pp-progress,
+:host {
+  position: relative;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.pp-progress {
+  width: 100%;
+}
+
+.pp-progress__text {
+  font-size: 14px;
+  color: #606266;
+  margin-left: 5px;
+  line-height: 1;
+}
+
+.pp-progress__text i {
+  vertical-align: middle;
+  display: block;
+}
+
+.pp-progress--circle,
+.pp-progress--dashboard {
+  display: inline-block;
+}
+
+.pp-progress--circle .pp-progress__text,
+.pp-progress--dashboard .pp-progress__text {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  transform: translateY(-50%);
+}
+
+.pp-progress--circle .pp-progress__text i,
+.pp-progress--dashboard .pp-progress__text i {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.pp-progress--without-text .pp-progress__text {
+  display: none;
+}
+
+.pp-progress--without-text .pp-progress-bar {
+  padding-right: 0;
+  margin-right: 0;
+  display: block;
+}
+
+.pp-progress--text-inside .pp-progress-bar {
+  padding-right: 0;
+  margin-right: 0;
+}
+
+.pp-progress.is-success .pp-progress-bar__inner {
+  background-color: #50cd89;
+}
+
+.pp-progress.is-success .pp-progress__text {
+  color: #50cd89;
+}
+
+.pp-progress.is-warning .pp-progress-bar__inner {
+  background-color: #e6a23c;
+}
+
+.pp-progress.is-warning .pp-progress__text {
+  color: #e6a23c;
+}
+
+.pp-progress.is-exception .pp-progress-bar__inner {
+  background-color: #f56c6c;
+}
+
+.pp-progress.is-exception .pp-progress__text {
+  color: #f56c6c;
+}
+
+.pp-progress-bar {
+  flex-grow: 1;
+  box-sizing: border-box;
+}
+
+.pp-progress-bar__outer {
+  height: 6px;
+  border-radius: 100px;
+  background-color: #ebeef5;
+  overflow: hidden;
+  position: relative;
+  vertical-align: middle;
+}
+
+.pp-progress-bar__inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: #3699ff;
+  text-align: right;
+  border-radius: 100px;
+  line-height: 1;
+  white-space: nowrap;
+  transition: width 0.6s ease;
+}
+
+.pp-progress-bar__inner:after {
+  display: inline-block;
+  content: '';
+  height: 100%;
+  vertical-align: middle;
+}
+
+.pp-progress-bar__inner--indeterminate {
+  transform: translateZ(0);
+  animation: indeterminate 3s infinite;
+}
+
+.pp-progress-bar__innerText {
+  display: inline-block;
+  vertical-align: middle;
+  color: #fff;
+  font-size: 12px;
+  margin: 0 5px;
+}
+
+@keyframes progress {
+  0% {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 32px 0;
+  }
+}
+
+@keyframes indeterminate {
+  0% {
+    left: -100%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+[fill~='none'] {
+  fill: none;
+}

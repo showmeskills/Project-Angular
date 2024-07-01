@@ -1,0 +1,170 @@
+<header class="pb-8">
+  <h2 class="fz-20">{{ 'game.record' | lang }}</h2>
+
+  <div class="d-flex flex-wrap">
+    <form-row [label]="'game.proxy.subUID' | lang" class="mr-12">
+      <ng-template>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 场馆 -->
+    <form-row [label]="'game.proxy.venue' | lang" class="mr-12">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.site" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of siteList" [value]="item.id">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 状态 -->
+    <form-row [label]="'common.status' | lang" class="mr-12">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+            <mat-option *ngFor="let item of statusList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'game.proxy.betDate' | lang" class="mr-12">
+      <ng-template>
+        <input
+          class="form-control text-center"
+          type="text"
+          [placeholder]="'game.proxy.betDateTip' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          rangeSeparator="-"
+          [(ngModel)]="data.betDate"
+          (dateTimeChange)="loadData(true)"
+        />
+        <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</header>
+
+<div class="mt-6">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'game.proxy.subUID' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.providerSimple' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.provider.game_name' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.betAmount' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.validityBet' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.payout' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">
+            <span>
+              <span class="vam">{{ 'game.proxy.betTime' | lang }}</span>
+              <span class="triangle d-inline-block">
+                <div class="triangle-down"></div>
+              </span>
+            </span>
+          </span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.providerName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.gameName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.betAmountUsdt | currencyValue: 'USDT' }}
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.activeFlowUsdt | currencyValue: 'USDT' }}
+            <img class="ml-2" currencyIcon="USDT" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <app-label *ngIf="item.wagerStatus === 0" type="danger">{{ 'game.unsettle' | lang }}</app-label>
+            <app-label *ngIf="item.wagerStatus === 1" type="success">{{ 'game.settled' | lang }}</app-label>
+          </span>
+        </td>
+        <td>
+          <span class="cell" [winColor]="value" *win="item.payoutUsdtAmount; let value; prev as prev">
+            {{ prev }}{{ (value | currencyValue: 'USDT') || '-' }}<img class="ml-2" currencyIcon="USDT" alt="" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.betTime | timeFormat }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty [show]="!list.length && !isLoading"></empty>
+</div>
+
+<div class="d-flex flex-between flex-ac pb-8">
+  <div>
+    <mat-form-field [style.width.px]="76">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+      [isLoading]="isLoading"
+    ></app-paginator>
+  </div>
+</div>

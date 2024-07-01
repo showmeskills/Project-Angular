@@ -1,0 +1,28 @@
+@use 'sass/tools' as *;
+
+.upload {
+  display: flex;
+  margin-right: 50px;
+
+  &-title {
+    font-size: 16px;
+    line-height: 42px;
+    vertical-align: middle;
+    min-width: 32px;
+    margin-right: 22px;
+    color: #969bad;
+  }
+}
+
+svg-icon {
+  @include svg-icon-hover;
+  user-select: none;
+}
+
+.country-item {
+  @include itemClose;
+}
+
+.tip {
+  @include svg-vam;
+}

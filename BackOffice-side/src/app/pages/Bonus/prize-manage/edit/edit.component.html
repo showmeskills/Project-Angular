@@ -1,0 +1,1347 @@
+<div class="card card-body">
+  <div class="fz-20 mb-10">{{ 'member.activity.prizeCommon.prizeConfiguration' | lang }}</div>
+
+  <!-- 验证表单 -->
+  <form class="form w-100 mb-8" [formGroup]="formGroup" #form>
+    <!-- 多语系 -->
+    <lang-tab
+      #langTab
+      formArrayName="lang"
+      [(value)]="selectLang"
+      (languageChange)="updateLanguageForm()"
+      [edit]="!isCheck"
+    >
+      <ng-template let-current="current" let-control="formControl">
+        <div class="pb-8" [formGroup]="control" [class.disabled]="isCheck">
+          <!-- 奖品全称 -->
+          <form-row
+            class="mb-8"
+            required
+            name="name"
+            label-width="200"
+            [label]="('member.activity.prizeCommon.prizeEditName' | lang) + '（' + current?.name + '）'"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" />
+            </ng-template>
+          </form-row>
+
+          <!-- 奖品简称 -->
+          <form-row
+            required
+            name="simpleName"
+            label-width="200"
+            [label]="('member.activity.prizeCommon.prizeEditSimpleName' | lang) + '（' + current?.name + '）'"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" />
+            </ng-template>
+          </form-row>
+        </div>
+      </ng-template>
+    </lang-tab>
+  </form>
+
+  <div class="pl-8 pr-8" [class.disabled-edit]="isCheck">
+    <!-- 奖品配置 -->
+    <form-row
+      class="mb-8"
+      [class.disabled]="this.isOfflineEdit"
+      [label]="'member.activity.prizeCommon.prizeConfiguration' | lang"
+      label-width="200"
+    >
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of configurationList">
+            <input
+              type="radio"
+              name="configuration"
+              [value]="item?.value"
+              [(ngModel)]="configuration"
+              (ngModelChange)="configurationValueChange($event)"
+            />
+            <span class="mr-4"></span>{{ item?.lang | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <ng-container [ngSwitch]="configuration">
+      <!-- 现金券 -->
+      <ng-container *ngSwitchCase="PrizeType.Cash">
+        <!-- 币种选择 -->
+        <ng-container *ngTemplateOutlet="currencyTpl"></ng-container>
+
+        <!-- 金额类型选择 -->
+        <ng-container *ngTemplateOutlet="AmountTypeTpl"></ng-container>
+
+        <!-- 提款倍数 -->
+        <form-row class="mb-8" [label]="'member.activity.prizeCommon.wdRatio' | lang" label-width="200" required>
+          <ng-template>
+            <form-wrap [style.width.px]="180" [invalid]="!+withdrawFlowMultiple">
+              <input
+                class="form-control fz-14"
+                autocomplete="off"
+                type="text"
+                input-number
+                [input-float]="0"
+                [input-max]="10000"
+                [(ngModel)]="withdrawFlowMultiple"
+              />
+              <span suffix class="color-aaa fz-14">X</span>
+            </form-wrap>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+withdrawFlowMultiple">
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 发放方式 -->
+        <ng-container *ngTemplateOutlet="DistributionTpl"></ng-container>
+
+        <!-- 是否风控 -->
+        <ng-container *ngTemplateOutlet="IsRiskTpl"></ng-container>
+      </ng-container>
+
+      <!-- 抵用金 -->
+      <ng-container *ngSwitchCase="PrizeType.Credit">
+        <!-- 排除游戏 -->
+        <form-row
+          class="mb-8"
+          [class.read-on-disabled]="isCheck"
+          [label]="'member.activity.prizeCommon.excludeGames' | lang"
+          label-width="200"
+        >
+          <ng-template>
+            <button type="button" class="btn btn-light-primary py-3 px-9" (click)="openExcludedGamePopup()">
+              <svg-icon *ngIf="!isCheck" [src]="'./assets/images/svg/pen.svg'" class="svg-icon"></svg-icon>
+              <span class="vam">
+                {{ (isCheck ? 'common.review' : 'member.activity.prizeCommon.excludeGamesManage') | lang }}
+              </span>
+            </button>
+          </ng-template>
+        </form-row>
+
+        <!-- 最低投注限额 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.minBetLimit' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <form-wrap [style.width.px]="180" [invalid]="!+creditData.minBetLimit">
+              <input
+                class="form-control fz-14"
+                autocomplete="off"
+                type="text"
+                [input-float]="3"
+                [input-max]="99999999"
+                [(ngModel)]="creditData.minBetLimit"
+              />
+              <span suffix class="color-aaa fz-14">USDT</span>
+            </form-wrap>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+creditData.minBetLimit">
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 最高抵扣 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.maximumDeduction' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <form-wrap [style.width.px]="180" [invalid]="!+creditData.maximumDeduction">
+              <input
+                class="form-control fz-14"
+                autocomplete="off"
+                type="text"
+                input-number
+                [input-float]="0"
+                [input-max]="99"
+                [(ngModel)]="creditData.maximumDeduction"
+              />
+              <span suffix class="color-aaa fz-14">%</span>
+            </form-wrap>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+creditData.maximumDeduction">
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 单笔抵扣 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.singleDeduction' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <form-wrap [style.width.px]="180" [invalid]="!+creditData.singleDeduction">
+              <input
+                class="form-control fz-14"
+                autocomplete="off"
+                type="text"
+                [input-float]="3"
+                [input-max]="99999999"
+                [(ngModel)]="creditData.singleDeduction"
+              />
+              <span suffix class="color-aaa fz-14">USDT</span>
+            </form-wrap>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+creditData.singleDeduction">
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 币种选择 -->
+        <ng-container *ngTemplateOutlet="currencyTpl"></ng-container>
+
+        <!-- 金额类型选择 -->
+        <ng-container *ngTemplateOutlet="AmountTypeTpl"></ng-container>
+
+        <!-- 发放方式 -->
+        <ng-container *ngTemplateOutlet="DistributionTpl"></ng-container>
+
+        <!-- 是否风控 -->
+        <ng-container *ngTemplateOutlet="IsRiskTpl"></ng-container>
+      </ng-container>
+
+      <!-- 后发现金券 -->
+      <ng-container *ngSwitchCase="PrizeType.AfterCash">
+        <!-- 币种：LED -->
+        <form-row class="mb-8" [label]="'common.currency' | lang" label-width="200">
+          <ng-template>
+            <div class="d-flex flex-ac">
+              <img [currencyIcon]="'LED'" currencySize="18" class="mr-4" />
+              <span>{{ 'LED' }}</span>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 金额类型选择 -->
+        <ng-container *ngTemplateOutlet="AmountTypeTpl"></ng-container>
+
+        <!-- 是否风控 -->
+        <ng-container *ngTemplateOutlet="IsRiskTpl"></ng-container>
+      </ng-container>
+
+      <!-- 实物 -->
+      <ng-container *ngSwitchCase="PrizeType.RealItem">
+        <!-- 图片上传 -->
+        <form-row class="mb-8" [label]="'member.activity.prizeCommon.itemPicture' | lang" label-width="200" required>
+          <ng-template>
+            <upload
+              type="Bonus"
+              [style.width.px]="230"
+              desc="1:1"
+              [accept]="['jpg', 'png', 'gif', 'bmp', 'pdf', 'svg']"
+              [(ngModel)]="realItemData.picture"
+            ></upload>
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 装备 -->
+      <ng-container *ngSwitchCase="PrizeType.Equipment">
+        <!-- 图片上传 -->
+        <form-row class="mb-8" [label]="'member.activity.prizeCommon.itemPicture' | lang" label-width="200" required>
+          <ng-template>
+            <upload
+              type="Bonus"
+              desc="1:1"
+              [style.width.px]="230"
+              [accept]="['jpg', 'png', 'gif', 'bmp', 'pdf', 'svg']"
+              [(ngModel)]="equipmentData.picture"
+            ></upload>
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 非粘性奖金 -->
+      <ng-container *ngSwitchCase="PrizeType.NonStickyBonus">
+        <!-- 币种选择 -->
+        <ng-container *ngTemplateOutlet="currencyTpl"></ng-container>
+
+        <!-- 金额类型选择 -->
+        <ng-container *ngTemplateOutlet="AmountTypeTpl"></ng-container>
+
+        <!-- 非粘性配置 -->
+        <ng-container *ngTemplateOutlet="nonStickyTpl"></ng-container>
+
+        <!-- 是否风控 -->
+        <ng-container *ngTemplateOutlet="IsRiskTpl"></ng-container>
+
+        <!-- 条款及条件 -->
+        <ng-container *ngTemplateOutlet="TermsTpl"></ng-container>
+      </ng-container>
+
+      <!-- 粘性奖金 -->
+      <ng-container *ngSwitchCase="PrizeType.StickyBonus">
+        <!-- 币种选择 -->
+        <ng-container *ngTemplateOutlet="currencyTpl"></ng-container>
+
+        <!-- 金额类型选择 -->
+        <ng-container *ngTemplateOutlet="AmountTypeTpl"></ng-container>
+
+        <!-- 可用范围 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.coupon.model.availableRange' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of stickyLimitTypeList">
+                <input
+                  type="radio"
+                  name="stickyLimitValue"
+                  [value]="item.value"
+                  [(ngModel)]="stickyData.limitValue"
+                  (ngModelChange)="onExcludedGameReset()"
+                />
+                <span class="mr-4"></span>{{ item.lang | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 排除游戏 -->
+        <form-row
+          class="mb-8"
+          [class.read-on-disabled]="isCheck"
+          [label]="'member.activity.prizeCommon.excludeGames' | lang"
+          label-width="200"
+        >
+          <ng-template>
+            <button type="button" class="btn btn-light-primary py-3 px-9" (click)="openExcludedGamePopup()">
+              <svg-icon *ngIf="!isCheck" [src]="'./assets/images/svg/pen.svg'" class="svg-icon"></svg-icon>
+              <span class="vam">
+                {{ (isCheck ? 'common.review' : 'member.activity.prizeCommon.excludeGamesManage') | lang }}
+              </span>
+            </button>
+          </ng-template>
+        </form-row>
+
+        <!-- 每次投注的最大赌注 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.maxBetAmount' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <form-wrap [style.width.px]="180" [invalid]="!+stickyData.maxBetAmount">
+              <input
+                class="form-control fz-14"
+                type="text"
+                [input-float]="3"
+                [input-max]="99999999"
+                [(ngModel)]="stickyData.maxBetAmount"
+              />
+              <span suffix class="color-aaa fz-14">USDT</span>
+            </form-wrap>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+stickyData.maxBetAmount">
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 投注倍数 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.bettingMultiple' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <div class="d-flex flex-ac">
+              <form-wrap [style.width.px]="180" [invalid]="!+stickyData.betMultiple">
+                <input
+                  class="form-control fz-14"
+                  type="text"
+                  input-number
+                  [input-float]="0"
+                  [input-max]="10000"
+                  [(ngModel)]="stickyData.betMultiple"
+                />
+                <span suffix class="color-aaa fz-14">X</span>
+              </form-wrap>
+              <div class="ml-4 color-aaa">
+                <!-- 投注要求：（存款金额+奖金）*倍数 -->
+                {{ 'member.activity.prizeCommon.betRequire' | lang }}
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+nonStickyData.multiple">
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 最低免流水金额 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.minFreeAmount' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <form-wrap [style.width.px]="180" [invalid]="!+stickyData.minFreeAmount">
+              <input
+                class="form-control fz-14"
+                type="text"
+                [input-float]="3"
+                [input-max]="99999999"
+                [(ngModel)]="stickyData.minFreeAmount"
+              />
+              <span suffix class="color-aaa fz-14">USDT</span>
+            </form-wrap>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+stickyData.minFreeAmount">
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 是否风控 -->
+        <!-- <ng-container *ngTemplateOutlet="IsRiskTpl"></ng-container> -->
+
+        <!-- 条款及条件 -->
+        <ng-container *ngTemplateOutlet="TermsTpl"></ng-container>
+      </ng-container>
+
+      <!-- Free Spin -->
+      <ng-container *ngSwitchCase="PrizeType.FreeSpin">
+        <!-- 选择适用游戏 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.applicableGames' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <button
+              *ngIf="!freeSpinData.gameData"
+              type="button"
+              class="btn btn-light-primary py-3 px-9"
+              (click)="onOpenFreeSpinGames()"
+            >
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon"></svg-icon>
+              <span class="vam">
+                {{ 'member.activity.prizeCommon.pleaseSelectGame' | lang }}
+              </span>
+            </button>
+
+            <div *ngIf="freeSpinData.gameData" class="game-box">
+              <img
+                [src]="
+                  freeSpinData.gameData?.gameInfos[0]?.webLogo
+                    ? (freeSpinData.gameData?.gameInfos[0]?.webLogo | host)
+                    : './assets/images/game-noCover.png'
+                "
+              />
+              <div class="game-content">
+                <div class="content-left">
+                  <div class="lh-22" [style.width.px]="200">
+                    {{ freeSpinData.gameData?.gameInfos[0]?.gameName || '-' }}
+                  </div>
+                  <div class="lh-22">{{ freeSpinData.gameData?.providerCatId || '-' }}</div>
+                </div>
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="svg-icon svg-icon-3x cursor-pointer"
+                  (click)="onDeleteFreespinGame()"
+                ></svg-icon>
+              </div>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 适用游戏配置 -->
+        <ng-container *ngIf="freeSpinData?.gameFreeSpinConfig">
+          <!-- 币种选择 -->
+          <ng-container *ngTemplateOutlet="currencyTpl"></ng-container>
+
+          <!-- 显示总价值 -->
+          <form-row
+            class="mb-8"
+            [class.disabled]="this.isOfflineEdit"
+            [label]="'member.activity.prizeCommon.totalValue' | lang"
+            label-width="200"
+            required
+          >
+            <ng-template>
+              <form-wrap [style.width.px]="180" [invalid]="!+freeSpinData.total">
+                <input
+                  class="form-control fz-14"
+                  autocomplete="off"
+                  type="text"
+                  [input-float]="3"
+                  [input-max]="99999999"
+                  [(ngModel)]="freeSpinData.total"
+                />
+                <span suffix class="color-aaa fz-14">{{ selectCurrencyCode }}</span>
+              </form-wrap>
+            </ng-template>
+
+            <ng-template #invalidFeedbackCustom>
+              <div class="invalid-feedback" *ngIf="!+freeSpinData.total">
+                {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+              </div>
+            </ng-template>
+          </form-row>
+
+          <!-- 旋转次数 -->
+          <form-row
+            class="mb-8"
+            [class.disabled]="this.isOfflineEdit"
+            [label]="'member.activity.prizeCommon.numberOfSpins' | lang"
+            label-width="200"
+            required
+          >
+            <ng-template>
+              <div class="d-flex flex-ac">
+                <form-wrap [style.width.px]="180" [invalid]="!+freeSpinData.spins">
+                  <input
+                    class="form-control fz-14"
+                    autocomplete="off"
+                    type="text"
+                    input-number
+                    [input-float]="0"
+                    [input-max]="freeSpinData.gameFreeSpinConfig?.isPng ? 1000 : 100"
+                    [(ngModel)]="freeSpinData.spins"
+                  />
+                  <span suffix class="color-aaa fz-14">{{ 'luckRoulette.times' | lang }}</span>
+                </form-wrap>
+                <div class="color-aaa ml-4">
+                  （{{ 'member.activity.prizeCommon.does' | lang
+                  }}{{ freeSpinData.gameFreeSpinConfig?.isPng ? 1000 : 100 }}{{ 'luckRoulette.times' | lang }}）
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template #invalidFeedbackCustom>
+              <div class="invalid-feedback" *ngIf="!+freeSpinData.spins">
+                {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+              </div>
+            </ng-template>
+          </form-row>
+
+          <!-- 旋转价值 -->
+          <form-row
+            class="mb-8"
+            [class.disabled]="this.isOfflineEdit"
+            [label]="'member.activity.prizeCommon.spinValue' | lang"
+            label-width="200"
+            required
+          >
+            <ng-template>
+              <!-- PNG厂商 -->
+              <ng-container *ngIf="freeSpinData.gameFreeSpinConfig?.isPng === true">
+                <!-- 硬币值 -->
+                <form-row class="mb-2" [label]="'member.activity.prizeCommon.coin' | lang" label-width="120">
+                  <ng-template>
+                    <!-- 填写 -->
+                    <div class="d-flex flex-ac" *ngIf="freeSpinData?.gameFreeSpinConfig?.maxCoin">
+                      <form-wrap [style.width.px]="180" [invalid]="!+freeSpinData.spinValueData.coins">
+                        <input
+                          class="form-control fz-14"
+                          autocomplete="off"
+                          type="text"
+                          input-number
+                          [input-float]="0"
+                          [input-max]="freeSpinData?.gameFreeSpinConfig?.maxCoin"
+                          [(ngModel)]="freeSpinData.spinValueData.coins"
+                        />
+                      </form-wrap>
+                      <div class="color-aaa ml-4">
+                        （{{ 'member.activity.prizeCommon.does' | lang
+                        }}{{ freeSpinData?.gameFreeSpinConfig?.maxCoin }}）
+                      </div>
+                    </div>
+
+                    <!-- 下拉 -->
+                    <mat-form-field [style.width.px]="180" *ngIf="!freeSpinData?.gameFreeSpinConfig?.maxCoin">
+                      <mat-select
+                        class="form-control"
+                        [class.is-invalid]="!freeSpinData.spinValueData.coins"
+                        [(ngModel)]="freeSpinData.spinValueData.coins"
+                      >
+                        <mat-option *ngFor="let item of freeSpinData?.gameFreeSpinConfig?.coins || []" [value]="item">{{
+                          item
+                        }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </form-row>
+
+                <!-- 旋转的乘数 -->
+                <form-row class="mb-2" [label]="'member.activity.prizeCommon.lines' | lang" label-width="120">
+                  <ng-template>
+                    <!-- 填写 -->
+                    <div class="d-flex flex-ac" *ngIf="freeSpinData?.gameFreeSpinConfig?.maxLine">
+                      <form-wrap [style.width.px]="180" [invalid]="!+freeSpinData.spinValueData.lines">
+                        <input
+                          class="form-control fz-14"
+                          autocomplete="off"
+                          type="text"
+                          input-number
+                          [input-float]="0"
+                          [input-max]="freeSpinData?.gameFreeSpinConfig?.maxLine"
+                          [(ngModel)]="freeSpinData.spinValueData.lines"
+                        />
+                      </form-wrap>
+                      <!-- 不超过 -->
+                      <div class="color-aaa ml-4">
+                        （{{ 'member.activity.prizeCommon.does' | lang
+                        }}{{ freeSpinData?.gameFreeSpinConfig?.maxLine }}）
+                      </div>
+                    </div>
+
+                    <!-- 下拉 -->
+                    <mat-form-field [style.width.px]="180" *ngIf="!freeSpinData?.gameFreeSpinConfig?.maxLine">
+                      <mat-select
+                        class="form-control"
+                        [class.is-invalid]="!freeSpinData.spinValueData.lines"
+                        [(ngModel)]="freeSpinData.spinValueData.lines"
+                      >
+                        <mat-option *ngFor="let item of freeSpinData?.gameFreeSpinConfig?.lines || []" [value]="item">{{
+                          item
+                        }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </form-row>
+
+                <!-- 面额 -->
+                <form-row class="mb-2" [label]="'member.activity.prizeCommon.denomination' | lang" label-width="120">
+                  <ng-template>
+                    <div class="d-flex flex-ac">
+                      <mat-form-field [style.width.px]="180">
+                        <mat-select
+                          class="form-control"
+                          [class.is-invalid]="!freeSpinData.spinValueData.denomination"
+                          [(ngModel)]="freeSpinData.spinValueData.denomination"
+                        >
+                          <mat-option
+                            *ngFor="let item of freeSpinData?.gameFreeSpinConfig?.denominations || []"
+                            [value]="item"
+                            >{{ item }}</mat-option
+                          >
+                        </mat-select>
+                      </mat-form-field>
+
+                      <div class="d-flex flex-ac color-aaa ml-4">
+                        （
+                        <img [currencyIcon]="'EUR'" currencySize="18" class="mr-2" />
+                        <span>EUR</span>
+                        ）
+                      </div>
+                    </div>
+                  </ng-template>
+                </form-row>
+              </ng-container>
+
+              <!-- 聚合厂商 -->
+              <ng-container *ngIf="freeSpinData.gameFreeSpinConfig?.isPng === false">
+                <!-- 最小投注金额 -->
+                <form-row class="mb-2" [label]="'member.activity.prizeCommon.minBet' | lang" label-width="120">
+                  <ng-template>
+                    <div class="d-flex flex-ac">
+                      <mat-form-field [style.width.px]="180">
+                        <mat-select
+                          class="form-control"
+                          [class.is-invalid]="!freeSpinData.spinValueData.minBet"
+                          (selectionChange)="onSelectMinBetChange()"
+                          [(ngModel)]="freeSpinData.spinValueData.minBet"
+                        >
+                          <mat-option
+                            *ngFor="let item of freeSpinData?.gameFreeSpinConfig?.minBets || []"
+                            [value]="item.minBet"
+                            >{{ item.minBet }}</mat-option
+                          >
+                        </mat-select>
+                      </mat-form-field>
+
+                      <!-- <div class="d-flex flex-ac color-aaa ml-4">
+                        （
+                        <img [currencyIcon]="'EUR'" currencySize="18" class="mr-2" />
+                        <span>EUR</span>
+                        ）
+                      </div> -->
+                    </div>
+                  </ng-template>
+                </form-row>
+
+                <!-- 投注级别 -->
+                <form-row
+                  *ngIf="freeSpinData.spinValueData.minBet"
+                  [label]="'member.activity.prizeCommon.betLevel' | lang"
+                  label-width="120"
+                >
+                  <ng-template>
+                    {{ this.freeSpinData.spinValueData.betLevel || '-' }}
+                  </ng-template>
+                </form-row>
+              </ng-container>
+            </ng-template>
+          </form-row>
+
+          <!-- 奖金上限 -->
+          <form-row
+            class="mb-8"
+            [class.disabled]="this.isOfflineEdit"
+            [label]="'member.activity.prizeCommon.bonusCap' | lang"
+            label-width="200"
+          >
+            <ng-template>
+              <div class="d-flex flex-ac">
+                <form-wrap [style.width.px]="180">
+                  <input
+                    class="form-control fz-14"
+                    autocomplete="off"
+                    type="text"
+                    [input-float]="3"
+                    [(ngModel)]="freeSpinData.bonusCap"
+                  />
+                  <span suffix class="color-aaa fz-14">{{ selectCurrencyCode }}</span>
+                </form-wrap>
+
+                <div class="color-aaa ml-4">（{{ 'member.activity.prizeCommon.bonusCapTips' | lang }}）</div>
+              </div>
+            </ng-template>
+          </form-row>
+        </ng-container>
+
+        <!-- 卷有效期 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.coupon.model.couponValidity' | lang"
+          label-width="200"
+          required
+        >
+          <ng-template>
+            <div class="d-flex flex-ac">
+              <div class="color-aaa">{{ 'member.coupon.model.fromIssue' | lang }}</div>
+              <form-wrap class="mx-4" [style.width.px]="180" [invalid]="!+freeSpinData.periodDay">
+                <input
+                  class="form-control"
+                  autocomplete="off"
+                  type="text"
+                  input-number
+                  [input-float]="0"
+                  [input-max]="30"
+                  [(ngModel)]="freeSpinData.periodDay"
+                />
+                <span suffix class="color-aaa">{{ 'common.day' | lang }}</span>
+              </form-wrap>
+              <div class="color-aaa">
+                （{{ 'member.activity.prizeCommon.does' | lang }}30{{ 'common.day' | lang }}）
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-template #invalidFeedbackCustom>
+            <div class="invalid-feedback" *ngIf="!+freeSpinData.periodDay">
+              <!-- 请输入大于0的数字 -->
+              {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 是否为非粘性 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="this.isOfflineEdit"
+          [label]="'member.activity.prizeCommon.isNonSticky' | lang"
+          label-width="200"
+        >
+          <ng-template>
+            <label class="switch switch-success" [style.height.px]="42">
+              <input type="checkbox" [(ngModel)]="freeSpinData.isNonSticky" />
+              <span></span>
+              <div class="ml-2">{{ (freeSpinData.isNonSticky ? 'game.open' : 'game.off') | lang }}</div>
+            </label>
+          </ng-template>
+        </form-row>
+
+        <!-- 不是非粘性 -->
+        <ng-container *ngIf="!freeSpinData.isNonSticky">
+          <!-- 提款倍数 -->
+          <form-row
+            class="mb-8"
+            [class.disabled]="this.isOfflineEdit"
+            [label]="'member.activity.prizeCommon.wdRatio' | lang"
+            label-width="200"
+            required
+          >
+            <ng-template>
+              <form-wrap [style.width.px]="180" [invalid]="!withdrawFlowMultiple && withdrawFlowMultiple !== 0">
+                <input
+                  class="form-control fz-14"
+                  autocomplete="off"
+                  type="text"
+                  input-number
+                  [input-float]="0"
+                  [input-max]="10000"
+                  [(ngModel)]="withdrawFlowMultiple"
+                />
+                <span suffix class="color-aaa fz-14">X</span>
+              </form-wrap>
+            </ng-template>
+          </form-row>
+        </ng-container>
+
+        <!-- 是非粘性 -->
+        <ng-container *ngIf="freeSpinData.isNonSticky">
+          <!-- 非粘性配置 -->
+          <ng-container *ngTemplateOutlet="nonStickyTpl"></ng-container>
+          <!-- 是否风控 -->
+          <ng-container *ngTemplateOutlet="IsRiskTpl"></ng-container>
+        </ng-container>
+
+        <!-- 条款及条件 -->
+        <ng-container *ngTemplateOutlet="TermsTpl"></ng-container>
+      </ng-container>
+
+      <!-- SVIP体验券 - 未启用 -->
+      <ng-container *ngSwitchCase="PrizeType.SvipEXP">
+        <!-- <form-row
+          [class.disabled]="this.isOfflineEdit"
+          class="mb-8"
+          [label]="'member.activity.prizeCommon.itemPicture' | lang"
+          label-width="200"
+        >
+          <ng-template>
+            <div class="d-flex flex-ac">
+              <label class="mr-5">{{ 'member.coupon.model.fromExchange' | lang }}</label>
+              <form-wrap [style.width.px]="86">
+                <span suffix class="color-aaa">{{ 'common.day' | lang }}</span>
+                <input class="form-control" autocomplete="off" type="text" [(ngModel)]="day" />
+              </form-wrap>
+            </div>
+          </ng-template>
+        </form-row> -->
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- 按钮组 -->
+  <div class="pt-10 d-flex flex-center btn-wrap">
+    <button class="c-btn c-btn-default" (click)="back()">
+      {{ 'common.back' | lang }}
+    </button>
+    <button
+      *ngIf="!isCheck"
+      type="button"
+      class="c-btn c-btn-primary"
+      [class.disabled]="appService.loading$ | async"
+      (click)="onSubmit()"
+    >
+      {{ 'common.submit' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 币种选择模板 -->
+<ng-template #currencyTpl>
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'common.currency' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <mat-form-field [style.width.px]="180">
+        <mat-select
+          class="form-control"
+          [class.is-invalid]="!selectCurrencyCode"
+          [(ngModel)]="selectCurrencyCode"
+          [style.width.px]="180"
+          *search="let searchList$ of currencyListCom; key: 'code'"
+        >
+          <!-- 内容框 -->
+          <mat-select-trigger>
+            <div class="d-flex flex-ac">
+              <img [currencyIcon]="selectCurrencyCode" currencySize="18" class="mr-4" />
+              <span>{{ selectCurrencyCode }}</span>
+            </div>
+          </mat-select-trigger>
+
+          <!-- 搜索框 -->
+          <input type="search" searchInput />
+
+          <!-- 下拉框 -->
+          <mat-option *ngFor="let item of searchList$ | async" [value]="item?.code">
+            <div class="d-flex flex-ac">
+              <img *ngIf="item.code" [currencyIcon]="item.code" currencySize="18" class="mr-4" />
+              <span>{{ item.code }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+</ng-template>
+
+<!-- 金额类型模板 -->
+<ng-template #AmountTypeTpl>
+  <!-- 类型: 固定金额/按比例 -->
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'common.type' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of amountTypeList; index as i">
+          <input type="radio" name="amountType" [value]="item.value" [(ngModel)]="amountType" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 类型：固定金额  -->
+  <form-row
+    *ngIf="amountType === PrizeAmountType.Fixed"
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'common.amount' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <form-wrap [style.width.px]="180" [invalid]="!+amount">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          [input-float]="3"
+          [input-max]="99999999"
+          [(ngModel)]="amount"
+        />
+        <span suffix class="color-aaa fz-14">{{
+          configuration === PrizeType.AfterCash ? 'LED' : selectCurrencyCode
+        }}</span>
+      </form-wrap>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="!+amount">
+        <!-- 请输入大于0的数字 -->
+        {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 类型：按比例 -->
+  <ng-container *ngIf="amountType === PrizeAmountType.Rate">
+    <!-- 比例 -->
+    <form-row
+      class="mb-8"
+      [class.disabled]="this.isOfflineEdit"
+      [label]="'member.activity.prizeCommon.proportion' | lang"
+      label-width="200"
+      required
+    >
+      <ng-template>
+        <form-wrap [style.width.px]="180" [invalid]="!+rate">
+          <input
+            class="form-control fz-14"
+            autocomplete="off"
+            type="text"
+            [input-float]="2"
+            [input-max]="200"
+            [(ngModel)]="rate"
+          />
+          <span suffix class="color-aaa fz-14">%</span>
+        </form-wrap>
+      </ng-template>
+
+      <ng-template #invalidFeedbackCustom>
+        <div class="invalid-feedback" *ngIf="!+rate">
+          <!-- 请输入大于0的数字 -->
+          {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 上限金额 -->
+    <form-row
+      class="mb-8"
+      [class.disabled]="this.isOfflineEdit"
+      [label]="'member.activity.prizeCommon.capAmount' | lang"
+      label-width="200"
+      required
+    >
+      <ng-template>
+        <form-wrap [style.width.px]="180" [invalid]="!+rateLimit">
+          <input
+            class="form-control fz-14"
+            autocomplete="off"
+            type="text"
+            input-number
+            [input-float]="0"
+            [input-max]="10000"
+            [(ngModel)]="rateLimit"
+          />
+          <span suffix class="color-aaa fz-14">{{ selectCurrencyCode }}</span>
+        </form-wrap>
+      </ng-template>
+
+      <ng-template #invalidFeedbackCustom>
+        <div class="invalid-feedback" *ngIf="!+rateLimit">
+          <!-- 请输入大于0的数字 -->
+          {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+        </div>
+      </ng-template>
+    </form-row>
+  </ng-container>
+</ng-template>
+
+<!-- 发放方式模板 -->
+<ng-template #DistributionTpl>
+  <!-- 发放方式 - 需要领取/直接发放  -->
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'member.activity.prizeCommon.distribution' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of distributionTypeList; index as i">
+          <input type="radio" name="distribution" [value]="item.value" [(ngModel)]="distribution" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 需要领取 -->
+  <ng-container *ngIf="distribution === PrizeDistributionEnumType.Need">
+    <!-- 需要领取 - 相对时间/永久有效 -->
+    <form-row
+      class="mb-8"
+      [class.disabled]="this.isOfflineEdit"
+      [label]="'member.coupon.model.couponValidity' | lang"
+      label-width="200"
+    >
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of periodList">
+            <input type="radio" name="period" [value]="item.value" [(ngModel)]="period" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 相对时间 - 从发卷X天 -->
+    <form-row
+      *ngIf="period === PrizePeriodEnumType.Period"
+      class="mb-8"
+      [class.disabled]="this.isOfflineEdit"
+      [label]="'member.coupon.model.fromIssue' | lang"
+      label-width="200"
+      required
+    >
+      <ng-template>
+        <form-wrap [style.width.px]="180" [invalid]="!+periodDay">
+          <span suffix class="color-aaa">{{ 'common.day' | lang }}</span>
+          <input
+            class="form-control"
+            autocomplete="off"
+            type="text"
+            input-number
+            [input-float]="0"
+            [input-max]="365"
+            [(ngModel)]="periodDay"
+          />
+        </form-wrap>
+      </ng-template>
+
+      <ng-template #invalidFeedbackCustom>
+        <div class="invalid-feedback" *ngIf="!+periodDay">
+          <!-- 请输入大于0的数字 -->
+          {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+        </div>
+      </ng-template>
+    </form-row>
+  </ng-container>
+</ng-template>
+
+<!-- 是否风控模板 -->
+<ng-template #IsRiskTpl>
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'member.activity.prizeCommon.isRisk' | lang"
+    label-width="200"
+  >
+    <ng-template>
+      <label class="switch switch-success" [style.height.px]="42">
+        <input type="checkbox" [(ngModel)]="isRisk" />
+        <span></span>
+        <div class="ml-2">{{ (isRisk ? 'game.open' : 'game.off') | lang }}</div>
+      </label>
+    </ng-template>
+  </form-row>
+</ng-template>
+
+<!-- 条款及条件模板 -->
+<ng-template #TermsTpl>
+  <ng-container [formGroup]="formGroup" *ngIf="formGroup">
+    <form-row
+      class="mb-8"
+      [class.read-on-disabled]="isCheck"
+      [class.disabled]="this.isOfflineEdit"
+      [label]="'member.activity.prizeCommon.termsAndConditions' | lang"
+      label-width="200"
+      line-height="normal"
+      required
+    >
+      <ng-template>
+        <lang-tab
+          #termsLangTab
+          formArrayName="termsLang"
+          [(value)]="termsSelectLang"
+          (languageChange)="updateTermsLanguageForm()"
+          [edit]="!isCheck"
+        >
+          <ng-template let-control="formControl">
+            <div class="pb-8" [formGroup]="control">
+              <form-row name="content" label-width="0">
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <textarea
+                    [readOnly]="isCheck"
+                    [class.is-invalid]="invalid"
+                    [formControl]="control"
+                    class="form-control"
+                    type="text"
+                    rows="5"
+                  ></textarea>
+                </ng-template>
+              </form-row>
+            </div>
+          </ng-template>
+        </lang-tab>
+
+        <!-- 显示条件 1.非粘性奖金 / 粘性奖金 2.Free Spin为非粘性配置  -->
+        <div
+          *ngIf="
+            [PrizeType.NonStickyBonus, PrizeType.StickyBonus].includes(configuration) ||
+            (configuration === PrizeType.FreeSpin && freeSpinData.isNonSticky)
+          "
+          class="text-danger"
+        >
+          {{ 'member.activity.prizeCommon.termsAndConditionsTips' | lang }}
+        </div>
+      </ng-template>
+    </form-row>
+  </ng-container>
+</ng-template>
+
+<!-- 非粘性奖品配置模版 -->
+<ng-template #nonStickyTpl>
+  <!-- 可用范围 -->
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'member.coupon.model.availableRange' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <ng-container *ngFor="let item of stickyLimitTypeList">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngIf="!item.isSticky">
+            <input
+              type="radio"
+              name="nonStickyLimitValue"
+              [value]="item.value"
+              [(ngModel)]="nonStickyData.limitValue"
+              (ngModelChange)="onExcludedGameReset()"
+            />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 排除游戏 -->
+  <form-row
+    class="mb-8"
+    [class.read-on-disabled]="isCheck"
+    [label]="'member.activity.prizeCommon.excludeGames' | lang"
+    label-width="200"
+  >
+    <ng-template>
+      <button type="button" class="btn btn-light-primary py-3 px-9" (click)="openExcludedGamePopup()">
+        <svg-icon *ngIf="!isCheck" [src]="'./assets/images/svg/pen.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">
+          {{ (isCheck ? 'common.review' : 'member.activity.prizeCommon.excludeGamesManage') | lang }}
+        </span>
+      </button>
+    </ng-template>
+  </form-row>
+
+  <!-- 每次旋转的最大赌注 -->
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'member.activity.prizeCommon.maxbetspin' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <form-wrap [style.width.px]="180" [invalid]="!+nonStickyData.spin">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          [input-float]="3"
+          [input-max]="99999999"
+          [(ngModel)]="nonStickyData.spin"
+        />
+        <span suffix class="color-aaa fz-14">USDT</span>
+      </form-wrap>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="!+nonStickyData.spin">
+        {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 投注倍数 -->
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'member.activity.prizeCommon.bettingMultiple' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <form-wrap [style.width.px]="180" [invalid]="!+nonStickyData.multiple">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          input-number
+          [input-float]="0"
+          [input-max]="10000"
+          [(ngModel)]="nonStickyData.multiple"
+        />
+        <span suffix class="color-aaa fz-14">X</span>
+      </form-wrap>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="!+nonStickyData.multiple">
+        {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 激活后持续时间 -->
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'member.activity.prizeCommon.durationActivation' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <form-wrap [style.width.px]="180" [invalid]="!+nonStickyData.day">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          input-number
+          [input-float]="0"
+          [input-max]="365"
+          [(ngModel)]="nonStickyData.day"
+        />
+        <span suffix class="color-aaa fz-14">{{ 'common.day' | lang }}</span>
+      </form-wrap>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="!+nonStickyData.day">
+        {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 下注次数要求 -->
+  <form-row
+    class="mb-8"
+    [class.disabled]="this.isOfflineEdit"
+    [label]="'member.activity.prizeCommon.numberRequired' | lang"
+    label-width="200"
+    required
+  >
+    <ng-template>
+      <form-wrap [style.width.px]="180" [invalid]="!+nonStickyData.times">
+        <input
+          class="form-control fz-14"
+          autocomplete="off"
+          type="text"
+          input-number
+          [input-float]="0"
+          [input-max]="10000"
+          [(ngModel)]="nonStickyData.times"
+        />
+        <span suffix class="color-aaa fz-14">{{ 'luckRoulette.times' | lang }}</span>
+      </form-wrap>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="!+nonStickyData.times">
+        {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+</ng-template>

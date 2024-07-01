@@ -1,0 +1,10 @@
+<div class="im-emoji-wrap">
+  <div
+    class="im-emoji-item d-flex flex-center"
+    *ngFor="let emoji of emojis"
+    (click)="onEmojiSelect(emoji)"
+    [title]="emoji[lang.currentLang.toLowerCase()]"
+  >
+    {{ emoji.preview }}
+  </div>
+</div>

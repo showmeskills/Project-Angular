@@ -1,0 +1,201 @@
+<div class="bg-fff rounded px-12 py-8 d-flex flex-wrap" sticky>
+  <form-row label="UID" contentWidth="200" class="mr-40">
+    <ng-template>
+      <input
+        [(ngModel)]="data.uid"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+        class="form-control w-100"
+        type="text"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.type' | lang" class="mr-40">
+    <ng-template>
+      <mat-form-field [style.width.px]="126">
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="PaymentTypeEnum.Deposit">{{ 'payment.method.deposit' | lang }}</mat-option>
+          <mat-option [value]="PaymentTypeEnum.Withdraw">{{ 'payment.method.withdrawal' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.paymentMethod.paymentMethod' | lang" class="mr-20">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="data.paymentMethod" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of paymentMethodList" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.currency.currency' | lang" class="mr-40">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of currenciesList" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.status' | lang" class="mr-40">
+    <ng-template>
+      <mat-form-field [style.width.px]="128">
+        <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of statusList" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.time' | lang">
+    <ng-template>
+      <input
+        class="text-center w-100 form-control"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="bind"
+        [owlDateTimeTrigger]="bind"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="validTime() && loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #bind></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="bg-fff rounded mt-8 px-12 py-10">
+  <div class="d-flex">
+    <div class="flex-1"></div>
+
+    <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2" (click)="onExport(true)">
+      <svg-icon [src]="'./assets/images/svg/admin-export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+      <span class="vam">{{ 'payment.subChannel.exportAll' | lang }}</span>
+    </button>
+
+    <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2" (click)="onExport()">
+      <svg-icon [src]="'./assets/images/svg/admin-export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+      <span class="vam">{{ 'payment.subChannel.exportCurrent' | lang }}</span>
+    </button>
+  </div>
+
+  <table class="table mb-0">
+    <thead sticky>
+      <tr>
+        <th><span class="cell">UID</span></th>
+        <th>
+          <span class="cell">{{ 'common.type' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.currency' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.paymentMethod.paymentMethod' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.transactionList.amount' | lang }}</span>
+        </th>
+        <th [style.width.%]="30">
+          <span class="cell">{{ 'payment.channelConfig.allocationDetails' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.time' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.merchantUserAccount }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <app-label class="px-4" [type]="item.category === 'Deposit' ? 'yellow' : 'primary'">{{
+              item.category === 'Deposit'
+                ? ('payment.method.deposit' | lang)
+                : ('payment.channelConfig.withdrawMoney' | lang)
+            }}</app-label>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ getPayMethodName(item.paymentMethod) }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.orderAmount | currencyValue : item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <ng-container *ngIf="item.status === 'Fail'; else statusTpl">{{ item.description }}</ng-container>
+            <ng-template #statusTpl>{{ item.description }}</ng-template>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell" [ngSwitch]="item.status">
+            <!--          <channel-order-label *ngSwitchCase="'Process'" type="yellow">处理中</channel-order-label>-->
+            <channel-order-label *ngSwitchCase="'Success'" type="success">{{
+              'payment.channelConfig.allocatedSuccess' | lang
+            }}</channel-order-label>
+            <channel-order-label *ngSwitchCase="'Fail'" type="danger">{{
+              'payment.channelConfig.allocationFailed' | lang
+            }}</channel-order-label>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-30">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

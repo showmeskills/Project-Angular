@@ -1,0 +1,65 @@
+div {
+  display: flex;
+}
+
+.backup-page-clonum {
+  // width: 370px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .header {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.38;
+    margin-bottom: 53px;
+  }
+
+  .backup-icon {
+    width: 72px;
+    height: 82.5px;
+    margin-bottom: 38.5px;
+    background-size: 72px 82.5px;
+    background-repeat: no-repeat;
+    background-image: url(src/assets/images/backup.png);
+  }
+
+  span {
+    color: var(--text-color);
+    font-size: var(--fz16);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.43;
+    display: flex;
+    align-items: center;
+    cursor: default;
+  }
+
+  .key {
+    word-break: break-all;
+    text-align: center;
+  }
+
+  .copy {
+    height: 14px;
+    width: 14px;
+    background-repeat: no-repeat;
+    margin-left: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    background-image: url(src/assets/images/wallet/copy-gray.svg);
+
+    &:hover,
+    &.select {
+      background-image: url(src/assets/images/wallet/copy-gray-hover.svg);
+    }
+  }
+
+  .footer {
+    color: var(--text-color-20);
+    font-size: 14px;
+    padding-top: 10px;
+    font-weight: normal;
+  }
+}

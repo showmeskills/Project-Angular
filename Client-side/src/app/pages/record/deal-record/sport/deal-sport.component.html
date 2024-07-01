@@ -1,0 +1,458 @@
+<!-- 列表item单元 -->
+<ng-container *ngIf="show === 'item'">
+  <!-- web -->
+  <div *ngIf="!isH5; else h5DealItem" class="deal-item deal-sport">
+    <div class="title">
+      <div class="title-left">
+        <span>{{ dataItem.gameProvider }}</span>
+        <span>
+          <em>{{ dataItem.gameDetail.sport }}</em>
+          <em *ngIf="dataItem.odds"><em class="odds-sign">&#64;</em>{{ dataItem.odds }}</em>
+        </span>
+      </div>
+      <div class="title-right">
+        <div>
+          <span>{{ 'tran_hour' | translate }}:</span>
+          <em>{{ dataItem.betTime | mdate }}</em>
+        </div>
+        <div>
+          <span>{{ 'transaction_num' | translate }}:</span>
+          <em>{{ dataItem.wagerNumber }}</em>
+          <app-tool-tip copyMode="icon" [copyContent]="dataItem.wagerNumber" copyIcon="icon-copy-3"></app-tool-tip>
+          <i class="icon-share mutual-opacity onact96-not" (click)="share()"></i>
+        </div>
+        <div>
+          <span class="status {{ dealRecordService.getStatusShowInfo(dataItem.status)['className'] }}">
+            {{ dealRecordService.getStatusShowInfo(dataItem.status)['text'] }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <ng-container
+        *ngTemplateOutlet="
+          eventItem;
+          context: {
+            data: dataItem.subOrderList ? dataItem.subOrderList[0] : dataItem.gameDetail,
+            showAmount: true
+          }
+        "
+      >
+      </ng-container>
+
+      <ng-container *ngIf="dataItem.subOrderList && expand">
+        <ng-container *ngFor="let item of dataItem.subOrderList.slice(1)">
+          <ng-container *ngTemplateOutlet="eventItem; context: { data: item }"></ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+    <div class="expand" *ngIf="dataItem.subOrderList">
+      <ng-container *ngTemplateOutlet="expandBtn"></ng-container>
+    </div>
+  </div>
+  <!-- h5 -->
+  <ng-template #h5DealItem>
+    <div class="deal-item h5-deal-item deal-sport">
+      <div class="title">
+        <div class="title-left">
+          <span>{{ dataItem.gameProvider }}</span>
+          <span>
+            <em>{{ dataItem.gameDetail.sport }}</em>
+            <em *ngIf="dataItem.odds"><em class="odds-sign">&#64;</em>{{ dataItem.odds }}</em>
+          </span>
+        </div>
+        <div class="title-right">
+          <div>
+            <span class="status {{ dealRecordService.getStatusShowInfo(dataItem.status)['className'] }}">
+              {{ dealRecordService.getStatusShowInfo(dataItem.status)['text'] }}
+            </span>
+            <i class="icon-share mutual-opacity onact96-not" (click)="share()"></i>
+          </div>
+        </div>
+      </div>
+      <div class="info">
+        <ng-container
+          *ngTemplateOutlet="
+            h5eventItem;
+            context: {
+              data: dataItem.subOrderList ? dataItem.subOrderList[0] : dataItem.gameDetail,
+              showAmount: true
+            }
+          "
+        >
+        </ng-container>
+
+        <ng-container *ngIf="dataItem.subOrderList && expand">
+          <ng-container *ngFor="let item of dataItem.subOrderList.slice(1)">
+            <ng-container *ngTemplateOutlet="h5eventItem; context: { data: item }"></ng-container>
+          </ng-container>
+        </ng-container>
+
+        <div class="expand" *ngIf="dataItem.subOrderList">
+          <ng-container *ngTemplateOutlet="expandBtn"></ng-container>
+        </div>
+
+        <div class="event-item comm-info">
+          <div class="info-item">
+            <label>{{ 'tran_hour' | translate }}:</label>
+            <em>{{ dataItem.betTime | mdate }}</em>
+          </div>
+          <div class="info-item">
+            <label>{{ 'transaction_num' | translate }}:</label>
+            <span>
+              <em>{{ dataItem.wagerNumber }}</em>
+              <app-tool-tip copyMode="icon" [copyContent]="dataItem.wagerNumber" copyIcon="icon-copy-3"></app-tool-tip>
+            </span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'amount_transaction' | translate }}:</label>
+            <span>
+              <em>{{ dataItem.betAmount | currencyValue : dataItem.currency }}</em>
+              <img [src]="dataItem.currency | currencyIcon" />
+            </span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'wol' | translate }}:</label>
+            <span>
+              <em [class.well]="dataItem.payoutAmount > 0" [class.bad]="dataItem.payoutAmount < 0">
+                {{ dataItem.payoutAmount | currencyValue : dataItem.currency : ['-', ''] : true }}
+              </em>
+              <img *ngIf="dataItem.payoutAmount !== null" [src]="dataItem.currency | currencyIcon" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>
+
+<!-- web赛事单元 -->
+<ng-template #eventItem let-data="data" let-showAmount="showAmount">
+  <div class="event-item mutual-opacity onact96" (click)="clickItem.emit(dataItem)">
+    <div class="info-left r-auto">
+      <div class="info-item">
+        <span>
+          <i class="pale icon-league"></i>
+          <em class="pale">{{ data.tournamentName }}</em>
+        </span>
+      </div>
+      <div class="info-item w-100 more-gap">
+        <span class="bold">
+          <em>{{ data.betContent }}</em>
+          <em *ngIf="data.detailOdds"><em class="odds-sign">&#64;</em>{{ data.detailOdds }}</em>
+        </span>
+        <span>{{ data.betoptionName }}</span>
+        <span>{{ data.eventName }}</span>
+      </div>
+    </div>
+    <div class="info-right" *ngIf="showAmount">
+      <div class="info-item">
+        <span>{{ 'amount_transaction' | translate }}:</span>
+        <span>
+          <em>{{ dataItem.betAmount | currencyValue : dataItem.currency }}</em>
+          <img [src]="dataItem.currency | currencyIcon" />
+        </span>
+      </div>
+      <div class="info-item">
+        <span>{{ 'wol' | translate }}:</span>
+        <span>
+          <em [class.well]="dataItem.payoutAmount > 0" [class.bad]="dataItem.payoutAmount < 0">
+            {{ dataItem.payoutAmount | currencyValue : dataItem.currency : ['-', ''] : true }}
+          </em>
+          <img *ngIf="dataItem.payoutAmount !== null" [src]="dataItem.currency | currencyIcon" />
+        </span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- h5赛事单元 -->
+<ng-template #h5eventItem let-data="data" let-showAmount="showAmount">
+  <div class="event-item mutual-opacity onact96" (click)="clickItem.emit(dataItem)">
+    <div class="info-item">
+      <span>
+        <i class="pale icon-league"></i>
+        <em class="pale">{{ data.tournamentName }}</em>
+      </span>
+    </div>
+    <div class="info-item" *ngIf="data.betContent">
+      <span class="bold">
+        <em>{{ data.betContent }}</em>
+        <em *ngIf="data.detailOdds"><em class="odds-sign">&#64;</em>{{ data.detailOdds }}</em>
+      </span>
+    </div>
+    <div class="info-item" *ngIf="data.betoptionName">
+      <span>{{ data.betoptionName }}</span>
+    </div>
+    <div class="info-item" *ngIf="data.eventName">
+      <span>{{ data.eventName }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 展开收起按钮 -->
+<ng-template #expandBtn>
+  <span class="mutual-opacity onact96" (click)="expand = !expand">
+    <em>{{ expand ? ('deal_ex_0' | translate) : ('deal_ex_1' | translate) }}</em>
+    <i class="icon-arrow-right-simple" [class.expanded]="expand"></i
+  ></span>
+</ng-template>
+
+<!-- 详情 -->
+<ng-container *ngIf="show === 'detail'">
+  <div class="info-group">
+    <div class="info-item">
+      <label>{{ 'transaction_num' | translate }}:</label>
+      <span>{{ dealDetailData[0].wagerNumber }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'game_type' | translate }}:</label>
+      <span>{{ dealDetailData[0].gameCategory }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'venue' | translate }}:</label>
+      <span>{{ dealDetailData[0].gameProvider }}</span>
+    </div>
+    <div class="info-item" *ngIf="dealDetailData.length < 2">
+      <label>{{ 'ball_specie_class' | translate }}:</label>
+      <span>{{ dealDetailData[0].sport }}</span>
+    </div>
+  </div>
+
+  <!-- 滑动串单 -->
+  <ng-container *ngIf="dealDetailData.length > 1">
+    <div class="bets-tabs">
+      <div class="tabs-container">
+        <div
+          class="onact96-not"
+          [ngClass]="['tab', 'mutual-opacity', 'tab-' + i]"
+          *ngFor="let item of dealDetailData; let i = index"
+          [class.active]="tabIndex === i"
+          (click)="swiper.slideTo(i)"
+        >
+          {{ 'bet' | translate }}{{ i + 1 }}
+        </div>
+      </div>
+      <div class="arrow" *ngIf="isH5 ? dealDetailData.length > 4 : dealDetailData.length > 7">
+        <i
+          class="icon-arrow-left-simple mutual-opacity onact96-not"
+          [class.disabled]="swiper?.isBeginning"
+          (click)="swiper.slidePrev()"
+        ></i>
+        <i
+          class="icon-arrow-right-simple mutual-opacity onact96-not"
+          [class.disabled]="swiper?.isEnd"
+          (click)="swiper.slideNext()"
+        ></i>
+      </div>
+    </div>
+    <app-img-carousel #swiper [itemsData]="dealDetailData" (IndexChange)="slideChange($event)">
+      <ng-template #carouselItemTpl let-item>
+        <div class="info-group">
+          <div class="info-item span-2">
+            <label>{{ 'ball_specie_class' | translate }}:</label>
+            <span>{{ item.sport }}</span>
+          </div>
+          <div class="info-item span-2">
+            <label>{{ 'league_name' | translate }}:</label>
+            <span>{{ item.tournamentName }}</span>
+          </div>
+          <div class="info-item span-2">
+            <label>{{ 'event_name' | translate }}:</label>
+            <span>{{ item.eventName }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'play_type' | translate }}:</label>
+            <span>{{ item.betoptionName }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'tran_content' | translate }}:</label>
+            <span>{{ item.betContent }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'match_result' | translate }}:</label>
+            <span>{{ item.gameResult || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'solo_odds' | translate }}:</label>
+            <span>{{ item.detailOdds | elegantDisplay : '-' }}</span>
+          </div>
+        </div>
+      </ng-template>
+    </app-img-carousel>
+  </ng-container>
+
+  <div class="info-group">
+    <div class="info-item span-2" *ngIf="dealDetailData.length < 2">
+      <label>{{ 'league_name' | translate }}:</label>
+      <span>{{ dealDetailData[0].tournamentName }}</span>
+    </div>
+    <div class="info-item span-2" *ngIf="dealDetailData.length < 2">
+      <label>{{ 'event_name' | translate }}:</label>
+      <span>{{ dealDetailData[0].eventName }}</span>
+    </div>
+    <div class="info-item" *ngIf="dealDetailData.length < 2">
+      <label>{{ 'play_type' | translate }}:</label>
+      <span>{{ dealDetailData[0].betoptionName }}</span>
+    </div>
+    <div class="info-item" *ngIf="dealDetailData.length < 2">
+      <label>{{ 'tran_content' | translate }}:</label>
+      <span>{{ dealDetailData[0].betContent }}</span>
+    </div>
+    <div class="info-item" *ngIf="dealDetailData.length < 2">
+      <label>{{ 'match_result' | translate }}:</label>
+      <span>{{ dealDetailData[0].gameResult || '-' }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'odds' | translate }}:</label>
+      <span>{{ dealDetailData[0].odds | elegantDisplay : '-' }}</span>
+    </div>
+
+    <div *ngIf="isH5 && dealDetailData.length < 2" class="separate"></div>
+
+    <div class="info-item">
+      <label>{{ 'tran_principal' | translate }}:</label>
+      <span>
+        <span>{{ dealDetailData[0].principal | currencyValue : dealDetailData[0].currency }}</span>
+        <img [src]="dealDetailData[0].currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'betting_credit' | translate }}:</label>
+      <span>
+        <span>{{ dealDetailData[0].bonus | currencyValue : dealDetailData[0].currency }}</span>
+        <img [src]="dealDetailData[0].currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'wol' | translate }}:</label>
+      <span>
+        <span [ngClass]="{ well: dealDetailData[0].payoutAmount > 0, bad: dealDetailData[0].payoutAmount < 0 }">
+          {{ dealDetailData[0].payoutAmount | currencyValue : dealDetailData[0].currency : ['-', ''] : true }}
+        </span>
+        <img *ngIf="dealDetailData[0].payoutAmount !== null" [src]="dealDetailData[0].currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'effective_flow' | translate }}:</label>
+      <span>
+        <span>{{ dealDetailData[0].activeFlow | currencyValue : dealDetailData[0].currency : '-' }}</span>
+        <img *ngIf="dealDetailData[0].activeFlow" [src]="dealDetailData[0].currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'status' | translate }}:</label>
+      <span [class]="dealRecordService.getStatusShowInfo(dealDetailData[0].status)['className']">
+        {{ dealRecordService.getStatusShowInfo(dealDetailData[0].status)['text'] }}
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'tran_hour' | translate }}:</label>
+      <span>{{ dealDetailData[0].betTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'last_sett_time' | translate }}:</label>
+      <span>{{ (dealDetailData[0].settleTime | mdate : 'YYYY-MM-DD HH:mm:ss') || '-' }}</span>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #shareRef>
+  <div class="share_bet_popup_container">
+    <div class="share_bet_popup" [appLoading]="!readyToShare">
+      <div class="tit">
+        <span>{{ 'share_bet' | translate }}</span>
+        <i class="icon-close-simple mutual-opacity" (click)="sharePopup.close()"></i>
+      </div>
+      <div class="scroll-able">
+        <app-scrollbar>
+          <div class="mid" id="share_images_container">
+            <div class="top"><img src="assets/images/share/s_sport_t.png" alt="" /></div>
+            <div class="con">
+              <ng-container *ngIf="readyToShare">
+                <div class="single" *ngIf="shareData.length == 1">
+                  <p *ngIf="shareData[0].teamB">{{ shareData[0].tournamentName }}</p>
+                  <p class="team-info">
+                    <span>{{ shareData[0].teamA }}</span>
+                    <ng-container *ngIf="shareData[0].teamB">
+                      <em>vs</em>
+                      <span>{{ shareData[0].teamB }}</span>
+                    </ng-container>
+                  </p>
+                  <p class="bet-time">
+                    <span>{{ 'tran_hour' | translate }}: </span>
+                    <em>{{ shareData[0].betTime | mdate }}</em>
+                  </p>
+                  <div class="bet-info">
+                    <p class="bet_content">
+                      {{ shareData[0].betContent }}
+                      <em *ngIf="shareData[0].odds"><em class="odds-sign">&#64;</em>{{ shareData[0].odds }}</em>
+                    </p>
+                    <p>{{ shareData[0].betoptionName }}</p>
+                  </div>
+                  <ng-container *ngTemplateOutlet="shareAmountsRef"></ng-container>
+                </div>
+                <div class="complex" *ngIf="shareData.length > 1">
+                  <p class="bet-time">
+                    <span>{{ 'tran_hour' | translate }}: </span>
+                    <em>{{ shareData[0].betTime | mdate }}</em>
+                  </p>
+                  <div
+                    class="bet-info"
+                    *ngFor="let item of shareData; let isFirst = first; let isLast = last"
+                    [class.first]="isFirst"
+                    [class.last]="isLast"
+                  >
+                    <div class="team-info">
+                      <span class="teamA">{{ item.teamA }}</span>
+                      <ng-container *ngIf="item.teamB">
+                        <em>vs</em>
+                        <span class="teamB">{{ item.teamB }}</span>
+                      </ng-container>
+                    </div>
+                    <p class="bet_content">
+                      {{ item.betContent }}
+                      <em *ngIf="item.odds"><em class="odds-sign">&#64;</em>{{ item.odds }}</em>
+                    </p>
+                  </div>
+                  <ng-container *ngTemplateOutlet="shareAmountsRef"></ng-container>
+                </div>
+              </ng-container>
+            </div>
+            <div class="bot">
+              <app-logo lockDevice="web" lockTheme="moon" [onlineSize]="['auto', '37']" [sitSize]="['39', '37']">
+              </app-logo>
+              <qr-code *ngIf="defaultLink" [value]="defaultLink.inviteUrl" [margin]="2" [size]="60"></qr-code>
+            </div>
+          </div>
+        </app-scrollbar>
+      </div>
+      <div class="foot">
+        <i class="icon-share2 mutual-opacity" (click)="coming()"></i>
+        <app-tool-tip copyMode="icon" copyIcon="icon-link2" [copyContent]="shareText"></app-tool-tip>
+        <i class="icon-download-3 mutual-opacity" (click)="downloadImg()"></i>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #shareAmountsRef>
+  <p class="amounts transaction" appLifeObserve (lifeViewInit)="checkSize($event)" [class.column]="towLineAmount">
+    <label>{{ 'amount_transaction' | translate }}</label>
+    <span class="light-text">
+      <em>{{ shareAmounts.betAmount | currencyValue : 'USDT' }}</em>
+      <img [src]="'USDT' | currencyIcon" />
+    </span>
+  </p>
+  <p class="amounts" appLifeObserve (lifeViewInit)="checkSize($event)" [class.column]="towLineAmount">
+    <label>{{
+      ['Cancel', 'Settlement', 'CashOut', 'NonAccept'].includes(dataItem.status)
+        ? ('wol' | translate)
+        : ('exp_b_amount' | translate)
+    }}</label>
+    <span class="light-text">
+      <em>{{ shareAmounts.resultAmount | currencyValue : 'USDT' : ['-', ''] : true }}</em>
+      <img *ngIf="shareAmounts.resultAmount !== null" [src]="'USDT' | currencyIcon" />
+    </span>
+  </p>
+</ng-template>

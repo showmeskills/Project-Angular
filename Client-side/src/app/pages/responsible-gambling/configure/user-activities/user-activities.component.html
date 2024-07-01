@@ -1,0 +1,189 @@
+<div class="container">
+  <div class="con-tit"><i class="icon-huodong"></i>我的活动</div>
+  <div class="sub-nav">
+    <ng-container *ngFor="let item of ranges">
+      <customize-button
+        type="plain-text"
+        size="medium-small"
+        minWidth="5em"
+        [active]="selectRangeValue === item.value"
+        (onClick)="select(item.value)"
+      >
+        {{ item.name }}
+      </customize-button>
+    </ng-container>
+  </div>
+  <div class="tip">此处显示的数值为截至所选时间范围的交易，但实时存款限额数据除外。</div>
+  <div class="content-box">
+    <div class="activity-item">
+      <div class="main-data" appExpansion [content]="expandContent1" [defaultExpanded]="false">
+        <div class="lt">
+          <div>
+            <p>赢/亏</p>
+            <app-tool-tip>
+              <i origin class="icon-warning"></i>
+              <span tooltip>
+                赢/亏数值反映出所选时间范围内，您在体育投注中所有已结算投注的返还减去投注金的差额（包括所选时间范围内的任何已结算投注，与投注时间无关）。包括转入可提款馀额的已完成奖金，以及从投注抵用金和免费投注中获得的淨返还。不包括来自奖金馀额的投注金或添加至奖金馀额的返还，以及在此时间范围内进行但未结算的投注。您的赢/亏全部详情可在“历史记录”查看。
+              </span>
+            </app-tool-tip>
+          </div>
+          <span class="small-text">您的总返还额减去总投注额</span>
+        </div>
+        <div class="rt">
+          <div>
+            <span>0.00</span>
+            <em>USDT</em>
+          </div>
+          <span class="text">
+            <ng-container [ngTemplateOutlet]="timeRange"></ng-container>
+          </span>
+        </div>
+      </div>
+      <div class="expand-content" #expandContent1>
+        <div class="box">
+          <div class="empty small-text">所选时段无数据。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-item">
+      <div class="main-data" appExpansion [content]="expandContent2" [defaultExpanded]="false">
+        <div class="lt">
+          <div>
+            <p>净存款</p>
+            <app-tool-tip>
+              <i origin class="icon-warning"></i>
+              <span tooltip
+                >净存款额为所选时段内的总存款额减去总提款额。这包括您账户中所进行的全部产品上的所有存款和提款。</span
+              >
+            </app-tool-tip>
+          </div>
+          <span class="small-text">您的总返还额减去总投注额</span>
+        </div>
+        <div class="rt">
+          <div>
+            <span>0.00</span>
+            <em>USDT</em>
+          </div>
+          <span class="text">
+            <ng-container [ngTemplateOutlet]="timeRange"></ng-container>
+          </span>
+        </div>
+      </div>
+      <div class="expand-content" #expandContent2>
+        <div class="box">
+          <div class="box-item">
+            <div>
+              <div>总存款额</div>
+              <span class="wrap"><span>1.00</span><em>USDT</em></span>
+            </div>
+          </div>
+          <div class="box-item">
+            <div>
+              <div>总存款额</div>
+              <span class="wrap"><span>2.00</span><em>USDT</em></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-item">
+      <div class="main-data" appExpansion [content]="expandContent3" [defaultExpanded]="false">
+        <div class="lt">
+          <div>
+            <p>投注金额</p>
+            <app-tool-tip>
+              <i origin class="icon-warning"></i>
+              <span tooltip
+                >投注金额显示您所选时段内的总投注額（包括已结算和未结算的投注）。这包括使用奖金余额、投注抵用金和免费投注进行的投注。</span
+              >
+            </app-tool-tip>
+          </div>
+          <span class="small-text">您的总返还额减去总投注额</span>
+        </div>
+        <div class="rt">
+          <div>
+            <span>0.00</span>
+            <em>USDT</em>
+          </div>
+          <span class="text">
+            <ng-container [ngTemplateOutlet]="timeRange"></ng-container>
+          </span>
+        </div>
+      </div>
+      <div class="expand-content" #expandContent3>
+        <div class="box">
+          <div class="empty small-text">所选时段无数据。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-item">
+      <div class="main-data" appExpansion [content]="expandContent4" [defaultExpanded]="false">
+        <div class="lt">
+          <div>
+            <p>游戏时间</p>
+            <app-tool-tip>
+              <i origin class="icon-warning"></i>
+              <span tooltip>
+                游戏时间为您所进行游戏的时间段总和。在24小时期间的一个15分钟时段内，若至少进行了一个投注（00:00-00:15、00:15-00:30和00:30-00:45等），则记录为一个时段，即视为进行了15分钟的游戏。在24小时期间所记录的时段加起来则视为已进行游戏的总时间。例如，若记录了4个时段，则视为进行了1小时游戏。依此计算，这些数值仅为估计值。
+              </span>
+            </app-tool-tip>
+          </div>
+          <span class="small-text">您的总返还额减去总投注额</span>
+        </div>
+        <div class="rt">
+          <div>
+            <span>0.00</span>
+            <em>USDT</em>
+          </div>
+          <span class="text">
+            <ng-container [ngTemplateOutlet]="timeRange"></ng-container>
+          </span>
+        </div>
+      </div>
+      <div class="expand-content" #expandContent4>
+        <div class="box">
+          <div class="empty small-text">所选时段无数据。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-item">
+      <div class="main-data" appExpansion [content]="expandContent5" [defaultExpanded]="false">
+        <div class="lt">
+          <div>
+            <p>下注时间</p>
+            <app-tool-tip>
+              <i origin class="icon-warning"></i>
+              <span tooltip
+                >下注时间是您下注的估计时间。如果您在一个1小
+                时时段（00:00-01:00、01:00-02:00和02:00-03:00等）内下注，则在图表上将显示为一个点。</span
+              >
+            </app-tool-tip>
+          </div>
+          <span class="small-text">您的总返还额减去总投注额</span>
+        </div>
+        <div class="rt">
+          <div>
+            <span>0.00</span>
+            <em>USDT</em>
+          </div>
+          <span class="text">
+            <ng-container [ngTemplateOutlet]="timeRange"></ng-container>
+          </span>
+        </div>
+      </div>
+      <div class="expand-content" #expandContent5>
+        <div class="box">
+          <div class="empty small-text">所选时段无数据。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #timeRange>
+  {{ selectRange[0] | mdate : 'YYYY-MM-DD' }} ~ {{ selectRange[1] | mdate : 'YYYY-MM-DD' }}
+</ng-template>

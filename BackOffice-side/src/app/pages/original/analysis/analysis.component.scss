@@ -1,0 +1,36 @@
+.card-body {
+  .new-cc-tab {
+    display: flex;
+    flex-wrap: wrap;
+    .card-tab-cell {
+      height: 36px;
+      padding: 0 8px;
+      border-radius: 6px;
+      border: dashed 1px #e4e6ef;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      color: #3f4254;
+      .tab-cc-title {
+        color: #a1a5b7;
+        margin-right: 6px;
+      }
+      &.tab-cell-right {
+        margin-left: auto;
+        border: 1px solid #ccc;
+      }
+    }
+    .card-tab-title {
+      padding-top: 6px;
+    }
+  }
+}
+.option-radio {
+  .checkbox > span {
+    margin-right: 10px;
+  }
+  .checkbox > input:checked ~ b {
+    color: #3699ff;
+  }
+}

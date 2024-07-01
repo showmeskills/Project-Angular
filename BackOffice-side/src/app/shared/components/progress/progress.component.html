@@ -1,0 +1,66 @@
+<ng-template #content>
+  <span>{{ percentage }}%</span>
+</ng-template>
+
+<div
+  [class]="['pp-progress', 'pp-progress--' + type, 'is-' + status]"
+  [class.pp-progress--without-text]="!showText"
+  [class.pp-progress--text-inside]="textInside"
+  role="progressbar"
+  aria-valuenow="25"
+  aria-valuemin="0"
+  aria-valuemax="100"
+>
+  <div *ngIf="type === 'line'" class="pp-progress-bar">
+    <div
+      class="pp-progress-bar__outer"
+      [style]="{ height: strokeWidth + 'px', borderRadius: rounded + 'px' }"
+      [style.background-color]="trackColor"
+    >
+      <div
+        [class]="['pp-progress-bar__inner']"
+        [class.pp-progress-bar__inner--indeterminate]="indeterminate"
+        [style]="barStyle"
+      >
+        <div *ngIf="(showText || progressContent?.['templateRef']) && textInside" class="pp-progress-bar__innerText">
+          <ng-container
+            [ngTemplateOutlet]="progressContent?.['templateRef'] || content"
+            [ngTemplateOutletContext]="{ $implicit: slotData }"
+          ></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="type !== 'line'" class="pp-progress-circle" [style]="{ height: width + 'px', width: width + 'px' }">
+    <svg viewBox="0 0 100 100">
+      <path
+        fill="none"
+        class="pp-progress-circle__track"
+        [attr.d]="trackPath"
+        [attr.stroke]="trackColor"
+        [attr.stroke-width]="relativeStrokeWidth"
+        [style]="trailPathStyle"
+      />
+      <path
+        class="pp-progress-circle__path"
+        fill="none"
+        [attr.d]="trackPath"
+        [attr.stroke]="stroke"
+        [attr.stroke-linecap]="strokeLinecap"
+        [attr.stroke-width]="percentage ? relativeStrokeWidth : 0"
+        [style]="circlePathStyle"
+      ></path>
+    </svg>
+  </div>
+  <div
+    *ngIf="(showText || progressContent?.['templateRef']) && !textInside"
+    class="pp-progress__text"
+    [style]="{ fontSize: progressTextSize + 'px' }"
+  >
+    <ng-container
+      [ngTemplateOutlet]="progressContent?.['templateRef'] || content"
+      [ngTemplateOutletContext]="{ $implicit: slotData }"
+    ></ng-container>
+  </div>
+</div>

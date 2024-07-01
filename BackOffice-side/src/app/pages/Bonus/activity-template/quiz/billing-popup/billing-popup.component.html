@@ -1,0 +1,62 @@
+<div class="modal-content">
+  <modal-title [title]="'member.activity.sencli6.settlement' | lang" (close)="modal.dismiss()"></modal-title>
+
+  <div *ngFor="let value of data['matches']; let i = index" class="box">
+    <label class="title d-flex mb-0">
+      {{ 'member.activity.sencli6.session' | lang }}{{ i + 1 }}
+
+      <label class="checkbox checkbox-lg ml-2" [title]="'member.activity.sencli6.isSettlement' | lang">
+        <input type="checkbox" [(ngModel)]="value.checked" />
+        <span class="mr-2"></span>
+      </label>
+    </label>
+
+    <ul class="d-flex">
+      <!-- 左 -->
+      <li>
+        <img class="teamLogo" [src]="value.homeIcon ? hostUrl + value.homeIcon : defaultImg" />
+        <span class="leftText">{{ value.home }}</span>
+        <form-wrap [style.width.px]="70" class="ml-4">
+          <input class="form-control" autocomplete="off" type="text" [(ngModel)]="value.scoreHome" input-number />
+        </form-wrap>
+      </li>
+      <li class="mx-8">VS</li>
+      <!-- 右 -->
+      <li>
+        <form-wrap [style.width.px]="70" class="ml-4">
+          <input class="form-control" autocomplete="off" type="text" [(ngModel)]="value.scoreAway" input-number />
+        </form-wrap>
+        <span class="rightText">{{ value.away }}</span>
+        <img class="teamLogo" [src]="value.awayIcon ? hostUrl + value.awayIcon : defaultImg" />
+      </li>
+      <!-- <li [class]="lang.isLocal ? 'teamIps' : 'enTeamtps'" *ngIf="!value.isCancel">
+        {{ 'member.activity.sencli6.gameStopped' | lang }}
+      </li> -->
+      <label class="checkbox checkbox-lg color-aaa fz-14 ml-4">
+        <input type="checkbox" [(ngModel)]="value.isCancel" />
+        <span class="mr-4"></span>
+        {{ 'member.activity.sencli6.gameStopped' | lang }}
+      </label>
+    </ul>
+  </div>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!data?.matches.length"></empty>
+
+  <modal-footer
+    [confirmShow]="data?.matches.length > 0 ? true : false"
+    (confirm)="onSubmit(continueTpl)"
+    (dismiss)="modal.dismiss()"
+  ></modal-footer>
+</div>
+
+<ng-template #continueTpl let-d="dismiss" let-c="close">
+  <modal-title [title]="'common.prompt' | lang" (close)="c()"></modal-title>
+
+  <div class="modal-body text-center">
+    <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+    <p class="fz-16 mt-8">{{ 'member.activity.sencli6.noSelEvent' | lang }}</p>
+  </div>
+
+  <modal-footer (confirm)="c(); submit()" (dismiss)="d()"></modal-footer>
+</ng-template>

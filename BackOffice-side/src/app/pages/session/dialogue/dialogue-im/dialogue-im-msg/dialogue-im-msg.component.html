@@ -1,0 +1,21 @@
+<div class="mt-4" *ngIf="data">
+  <div class="im-msg-wrap d-flex" [class.im-self]="isSelf">
+    <div class="im-msg-avatar-wrap" *ngIf="!isSelf">
+      <img class="im-msg-avatar vam" [ngSrc]="data.avatar" alt="" width="40" height="40" />
+    </div>
+
+    <div class="im-msg-box">
+      <!--      <div class="im-msg" [class.im-msg-primary]="!isSelf" [innerHTML]="data.content | highlightUrl"></div>-->
+      <div class="im-msg" [class.im-msg-primary]="!isSelf">
+        <ng-container *ngFor="let msgItem of dialogueImMsgService.renderMsg(data); trackBy: trackByFn">
+          <ng-container *ngComponentOutlet="msgItem.component; inputs: msgItem.inputs"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="im-msg-ft" [class.im-self]="isSelf">
+    <span *ngIf="isSelf">{{ data.name }}</span>
+    <span>{{ data.createTime | timeFormat }}</span>
+  </div>
+</div>

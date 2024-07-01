@@ -1,0 +1,138 @@
+:host {
+  display: block;
+}
+div {
+  display: flex;
+}
+
+.sport-item {
+  margin-top: 10px;
+  // cursor: pointer;
+  // margin-left: 10px;
+  height: 145px;
+  flex: none;
+  flex-direction: column;
+
+  justify-content: center;
+  padding: 10px;
+
+  display: flex;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  transition: all 0.3s;
+  border-radius: 8px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  @media (any-hover: hover) {
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+  &:first-child {
+    margin-left: 0;
+  }
+  .league-name {
+    color: #fff;
+    font-size: 14px;
+    justify-content: center;
+  }
+  .detail {
+    margin: 10px 0;
+    justify-content: space-around;
+    .team {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      .team-logo {
+        margin-bottom: 10px;
+        width: 60px;
+        height: 60px;
+        img {
+          width: 100%;
+        }
+      }
+      .team-name {
+        font-size: 14px;
+        color: #fff;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        text-align: center;
+        overflow: hidden;
+      }
+    }
+    .info {
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      font-size: 14px;
+      flex: 2;
+      .info-tip {
+        font-size: 16px;
+        color: rgba(34, 245, 0, 1);
+        margin-bottom: 5px;
+      }
+      .date {
+        margin-left: 5px;
+      }
+      .live {
+        color: #fff;
+        margin-bottom: 5px;
+      }
+    }
+  }
+  .rate-container {
+    justify-content: space-evenly;
+    padding: 0 6px;
+    width: 100%;
+    .rate {
+      width: 45px;
+      height: 26px;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.1);
+      color: #fff;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+  }
+}
+
+.item-box {
+  display: flex;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  height: 0;
+  transition: all 0.3s;
+  border-radius: var(--container-radius);
+
+  @media (max-width: 767px) {
+    border-radius: 0.8rem;
+  }
+  @media (any-hover: hover) {
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
+      .item-con {
+        .game-name {
+          opacity: 1;
+          span {
+            opacity: 1;
+            transition-delay: 0.3s;
+            transition-property: opacity;
+            transition-duration: 0.2s;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+<modal-title [title]="'payment.currency.countryRegionSelect' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="px-10 py-12">
+  <mat-accordion multi>
+    <ng-container *ngFor="let items of countryList">
+      <mat-expansion-panel *ngIf="items">
+        <mat-expansion-panel-header [style.height.px]="42">
+          <mat-panel-title>
+            <label
+              class="checkbox checkbox-lg"
+              [class.disabled]="items.disabled"
+              [class.checkbox-indeterminate]="isIndeterminate(items)"
+            >
+              <input
+                type="checkbox"
+                [disabled]="items.disabled"
+                [(ngModel)]="items['selected']"
+                (change)="checkItem(items)"
+              />
+              <span class="mr-2"></span>
+              {{ lang.isLocal ? items.continentName : items.continentCode }}
+            </label>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-list>
+          <div class="countriesList">
+            <label
+              class="checkbox checkbox-lg countries"
+              [class.disabled]="item.disabled"
+              *ngFor="let item of items.countries"
+            >
+              <input type="checkbox" [disabled]="item.disabled" [(ngModel)]="item['selected']" />
+              <span class="mr-2"></span>
+              {{ lang.isLocal ? item.countryName : item.countryEnName }}
+            </label>
+          </div>
+        </mat-list>
+      </mat-expansion-panel>
+    </ng-container>
+  </mat-accordion>
+</div>
+
+<modal-footer (confirm)="onSubmit()" dismissClose></modal-footer>

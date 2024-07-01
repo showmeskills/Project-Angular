@@ -1,0 +1,11 @@
+<div class="main-container bottom-container unity-padding-web">
+  <div class="container unity-padding-h5-16 bottom">
+    <div class="left">
+      <p class="text-primary-20">{{ textOne || '' }}</p>
+      <p class="text-16 m-top-30">{{ textTwo || '' }}</p>
+      <p class="text-primary-20 mutual-opacity m-top-20">{{ textThree || '' }}</p>
+    </div>
+    <img class="buttom-img" *ngIf="!isH5" [src]="imgSrc" lazy="loading" alt="" />
+  </div>
+  <img class="buttom-img" *ngIf="isH5" [src]="imgSrc" lazy="loading" alt="" />
+</div>

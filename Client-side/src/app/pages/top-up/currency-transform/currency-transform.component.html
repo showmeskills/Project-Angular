@@ -1,0 +1,295 @@
+<!-- 法币充值 -->
+<div class="container" *ngIf="orderInfo && orderInfo.actionType !== 6">
+  <div class="left">
+    <!--存款金额-->
+    <ng-container *ngTemplateOutlet="laberLiner; context: { header: ('deposit_amount' | translate) }"></ng-container>
+    <div class="amount-box">
+      <!-- 法币充值 -->
+      <!-- | currencyValue : orderInfo.currency -->
+      <p class="bold-txt">{{ orderInfo.amount }} {{ orderInfo.currency }}</p>
+      <div class="details-row">
+        <span class="gray-txt"
+          >{{ 'create_time' | translate }}：{{ orderInfo.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span
+        >
+        <ng-container *ngIf="orderInfo?.orderId">
+          <span class="gray-txt">{{ 'order' | translate }}：{{ orderInfo.orderId || '' }}</span>
+          <app-tool-tip [copyMode]="'icon'" [copyContent]="orderInfo.orderId || ''"> </app-tool-tip>
+        </ng-container>
+      </div>
+    </div>
+    <!--支付方式-->
+    <ng-container *ngTemplateOutlet="laberLiner; context: { header: ('pay_method' | translate) }"></ng-container>
+    <div class="payway-box">
+      <!-- 法币充值 信息 -->
+      <!-- 跳转类型 -->
+      <ng-container
+        *ngIf="
+          orderInfo?.redirectUrl &&
+          orderInfo?.seletedDepositWay?.icons &&
+          (orderInfo?.seletedDepositWay?.icons?.length || 0) > 0
+        "
+      >
+        <customize-button
+          size="medium"
+          type="plain-text"
+          [icon]="orderInfo.seletedDepositWay.icons[0] ?? ''"
+          [disabled]="countDown == null"
+          [plain]="true"
+          (onClick)="openNewWindow()"
+        >
+          {{ orderInfo.seletedDepositWay.name || '' }}
+        </customize-button>
+      </ng-container>
+      <!-- 非跳转类型 -->
+      <div class="bank-name" *ngIf="!orderInfo.redirectUrl">
+        <img
+          *ngIf="orderInfo?.seletedDepositWay?.icons && (orderInfo?.seletedDepositWay?.icons?.length || 0) > 0"
+          class="icon-style"
+          [src]="orderInfo.seletedDepositWay.icons[0] || ''"
+          alt=""
+        />
+        <span class="txt" *ngIf="orderInfo?.seletedDepositWay?.name">{{ orderInfo.seletedDepositWay.name || '' }}</span>
+      </div>
+      <!--c2c支付方式-->
+      <ng-container
+        *ngIf="orderInfo?.seletedDepositWay?.needBankCode || orderInfo.bankInfo?.bankAccountNumber; else OtherWay"
+      >
+        <div class="bank-infor small">
+          <div class="infor-row">
+            <div>
+              <div>{{ 'bank_acc' | translate }}</div>
+              <span class="txt-lg">: {{ orderInfo.bankInfo.bankAccountNumber }}</span>
+            </div>
+            <!--H5 copy-->
+            <app-tool-tip [copyMode]="'custom'" [copyContent]="orderInfo.bankInfo.bankAccountNumber">
+              <span origin class="copy">{{ 'copy' | translate }}</span>
+            </app-tool-tip>
+          </div>
+          <div class="infor-row offset-t-b">
+            <div>
+              <div>{{ 'name' | translate }}</div>
+              <span class="txt-lg">: {{ orderInfo.bankInfo.bankAccountHolder }}</span>
+            </div>
+            <!--H5 copy-->
+            <app-tool-tip [copyMode]="'custom'" [copyContent]="orderInfo.bankInfo.bankAccountHolder">
+              <span origin class="copy">{{ 'copy' | translate }}</span>
+            </app-tool-tip>
+          </div>
+          <div class="infor-row">
+            <div>
+              <div>{{ 'acc_open_bank' | translate }}</div>
+              <span>: {{ orderInfo.bankInfo.bankName ? orderInfo.bankInfo.bankName : '-' }}</span>
+            </div>
+            <!--H5 copy-->
+            <app-tool-tip [copyMode]="'custom'" [copyContent]="orderInfo.bankInfo.bankName">
+              <span origin class="copy">{{ 'copy' | translate }}</span>
+            </app-tool-tip>
+          </div>
+        </div>
+      </ng-container>
+      <!--其他支付方式-->
+      <ng-template #OtherWay>
+        <div class="unBank-box">
+          {{ 'third_pay' | translate }}
+        </div>
+      </ng-template>
+    </div>
+    <!--备注信息-->
+    <ng-container *ngIf="orderInfo.remark">
+      <ng-container *ngTemplateOutlet="laberLiner; context: { header: ('remark_info' | translate) }"></ng-container>
+      <div class="remark-box">
+        <span class="nomal-remark-txt">{{ orderInfo.remark }}</span>
+        <div class="basic-infor offset-top">
+          <em>{{ 'desc' | translate }}：</em>
+          <span class="txt-blud" *ngIf="!orderInfo.detailInfo">{{ 'fill_content' | translate }}</span>
+          <span class="txt-blud" *ngIf="orderInfo.detailInfo" [innerHTML]="orderInfo.detailInfo | toHtmlElement"></span>
+        </div>
+      </div>
+    </ng-container>
+
+    <!--订单提交状态-->
+    <ng-container *ngTemplateOutlet="orderStatusCard; context: { item: orderInfo }"></ng-container>
+  </div>
+  <!--提示-->
+  <!-- <div class="right" *ngIf="orderInfo.seletedDepositWay.tipsInfo?.Detail">
+    <p class="title">{{ 'import_reminder' | translate }}</p>
+    <p
+      [innerHTML]="
+        orderInfo.seletedDepositWay.tipsInfo | filterByKeyValue : 'tipsType' : 'Operate' : 'content' | toHtmlElement
+      "
+    ></p>
+  </div> -->
+  <customize-button
+    *ngIf="isH5"
+    width="100%"
+    size="large"
+    type="primary"
+    [disabled]="countDown == null"
+    (onClick)="submit()"
+  >
+    {{ 'confirm_pay' | translate }}</customize-button
+  >
+</div>
+
+<!-- 存续得法 充值 -->
+<div class="container" *ngIf="orderInfo && orderInfo.actionType === 6">
+  <div class="left">
+    <!--存款金额-->
+    <ng-container *ngTemplateOutlet="laberLiner; context: { header: ('pre_pay' | translate) }"></ng-container>
+    <div class="amount-box">
+      <!-- 存虚得法 充值 -->
+      <p class="bold-txt">
+        <!-- | currencyValue : orderInfo.paymentCurrency -->
+        {{ orderInfo.paymentAmount }} {{ orderInfo.paymentCurrency }}
+      </p>
+      <div class="details-row">
+        <span class="gray-txt"
+          >{{ 'create_time' | translate }}：{{ orderInfo.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span
+        >
+        <ng-container *ngIf="orderInfo?.orderId">
+          <span class="gray-txt">{{ 'order' | translate }}：{{ orderInfo.orderId || '' }}</span>
+          <app-tool-tip [copyMode]="'icon'" [copyContent]="orderInfo.orderId || ''"> </app-tool-tip>
+        </ng-container>
+      </div>
+    </div>
+    <!--支付方式-->
+    <ng-container *ngTemplateOutlet="laberLiner; context: { header: ('pay_method' | translate) }"></ng-container>
+    <div class="payway-box">
+      <div class="bank-name m-bottom-0">
+        <span class="txt"
+          >{{ 'crypto' | translate }}{{ orderInfo.paymentCurrency || '' }}\{{ orderInfo.network || '' }}</span
+        >
+      </div>
+    </div>
+    <!-- 存续得法 支付地址 -->
+    <ng-container *ngTemplateOutlet="laberLiner; context: { header: 'pay_address' | translate }"></ng-container>
+    <div class="payway-box">
+      <qr-code value="{{ orderInfo.depositAddress }}" size="181" errorCorrectionLevel="M"></qr-code>
+      <div class="infor-row">
+        <span class="gray-txt break-word">{{ orderInfo.depositAddress }}</span>
+        <app-tool-tip [copyMode]="'icon'" [copyContent]="orderInfo.depositAddress"> </app-tool-tip>
+      </div>
+    </div>
+    <!-- 存续得法 网络确认 -->
+    <ng-container *ngTemplateOutlet="laberLiner; context: { header: 'exp_arr' | translate }"></ng-container>
+    <div class="payway-box">{{ orderInfo.expectedBlock || 0 }}{{ 'time_net' | translate }}</div>
+    <ng-container *ngTemplateOutlet="laberLiner; context: { header: 'exp_un' | translate }"></ng-container>
+    <div class="crypto-fiat">
+      <span class="primary-text"> {{ orderInfo.expectedBlock || 0 }}</span
+      >{{ 'time_net' | translate }}
+    </div>
+    <!--备注信息-->
+    <ng-container *ngIf="orderInfo.remark">
+      <ng-container *ngTemplateOutlet="laberLiner; context: { header: ('remark_info' | translate) }"></ng-container>
+      <div class="remark-box">
+        <span class="nomal-remark-txt">{{ orderInfo.remark }}</span>
+        <div class="basic-infor offset-top">
+          <span class="txt-blud" *ngIf="!orderInfo.detailInfo">{{ 'fill_content' | translate }}</span>
+          <span
+            class="txt-blud"
+            *ngIf="orderInfo.detailInfo"
+            [innerHTML]="
+              orderInfo.detailInfo.replace('{CYPTO}', orderInfo.paymentCurrency + '-' + orderInfo.network)
+                | toHtmlElement
+            "
+          ></span>
+        </div>
+      </div>
+    </ng-container>
+    <!--订单提交状态-->
+    <ng-container *ngTemplateOutlet="orderStatusCard; context: { item: orderInfo }"></ng-container>
+  </div>
+  <customize-button
+    *ngIf="isH5"
+    width="100%"
+    size="large"
+    type="primary"
+    [disabled]="countDown == null"
+    (onClick)="submit()"
+  >
+    {{ 'confirm_pay' | translate }}</customize-button
+  >
+</div>
+
+<!--laber-->
+<ng-template #laberLiner let-header="header">
+  <div class="laber-liner">
+    <span class="laber"></span>
+    <span class="txt">{{ header }}</span>
+    <span class="liner"></span>
+  </div>
+</ng-template>
+
+<!--备注详情-->
+<ng-template #remarkInforCard let-item="item">
+  <div class="remark-card">
+    <div class="h5-top">
+      <div class="colunm-infor">
+        <span class="title">{{ 'real_info' | translate }}</span>
+        <span>{{ item.name }}</span>
+      </div>
+      <div class="colunm-infor">
+        <span class="title">{{ 'con_info' | translate }}</span>
+        <span> + {{ item.areaCode }} {{ item.phone }}</span>
+      </div>
+    </div>
+    <div class="h5-bottom">
+      <div class="colunm-infor">
+        <span class="title">{{ 'turn_rate' | translate }}</span>
+        <span>{{ item.rate }}</span>
+      </div>
+      <div class="colunm-infor">
+        <span class="title">{{ 'close_order' | translate }}</span>
+        <span>{{ item.buy }} | {{ item.sale }} </span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!--订单提交状态-->
+<ng-template #orderStatusCard let-item="item">
+  <div class="card-box">
+    <div class="clounm">
+      <div class="top">
+        <ng-container *ngIf="orderInfo?.expireTime ?? 0 > 0; else showDefault">
+          <span class="txt-orange">{{
+            countDown != null ? ('to_paid' | translate) : ('time_expired' | translate)
+          }}</span>
+          <span style="font-size: 20px; padding-left: 10px">{{ countDown ?? '00:00' }}</span>
+        </ng-container>
+        <ng-template #showDefault>
+          <span class="txt-orange-liner"></span>
+        </ng-template>
+      </div>
+      <div class="down">
+        <!-- 法币充值确认信息 -->
+        <ng-container *ngIf="item.actionType !== 6">
+          <!-- | currencyValue : item.currency -->
+          <span class="bold-txt">{{ item.amount }} {{ item.currency }}</span>
+        </ng-container>
+        <!-- 存虚得法 确认信息 -->
+        <ng-container *ngIf="item.actionType === 6">
+          <!-- | currencyValue : item.paymentCurrency -->
+          <span class="bold-txt">{{ item.paymentAmount }} {{ item.paymentCurrency }}</span>
+        </ng-container>
+        <span class="notice">{{ 'complete_deposit' | translate }}</span>
+        <!-- <div class="offset-left">
+        </div> -->
+        <customize-button
+          *ngIf="!isH5"
+          minWidth="206px"
+          size="large"
+          type="primary"
+          [disabled]="countDown == null"
+          (onClick)="submit()"
+        >
+          {{ 'confirm_pay' | translate }}</customize-button
+        >
+      </div>
+      <!-- 除存续得法外 所有充值方式需要提示/上笔订单没有过期提示用户 -->
+      <div class="redeposit-info" *ngIf="item.actionType !== 6 && item.statue === 3">
+        {{ 'deposit_statue_three' | translate }}
+      </div>
+    </div>
+  </div>
+</ng-template>

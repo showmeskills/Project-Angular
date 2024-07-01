@@ -1,0 +1,7 @@
+<ng-container [ngSwitch]="status" *ngIf="list && list.length">
+  <app-label *ngSwitchCase="'Success'" type="success">{{ getStatus(status) }}</app-label>
+  <app-label *ngSwitchCase="'Partially'" type="info">{{ getStatus(status) }}</app-label>
+  <app-label *ngSwitchCase="'Failed'" type="danger">{{ getStatus(status) }}</app-label>
+  <app-label *ngSwitchCase="'Pending'" type="yellow">{{ getStatus(status) }}</app-label>
+  <app-label *ngSwitchDefault type="default">{{ getStatus(status) }}</app-label>
+</ng-container>

@@ -1,0 +1,185 @@
+<modal-title (close)="modal.close()">
+  <div class="color-999">
+    <span>{{ 'risk.batch.risk' | lang }}</span>
+    <span class="fz-16 ml-12">{{ data?.batchId || '-' }}</span>
+    <span class="ml-12" batch-status [list]="statusList" [status]="data?.status || ''"></span>
+  </div>
+</modal-title>
+
+<div class="review-detail-wrap custom-scroll-y">
+  <table class="table mb-0" selectChildren>
+    <thead>
+      <tr>
+        <th *ngIf="isReviewing">
+          <span class="cell">
+            <label class="checkbox checkbox-lg">
+              <input type="checkbox" selectGroup />
+              <span></span>
+            </label>
+          </span>
+        </th>
+        <!-- UID -->
+        <th>
+          <span class="cell">UID</span>
+        </th>
+        <!-- 等级调整 -->
+        <th>
+          <span class="cell">{{ 'risk.batch.riskLevel' | lang }}</span>
+        </th>
+        <!-- 备注 -->
+        <th>
+          <span class="cell">{{ 'common.remarks' | lang }}</span>
+        </th>
+        <!-- 拒绝原因 -->
+        <th>
+          <span class="cell">{{ 'member.kyc.model.denialReason' | lang }}</span>
+        </th>
+        <!-- 状态 -->
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+        <!-- 操作 -->
+        <th *ngIf="isReviewing">
+          <span class="cell">{{ 'common.operate' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of data?.info">
+        <td *ngIf="isReviewing">
+          <span class="cell" *ngIf="item.status === 'Pending'">
+            <label class="checkbox checkbox-lg">
+              <input type="checkbox" select [(ngModel)]="item['checked']" [checked]="item['checked']" />
+              <span></span>
+            </label>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <!-- 风控等级调整： -->
+            {{ 'risk.batch.riskLevelChange' | lang }}
+            {{ item.detail.originalRiskControl }} →
+            {{ item.detail.riskControl }}
+          </span>
+        </td>
+        <!-- 备注 -->
+        <td>
+          <span class="cell">{{ item.detail.remark }}</span>
+        </td>
+        <!-- 拒绝原因 -->
+        <td>
+          <span class="cell">{{ item.detail.rejectRemark }}</span>
+        </td>
+        <!-- 状态 -->
+        <td>
+          <span class="cell">
+            <span batch-status [list]="statusList" [status]="item.status"></span>
+          </span>
+        </td>
+        <!-- 操作 -->
+        <td *ngIf="isReviewing">
+          <span class="cell" *ngIf="item.status === 'Pending'">
+            <!-- 通过 -->
+            <span class="btn btn-light btn-hover-primary px-6 mx-2" (click)="onSubmit(true, item)">{{
+              'finance.withdrawals.approve' | lang
+            }}</span>
+            <!-- 拒绝 -->
+            <span class="btn btn-light btn-hover-danger px-6 mx-2" (click)="onSubmit(false, item, rejectReason)">{{
+              'finance.withdrawals.reject' | lang
+            }}</span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 批量操作类型 -->
+<form-row
+  [label]="'risk.batchReview' | lang"
+  class="batch-type px-12 border-top"
+  [style.opacity]="this.hasCheckbox ? 1 : 0.5"
+  [control]="reviewTypeBatchControl"
+  *ngIf="isReviewing"
+>
+  <ng-template let-control="formControl">
+    <div class="d-flex flex-wrap">
+      <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+        <input
+          type="radio"
+          name="batch-type"
+          [value]="true"
+          [formControl]="control"
+          [attrDisabled]="!this.hasCheckbox"
+          (change)="batchTypeChange()"
+        />
+        <span class="mr-4"></span>{{ 'finance.withdrawals.approve' | lang: { $defaultValue: '-' } }}
+      </label>
+      <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+        <input
+          type="radio"
+          name="batch-type"
+          [value]="false"
+          [formControl]="control"
+          [attrDisabled]="!this.hasCheckbox"
+          (change)="batchTypeChange()"
+        />
+        <span class="mr-4"></span>{{ 'finance.withdrawals.reject' | lang: { $defaultValue: '-' } }}
+      </label>
+
+      <!-- 拒绝原因 -->
+      <form-row
+        *ngIf="!control.value"
+        class="py-0"
+        [control]="rejectRemarkBatchControl"
+        [label]="'member.kyc.model.denialReason' | lang"
+      >
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input
+            [attrDisabled]="!this.hasCheckbox"
+            [class.is-invalid]="invalid"
+            class="form-control"
+            [formControl]="control"
+            input-trim
+          />
+        </ng-template>
+      </form-row>
+    </div>
+  </ng-template>
+</form-row>
+
+<!-- 按钮 -->
+<div class="modal-footer btn-wrap flex-auto">
+  <ng-container *ngIf="isReviewing">
+    <button type="button" class="c-btn btn btn-default" (click)="modal.dismiss()">
+      {{ 'common.cancel' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="confirm()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </ng-container>
+  <ng-container *ngIf="!isReviewing">
+    <button type="button" class="c-btn btn btn-primary" (click)="modal.close()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </ng-container>
+</div>
+
+<!-- 拒绝原因 -->
+<ng-template #rejectReason let-c="close" let-d="dismiss">
+  <modal-title [title]="'member.kyc.model.denialReason' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-16">
+    <form-row [control]="rejectRemarkControl" [label]="'member.kyc.model.denialReason' | lang">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input [class.is-invalid]="invalid" class="form-control" [formControl]="control" input-trim />
+      </ng-template>
+    </form-row>
+  </div>
+
+  <modal-footer (confirm)="confirmReject(c)" (dismiss)="d()"></modal-footer>
+</ng-template>

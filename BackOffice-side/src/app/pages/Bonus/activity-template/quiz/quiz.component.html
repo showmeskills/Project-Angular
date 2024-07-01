@@ -1,0 +1,238 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <!--活动名称 -->
+    <form-row [label]="'member.activity.sencli6.eventName' | lang" class="mr-16" [contentWidth]="280">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.title"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+    <!-- 时间组件 -->
+    <!-- 活动时间 -->
+    <form-row [label]="'member.activity.sencliCommon.activityTime' | lang" class="mr-16" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.activity.sencliCommon.selectAcitivityTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+    <!-- 结束 -->
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac justify-content-between">
+    <!-- 活动列表 -->
+    <div class="fz-20">{{ 'member.activity.sencli6.eventsList' | lang }}</div>
+    <div>
+      <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 lh-22" (click)="goActivityTep()">
+        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <!-- 新增活动 -->
+        <span class="vam">{{ 'member.activity.sencli6.addEvent' | lang }}</span>
+      </button>
+      <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 lh-22" (click)="goActivityTep()">
+        <!-- 查看数据 -->
+        <span class="vam" (click)="checkDetails()">{{ 'member.activity.sencli6.viewData' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'member.activity.sencli6.eventName' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.activity.sencli6.activityTemplate' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort()">
+                <span>{{ 'member.activity.sencli6.activityTime' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort()">
+                <span>{{ 'member.activity.sencli6.endTime' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.activity.sencli6.activeStatus' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.activity.sencli6.activeAction' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.activityName }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.templateName }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.startTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.endTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <!-- 待开始 -->
+              <app-label *ngIf="item.status === 0" type="default">
+                {{ 'member.activity.sencli6.toBeStarted' | lang }}
+              </app-label>
+
+              <!-- 进行中 -->
+              <app-label *ngIf="item.status === 1" type="primary">
+                {{ 'member.activity.sencli6.processing' | lang }}
+              </app-label>
+
+              <!-- 待结算 -->
+              <app-label *ngIf="item.status === 2" type="yellow">
+                {{ 'member.activity.sencli6.stopped' | lang }}
+              </app-label>
+
+              <!-- 已结算 -->
+              <app-label *ngIf="item.status === 3" type="success">
+                {{ 'member.activity.sencli6.settled' | lang }}
+              </app-label>
+
+              <!-- 已派彩 -->
+              <app-label *ngIf="item.status === 4" type="info">
+                {{ 'member.activity.sencli6.paidOut' | lang }}
+              </app-label>
+
+              <!-- 手动停止 -->
+              <app-label *ngIf="item.status === -1" type="danger">
+                {{ 'member.activity.sencli6.manualStop' | lang }}
+              </app-label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <!-- 查看 -->
+              <div class="operation-btn primary" (click)="onView(item.id)" *ngIf="[1, 2].includes(item.status)">
+                {{ 'member.activity.sencli6.view' | lang }}
+              </div>
+
+              <!-- 编辑 -->
+              <div class="operation-btn primary" (click)="goActivityTep(item.id)" *ngIf="[0, -1].includes(item.status)">
+                {{ 'common.edit' | lang }}
+              </div>
+
+              <!-- 开启 -->
+              <div
+                class="operation-btn primary"
+                (click)="onOpenWarningPopup(warningTpl, 'start', item.id)"
+                *ngIf="[0, -1].includes(item.status)"
+              >
+                {{ 'common.open' | lang }}
+              </div>
+
+              <!-- 停止 -->
+              <div
+                class="operation-btn primary"
+                (click)="onOpenWarningPopup(warningTpl, 'end', item.id)"
+                *ngIf="[1].includes(item.status)"
+              >
+                {{ 'member.activity.sencli6.stop' | lang }}
+              </div>
+
+              <!-- 结算 -->
+              <div
+                class="operation-btn primary"
+                (click)="onOpenSettlement(item.id)"
+                *ngIf="[1, 2].includes(item.status)"
+              >
+                {{ 'member.activity.sencli6.settlement' | lang }}
+              </div>
+
+              <!-- 查看数据 -->
+              <div
+                class="operation-btn primary"
+                (click)="goRankList(item.id)"
+                *ngIf="[1, 2, 3, 4, -1].includes(item.status)"
+              >
+                {{ 'member.activity.sencli6.viewData' | lang }}
+              </div>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer">
+      <div>
+        <!-- <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field> -->
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-msg let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'member.activity.sencli6.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ msg | lang }}</p>
+    </div>
+    <modal-footer (confirm)="c(true)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

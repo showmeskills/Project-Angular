@@ -1,0 +1,268 @@
+<div class="theme-gray-color">
+  <div class="sub-theme-container">
+    <!-- 数据总览头部 -->
+    <div class="sub-theme-header">
+      <div class="sub-theme-left">
+        <i class="header-icon"></i>
+        <span class="header-title">{{ 'data_ove00' | translate }}</span>
+      </div>
+    </div>
+    <!-- 数据总览时间导航 -->
+    <div class="gray-bgc-nav">
+      <ng-container *ngFor="let item of dataOverivewNavList">
+        <customize-button
+          class="nav-btn"
+          [disabled]="totalDataloding"
+          minWidth="100px"
+          [loading]="isActiveTimesIndex == item.code && totalDataloding"
+          [type]="isActiveTimesIndex == item.code ? 'default' : 'text'"
+          size="medium"
+          (click)="onSelectTime(item.code)"
+        >
+          <span [class.active]="isActiveTimesIndex == item.code">{{ item.value }}</span>
+        </customize-button>
+      </ng-container>
+    </div>
+    <!-- 好友|联盟计划数据总览详情 -->
+    <div class="content-web-display" [appLoading]="totalDataloding">
+      <ng-container *ngIf="!totalDataloding">
+        <ng-container *ngFor="let item of rewardList; let idx = index">
+          <ng-container
+            *ngTemplateOutlet="
+              dataViewTemplate;
+              context: {
+                idx,
+                title: item.title,
+                tipToolInfo: item.tipToolInfo | translate
+              }
+            "
+          ></ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="importByOhterComponent == 'affiliate'">
+      <app-table-component
+        [tableHeader]="tableHead"
+        [tableBodyTmp]="tableBodyTmp"
+        [h5DataTemp]="h5DataTemp"
+        [loading]="loading"
+        [dataLen]="1"
+        [isShowInfo]="false"
+        [isMinHeight]="false"
+        [tableClassName]="'customize-table'"
+      ></app-table-component>
+    </ng-container>
+    <!-- 提示文字 -->
+    <div class="content-web-info" [class]="importByOhterComponent == 'affiliate' ? 'text-gray-bgc' : 'content-m-top'">
+      <p>* {{ 'sent_one' | translate }}</p>
+      <p>* {{ 'sent_two' | translate }}</p>
+    </div>
+  </div>
+</div>
+<!-- 数据总览模版 -->
+<ng-template #dataViewTemplate let-idx="idx" let-title="title" let-tipToolInfo="tipToolInfo">
+  <div class="show-income">
+    <div class="top-data-container">
+      <span class="title">{{ title }}</span>
+      <div class="income-hind">
+        <app-tool-tip
+          [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }"
+          [direction]="
+            langCode !== 'zh-cn' && isH5 ? ['down'] : isH5 && idx !== 1 ? ['right'] : !isH5 ? ['up'] : ['down']
+          "
+        >
+          <i origin class="icon-warning mutual-opacity"></i>
+          <div tooltip class="tooltip-info">
+            <div class="tooltip-info-text">{{ tipToolInfo }}</div>
+          </div>
+        </app-tool-tip>
+        <div (click)="openWebRankPopup()" *ngIf="!isH5 && idx == 3" class="top-recommender mutual-opacity onact96-not">
+          {{ 'check_top' | translate }}
+          <i class="icon-arrow-right-simple"></i>
+        </div>
+      </div>
+    </div>
+    <ng-container [ngSwitch]="idx">
+      <ng-container *ngSwitchCase="0">
+        <div class="dollars">{{ dataView.profit || 0 | currencyValue : 'USDT' }} USDT</div>
+        <div class="up">
+          {{ dataView.profitDiff >= 0 ? '+' : '' }}{{ dataView.profitDiff || 0 | currencyValue : 'USDT' }} USDT
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="1">
+        <div class="dollars">
+          {{ dataView.trading || 0 }}
+        </div>
+        <div class="up">{{ dataView.tradingDiff >= 0 ? '+' : '' }}{{ dataView.tradingDiff || 0 }}</div>
+      </ng-container>
+      <ng-container *ngSwitchCase="2">
+        <div class="dollars">
+          {{ dataView.count || 0 }}
+        </div>
+        <div class="up">{{ dataView.countDiff >= 0 ? '+' : '' }}{{ dataView.countDiff || 0 }}</div>
+      </ng-container>
+      <ng-container *ngSwitchCase="3">
+        <div class="dollars">{{ dataView.reward || 0 | currencyValue : 'USDT' }} USDT</div>
+        <div *ngIf="isH5" (click)="openWebRankPopup()" class="top-recommender onact96">
+          {{ 'check_top' | translate }}
+          <i class="icon-arrow-right-simple"></i>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #toolTipTmp let-title="title" let-item="item" let-value="value">
+  <app-tool-tip [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }" class="inline-block-ml">
+    <i origin class="icon-warning mutual-opacity"></i>
+    <div tooltip class="tooltip-info">
+      <p class="cdk-tooltip-info-title">{{ title }}</p>
+      <div class="cdk-tooltip-info-list">
+        <div *ngFor="let key of item" class="cdk-tooltip-info-group">
+          <p class="tooltip-info-text">{{ key }}</p>
+          <div>
+            <p class="tooltip-info-text">
+              {{ value[key] | currencyValue : key }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-tool-tip>
+</ng-template>
+
+<!-- 表格模版 -->
+<ng-template #tableBodyTmp>
+  <tr>
+    <td>
+      <span class="text-14">{{ tableData?.sum || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      <span class="text-14">{{ tableData?.venue || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      <span class="text-14">{{ tableData?.pay || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      <span class="text-14">{{ tableData?.bonus || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      <span class="text-14">{{ tableData?.platform || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      <span class="text-14">{{ tableData?.adjust || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      <span class="text-14">{{ tableData?.rebate || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      <ng-container
+        *ngTemplateOutlet="
+          toolTipTmp;
+          context: {
+            title: ('aff_c_yjfhxq' | translate),
+            item: rebateCurrency,
+            value: tableData.rebateCurrency
+          }
+        "
+      ></ng-container>
+    </td>
+    <td>
+      <span class="text-14">{{ tableData?.income || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      <ng-container
+        *ngTemplateOutlet="
+          toolTipTmp;
+          context: {
+            title: ('aff_rev00' | translate) + ('detail' | translate),
+            item: incomeCurrency,
+            value: tableData.incomeCurrency
+          }
+        "
+      ></ng-container>
+    </td>
+  </tr>
+</ng-template>
+<!-- h5数据 -->
+<ng-template #h5DataTemp>
+  <div class="h5-agent-table-data">
+    <div class="first-line">
+      <span class="text-14">{{ 'total_win00' | translate }}：{{ tableData?.sum || 0 | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </div>
+    <div class="group">
+      <p class="text-gray-14">{{ 'ven_fee00' | translate }}</p>
+      <p class="text-gray-14">
+        {{ tableData?.venue || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="text-gray-14">{{ 'pay_fee00' | translate }}</p>
+      <p class="text-gray-14">
+        {{ tableData?.pay || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="text-gray-14">{{ 'bonus' | translate }}</p>
+      <p class="text-gray-14">
+        {{ tableData?.bonus || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="text-gray-14">{{ 'plat_fee00' | translate }}</p>
+      <p class="text-gray-14">
+        {{ tableData?.platform || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="text-gray-14">{{ 'acc_adjust00' | translate }}</p>
+      <p class="text-gray-14">
+        {{ tableData?.adjust || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="text-gray-14">{{ 'aff_re_fr' | translate }}</p>
+      <p class="text-gray-14">
+        {{ tableData?.rebate | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTmp;
+            context: {
+              title: ('aff_c_yjfhxq' | translate),
+              item: rebateCurrency,
+              value: tableData.rebateCurrency
+            }
+          "
+        ></ng-container>
+      </p>
+    </div>
+    <div class="group">
+      <p class="text-gray-14">{{ 'aff_rev00' | translate }}</p>
+      <p class="text-gray-14">
+        {{ tableData?.income | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTmp;
+            context: {
+              title: ('aff_rev00' | translate) + ('detail' | translate),
+              item: incomeCurrency,
+              value: tableData.incomeCurrency
+            }
+          "
+        ></ng-container>
+      </p>
+    </div>
+  </div>
+</ng-template>

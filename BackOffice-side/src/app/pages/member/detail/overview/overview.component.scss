@@ -1,0 +1,68 @@
+:host {
+  dl,
+  dt,
+  dd {
+    margin-bottom: 0;
+  }
+}
+
+.lh20 {
+  line-height: 20px;
+}
+
+.f20 {
+  font-size: 20px;
+}
+
+.main {
+  margin: 0 -7.5px;
+}
+
+.profile {
+  font-family: PingFangSC;
+
+  .btn {
+    padding: 12px 36px;
+    font-size: 16px;
+  }
+
+  .card-body {
+    font-size: 16px;
+
+    dl {
+      display: flex;
+      height: 40px;
+      line-height: 40px;
+    }
+
+    dt {
+      color: #a1a5b7;
+      width: 200px;
+      flex: 0 0 200px;
+    }
+
+    .ok {
+      text-align: center;
+      width: auto;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 4px;
+      background-color: #e8fff3;
+      display: inline-block;
+      color: #50cd89;
+      vertical-align: top;
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;
+      padding: 0 10px;
+    }
+  }
+}
+
+.user-disabled-content {
+  .checkbox {
+    width: 130px;
+    margin-bottom: 8px;
+    user-select: none;
+  }
+}

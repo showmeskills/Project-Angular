@@ -1,0 +1,239 @@
+<div class="modal-content">
+  <modal-title [title]="isEdit ? ('walle.edit' | lang) : ('walle.add' | lang)" (close)="modal.dismiss()"></modal-title>
+
+  <div class="modal-body" [formGroup]="formGroup">
+    <!-- 账号 -->
+    <form-row name="userName" [label]="'auManage.sys.acc' | lang" label-width="150" required>
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          [formControl]="control"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="invalid"
+          autocomplete="off"
+          [attrDisabled]="isEdit"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 邮箱 -->
+    <form-row name="mail" [label]="'auManage.sys.email' | lang" label-width="150">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input type="text" class="form-control" autocomplete="off" [formControl]="control" />
+      </ng-template>
+    </form-row>
+
+    <!-- 商户 -->
+    <form-row [label]="'common.merchant' | lang" name="merchantId" label-width="150" required>
+      <ng-template let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select class="form-control" [class.is-invalid]="invalid" formControlName="merchantId">
+            <mat-option *ngFor="let item of merchantList" [value]="+item.value">
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 商户-超级管理员 -->
+    <form-row name="tenantSuperAdmin" [label]="'auManage.sys.merMaster' | lang" label-width="150">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <label class="switch switch-success mt-2">
+          <input type="checkbox" [formControl]="control" />
+          <span></span>
+        </label>
+      </ng-template>
+    </form-row>
+
+    <!-- 设置经理账户 -->
+    <form-row name="isAccountManager" [label]="'auManage.sys.accountManager' | lang" label-width="150">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <label class="switch switch-success mt-2">
+          <input type="checkbox" [formControl]="control" />
+          <span></span>
+        </label>
+      </ng-template>
+    </form-row>
+
+    <!-- 地区 -->
+    <form-row name="region" [label]="'member.kyc.region.region' | lang" label-width="150">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <div class="d-flex flex-wrap">
+          <label class="checkbox checkbox-lg fz-16 mr-8" *ngFor="let item of regionList">
+            <input type="checkbox" [checkboxArrayControl]="control" [checkboxArrayValue]="item.id" />
+            <span class="mr-4"></span>{{ 'member.kyc.region' | lang: item.name }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 资源 -->
+    <form-row
+      required
+      name="resource"
+      label-width="150"
+      [label]="'auManage.sys.resource' | lang"
+      [invalidFeedback]="{ required: 'common.select' | lang }"
+    >
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="d-flex flex-ac flex-wrap gap-5">
+          <!-- 不匹配的数据且不可操作 -->
+          <ng-container *ngIf="retainCurResourceList.length > 0">
+            <div
+              *ngFor="let item of retainCurResourceList"
+              class="d-flex flex-ac px-5 h42 disabled"
+              style="background: #f5f8fa; border-radius: 6px"
+            >
+              {{ item.name }}
+            </div>
+          </ng-container>
+
+          <div
+            *ngFor="let item of curResourceList; let i = index"
+            class="d-flex flex-ac px-5 h42"
+            style="background: #f5f8fa; border-radius: 6px"
+          >
+            <div class="mr-2">{{ item.name }}</div>
+            <svg-icon
+              *ngIf="!isEdit"
+              (click)="delResourceRole('resource', i)"
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+            ></svg-icon>
+          </div>
+          <span class="btn btn-light-primary fz-16 d-flex flex-ac h42" (click)="openAddPopup(addTpl, 'resource')">
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            {{ 'game.provider.add' | lang }}
+          </span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 角色 -->
+    <form-row [label]="'auManage.sys.role' | lang" label-width="150">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap gap-5">
+          <!-- 不匹配的数据且不可操作 -->
+          <ng-container *ngIf="retainCurRoleList.length > 0">
+            <div
+              *ngFor="let item of retainCurRoleList"
+              class="d-flex flex-ac px-5 h42 disabled"
+              style="background: #f5f8fa; border-radius: 6px"
+            >
+              {{ item.name }}
+            </div>
+          </ng-container>
+
+          <div
+            *ngFor="let item of curRoleList; let i = index"
+            class="d-flex flex-ac px-5 h42"
+            style="background: #f5f8fa; border-radius: 6px"
+          >
+            <div class="mr-2">{{ item.name }}</div>
+            <svg-icon
+              (click)="delResourceRole('role', i)"
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+            ></svg-icon>
+          </div>
+          <span class="btn btn-light-primary fz-16 d-flex flex-ac h42" (click)="openAddPopup(addTpl, 'role')">
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            {{ 'game.provider.add' | lang }}
+          </span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 群组状态 -->
+    <!--    <form-row name="groupSate" [label]="'auManage.sys.grounStu' | lang" label-width="150" *ngIf="false">-->
+    <!--      <ng-template let-invalid="invalid" let-control="formControl">-->
+    <!--        <label class="switch switch-success mt-2">-->
+    <!--          <input type="checkbox" [formControl]="control" />-->
+    <!--          <span></span>-->
+    <!--        </label>-->
+    <!--      </ng-template>-->
+    <!--    </form-row>-->
+
+    <!-- 主管 -->
+    <form-row [label]="'auManage.sys.mainMan' | lang" name="leaderId" label-width="150">
+      <ng-template let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select
+            class="form-control"
+            [class.is-invalid]="invalid"
+            formControlName="leaderId"
+            (openedChange)="openSearchSelect($event, 'leaderList', leaderRef)"
+          >
+            <!-- <form-wrap class="leader-search">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-search.svg'"
+                  class="svg-icon svg-icon-2x svg-icon-primary"
+                  (click)="getLeaderList()"
+                ></svg-icon>
+                <input
+                  [placeholder]="'auManage.sys.enterSer' | lang"
+                  type="text"
+                  #leaderRef
+                  formControlName="leaderSearch"
+                  class="form-control"
+                />
+                <svg-icon
+                  suffix
+                  (click)="delLeaderSearch()"
+                  [src]="'./assets/images/svg/bar-close.svg'"
+                  class="svg-icon svg-icon-2x cursor-pointer d-flex"
+                ></svg-icon>
+              </form-wrap> -->
+            <input
+              [placeholder]="('common.search' | lang) + '...'"
+              type="search"
+              #leaderRef
+              (keyup)="searchGroup['leaderList'] = $event.target?.['value'] || ''"
+              (input)="searchGroup['leaderList'] = $event.target?.['value'] || ''"
+              class="select-search"
+            />
+            <mat-option
+              *ngFor="let item of leaderList | search: 'userName' : searchGroup['leaderList']"
+              [value]="item.id"
+              >{{ item.userName }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 经理名称 -->
+    <form-row name="accountManagerName" [label]="'auManage.sys.managerName' | lang" label-width="150">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input type="text" class="form-control" autocomplete="off" [formControl]="control" maxlength="30" />
+      </ng-template>
+    </form-row>
+  </div>
+
+  <modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>
+</div>
+
+<!-- 资源/角色 增加 -->
+<ng-template #addTpl let-data let-c="close" let-d="dismiss">
+  <modal-title
+    [title]="data.type === 'resource' ? ('auManage.sys.sorceAdd' | lang) : ('auManage.sys.roleAdd' | lang)"
+    (close)="d()"
+  ></modal-title>
+
+  <div class="modal-body custom-scroll-y" [style.height.px]="250">
+    <div class="d-flex flex-ac flex-wrap" style="gap: 15px">
+      <label
+        class="checkbox checkbox-lg px-5 h42"
+        style="background: #f5f8fa; border-radius: 6px"
+        *ngFor="let item of data.list"
+      >
+        <input type="checkbox" [(ngModel)]="item.checked" />
+        {{ item.name }}
+        <span class="ml-5"></span>
+      </label>
+    </div>
+  </div>
+
+  <modal-footer (confirm)="addConfirm(c, data.type)" (dismiss)="d()"></modal-footer>
+</ng-template>

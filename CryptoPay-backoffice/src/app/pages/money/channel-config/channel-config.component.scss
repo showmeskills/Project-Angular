@@ -1,0 +1,20 @@
+.edit {
+  padding: 7px 13px;
+  line-height: 20px;
+  font-size: 14px;
+  background-color: #f5f8fa;
+  cursor: pointer;
+  color: #7e8299;
+  transition: all 0.2s linear;
+  border-radius: 6px;
+
+  &:hover {
+    color: #7e8299;
+    background-color: #e4e6ef;
+  }
+}
+
+.cell {
+  white-space: break-spaces;
+  word-break: break-word;
+}

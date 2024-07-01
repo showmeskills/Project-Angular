@@ -1,0 +1,65 @@
+<div class="page-container">
+  <app-header-title-bar [title]="'email_title' | translate" [clickForRouterBack]="true"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <div class="form-column">
+        <ng-container *ngIf="!disableSuccess">
+          <div class="form-item">
+            <app-verify-code
+              [inputLabel]="'email_verification' | translate"
+              verifyType="EMAIL"
+              [email]="userAccountInfor?.email || ''"
+              [otpType]="otpType"
+              [tips]="('enter_v_email' | translate) + userAccountInfor?.email + ('ver_code' | translate)"
+              [emailAuthStatus]="emailAuthStatus"
+              (onChangeAuthStatus)="handleEmailAuthStatus()"
+              (verfityInputSuccess)="onEmailOtpCode($event)"
+            >
+            </app-verify-code>
+          </div>
+          <div class="form-item">
+            <!--手机验证码 -->
+            <app-verify-code
+              [otpType]="otpType"
+              [verifyType]="'PHONE'"
+              [currentPhoneZone]="userAccountInfor?.areaCode || ''"
+              [tips]="
+                ('enter_phone' | translate) +
+                (userAccountInfor?.areaCode || '') +
+                ' ' +
+                (userAccountInfor?.mobile || '') +
+                ('ver_code' | translate)
+              "
+              [phone]="userAccountInfor?.mobile || ''"
+              [authStatus]="authStatus"
+              (onChangeAuthStatus)="handlePhoneAuthStatus($event)"
+              (verfityInputSuccess)="onOtpCode($event)"
+            >
+            </app-verify-code>
+          </div>
+          <customize-button
+            class="final-btn"
+            width="100%"
+            type="primary"
+            size="large"
+            [disabled]="!canSubmit"
+            (onClick)="handleSubmit()"
+            [loading]="isLoading"
+            >{{ 'unbinding_button' | translate }}</customize-button
+          >
+        </ng-container>
+
+        <ng-container *ngIf="disableSuccess">
+          <app-success-verification
+            [header]="'disable_email_success' | translate"
+            [successText]="'disable_email_text' | translate"
+          >
+          </app-success-verification>
+          <customize-button class="final-btn" width="100%" type="primary" size="large" (onClick)="handleback()">
+            {{ 'return' | translate }}
+          </customize-button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

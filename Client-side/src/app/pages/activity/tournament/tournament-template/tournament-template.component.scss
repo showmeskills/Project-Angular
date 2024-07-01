@@ -1,0 +1,226 @@
+@mixin _ellipsis($clamp) {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  @media (max-width: 540px) {
+    -webkit-line-clamp: $clamp;
+  }
+}
+
+.temp-btn {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.currency-img {
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+}
+
+.start-tournament {
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  min-height: 320px;
+  &.livecasino {
+    background: linear-gradient(to right, rgba(199, 1, 96, 1) 30%, rgba(110, 1, 173, 1));
+  }
+
+  &.casino {
+    background: linear-gradient(to right, rgba(110, 1, 173, 1) 30%, rgba(49, 0, 154, 1));
+  }
+  @media (max-width: 1120px) {
+    flex-direction: column;
+    padding: 14px;
+  }
+  .start-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0 20px 20px;
+    max-width: 394px;
+    flex: 1;
+    @media (max-width: 1120px) {
+      padding: 0;
+      margin-top: 23px;
+      max-width: 100%;
+      justify-content: center;
+    }
+    .intro-title {
+      font-size: 28px;
+      color: var(--text-white-at-night);
+      font-weight: 600;
+      line-height: 1.48;
+      @include _ellipsis(2);
+    }
+    .intro-sub-title {
+      font-size: 14px;
+      color: var(--text-white-at-night);
+      margin-top: 6px;
+      line-height: 1.48;
+      @include _ellipsis(2);
+      @media (max-width: 1120px) {
+        margin-top: 0;
+      }
+    }
+    .start-rewards {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 36px 0;
+      @media (max-width: 1120px) {
+        margin: 12px 0;
+        width: 100%;
+      }
+      .first-rewards {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        @media (max-width: 1120px) {
+          margin: 12px 0;
+        }
+        .reward {
+          font-size: 24px;
+          color: var(--text-white-at-night);
+          font-weight: 600;
+        }
+        .mlr-12 {
+          margin: 0 8px 2px 12px;
+        }
+      }
+    }
+
+    .rewards-list {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      > * {
+        margin-top: 10px;
+        margin-right: 16px;
+        @media (max-width: 1120px) {
+          margin-right: 10px;
+          margin-top: 12px;
+        }
+      }
+      .list-item {
+        display: flex;
+        align-items: center;
+        .reward-badge {
+          width: 30px;
+          height: 30px;
+          @media (max-width: 767px) {
+            width: 22px;
+            height: 22px;
+          }
+        }
+        .reward-text {
+          font-size: 14px;
+          color: var(--text-white-at-night);
+          margin-bottom: 4px;
+        }
+        .mlr-12 {
+          margin: 0 8px 2px 12px;
+          @media (max-width: 767px) {
+            margin: 0 4px 2px 8px;
+          }
+        }
+      }
+    }
+  }
+
+  .tournament-image {
+    margin: 0 15px;
+    width: 330px;
+    height: auto;
+    @media (max-width: 1120px) {
+      margin: 0;
+    }
+  }
+
+  .start-rank {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px 20px 20px 0px;
+    min-width: 300px;
+    max-width: 400px;
+    @media (max-width: 1120px) {
+      margin-top: 10px;
+      padding: 0;
+      max-width: 100%;
+    }
+    .end-time {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      flex: 1;
+      &.flex-0 {
+        flex: 0;
+      }
+      .end-time-title {
+        font-size: 14px;
+        color: var(--text-white-at-night);
+        opacity: 0.8;
+        margin-right: 18px;
+      }
+    }
+    .rank-list {
+      margin-top: 12px;
+      table {
+        width: 100%;
+        height: 100%;
+        thead {
+          th {
+            font-size: 14px;
+            color: var(--text-white-at-night);
+            font-weight: 600;
+            padding: 8px 0;
+            text-align: center;
+            &:nth-child(n + 3) {
+              text-align: right;
+            }
+            &:last-child {
+              padding-right: 8px;
+            }
+          }
+        }
+        tbody {
+          tr {
+            &:nth-child(odd) {
+              background-color: rgba(0, 0, 0, 0.1);
+            }
+            td {
+              padding: 12px 0;
+              text-align: center;
+              font-size: 14px;
+              color: var(--text-white-at-night);
+              &:nth-child(n + 3) {
+                text-align: right;
+              }
+              &:last-child {
+                padding-right: 8px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.glod-color {
+  color: rgba(255, 234, 133, 1) !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

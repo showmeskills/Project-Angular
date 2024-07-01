@@ -1,0 +1,117 @@
+<div
+  class="page-container"
+  *ngIf="label"
+  app-page-banner
+  [title]="labels | filterByKeyValue : 'code' : label : 'name'"
+  [type]="label"
+></div>
+
+<div class="page-container main-content">
+  <div class="main-container">
+    <div class="container" app-search-game *ngIf="!isH5"></div>
+
+    <div class="container games-main">
+      <div class="content-box">
+        <div class="games-title">
+          <div class="filter">
+            <span *ngIf="!isH5">
+              <span><i class="icon-filter-2"></i></span>
+              <em>{{ 'sel_basis' | translate }}</em></span
+            >
+            <app-customize-select
+              [(value)]="selectProviders"
+              [width]="'auto'"
+              [fixedHeight]="true"
+              [multipleChoice]="true"
+              [disabled]="loadingCurrentProviders"
+              [optionsTemplate]="multipleChoiceTemplate"
+              [inputTemplate]="inputTemplate"
+              [options]="currentProviders"
+              [valueKey]="'providerCatId'"
+              [textKey]="'providerName'"
+              [optionsContainerClass]="'game-filter-options left'"
+              (onSelect)="getGameByProvider(true)"
+            ></app-customize-select>
+          </div>
+          <div class="filter">
+            <span *ngIf="!isH5"
+              ><i class="icon-filter-2"></i><em>{{ 'sort_by' | translate }}</em></span
+            >
+            <app-customize-select
+              [(value)]="gameSortValue"
+              [width]="'auto'"
+              [fixedHeight]="true"
+              [disabled]="loadingGameSort"
+              [options]="gameSortList"
+              [valueKey]="'code'"
+              [textKey]="'description'"
+              [optionsContainerClass]="'game-filter-options right'"
+              [itemTemplate]="sortItemTemplate"
+              (onSelect)="getGameByProvider(true)"
+            ></app-customize-select>
+          </div>
+        </div>
+        <div class="games-list" [class.loading]="!ready" [appLoading]="!ready && (initSearchLoading || loadingLabels)">
+          <ng-container *ngIf="ready">
+            <div class="grid-8-3-gap-11-6">
+              <app-game-unit
+                *ngFor="let item of games"
+                [item]="item"
+                [loading]="initSearchLoading"
+                (clickItem)="clickGameItem($event)"
+              ></app-game-unit>
+            </div>
+            <app-game-paginator
+              (loadNext)="getGameByProvider(false)"
+              [(page)]="paginator.page"
+              [loading]="searchLoading"
+              [pageSize]="paginator.pageSize"
+              [total]="paginator.total"
+            >
+            </app-game-paginator>
+          </ng-container>
+          <app-empty
+            *ngIf="games.length < 1 && !loadingLabels && !initSearchLoading && !searchLoading"
+            [text]="'no_data' | translate"
+          ></app-empty>
+        </div>
+      </div>
+    </div>
+
+    <!-- 所有供应商 -->
+    <app-swiper-provider-list class="container"></app-swiper-provider-list>
+  </div>
+</div>
+
+<ng-template #inputTemplate let-options="options" let-value="value">
+  <div class="input-text">
+    <span>{{ 'game_pro' | translate }}</span
+    ><span class="count active" *ngIf="value.length > 0">{{ value.length }}</span>
+  </div>
+</ng-template>
+
+<ng-template
+  #multipleChoiceTemplate
+  let-options="options"
+  let-valueKey="valueKey"
+  let-textKey="textKey"
+  let-clickItem="clickItem"
+>
+  <div class="multipleChoice-options">
+    <ul>
+      <li class="general onact96" *ngFor="let item of options" (click)="clickItem(item)">
+        <mat-checkbox [disableRipple]="true" [ngModel]="selectProviders.includes(item[valueKey])"></mat-checkbox>
+        <span class="count-text">{{ item[textKey] }}</span>
+        <span class="count" [class.active]="selectProviders.includes(item[valueKey])">{{ item['gameCount'] }}</span>
+      </li>
+    </ul>
+    <div class="clear-choice mutual-opacity onact96-not" (click)="clearChoice()">{{ 'all_clear' | translate }}</div>
+  </div>
+</ng-template>
+
+<ng-template #sortItemTemplate let-item="item" let-valueKey="valueKey" let-textKey="textKey" let-clickItem="clickItem">
+  <li class="general onact96" [class.active]="item[valueKey] === gameSortValue" (click)="clickItem(item)">
+    <i [class]="sortIconMap[item[valueKey]]"></i>
+    {{ item[textKey] }}
+  </li>
+</ng-template>

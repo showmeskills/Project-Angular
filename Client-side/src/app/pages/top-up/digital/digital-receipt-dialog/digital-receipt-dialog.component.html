@@ -1,0 +1,53 @@
+<div class="main-container">
+  <div class="header-row">
+    <span class="title">{{ header }}</span>
+    <i class="icon-close mutual-opacity onact96-not" (click)="close()"></i>
+  </div>
+  <div class="contants-clounm">
+    <div class="infor-row">
+      <span>{{ 'status' | translate }}</span>
+      <!-- <span *ngIf="data.item.status == 'Success'" class="success">
+        <p [class.green]="data.item.status == 'Success'"></p>
+         <p>{{data.item.status}}</p>
+      </span> -->
+      <!--TODO：缺少其他状态样式，待设计补充后完善-->
+      <span class="status-txt"> {{ data.item.statusName }}</span>
+    </div>
+    <div class="infor-row">
+      <span>{{ 'date' | translate }}</span>
+      <span class="data">{{ data.item.date | mdate }}</span>
+    </div>
+    <div class="infor-row">
+      <span>{{ 'curr' | translate }}</span>
+      <div class="center-row">
+        <img class="icon-network" [src]="data.item.currency | currencyIcon" />
+        <span>{{ data.item.currency }}</span>
+      </div>
+    </div>
+    <div class="infor-row">
+      <span>{{ typeName }}</span>
+      <span class="amount">{{ data.item.amount | currencyValue : data.item.currency }}</span>
+    </div>
+    <div class="infor-row">
+      <span>{{ 'trans_network' | translate }}</span>
+      <span class="network">{{ data.item.network }}</span>
+    </div>
+    <div class="infor-row">
+      <span class="min-txt">{{ 'address' | translate }}</span>
+
+      <div class="contant">
+        <p class="txt">{{ data.item.address }}</p>
+        <!-- <span class="icon-link"></span> -->
+        <app-tool-tip [copyMode]="'icon'" [copyContent]="data.item.address"> </app-tool-tip>
+      </div>
+    </div>
+    <div class="infor-row" *ngIf="data.item?.txid?.length > 0">
+      <span>TxID</span>
+      <div class="contant">
+        <p class="txt">{{ data.item.txid }}</p>
+        <!-- <span class="icon-link"></span> -->
+        <app-tool-tip [copyMode]="'icon'" [copyContent]="data.item.txid"> </app-tool-tip>
+      </div>
+    </div>
+  </div>
+</div>

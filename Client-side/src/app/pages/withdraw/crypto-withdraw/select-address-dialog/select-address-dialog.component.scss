@@ -1,0 +1,200 @@
+div {
+  display: flex;
+}
+
+.container {
+  width: 720px;
+  height: 475px;
+  flex-direction: column;
+  overflow-y: hidden;
+  background-color: var(--container-bg-color);
+  padding: 24px;
+
+  @media (max-width: 1260px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    padding: 24px 16px 26px 16px;
+  }
+
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 40px;
+
+    //标题
+    .title {
+      color: var(--text-color);
+      font-size: 20px;
+
+      @media (max-width: 767px) {
+        font-size: 16px;
+      }
+    }
+
+    //关闭icon
+    .icon-close {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  //地址选栏
+  .address-container {
+    padding: 15px 24px;
+    margin-bottom: 10px;
+    flex-direction: column;
+
+    &.disabled {
+      background-color: var(--default-border-color);
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:last-child {
+      padding-bottom: 30px;
+    }
+
+    @media (max-width: 767px) {
+      border: none !important;
+      border-radius: 6px;
+      padding: 16px;
+      background-color: #fbfbfb;
+      justify-content: center;
+
+      &:host-context(.dark) & {
+        background-color: var(--main-page-bg);
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 16px;
+      }
+    }
+
+    .type {
+      color: var(--text-color);
+      font-size: 14px;
+      padding-bottom: 10px;
+
+      i {
+        font-size: inherit;
+        margin-left: 10px;
+      }
+
+      .h5-header {
+        display: none;
+      }
+
+      @media (max-width: 767px) {
+        justify-content: space-between;
+
+        .h5-header {
+          display: flex;
+        }
+      }
+    }
+
+    .header {
+      font-size: 14px;
+      color: var(--text-color);
+      padding-bottom: 10px;
+
+      @media (max-width: 767px) {
+        padding-bottom: 20px;
+        display: none;
+      }
+    }
+
+    .address-row {
+      flex-direction: row;
+      font-size: 14px;
+      justify-content: space-between;
+
+      > * + * {
+        margin-left: 20px;
+      }
+
+      @media (max-width: 767px) {
+        flex-direction: column;
+
+        > * + * {
+          margin-left: 0;
+          margin-top: 10px;
+        }
+      }
+
+      > div {
+        > * + * {
+          margin-left: 14px;
+        }
+
+        em {
+          white-space: nowrap;
+          color: var(--text-color-20);
+        }
+
+        span {
+          word-break: break-all;
+          text-align: right;
+          color: var(--text-color-30);
+
+          @media (max-width: 767px) {
+            margin-left: 0;
+            margin-right: 0;
+          }
+        }
+
+        @media (max-width: 767px) {
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}
+
+app-empty {
+  margin: auto;
+}
+
+.m-auto {
+  margin: 10px 0;
+}
+
+.content-hub {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+
+  app-empty::ng-deep {
+    .empty {
+      margin-bottom: 0px;
+
+      .submit-btn {
+        margin-top: 30px;
+      }
+    }
+  }
+
+  &.has-content {
+    border-bottom: 1px solid var(--default-border-color);
+    padding-bottom: 0;
+  }
+
+  @media (max-width: 767px) {
+    padding-left: 16px;
+    padding-right: 16px;
+
+    &.has-content {
+      border: none;
+    }
+  }
+}

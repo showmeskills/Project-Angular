@@ -1,0 +1,76 @@
+:host {
+  background-color: transparent !important;
+  display: flex;
+}
+
+.standard-popup {
+  position: relative;
+  width: 484px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.background-img {
+  width: 100%;
+  object-fit: contain;
+}
+
+.text-weight {
+  font-weight: bold;
+}
+
+.text {
+  width: 100%;
+  word-break: keep-all;
+  white-space: pre-wrap;
+  line-height: 1.18;
+}
+
+.btn-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  position: absolute;
+  justify-content: center;
+  bottom: 45px;
+  width: 100%;
+  padding: 0 44px;
+
+  @media (min-width: 606px) and (max-width: 767px) {
+    bottom: 75px;
+  }
+
+  @media (min-width: 491px) and (max-width: 605px) {
+    bottom: 55px;
+  }
+
+  @media (max-width: 490px) {
+    bottom: 30px;
+  }
+
+  ::ng-deep {
+    .left-btn {
+      .customize-button {
+        background-color: #ffd44d !important;
+        color: #111;
+      }
+    }
+
+    .popup-btn-top {
+      .customize-button {
+        background-color: #1f8bff !important;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.bottom-btn {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: -45px;
+  width: 100%;
+}

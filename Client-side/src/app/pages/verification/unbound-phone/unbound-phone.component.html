@@ -1,0 +1,97 @@
+<div class="page-container">
+  <app-header-title-bar [title]="pagetitle" (clickTitle)="back()"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <ng-container [ngSwitch]="orderStep">
+        <!--解除绑定 表单验证-->
+        <ng-container *ngSwitchCase="1">
+          <div class="form-clonum">
+            <div class="form-group">
+              <label>{{ 'password_text' | translate }}</label>
+              <div
+                class="input-group"
+                [class.focus]="$any(iPwd).isFocus"
+                [class.error]="!iPwd.value && $any(iPwd).isFocus"
+              >
+                <input
+                  #iPwd
+                  type="password"
+                  [(ngModel)]="password"
+                  (focus)="onFocus(iPwd)"
+                  (blur)="onBlur(iPwd)"
+                  (input)="onPasswordInput(iPwd)"
+                />
+                <i
+                  class="icon-clear onact96-not"
+                  *ngIf="!!iPwd.value && $any(iPwd).isFocus"
+                  (click)="clearInput(iPwd)"
+                ></i>
+                <i class="icon-pwd-show onact96-not" *ngIf="$any(iPwd).isShowPwd" (click)="showPwd(iPwd)"></i>
+                <i class="icon-pwd-hidden onact96-not" *ngIf="!$any(iPwd).isShowPwd" (click)="showPwd(iPwd)"></i>
+              </div>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg">
+                <p *ngIf="!iPwd.value">{{ 'enter_pwd' | translate }}</p>
+              </div>
+              <!-- 错误浮框 -->
+            </div>
+            <div class="form-group">
+              <!--otp验证-->
+              <app-verify-code
+                [otpType]="otpType"
+                [inputLabel]="'p_code' | translate"
+                [authStatus]="authStatus"
+                [phone]="phone"
+                [tips]="
+                  ('enter_phone' | translate) +
+                  userAccountInfor.areaCode +
+                  ' ' +
+                  userAccountInfor.mobile +
+                  ('ver_code' | translate)
+                "
+                (verfityInputSuccess)="onOtpCode($event)"
+                (onChangeAuthStatus)="onfirstSendAuthcode($event)"
+              >
+              </app-verify-code>
+            </div>
+            <!--谷歌验证码-->
+            <div class="form-group offset-top">
+              <label>{{ 'google_code' | translate }}</label>
+              <div
+                class="input-group"
+                [class.focus]="$any(iGoogleCaptcha).isFocus"
+                [class.error]="!iGoogleCaptcha.value && $any(iGoogleCaptcha).isFocus"
+              >
+                <input
+                  #iGoogleCaptcha
+                  type="googleCaptcha"
+                  maxlength="6"
+                  [(ngModel)]="googleCaptcha"
+                  (focus)="onFocus(iGoogleCaptcha)"
+                  (blur)="onBlur(iGoogleCaptcha)"
+                  (input)="onPasswordInput(iGoogleCaptcha)"
+                />
+              </div>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg">
+                {{ 'enter_google_code' | translate }}
+              </div>
+              <button class="unbound-btn onact96-not" [disabled]="!canSubmit()" (click)="handleSubmit()">
+                {{ 'unbinding_button' | translate }}
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <!--解除绑定 成功-->
+        <ng-container *ngSwitchCase="2">
+          <div class="form-clonum">
+            <div class="form-group">
+              <app-success-verification [header]="doneHeader" [successText]="successText"></app-success-verification>
+              <button class="back-btn onact96-not" (click)="handleback()">{{ 'back' | translate }}</button>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>

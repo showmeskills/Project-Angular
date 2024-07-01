@@ -1,0 +1,188 @@
+<div class="page-container">
+  <app-header-title-bar [title]="'account_activity_records' | translate" [clickForRouterBack]="true">
+  </app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web">
+    <div class="container">
+      <!-- 登录活动 安全操作记录-->
+      <div class="tabs">
+        <div class="tab onact96-not" [class.active]="selectedTabIndex === 0" (click)="selectedTabIndex = 0">
+          {{ 'login_activity' | translate }}
+        </div>
+        <div class="tab onact96-not" [class.active]="selectedTabIndex === 1" (click)="selectedTabIndex = 1">
+          {{ 'security_activity' | translate }}
+        </div>
+      </div>
+
+      <!-- 登录活动 -->
+      <div
+        *ngIf="selectedTabIndex === 0"
+        class="login-tab"
+        [appLoading]="isH5 ? loginHistoryData.length <= 0 && loginHistoryLoading : loginHistoryLoading"
+      >
+        <!-- 数据表格 -->
+        <table>
+          <thead *ngIf="!isH5">
+            <th width="25%">{{ 'date' | translate }}</th>
+            <th width="25%">{{ 'source' | translate }}</th>
+            <th width="25%">{{ 'status' | translate }}</th>
+            <th width="25%">IP {{ 'address' | translate }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of loginHistoryData">
+              <td>
+                {{ item.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}
+                <div *ngIf="isH5" class="log-status" [class.failed]="item.result === 'Fail'">
+                  {{ statusLabels | filterByKeyValue : 'code' : item.result : 'description' }}
+                </div>
+              </td>
+              <td [attr.data-label]="'source' | translate" class="has-data-label">{{ item.source }}</td>
+              <td *ngIf="!isH5" class="log-status" [class.failed]="item.result === 'Fail'">
+                {{ statusLabels | filterByKeyValue : 'code' : item.result : 'description' }}
+              </td>
+              <td [attr.data-label]="'ip_addr00' | translate" class="has-data-label">{{ item.createIp }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 空内容 -->
+        <app-empty *ngIf="loginHistoryData.length <= 0 && !loginHistoryLoading"></app-empty>
+        <!-- 分页 -->
+        <app-paginator
+          [(page)]="loginHistoryPaginator.page"
+          [total]="loginHistoryPaginator.total"
+          [pageSize]="loginHistoryPaginator.pageSize"
+          [disabled]="loginHistoryLoading"
+          [loading]="loginHistoryLoading"
+          (onPageChange)="loadLoginHistory()"
+        >
+        </app-paginator>
+      </div>
+
+      <!-- 安全操作记录 -->
+      <div
+        *ngIf="selectedTabIndex === 1"
+        class="security-tab"
+        [appLoading]="isH5 ? operationHistoryData.length <= 0 && operationHistoryLoading : operationHistoryLoading"
+      >
+        <!-- 搜索操作栏 -->
+        <div class="search-bar">
+          <ng-container *ngIf="!isH5; else h5Filter">
+            <app-customize-form-group>
+              <!-- 时间下拉框 -->
+              <app-customize-select
+                [(value)]="selectedTimeValue"
+                [label]="'scope' | translate"
+                [(timeValue)]="selectedTime"
+                [timeDance]="true"
+                [options]="timeOptions"
+              ></app-customize-select>
+              <!-- 状态下拉框 -->
+              <app-customize-select
+                label="{{ 'status' | translate }}"
+                [(value)]="selectedStatus"
+                [options]="searchStatus"
+              >
+              </app-customize-select>
+            </app-customize-form-group>
+            <div class="flex-layout">
+              <customize-button size="small" type="text" (onClick)="onOperationReset()" [plain]="true">
+                {{ 'reset' | translate }}
+              </customize-button>
+              <customize-button
+                size="small"
+                type="text"
+                (onClick)="reLoadOperationHistory()"
+                [plain]="true"
+                [active]="true"
+              >
+                {{ 'filter' | translate }}
+              </customize-button>
+            </div>
+          </ng-container>
+          <ng-template #h5Filter>
+            <i class="search-bar-filter icon-filter mutual-opacity onact96-not" (click)="openh5Filter()"></i>
+          </ng-template>
+        </div>
+
+        <!-- 数据表格 -->
+        <table>
+          <thead *ngIf="!isH5">
+            <th width="20%">{{ 'date' | translate }}</th>
+            <th width="20%">{{ 'source' | translate }}</th>
+            <th width="20%">{{ 'activity' | translate }}</th>
+            <th width="20%">{{ 'status' | translate }}</th>
+            <th width="20%">IP {{ 'address' | translate }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of operationHistoryData">
+              <td>
+                {{ item.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}
+                <div *ngIf="isH5" class="log-status" [class.failed]="item.result === 'Fail'">
+                  {{ statusLabels | filterByKeyValue : 'code' : item.result : 'description' }}
+                </div>
+              </td>
+              <td [attr.data-label]="'source' | translate" class="has-data-label">{{ item.source }}</td>
+              <td [attr.data-label]="'activity' | translate" class="has-data-label">{{ item.category }}</td>
+              <td *ngIf="!isH5" class="log-status" [class.failed]="item.result === 'Fail'">
+                {{ statusLabels | filterByKeyValue : 'code' : item.result : 'description' }}
+              </td>
+              <td [attr.data-label]="'ip_addr00' | translate" class="has-data-label">{{ item.createIp }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 空内容 -->
+        <app-empty *ngIf="operationHistoryData.length <= 0 && !operationHistoryLoading"></app-empty>
+        <!-- 分页 -->
+        <app-paginator
+          [(page)]="operationHistoryPaginator.page"
+          [total]="operationHistoryPaginator.total"
+          [pageSize]="operationHistoryPaginator.pageSize"
+          [disabled]="operationHistoryLoading"
+          [loading]="operationHistoryLoading"
+          (onPageChange)="loadOperationHistory()"
+        >
+        </app-paginator>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="page-container">
+  </div> -->
+</div>
+
+<!-- h5选择选项弹窗模板 -->
+<ng-template #h5FilterPopupTemplate>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="H5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <app-customize-select
+          [(value)]="selectedTimeValue"
+          [label]="'scope' | translate"
+          [(timeValue)]="selectedTime"
+          [timeDance]="true"
+          [options]="timeOptions"
+        ></app-customize-select>
+        <app-customize-select label="{{ 'status' | translate }}" [(value)]="selectedStatus" [options]="searchStatus">
+        </app-customize-select>
+      </app-customize-form-group>
+      <div class="popup-btn-group">
+        <customize-button size="medium" width="100%" (onClick)="onOperationReset()">
+          {{ 'reset' | translate }}
+        </customize-button>
+        <customize-button
+          class="popup-btn-margin-left"
+          size="medium"
+          width="100%"
+          type="primary"
+          (onClick)="H5FilterPopup.close(); reLoadOperationHistory()"
+        >
+          {{ 'filter' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,297 @@
+<div class="bg-fff rounded py-8 px-12 d-flex flex-wrap">
+  <form-row label="{{ 'game.provider.game_id' | lang }}" class="mr-16">
+    <ng-template>
+      <input
+        [style.width.px]="200"
+        [(ngModel)]="data.gameId"
+        class="form-control"
+        type="text"
+        placeholder=""
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row label="{{ 'game.provider.game_name' | lang }}" class="mr-16">
+    <ng-template>
+      <input
+        [style.width.px]="200"
+        [(ngModel)]="data.gameName"
+        class="form-control"
+        type="text"
+        placeholder=""
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row label="{{ 'game.provider.type' | lang }}" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of categoryList" [value]="item.code">{{ item.description }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row label="{{ 'game.provider.game_manu' | lang }}" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" [(ngModel)]="data.provider" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of providerList" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row label="{{ 'game.provider.game_label' | lang }}" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" [(ngModel)]="data.gameLabel" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of gameLabelList" [value]="item.code">{{ item.description }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row label="{{ 'game.provider.game_statu' | lang }}" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of gameStatusList" [value]="item.code">{{ item.description }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="p-12">
+    <div class="d-flex flex-ac flex-between">
+      <div class="title">
+        <span>{{ 'game.provider.game_list' | lang }}</span>
+        <span class="fz-14 color-aaa vam pl-8">{{ 'game.provider.game_total' | lang }}{{ paginator.total }}</span>
+      </div>
+      <div>
+        <button
+          [batchUpload]
+          [downloadGameTpl]="true"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+        >
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span>{{ 'game.provider.down_temp' | lang }}</span>
+        </button>
+        <button
+          [batchUpload]
+          [batchEditGame]="true"
+          (uploadCallback)="loadData()"
+          batchUploadType="Games"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+          (click)="onUploadGame()"
+        >
+          <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          <span>{{ 'game.provider.game_upload' | lang }}</span>
+        </button>
+        <button
+          [batchUpload]
+          batchUploadType="Games"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+          (click)="onUploadImg()"
+        >
+          <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          <span>{{ 'game.provider.pic_upload' | lang }}</span>
+        </button>
+        <button
+          (click)="router.navigate(['/game/list/configuration'])"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+        >
+          <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          <span>{{ 'game.provider.now_adds' | lang }}</span>
+        </button>
+        <button
+          (click)="onExport()"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h34"
+        >
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span>{{ 'game.provider.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <!--begin::Datatable-->
+      <table class="table mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th class="w-10px pe-2">
+              <div class="cell">
+                <label class="checkbox checkbox-lg">
+                  <input type="checkbox" selectGroup />
+                  <span></span>
+                </label>
+              </div>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort('sortGame')">
+                  <span>{{ 'game.provider.game_id' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="data.sortGame === '0'"></div>
+                    <div class="triangle-down" [class.active]="data.sortGame === '1'"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.provider.game_name' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.provider.type' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort('sortProvider')">
+                  <span>{{ 'game.provider.game_manu' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="data.sortProvider === '0'"></div>
+                    <div class="triangle-down" [class.active]="data.sortProvider === '1'"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort('sortShow')">
+                  <span>{{ 'game.provider.order' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="data.sortShow === '0'"></div>
+                    <div class="triangle-down" [class.active]="data.sortShow === '1'"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.provider.index_recom' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort('sortStatus')">
+                  <span>{{ 'game.provider.statu' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="data.sortStatus === '0'"></div>
+                    <div class="triangle-down" [class.active]="data.sortStatus === '1'"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.provider.action' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <div class="cell">
+                <label class="checkbox checkbox-lg">
+                  <input type="checkbox" select [(ngModel)]="item.checked" [checked]="item.checked" />
+                  <span></span>
+                </label>
+              </div>
+            </td>
+            <td>
+              <span class="cell">{{ item.gameId }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ getGameName(item) }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ getCategoryName(item) }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ getProviderName(item) }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.sort }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="switch switch-success">
+                  <label class="mx-auto">
+                    <input type="checkbox" (change)="onState(item)" [(ngModel)]="item.isRecomment" />
+                    <span></span>
+                  </label>
+                </span>
+              </span>
+            </td>
+            <td [ngSwitch]="item.status">
+              <span class="cell">
+                <span *ngSwitchCase="'Online'" class="label label-lg label-inline label-light-success">{{
+                  'game.provider.shelve' | lang
+                }}</span>
+                <span *ngSwitchCase="'Offline'" class="label label-lg label-inline label-light-danger">{{
+                  'game.provider.drop' | lang
+                }}</span>
+                <span *ngSwitchCase="'Maintenance'" class="label label-lg label-inline label-light-warning">{{
+                  'game.provider.maintain' | lang
+                }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span
+                  class="btn btn-light btn-hover-light-default px-6"
+                  (click)="router.navigate(['/game/list/configuration', item.id, subHeader.merchantCurrentId])"
+                  >{{ 'game.provider.edit' | lang }}</span
+                >
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'game.provider.none_info_now' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30 align-items-end">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

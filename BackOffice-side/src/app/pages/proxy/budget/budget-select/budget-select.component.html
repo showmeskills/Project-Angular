@@ -1,0 +1,29 @@
+<div class="d-flex flex-1">
+  <div class="sel fz-16" [class.isOpenOver]="isOpen">
+    <ng-content select="[budget-select-over]"></ng-content>
+  </div>
+  <div class="sel fz-16 mx-2">/</div>
+  <div class="sel fz-16">
+    <ng-content select="[budget-select-total]"></ng-content>
+  </div>
+</div>
+
+<div class="add flex-center" cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="isOpen = !isOpen">
+  <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayOffsetX]="-115"
+>
+  <div class="budget-select-menu" #target>
+    <div class="budget-select-menu-item" (click)="onAccumulate(100)">100</div>
+    <div class="budget-select-menu-item" (click)="onAccumulate(1e3)">1000</div>
+    <div class="budget-select-menu-item" (click)="onAccumulate(1e4)">1万</div>
+    <div class="budget-select-menu-item" (click)="onAccumulate(1e5)">10万</div>
+    <div class="budget-select-menu-item" (click)="onAccumulate(2e5)">20万</div>
+    <div class="budget-select-menu-item" (click)="onAccumulate(1e6)">100万</div>
+  </div>
+</ng-template>

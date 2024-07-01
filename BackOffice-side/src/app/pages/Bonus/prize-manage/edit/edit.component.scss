@@ -1,0 +1,58 @@
+.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.disabled-edit {
+  > * {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.excluded-games {
+  gap: 15px;
+  .excluded-games-item {
+    padding: 6px 14px;
+    background-color: #f5f8fa;
+    font-size: 14px;
+    line-height: normal;
+    border-radius: 4px;
+  }
+}
+
+.read-on-disabled {
+  pointer-events: all !important;
+  cursor: default !important;
+  opacity: 1 !important;
+}
+
+
+.game-box {
+  width: 340px;
+  height: 89px;
+  padding: 10px;
+  background: #f5f8fa;
+  border-radius: 6px;
+  display: flex;
+  img {
+    width: 53px;
+    height: 100%;
+  }
+  .game-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    .content-left {
+      flex: 1;
+      color: #9ea3b3;
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+}

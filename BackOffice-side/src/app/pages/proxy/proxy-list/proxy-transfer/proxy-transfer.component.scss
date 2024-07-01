@@ -1,0 +1,13 @@
+.transfer {
+  &-header {
+    border-bottom: 1px solid #eff2f5;
+
+    &-txt {
+      margin-left: 90px;
+    }
+
+    &-select {
+      height: 26px;
+    }
+  }
+}

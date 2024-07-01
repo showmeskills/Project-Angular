@@ -1,0 +1,23 @@
+@mixin scrollbar-style($scrollbar-width, $scrollbar-height, $thumb-color) {
+
+  /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+  &::-webkit-scrollbar {
+    width: $scrollbar-width;
+    height: $scrollbar-height;
+    //background-color: pink;
+  }
+
+  /*定义滚动条轨道:外面 内阴影+圆角*/
+  &::-webkit-scrollbar-track {
+    //border-radius: 4px;
+    //-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: transparent;
+  }
+
+  /*定义滑块：里面 内阴影+圆角*/
+  &::-webkit-scrollbar-thumb {
+    border-radius: calc(#{$scrollbar-height} / 2);
+    //-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: $thumb-color;
+  }
+}

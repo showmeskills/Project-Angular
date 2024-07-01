@@ -1,0 +1,12 @@
+:host {
+  display: flex;
+  min-width: 0;
+}
+
+.rounded-10 {
+  border-radius: 10px;
+}
+
+.stat-amount {
+  flex: 1 0 calc(50% - 15px);
+}

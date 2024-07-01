@@ -1,0 +1,23 @@
+trigger:
+  - sit-1
+
+variables:
+  merchantNumber: 1
+  merchantEnv: 'sit'
+  projectName: 'build'
+  repoName: 'gogaming_app'
+  fullBuild: true
+  fullRebuild: false
+  certSecureFile: 'prod.p12'
+  provProfileSecureFile: 'gogaming_ios.mobileprovision'
+  exportOptionsPlist: 'merchant_scripts/sources/exportOptions.plist'
+  shorebirdToken: 1//0evEMITZyyW6yCgYIARAAGA4SNwF-L9IrrerlUg9JmpgJS6uG6IyLMw5eFDEZE0dhZFtJ1nHsWWLuBzpODAAQXphEDSbaqEqBYHA
+
+pool:
+  vmImage: "macOS-13"
+
+jobs:
+  - job: main
+    timeoutInMinutes: 150
+    steps:
+      - template: ../start.yml

@@ -1,0 +1,209 @@
+<div class="forei-primary-container" [class.disable]="submitLoading || initLoading">
+  <!--标题栏-->
+  <div class="header-container">
+    <div class="dailog-header">{{ 'basic_ver' | translate }}</div>
+    <div
+      class="onact96-not"
+      (click)="close()"
+      [class.disable]="submitLoading || initLoading"
+      class="icon-close-simple"
+    ></div>
+  </div>
+  <div class="dailog-container">
+    <!--表单验证-->
+    <ng-container *ngTemplateOutlet="forms"></ng-container>
+    <!--submit button-->
+    <div class="bottom-colum">
+      <div class="footer-container">
+        <div class="footer-colunm">
+          <div class="btn-contanier">
+            <customize-button
+              width="100%"
+              type="primary"
+              size="large"
+              [disabled]="!checkSubmitValid()"
+              [loading]="submitLoading"
+              (onClick)="handleSubmit()"
+              >{{ 'continue' | translate }}</customize-button
+            >
+          </div>
+        </div>
+      </div>
+      <!--页角提示-->
+      <div class="notice-container">
+        <i class="safety-i"></i>
+        <div class="notice-text">
+          {{ 'secure_info' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #forms>
+  <div class="page1-container">
+    <div class="label">
+      <!--labe-->
+      <span class="offset-right">{{ 'id_info' | translate }}</span>
+      <!--绑定手机状态-->
+      <div class="offset-left">
+        <span
+          [class.gray-close]="!foreiPrimaryKycForm.phone.boundPhone"
+          [class.green-correct]="foreiPrimaryKycForm.phone.boundPhone"
+        ></span>
+        {{ foreiPrimaryKycForm.phone.boundPhone ? ('bounded_phone' | translate) : ('un_phone' | translate) }}
+      </div>
+    </div>
+
+    <form>
+      <ul>
+        <!--选择国家-->
+        <!-- <li class="form-colunm">
+          <label class="form-header">{{ 'nationality' | translate }}</label>
+          <app-country-selecter
+            [isShowSearch]="true"
+            [isFromDialog]="true"
+            [disabled]="boundPhone"
+            [countryISO]="countryCode"
+          ></app-country-selecter>
+        </li> -->
+        <li class="form-colunm" *ngIf="kycService.fullNameModeCountryList.includes(countryCode)">
+          <app-customize-input
+            [required]="true"
+            size="large"
+            [(value)]="foreiPrimaryKycForm.fullName.value"
+            #iUFirstName
+            [label]="'name' | translate"
+            (onChange)="onFullNameChange()"
+            [trim]="false"
+            [error]="
+              !foreiPrimaryKycForm.fullName.value && iUFirstName.foc
+                ? ('required_msg' | translate)
+                : foreiPrimaryKycForm.fullName.errorText
+            "
+            notice="{{ 'fullname_notice' | translate }}"
+            [loading]="initLoading"
+            [disabled]="initLoading"
+          >
+          </app-customize-input>
+        </li>
+        <!-- 姓/名输入框 -->
+        <ng-container *ngIf="!kycService.fullNameModeCountryList.includes(countryCode)">
+          <li class="form-colunm">
+            <app-customize-input
+              type="text"
+              [required]="true"
+              size="large"
+              [(value)]="foreiPrimaryKycForm.firstName.value"
+              [label]="'first_name' | translate"
+              [error]="foreiPrimaryKycForm.firstName.errorText"
+              (onChange)="onFirstNameAndLastNameInput(true)"
+              [trim]="false"
+              [loading]="initLoading"
+              [disabled]="initLoading"
+            >
+            </app-customize-input>
+          </li>
+          <li class="form-colunm">
+            <app-customize-input
+              type="text"
+              [required]="true"
+              size="large"
+              [(value)]="foreiPrimaryKycForm.lastName.value"
+              [label]="'last_name' | translate"
+              [error]="foreiPrimaryKycForm.lastName.errorText"
+              (onChange)="onFirstNameAndLastNameInput(false)"
+              [trim]="false"
+              [loading]="initLoading"
+              [disabled]="initLoading"
+            >
+            </app-customize-input>
+          </li>
+        </ng-container>
+        <li class="form-colunm">
+          <label class="form-header">
+            {{ 'date_birthday' | translate }}
+            <span class="primary-color">*</span>
+          </label>
+          <!-- 输入框 -->
+          <app-datepicker
+            [class.disable]="initLoading"
+            [versatileMode]="true"
+            [returnString]="true"
+            [maxDate]="'now'"
+            #iUBob
+            size="large"
+            [(dateValue)]="foreiPrimaryKycForm.userBorth.value"
+            [startAt]="foreiPrimaryKycForm.userBorth.value || '1988-08-01'"
+            [error]="!foreiPrimaryKycForm.userBorth.value && (iUBob.foc || iUBob.opened)"
+          >
+          </app-datepicker>
+          <!--错误提示 -->
+          <div
+            class="notice-container notice-borth"
+            *ngIf="!foreiPrimaryKycForm.userBorth.value && (iUBob.foc || iUBob.opened)"
+          >
+            {{ 'required_msg' | translate }}
+          </div>
+        </li>
+        <li class="form-colunm">
+          <app-customize-input
+            [required]="true"
+            size="large"
+            [(value)]="foreiPrimaryKycForm.email.value"
+            [label]="'email' | translate"
+            (onChange)="onEmailInput()"
+            [disabled]="foreiPrimaryKycForm.email.boundEmail || initLoading"
+            [error]="foreiPrimaryKycForm.email.errorText"
+            [loading]="initLoading"
+          >
+          </app-customize-input>
+        </li>
+        <li class="form-colunm">
+          <app-customize-input
+            [required]="true"
+            size="large"
+            [trim]="false"
+            [(value)]="foreiPrimaryKycForm.address.value"
+            [label]="'residence_ad' | translate"
+            [loading]="initLoading"
+            [disabled]="initLoading"
+          ></app-customize-input>
+        </li>
+        <li class="form-colunm">
+          <div class="form-row">
+            <app-customize-input
+              [required]="true"
+              size="large"
+              type="text"
+              [(value)]="foreiPrimaryKycForm.zipCode.value"
+              [format]="kycService.zipCodeFormat"
+              [trim]="false"
+              [label]="'pt_c' | translate"
+              [loading]="initLoading"
+              [disabled]="initLoading"
+            ></app-customize-input>
+            <app-customize-input
+              [required]="true"
+              size="large"
+              [(value)]="foreiPrimaryKycForm.city.value"
+              [trim]="false"
+              [label]="'city' | translate"
+              [loading]="initLoading"
+              [disabled]="initLoading"
+            ></app-customize-input>
+          </div>
+        </li>
+        <li class="form-colunm" [class.disable]="initLoading">
+          <app-kyc-otp
+            [required]="true"
+            [phoneInfor]="foreiPrimaryKycForm.phone.value"
+            [boundPhone]="foreiPrimaryKycForm.phone.boundPhone"
+            (inputValue)="getKycOtpChange($event)"
+          >
+          </app-kyc-otp>
+        </li>
+      </ul>
+    </form>
+  </div>
+</ng-template>

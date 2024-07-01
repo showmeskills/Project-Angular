@@ -1,0 +1,41 @@
+<div class="main-container top-container unity-padding-web unity-padding-h5-16">
+  <img class="top-img" [src]="imgSrc" lazy="loading" alt="" />
+  <div class="top-banner container">
+    <div class="left">
+      <p class="left-text">{{ title ? title : pageTitle }}</p>
+      <p class="left-text-small">{{ smallTitle ? smallTitle : pageSmallTitle }}</p>
+    </div>
+    <ng-container
+      *ngTemplateOutlet="
+        navListTemp;
+        context: {
+          show: !isH5,
+          data: navList
+        }
+      "
+    ></ng-container>
+  </div>
+</div>
+<ng-container
+  *ngTemplateOutlet="
+    navListTemp;
+    context: {
+      show: isH5,
+      data: navList
+    }
+  "
+></ng-container>
+
+<ng-template #navListTemp let-show="show" let-data="data">
+  <div class="banner-nav" *ngIf="show && data?.length > 0">
+    <p
+      class="nav-item mutual-opacity onact96-not"
+      *ngFor="let item of data; let i = index"
+      [routerLink]="item.url"
+      routerLinkActive="activeLink"
+      (click)="onChangedIndex(i)"
+    >
+      {{ item.name }}
+    </p>
+  </div>
+</ng-template>

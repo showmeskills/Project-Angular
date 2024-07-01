@@ -1,0 +1,62 @@
+<modal-title [title]="'payment.transactionList.redemption' | lang" (close)="modal.dismiss()"></modal-title>
+<div class="p-8" [formGroup]="formGroup">
+  <!-- 冲正选项 -->
+  <form-row name="type" [label]="'payment.order.revokeOption' | lang">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="pt-2 lh-32 d-flex flex-wrap">
+        <ng-container *ngFor="let item of typeList">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngIf="!item.noRender" (change)="onTypeChange()">
+            <input type="radio" name="type" [value]="item.code" [formControl]="control" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 冲正的部分金额 -->
+  <form-row
+    name="amount"
+    *ngIf="formGroup.value.type === 'partial'"
+    [label]="'payment.order.modifyAmount' | lang"
+    [invalidFeedback]="{
+      numberRequired: 'payment.order.modifyAmountTip' | lang,
+      gtMax: 'payment.order.modifyAmountMaxTip' | lang : { max: maxAmount }
+    }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <input
+        input-float="2"
+        class="form-control"
+        [placeholder]="'payment.order.modifyAmountAndMaxTip' | lang : { max: maxAmount }"
+        type="text"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 上传截图 -->
+  <form-row [label]="'payment.order.uploadSnap' | lang" name="img">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <img-viewer [hidden]="!list?.length" class="mb-8" #viewer [(list)]="list"></img-viewer>
+
+      <upload
+        class="p-0"
+        type="TxReview"
+        [style.width.px]="150"
+        [style.height.px]="56"
+        [style.borderRadius.px]="4"
+        [desc]="''"
+        [showLimitText]="false"
+        (change)="onUpload($event, upload, viewer)"
+        #upload
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      ></upload>
+    </ng-template>
+  </form-row>
+
+  <div class="text-center fz-16 color-999 mt-8">{{ 'payment.transactionList.infoIsTrue' | lang }}</div>
+</div>
+<modal-footer (confirm)="submit()" (dismiss)="modal.dismiss()"></modal-footer>

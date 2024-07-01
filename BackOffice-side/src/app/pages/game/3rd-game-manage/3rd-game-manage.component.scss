@@ -1,0 +1,19 @@
+.game-label-list-item{
+  width: 100px;
+    height: 42px;
+    padding: 0px 5px;
+    border-radius: 6px;
+    background-color: #f3f7f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5e6278;
+    font-size: 16px;
+    margin-right: 5px;
+
+    img {
+      margin-right: 10px;
+      line-height: 1;
+    }
+
+}

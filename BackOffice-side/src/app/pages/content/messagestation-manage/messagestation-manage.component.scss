@@ -1,0 +1,26 @@
+.tab-btn-box {
+  display: flex;
+
+  .tab-btn-list {
+    margin: 0 0 0 auto;
+    padding: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+
+    li {
+      list-style: none;
+      width: 110px;
+      height: 36px;
+      text-align: center;
+      line-height: 36px;
+      background-color: #fff;
+      cursor: pointer;
+
+      &.active {
+        background-color: #009ef7;
+        color: #fff;
+      }
+    }
+  }
+}

@@ -1,0 +1,949 @@
+<div class="bg-fff rounded-2 p-12" [formGroup]="formGroup">
+  <div class="fz-18 mb-7 fw-bolder" *ngIf="isAdd">{{ 'system.merchants.addMerchant' | lang }}</div>
+  <div class="fz-18 mb-7 fw-bolder" *ngIf="isEdit">{{ 'system.merchants.editMerchant' | lang }}</div>
+
+  <!-- 商户名称 -->
+  <form-row
+    [label]="'system.merchants.merchantName' | lang"
+    name="merchantsName"
+    label-width="250"
+    required
+    [invalidFeedback]="{ required: ('system.merchants.fullMerchantName' | lang) }"
+  >
+    <ng-template let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'system.merchants.maxPlaceholder' | lang"
+        autocomplete="off"
+        [class.is-invalid]="invalid"
+        formControlName="merchantsName"
+        maxlength="20"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 邮箱 -->
+  <form-row
+    [label]="'system.merchants.contactEmail' | lang"
+    name="email"
+    label-width="250"
+    [invalidFeedback]="{
+      email: 'system.merchants.emailTips' | lang,
+      required: 'system.merchants.emailPlaceholder' | lang
+    }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="email"
+        class="form-control"
+        [placeholder]="'system.merchants.emailPlaceholder' | lang"
+        autocomplete="off"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+        maxlength="50"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 主站URL -->
+  <form-row
+    name="siteUrl"
+    label-width="250"
+    [label]="'system.merchants.url' | lang"
+    [invalidFeedback]="{ required: 'system.merchants.urlPlaceholder' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'system.merchants.urlPlaceholder' | lang"
+        autocomplete="off"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 服务权限配置 -->
+  <form-row name [label]="'system.merchants.serverRightConfig' | lang" label-width="250">
+    <ng-template>
+      <div class="d-flex flex-wrap py-2 lh-32">
+        <label class="checkbox checkbox-lg flex-auto fz-16 mr-16" *ngFor="let item of serviceConfigList">
+          <input type="checkbox" (change)="onItemCheck(item.name)" [checked]="item.value" />
+          <span class="mr-4"></span>{{ item.name }}
+        </label>
+      </div>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="serviceConfigValidate">
+        {{ 'system.merchants.setServerRightConfig' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 平台服务费比例 -->
+  <form-row [label]="'system.merchants.platformFees' | lang" [label-width]="250">
+    <form-wrap>
+      <input formControlName="serviceFee" input-percentage class="w-100" type="text" />
+      <span class="fz-16">%</span>
+    </form-wrap>
+  </form-row>
+
+  <!-- 免提款手续费所需流存比 -->
+  <ng-template #flowToStockRatioTip>
+    <div [style.margin-left.px]="lang.isLocal ? 74 : 140">{{ 'system.merchants.flowToStockRatioTip' | lang }}</div>
+  </ng-template>
+  <form-row
+    name="requiredFreeWithdrawFeeMultiples"
+    [label]="'system.merchants.flowToStockRatio' | lang"
+    [label-width]="250"
+    [invalidFeedback]="{ required: flowToStockRatioTip }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div class="d-flex">
+        <span class="mr-4">{{ 'system.merchants.gtEq' | lang }}</span>
+        <label form-wrap class="flex-1" [invalid]="invalid">
+          <input form-full [formControl]="control" input-number class="w-100" type="text" />
+          <span class="fz-16">{{ 'system.merchants.times' | lang }}</span>
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 服务配置 -->
+  <div class="fz-18 my-7 fw-bolder">{{ 'system.merchants.notoService' | lang }}</div>
+
+  <!-- NOTO服务 -->
+  <form-row name="notDivision" [label]="'system.merchants.division' | lang" [label-width]="250">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <mat-form-field>
+        <mat-select [class.is-invalid]="invalid" class="form-control" [formControl]="control">
+          <mat-option [value]="item" *ngFor="let item of notoList">{{ item }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 服务配置 -->
+  <div class="fz-18 my-7 fw-bolder">{{ 'system.merchants.serviceConfiguration' | lang }}</div>
+
+  <!-- 谷歌身份验证器名称 -->
+  <form-row [label]="'system.merchants.googleVerifyName' | lang" [label-width]="250" name="googleVerifyName">
+    <ng-template let-control="formControl">
+      <input [formControl]="control" input-trim class="form-control" type="text" maxlength="20" />
+    </ng-template>
+  </form-row>
+
+  <!-- GameHub商户ID -->
+  <form-row
+    name="merchantsId"
+    [label]="'system.merchants.gameHubMerchantId' | lang"
+    label-width="250"
+    [invalidFeedback]="{ required: 'system.merchants.enterMerchantId' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div class="w-100">
+        <div class="is-invalid">
+          <input
+            type="text"
+            autocomplete="off"
+            class="form-control"
+            [placeholder]="'system.merchants.enterMerchantId' | lang"
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+          />
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 提款审核配置 -->
+  <div class="mt-7">
+    <div class="fz-18 mb-7 fw-bolder">{{ 'system.merchants.withdrawConfig' | lang }}</div>
+
+    <!-- 单笔金额 -->
+    <form-row [label]="'system.merchants.singleAmount' | lang" [label-width]="250" name="withdrawSingleThreshold">
+      <ng-template let-control="formControl">
+        <label form-wrap>
+          <span class="vam mr-4">{{ 'system.merchants.gtEq' | lang }}</span>
+          <input form-full type="text" class="vam" [formControl]="control" />
+          <span class="vam">USDT</span>
+        </label>
+      </ng-template>
+    </form-row>
+
+    <!-- 总金额（24小时内） -->
+    <form-row [label]="'system.merchants.totalAmountIn24' | lang" [label-width]="250" name="withdraw24hThreshold">
+      <ng-template let-control="formControl">
+        <label form-wrap>
+          <span class="vam mr-4">{{ 'system.merchants.gtEq' | lang }}</span>
+          <input form-full type="text" class="vam" [formControl]="control" />
+          <span class="vam">USDT</span>
+        </label>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <!-- GoMoney配置 开始 -->
+  <div class="fz-18 my-7 fw-bolder lh-32">GoMoney{{ 'system.merchants.config' | lang }}</div>
+
+  <!--  商户秘钥-->
+  <form-row
+    name="merchantsKey"
+    [label]="'system.merchants.merchantKey' | lang"
+    label-width="250"
+    [invalidFeedback]="{ required: ('system.merchants.merchentKeyPlaceholder' | lang) }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'system.merchants.merchentKeyPlaceholder' | lang"
+        autocomplete="off"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      />
+    </ng-template>
+  </form-row>
+
+  <!--  System ID-->
+  <form-row
+    name="systemId"
+    label="GoMoney System ID"
+    label-width="250"
+    [invalidFeedback]="{ required: ('system.merchants.systemIdPlaceholder' | lang) }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input type="text" class="form-control" autocomplete="off" [formControl]="control" />
+    </ng-template>
+  </form-row>
+
+  <!-- 活动 开始 -->
+  <div>
+    <!-- 活动标题 -->
+    <div class="fz-18 my-7 fw-bolder lh-32">{{ 'member.activity.sencliCommon.activity' | lang }}</div>
+
+    <!-- 转盘格子类型 -->
+    <form-row name="luckGridType" [label]="'luckRoulette.luckType' | lang" label-width="250">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg lh-32 my-2 fz-16 mr-12" *ngFor="let item of luckGridTypeList">
+            <input type="radio" name="luckGridType" [value]="item.value" [formControl]="control" />
+            <span class="mr-4"></span>{{ 'luckRoulette.luckRank' | lang: { n: item.desc } }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+  <!-- 活动 结束 -->
+
+  <!-- 其他模块 -->
+  <div class="fz-18 my-7 fw-bolder lh-32">{{ 'system.merchants.other' | lang }}</div>
+  <!-- 支持的语系 -->
+  <form-row [label]="'system.merchants.supportedLanguages' | lang" label-width="250" required>
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <label class="checkbox checkbox-lg mr-8 fz-16" *ngFor="let item of langList">
+          <input
+            type="checkbox"
+            [checkboxArrayControl]="$any(formGroup.controls.supportLangList)"
+            [checkboxArrayValue]="item.code"
+          />
+          <span class="mr-4"></span>{{ lang.isLocal ? item.name : item.code }}
+        </label>
+      </div>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback mt-1" *ngIf="!formGroup.value.supportLangList.length && langList.length">
+        <!-- 请至少选择一个语系！ -->
+        {{ 'system.merchants.LanguagesValidate' | lang }}
+      </div>
+    </ng-template>
+
+    <div afterContent class="fz-14 text-danger" *ngIf="langList.length">
+      <!-- 商户新增语系须提前告知管理员协助设定，切勿自行调整造成错误。 -->
+      {{ 'system.merchants.LanguagesSelectTips' | lang }}
+    </div>
+  </form-row>
+
+  <!-- 社交媒体登录 -->
+  <form-row [label]="'system.merchants.socialMediaLogin' | lang" label-width="250">
+    <ng-template>
+      <div class="d-flex flex-wrap py-2 lh-32">
+        <label class="checkbox checkbox-lg flex-auto fz-16 mr-16" *ngFor="let item of socialLoginConfigList">
+          <input type="checkbox" (change)="onLoginItemCheck(item.name)" [checked]="item.value" />
+          <span class="mr-4"></span>{{ item.name }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- LED设置 -->
+  <form-row [label]="'system.merchants.ledSettings' | lang" label-width="250">
+    <ng-template>
+      <div class="d-flex flex-ac">
+        <div class="color-aaa">{{ 'system.merchants.unlockAmount' | lang }} = {{ 'game.proxy.flow' | lang }}* 1% *</div>
+        <form-wrap [style.width.px]="120">
+          <input class="form-control" autocomplete="off" type="text" [formControl]="formGroup.controls.ledLockRatio" />
+          <span suffix class="color-aaa">%</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac mt-4">
+        <div class="color-aaa">{{ 'system.merchants.minReceiveAmount' | lang }}：</div>
+        <form-wrap [style.width.px]="140">
+          <input class="form-control" autocomplete="off" type="text" [formControl]="formGroup.controls.ledMinAmount" />
+          <span suffix class="color-aaa">LED</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 限额金额 -->
+  <form-row [label]="'system.merchants.limitAmountSetting' | lang" label-width="250">
+    <ng-template>
+      <label class="switch switch-success" [style.height.px]="42">
+        <input type="checkbox" [formControl]="formGroup.controls.isLimitAmount" />
+        <span></span>
+        <div class="ml-2">{{ formGroup.value.isLimitAmount ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+      </label>
+      <div class="d-flex flex-ac mt-4" *ngIf="formGroup.value.isLimitAmount">
+        <div class="color-aaa">{{ 'system.merchants.limitAmount' | lang }}：</div>
+        <form-wrap [style.width.px]="140">
+          <input
+            class="form-control"
+            autocomplete="off"
+            type="text"
+            input-number
+            [formControl]="formGroup.controls.limitAmount"
+          />
+          <span suffix class="color-aaa">USDT</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 更改风控级别 -->
+  <form-row [label]="'system.merchants.changeRiskLevel' | lang" label-width="250">
+    <ng-template>
+      <label class="switch switch-success" [style.height.px]="42">
+        <input type="checkbox" [formControl]="formGroup.controls.riskControlNoAudit" />
+        <span></span>
+        <div class="ml-2">{{ formGroup.value.riskControlNoAudit ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+      </label>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap d-flex flex-center mt-10" *ngIf="isEdit && !isDetailLoadError">
+    <button type="button" class="c-btn c-btn-default" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button type="button" class="c-btn c-btn-primary" (click)="submit()" [disabled]="appService.loading$ | async">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 自定义商户配置 -->
+<div class="bg-fff rounded-2 p-12 mt-6" [formGroup]="configFormGroup">
+  <!-- 静态配置文件 -->
+  <ng-template #configStaticTpl let-list let-type="type">
+    <ng-container [formArrayName]="type + 'Config'">
+      <div class="d-flex" [formGroupName]="index" *ngFor="let _ of list; let index = index">
+        <form-row
+          name="key"
+          [showLabel]="false"
+          [nearGroup]="true"
+          [invalidFeedback]="{
+            pattern: 'system.merchants.fieldTip' | lang,
+            hasField: 'system.merchants.hasField' | lang,
+            required: 'system.merchants.enterFieldName' | lang
+          }"
+          [style.width.px]="234"
+        >
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <input
+              type="text"
+              class="form-control rounded-0"
+              autocomplete="off"
+              [placeholder]="'system.merchants.enterFieldName' | lang"
+              [class.is-invalid]="invalid"
+              [formControl]="control"
+            />
+          </ng-template>
+        </form-row>
+
+        <form-row class="flex-1 mr-4" name="value" [nearGroup]="true">
+          <ng-template let-control="formControl">
+            <input
+              type="text"
+              class="form-control rounded-0"
+              [placeholder]="'system.merchants.enterConfigInfo' | lang"
+              autocomplete="off"
+              [formControl]="control"
+              input-trim
+            />
+          </ng-template>
+        </form-row>
+
+        <div class="py-2">
+          <button type="button" class="btn btn-light-primary px-6 py-5" (click)="openDelTagTpl(delTagTpl, index, type)">
+            {{ 'common.delete' | lang }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="mt-4" [style.marginLeft.px]="250">
+      <button class="btn btn-primary px-6 py-4 mr-4" (click)="addConfig(type)">
+        {{ 'system.merchants.newField' | lang }}
+      </button>
+      <button class="btn btn-primary px-6 py-4 mr-4" (click)="delEmptyFieldConfig(type)">
+        {{ 'system.merchants.delEmpty' | lang }}
+      </button>
+    </div>
+  </ng-template>
+
+  <mat-tab-group class="mt-8">
+    <mat-tab label="Web/H5">
+      <div class="p-6">
+        <!-- 商户Logo -->
+        <form-row [label]="'system.merchants.merchantLogo' | lang" label-width="250" line-height="140px">
+          <ng-template>
+            <div class="img-wrap">
+              <div class="my-2 d-flex" *ngFor="let item of merchantsLogo; let last = last">
+                <div class="upload-title">{{ item.lang | lang }}</div>
+                <div>
+                  <upload
+                    [style.width.px]="lang.isLocal ? '198' : '260'"
+                    type="Merchant"
+                    [formControlName]="item.value"
+                    [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'svg']"
+                  >
+                  </upload>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </form-row>
+        <!-- pc默认头像 -->
+        <div class="defaultAvatar my-8" formArrayName="defaultAvatarPc">
+          <span [style.width.px]="150" class="lable-title">{{ 'system.merchants.defaultAvatar' | lang }}：</span>
+          <div class="box">
+            <div *ngFor="let alias of defaultAvatarPc.controls; let i = index" class="mr-15 d-flex">
+              <!-- [style.width.px]="'180'" -->
+              <upload
+                [style.flex]="'0 0 180px'"
+                [style.height.px]="'100'"
+                [style.width.px]="'180'"
+                type="Merchant"
+                [formControlName]="i"
+                [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'gif']"
+                desc="190 x 45"
+              ></upload>
+              <!-- <svg-icon
+                *ngIf="defaultAvatarPc.length > 1"
+                class="vam btn-icon ml-6 mt-14 cursor-pointer"
+                (click)="deleteDefaultAvatarPc(i)"
+                [src]="'./assets/images/svg/close-normal.svg'"
+              ></svg-icon> -->
+            </div>
+          </div>
+          <!-- 新增 -->
+          <div
+            *ngIf="defaultAvatarPc.length < 20"
+            class="btn btn-light-primary fz-16 d-flex flex-ac h42 ml-5"
+            [style.wdith.px]="'60'"
+            (click)="addDefaultAvatarPc()"
+          >
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            {{ 'common.add' | lang }}
+          </div>
+        </div>
+        <!-- <form-row [label]="'system.merchants.defaultAvatar' | lang" label-width="350" line-height="140px">
+          <ng-template>
+            <div class="defaultAvatar">
+              <div>
+                <upload
+                  [style.width.px]="'198'"
+                  [style.height.px]="'100'"
+                  type="Merchant"
+                  formControlName="loadingImg"
+                  [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'gif']"
+                  desc="190 x 45"
+                ></upload>
+              </div>
+            </div>
+          </ng-template>
+        </form-row> -->
+        <!-- 加载GIF -->
+        <form-row [label]="'system.merchants.loadGif' | lang" label-width="250" line-height="140px">
+          <ng-template>
+            <div class="my-2 d-flex">
+              <div class="upload-title">{{ 'system.merchants.LoadGraph' | lang }}</div>
+              <div>
+                <upload
+                  [style.width.px]="lang.isLocal ? '198' : '260'"
+                  type="Merchant"
+                  formControlName="loadingImg"
+                  [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'gif']"
+                ></upload>
+              </div>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 配色设定 -->
+        <form-row [label]="'system.merchants.colorConfigure' | lang" label-width="250" class="mt-4">
+          <ng-template>
+            <div class="color-select d-flex">
+              <div class="fz-16">{{ 'system.merchants.dayVersion' | lang }}</div>
+              <ul class="d-flex flex-wrap">
+                <li>
+                  <span>{{ 'system.merchants.mainColor' | lang }}</span>
+                  <div
+                    #ignoredButton1
+                    (click)="day_color_toggle1 = !day_color_toggle1"
+                    [style.color]="day_color1 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="day_color1"
+                  >
+                    {{ day_color1 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : day_color1 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput1-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="day_color1"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton1, ignoredInput1]"-->
+                  <!--                            [(cpToggle)]="day_color_toggle1"-->
+                  <!--                            [(colorPicker)]="day_color1"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.secondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton2
+                    (click)="day_color_toggle2 = !day_color_toggle2"
+                    [style.color]="day_color2 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="day_color2"
+                  >
+                    {{ day_color2 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : day_color2 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput2-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="day_color2"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton2, ignoredInput2]"-->
+                  <!--                            [(cpToggle)]="day_color_toggle2"-->
+                  <!--                            [(colorPicker)]="day_color2"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.otherSecondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton3
+                    (click)="day_color_toggle3 = !day_color_toggle3"
+                    [style.color]="day_color3 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="day_color3"
+                  >
+                    {{ day_color3 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : day_color3 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput3-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="day_color3"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton3, ignoredInput3]"-->
+                  <!--                            [(cpToggle)]="day_color_toggle3"-->
+                  <!--                            [(colorPicker)]="day_color3"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+              </ul>
+            </div>
+            <div class="color-select d-flex mt-6">
+              <div class="fz-16">{{ 'system.merchants.nightVersion' | lang }}</div>
+              <ul class="d-flex flex-wrap">
+                <li>
+                  <span>{{ 'system.merchants.mainColor' | lang }}</span>
+                  <div
+                    #ignoredButton4
+                    (click)="night_color_toggle1 = !night_color_toggle1"
+                    [style.color]="night_color1 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="night_color1"
+                  >
+                    {{ night_color1 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : night_color1 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput4-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="night_color1"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton4, ignoredInput4]"-->
+                  <!--                            [(cpToggle)]="night_color_toggle1"-->
+                  <!--                            [(colorPicker)]="night_color1"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.secondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton5
+                    (click)="night_color_toggle2 = !night_color_toggle2"
+                    [style.color]="night_color2 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="night_color2"
+                  >
+                    {{ night_color2 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : night_color2 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput5-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="night_color2"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton5, ignoredInput5]"-->
+                  <!--                            [(cpToggle)]="night_color_toggle2"-->
+                  <!--                            [(colorPicker)]="night_color2"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.otherSecondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton6
+                    (click)="night_color_toggle3 = !night_color_toggle3"
+                    [style.color]="night_color3 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="night_color3"
+                  >
+                    {{ night_color3 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : night_color3 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput6-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="night_color3"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton6, ignoredInput6]"-->
+                  <!--                            [(cpToggle)]="night_color_toggle3"-->
+                  <!--                            [(colorPicker)]="night_color3"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+              </ul>
+            </div>
+
+            <div class="is-invalid"></div>
+            <div class="invalid-feedback lh-1n" *ngIf="selectColorValidate">
+              {{ 'system.merchants.selectedAllColor' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 默认色系 -->
+        <form-row [label]="'system.merchants.defaultColor' | lang" label-width="250" required>
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-8 fz-16">
+                <input type="radio" name="webColorScheme" value="sun" formControlName="webColorScheme" />
+                <span class="mr-4"></span>{{ 'system.merchants.dayEdition' | lang }}
+              </label>
+              <label class="radio radio-lg radio-success mr-8 fz-16">
+                <input type="radio" name="webColorScheme" value="moon" formControlName="webColorScheme" />
+                <span class="mr-4"></span>{{ 'system.merchants.nightEdition' | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 新增配置 -->
+        <ng-container
+          *ngTemplateOutlet="configStaticTpl; context: { $implicit: webConfig.controls, type: 'web' }"
+        ></ng-container>
+      </div>
+    </mat-tab>
+
+    <!-- APP -->
+    <mat-tab label="App">
+      <div class="p-6">
+        <!-- 商户Logo -->
+        <form-row label="APPLogo" label-width="250" line-height="140px">
+          <ng-template>
+            <div class="img-wrap">
+              <div class="my-2 d-flex" *ngFor="let item of merchantsAppLogo; let last = last">
+                <div class="upload-title">{{ item.lang | lang }}</div>
+
+                <div>
+                  <upload
+                    [style.width.px]="lang.isLocal ? '198' : '260'"
+                    class="upload"
+                    type="Merchant"
+                    [formControlName]="item.value"
+                    [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'svg']"
+                  ></upload>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- app加载页 -->
+        <form-row [label]="'system.merchants.APPLoaded' | lang" label-width="250" line-height="140px">
+          <ng-template>
+            <div class="img-wrap">
+              <div class="my-2 d-flex" *ngFor="let item of appImg; let last = last">
+                <div class="upload-title">{{ item.lang | lang }}</div>
+                <div>
+                  <upload
+                    [style.width.px]="lang.isLocal ? '198' : '260'"
+                    type="Merchant"
+                    [formControlName]="item.value"
+                    [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'svg']"
+                  ></upload>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </form-row>
+        <!-- app默认头像 -->
+        <div class="defaultAvatar my-8" formArrayName="defaultAvatarApp" *ngIf="false">
+          <span [style.width.px]="150" class="lable-title">{{ 'system.merchants.defaultAvatar' | lang }}：</span>
+          <div class="box">
+            <div *ngFor="let alias of defaultAvatarApp.controls; let i = index" class="mr-15 d-flex">
+              <upload
+                [style.flex]="'0 0 180px'"
+                [style.height.px]="'100'"
+                [style.width.px]="'180'"
+                type="Merchant"
+                [formControlName]="i"
+                [accept]="['png', 'jpg', 'jpeg', 'bmp', 'webp', 'gif']"
+                desc="190 x 45"
+              ></upload>
+              <!-- <svg-icon
+                *ngIf="defaultAvatarApp.length > 1"
+                class="vam btn-icon ml-6 mt-14 cursor-pointer"
+                (click)="deleteDefaultAvatarApp(i)"
+                [src]="'./assets/images/svg/close-normal.svg'"
+              ></svg-icon> -->
+            </div>
+          </div>
+          <!-- 新增按钮 -->
+          <div
+            *ngIf="defaultAvatarApp.length < 20"
+            class="btn btn-light-primary fz-16 d-flex flex-ac h42 ml-5"
+            [style.wdith.px]="'60'"
+            (click)="addDefaultAvatarApp()"
+          >
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            {{ 'common.add' | lang }}
+          </div>
+        </div>
+        <!-- 配色设定 -->
+        <form-row [label]="'system.merchants.colorConfigure' | lang" label-width="250" class="mt-4">
+          <ng-template>
+            <div class="color-select d-flex">
+              <div class="fz-16">{{ 'system.merchants.dayVersion' | lang }}</div>
+              <ul class="d-flex flex-wrap">
+                <li>
+                  <span>{{ 'system.merchants.mainColor' | lang }}</span>
+                  <div
+                    #ignoredButton1
+                    (click)="day_color_toggle1 = !day_color_toggle1"
+                    [style.color]="day_color1 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="day_color1"
+                  >
+                    {{ day_color1 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : day_color1 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput1-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="day_color1"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton1, ignoredInput1]"-->
+                  <!--                            [(cpToggle)]="day_color_toggle1"-->
+                  <!--                            [(colorPicker)]="day_color1"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.secondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton2
+                    (click)="day_color_toggle2 = !day_color_toggle2"
+                    [style.color]="day_color2 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="day_color2"
+                  >
+                    {{ day_color2 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : day_color2 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput2-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="day_color2"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton2, ignoredInput2]"-->
+                  <!--                            [(cpToggle)]="day_color_toggle2"-->
+                  <!--                            [(colorPicker)]="day_color2"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.otherSecondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton3
+                    (click)="day_color_toggle3 = !day_color_toggle3"
+                    [style.color]="day_color3 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="day_color3"
+                  >
+                    {{ day_color3 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : day_color3 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput3-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="day_color3"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton3, ignoredInput3]"-->
+                  <!--                            [(cpToggle)]="day_color_toggle3"-->
+                  <!--                            [(colorPicker)]="day_color3"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+              </ul>
+            </div>
+            <div class="color-select d-flex mt-6">
+              <div class="fz-16">{{ 'system.merchants.nightVersion' | lang }}</div>
+              <ul class="d-flex flex-wrap">
+                <li>
+                  <span>{{ 'system.merchants.mainColor' | lang }}</span>
+                  <div
+                    #ignoredButton4
+                    (click)="night_color_toggle1 = !night_color_toggle1"
+                    [style.color]="night_color1 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="night_color1"
+                  >
+                    {{ night_color1 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : night_color1 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput4-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="night_color1"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton4, ignoredInput4]"-->
+                  <!--                            [(cpToggle)]="night_color_toggle1"-->
+                  <!--                            [(colorPicker)]="night_color1"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.secondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton5
+                    (click)="night_color_toggle2 = !night_color_toggle2"
+                    [style.color]="night_color2 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="night_color2"
+                  >
+                    {{ night_color2 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : night_color2 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput5-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="night_color2"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton5, ignoredInput5]"-->
+                  <!--                            [(cpToggle)]="night_color_toggle2"-->
+                  <!--                            [(colorPicker)]="night_color2"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+                <li>
+                  <span>{{ 'system.merchants.otherSecondaryColor' | lang }}</span>
+                  <div
+                    #ignoredButton6
+                    (click)="night_color_toggle3 = !night_color_toggle3"
+                    [style.color]="night_color3 === '#f1f4f7' ? '#009ef7' : '#fff'"
+                    [style.background]="night_color3"
+                  >
+                    {{ night_color3 === '#f1f4f7' ? ('system.merchants.clickSelected' | lang) : night_color3 }}
+                  </div>
+                  <!--                          <input-->
+                  <!--                            #ignoredInput6-->
+                  <!--                            class="color-input"-->
+                  <!--                            [style.background]="night_color3"-->
+                  <!--                            [cpIgnoredElements]="[ignoredButton6, ignoredInput6]"-->
+                  <!--                            [(cpToggle)]="night_color_toggle3"-->
+                  <!--                            [(colorPicker)]="night_color3"-->
+                  <!--                            (colorPickerChange)="checkColor()"-->
+                  <!--                          />-->
+                </li>
+              </ul>
+            </div>
+
+            <div class="is-invalid"></div>
+            <div class="invalid-feedback lh-1n" *ngIf="selectColorValidate">
+              {{ 'system.merchants.selectedAllColor' | lang }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 默认色系 -->
+        <form-row [label]="'system.merchants.defaultColor' | lang" label-width="250" required>
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-8 fz-16">
+                <input type="radio" name="appColorScheme" value="sun" formControlName="appColorScheme" />
+                <span class="mr-4"></span>{{ 'system.merchants.dayEdition' | lang }}
+              </label>
+              <label class="radio radio-lg radio-success mr-8 fz-16">
+                <input type="radio" name="appColorScheme" value="moon" formControlName="appColorScheme" />
+                <span class="mr-4"></span>{{ 'system.merchants.nightEdition' | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+        <!-- app维护 -->
+        <form-row [label]="'system.merchants.appMaintenance' | lang" label-width="250" required>
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-8 fz-16">
+                <input type="radio" name="appMaintenance" [value]="'enable'" formControlName="appMaintenance" />
+                <span class="mr-4"></span>{{ 'common.enable' | lang }}
+              </label>
+              <label class="radio radio-lg radio-success mr-8 fz-16">
+                <input type="radio" name="appMaintenance" [value]="'close'" formControlName="appMaintenance" />
+                <span class="mr-4"></span>{{ 'common.close' | lang }}
+              </label>
+            </div>
+            <div class="d-flex flex-wrap mt-2" *ngIf="configFormGroup.value.appMaintenance === 'enable'">
+              <input
+                [style.width.px]="240"
+                class="form-control text-center"
+                type="text"
+                [placeholder]="'system.merchants.appTips' | lang"
+                [owlDateTime]="timeEnd"
+                [owlDateTimeTrigger]="timeEnd"
+                formControlName="maintainTimeEnd"
+                readonly
+              />
+              <owl-date-time class="fz-20" #timeEnd></owl-date-time>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 新增配置 -->
+        <ng-container
+          *ngTemplateOutlet="configStaticTpl; context: { $implicit: appConfig.controls, type: 'app' }"
+        ></ng-container>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- 底部按钮 -->
+  <div class="btn-wrap flex-center mt-10">
+    <button type="button" class="c-btn c-btn-default" (click)="back()">{{ 'common.back' | lang }}</button>
+    <!-- 新增商户：会将数据和自定义配置一起提交 -->
+    <button type="button" class="c-btn c-btn-primary" (click)="submitConfig()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 删除配置内容提示 -->
+<ng-template #delTagTpl let-c="close" let-d="dismiss">
+  <modal-title [title]="'payment.method.prompt' | lang" (close)="d()"></modal-title>
+
+  <div class="modal-body">
+    <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+    <p class="fz-16 fw-bolder mt-8">{{ 'system.merchants.deleteContent' | lang }}</p>
+    <p class="fz-16">{{ 'system.merchants.deleteTips' | lang }}</p>
+  </div>
+
+  <modal-footer (dismiss)="d()" (confirm)="c(true)"></modal-footer>
+</ng-template>

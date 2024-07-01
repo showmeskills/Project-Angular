@@ -1,0 +1,596 @@
+<div class="card-page-container" [class.disabled]="loading || clickLoading">
+  <div class="card-banner-container">
+    <div class="left-group">
+      <img class="coupon-logo" src="assets/images/card-center/coupon.png" lazy="loading" />
+      <div class="coupon-intro">
+        <p class="intro-text">{{ 'coupon_center' | translate }}</p>
+        <p class="intro-text">{{ 'coupon_center_tip' | translate }}</p>
+        <p class="intro-link mutual-opacity onact96-btn" (click)="jumpToPage()">
+          {{ 'understand_more' | translate }}
+        </p>
+      </div>
+    </div>
+    <div class="right-group">
+      <app-exchange-btn (reloadData)="onReloadData()"></app-exchange-btn>
+      <i *ngIf="isH5()" class="h5-filter icon-filter mutual-opacity onact96-btn" (click)="openH5Filter()"></i>
+    </div>
+  </div>
+  <div class="page-head">
+    <div class="form-group-container">
+      <ng-container *ngIf="!isH5()">
+        <ng-container *ngTemplateOutlet="filterNavTemp"></ng-container>
+        <ng-container *ngTemplateOutlet="filterBtn"></ng-container>
+        <div class="new-btn-groups">
+          <ng-container *ngTemplateOutlet="betCreditOrderBtn"></ng-container>
+          <ng-container *ngTemplateOutlet="collectAllBtn"></ng-container>
+        </div>
+      </ng-container>
+
+      <div class="new-btn-groups" *ngIf="isH5()">
+        <ng-container *ngTemplateOutlet="betCreditOrderBtn"></ng-container>
+        <ng-container *ngTemplateOutlet="collectAllBtn"></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="page-main"
+    appLifeObserve
+    (lifeInit)="cardBoxInit($event)"
+    [class.disabled]="loading"
+    [appLoading]="loading"
+  >
+    <ng-container
+      *ngTemplateOutlet="
+        card;
+        context: {
+          data: renderListData(),
+          cardLoading: loading,
+          isLeftMenuKeepOpen: isLeftMenuKeepOpen,
+          disabledDrag: true
+        }
+      "
+    ></ng-container>
+
+    <app-paginator
+      *ngIf="renderListData().length > 0"
+      [(page)]="paginator.page"
+      [total]="paginator.total"
+      [pageSize]="paginator.pageSize"
+      [disabled]="loading"
+      [loading]="loading"
+      (onPageChange)="loadData()"
+    >
+    </app-paginator>
+  </div>
+</div>
+<!-- 选择选项弹窗 H5Popup -->
+<ng-template #h5Filter>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="h5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <ng-container *ngTemplateOutlet="filterNavTemp"></ng-container>
+      </app-customize-form-group>
+      <ng-container *ngTemplateOutlet="filterBtn"></ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<!-- filter nav -->
+<ng-template #filterNavTemp>
+  <app-customize-select
+    [(value)]="selectedCardType"
+    [label]="'card_type' | translate"
+    [options]="renderCardTypeList()"
+    [valueKey]="'newTypeCode'"
+    [textKey]="'title'"
+    [disabled]="!logined()"
+  >
+  </app-customize-select>
+  <app-customize-select
+    [(value)]="selectedCardStatus"
+    [label]="'card_status' | translate"
+    [options]="renderCardStatusList()"
+    [valueKey]="'code'"
+    [textKey]="'description'"
+    [disabled]="!logined()"
+  >
+  </app-customize-select>
+  <app-customize-select
+    [(value)]="selectedCardSort"
+    [label]="'sort' | translate"
+    [options]="cardSortList"
+    [valueKey]="'value'"
+    [textKey]="'name'"
+    [disabled]="!logined()"
+  >
+  </app-customize-select>
+</ng-template>
+
+<!-- filter btn -->
+<ng-template #filterBtn>
+  <div [class]="isH5() ? 'popup-btn-group' : 'btn-group'">
+    <customize-button
+      [size]="isH5() ? 'large' : 'small'"
+      [type]="isH5() ? 'default' : 'text'"
+      [width]="isH5() ? '100%' : ''"
+      (onClick)="reset()"
+      [plain]="isH5() ? false : true"
+      [disabled]="!logined()"
+    >
+      {{ 'reset' | translate }}
+    </customize-button>
+    <customize-button
+      [class.popup-btn-margin-left]="isH5()"
+      [size]="isH5() ? 'large' : 'small'"
+      [type]="isH5() ? 'primary' : 'text'"
+      [width]="isH5() ? '100%' : ''"
+      (onClick)="searchLoadData()"
+      [plain]="isH5() ? false : true"
+      [active]="isH5() ? false : true"
+      [disabled]="!logined()"
+    >
+      {{ 'filter' | translate }}
+    </customize-button>
+  </div>
+</ng-template>
+
+<!-- 返水&抵用金详情 webPopup -->
+<ng-template #detailWeb>
+  <div class="web-detail-popup">
+    <div class="title">
+      <p *ngIf="detailType === 'water'">{{ 'rebate_detail' | translate }}</p>
+      <p *ngIf="detailType === 'offset'">{{ 'credit_usage_detail' | translate }}</p>
+      <i class="mutual-opacity icon-close-simple onact96-not close" (click)="detailWebPopup.close()"></i>
+    </div>
+    <div class="info-box">
+      <div class="info-box-main" [appLoading]="detailLoading">
+        <ul class="content" *ngIf="renderDetailList().length > 0 && detailType === 'water'">
+          <app-scrollbar>
+            <li class="item" *ngFor="let item of renderDetailList(); let even = even">
+              <div class="item-group">
+                <div class="group">
+                  <span>{{ (item.cardStatus === 'Received' ? 'pick_up_time' : 'expiration_date') | translate }}：</span>
+                  <p>{{ item.createdTime | mdate }}</p>
+                </div>
+                <div class="group">
+                  <span>{{ 'receive_amount' | translate }}：</span>
+                  <p>
+                    {{ item.amount }}
+                    <img [src]="item.currency | currencyIcon" alt="" lazy="loading" />
+                  </p>
+                </div>
+              </div>
+              <div class="item-group">
+                <div class="group">
+                  <span>{{ 'document_No' | translate }}：</span>
+                  <p>{{ item.orderNum }}</p>
+                </div>
+                <div class="group">
+                  <span>{{ 'status' | translate }}：</span>
+                  <p [class]="'water-' + item.originalCardStatus">{{ item.cardStatus }}</p>
+                </div>
+              </div>
+            </li>
+          </app-scrollbar>
+        </ul>
+        <ul class="content" *ngIf="renderDetailList().length > 0 && detailType === 'offset'">
+          <app-scrollbar>
+            <li class="item" *ngFor="let item of renderDetailList()">
+              <div class="item-group">
+                <div class="group">
+                  <span>{{ 'transaction_num' | translate }}：</span>
+                  <p>{{ item.wagerNum }}</p>
+                </div>
+                <div class="group">
+                  <span>{{ 'win_or_lose_status' | translate }}：</span>
+                  <p [ngClass]="[item.isWin ? 'win' : 'loser']">
+                    {{ item.isWin ? ('win' | translate) : ('lose' | translate) }}
+                  </p>
+                </div>
+              </div>
+              <div class="item-group">
+                <div class="group">
+                  <span> {{ 'amount_transaction' | translate }}：</span>
+                  <p>
+                    {{ item.amount }}
+                    <img [src]="item.currency | currencyIcon" />
+                  </p>
+                </div>
+                <div class="group">
+                  <span>{{ 'credit_consum' | translate }}：</span>
+                  <p [class.loser]="!item.isWin">
+                    {{ item.isWin ? '' : '-' }}{{ item.consumeAmount }}
+                    <img [src]="item.currency | currencyIcon" />
+                  </p>
+                </div>
+              </div>
+            </li>
+          </app-scrollbar>
+        </ul>
+
+        <div class="bottom" *ngIf="renderDetailList().length > 0">
+          <div class="total">
+            <ng-container *ngIf="detailType === 'water'">
+              <span>{{ 'total' | translate }}:</span>
+              <p>
+                ≈{{ detailWaterTotal | currencyValue: 'USDT' : undefined : undefined : 2 }}
+                <img [src]="'USDT' | currencyIcon" />
+              </p>
+            </ng-container>
+          </div>
+          <app-paginator
+            [(page)]="detailPaginator.page"
+            [total]="detailPaginator.total"
+            [pageSize]="detailPaginator.pageSize"
+            [disabled]="detailLoading"
+            [loading]="detailLoading"
+            (onPageChange)="getDetailData()"
+          >
+          </app-paginator>
+        </div>
+
+        <app-empty
+          *ngIf="renderDetailList().length === 0 && !detailLoading"
+          [icon]="'assets/images/card-center/empty.png'"
+          [text]="'no_record' | translate"
+        >
+        </app-empty>
+      </div>
+      <div class="info-box-foot">
+        <p class="btn onact96-not" (click)="detailWebPopup.close()">{{ 'sure' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 返水&抵用金详情 H5Popup -->
+<ng-template #detailH5>
+  <div class="h5-detail-popup">
+    <div class="title">
+      <p *ngIf="detailType === 'water'">{{ 'rebate_detail' | translate }}</p>
+      <p *ngIf="detailType === 'offset'">{{ 'credit_usage_detail' | translate }}</p>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="detailH5Popup.close()"></i>
+    </div>
+    <ul class="info-box" [appLoading]="detailLoading">
+      <ng-container *ngIf="renderDetailList().length > 0 && detailType === 'water'; else h5OffsetDetailList">
+        <li class="item" *ngFor="let item of renderDetailList()">
+          <div class="group">
+            <span>{{ (item.cardStatus === 'Received' ? 'pick_up_time' : 'expiration_date') | translate }}：</span>
+            <p>{{ item.createdTime | mdate }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'receive_amount' | translate }}：</span>
+            <p>
+              {{ item.amount }}
+              <img [src]="item.currency | currencyIcon" />
+            </p>
+          </div>
+          <div class="group">
+            <span>{{ 'document_No' | translate }}：</span>
+            <p>{{ item.orderNum }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'status' | translate }}：</span>
+            <p [class]="'water-' + item.originalCardStatus">{{ item.cardStatus }}</p>
+          </div>
+        </li>
+      </ng-container>
+
+      <ng-template #h5OffsetDetailList>
+        <li class="item" *ngFor="let item of renderDetailList(); let even = even">
+          <div class="group">
+            <span>{{ 'transaction_num' | translate }}：</span>
+            <p>{{ item.wagerNum }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'amount_transaction' | translate }}：</span>
+            <p>
+              {{ item.amount }}
+              <img [src]="item.currency | currencyIcon" />
+            </p>
+          </div>
+          <div class="group">
+            <span>{{ 'credit_consum' | translate }}：</span>
+            <p [class.loser]="!item.isWin">
+              {{ item.isWin ? '' : '-' }}{{ item.consumeAmount }}
+              <img [src]="item.currency | currencyIcon" />
+            </p>
+          </div>
+          <div class="group">
+            <span>{{ 'win_or_lose_status' | translate }}：</span>
+            <p [ngClass]="[item.isWin ? 'win' : 'loser']">
+              {{ item.isWin ? ('win' | translate) : ('lose' | translate) }}
+            </p>
+          </div>
+        </li>
+      </ng-template>
+
+      <app-empty
+        *ngIf="renderDetailList().length === 0 && !detailLoading"
+        [icon]="'assets/images/card-center/empty.png'"
+        [text]="'no_record' | translate"
+      >
+      </app-empty>
+
+      <app-paginator
+        *ngIf="renderDetailList().length > 0"
+        [(page)]="detailPaginator.page"
+        [total]="detailPaginator.total"
+        [pageSize]="detailPaginator.pageSize"
+        [disabled]="detailLoading"
+        [loading]="detailLoading"
+        (onPageChange)="getDetailData()"
+      >
+      </app-paginator>
+    </ul>
+
+    <div class="foot" *ngIf="detailType === 'water' && renderDetailList().length > 0">
+      <span>{{ 'total' | translate }}:</span>
+      <p>
+        ≈ {{ detailWaterTotal | currencyValue: 'USDT' : undefined : undefined : 2 }}
+        <img [src]="'USDT' | currencyIcon" />
+      </p>
+    </div>
+  </div>
+</ng-template>
+
+<!-- card template -->
+<ng-template
+  #card
+  let-data="data"
+  let-isLeftMenuKeepOpen="isLeftMenuKeepOpen"
+  let-cardLoading="cardLoading"
+  let-showDots="showDots"
+  let-disabledDrag="disabledDrag"
+>
+  <div
+    class="data-list"
+    cdkDropList
+    [cdkDropListData]="data"
+    (cdkDropListDropped)="onDrop($event)"
+    [class.card-menu-open]="isLeftMenuKeepOpen"
+    *ngIf="data?.length > 0"
+  >
+    <div
+      class="card"
+      *ngFor="let item of data; let i = index"
+      cdkDragBoundary=".content"
+      cdkDrag
+      cdkDragLockAxis="y"
+      [cdkDragDisabled]="disabledDrag"
+      [class.cash-card]="item?.grantType === 'Cash'"
+      [class.coupon-card]="item?.grantType === 'Coupon'"
+      [class.svip-card]="item?.grantType === 'SVIP'"
+    >
+      <div class="card-inner-layout" *ngIf="!isH5()">
+        <ng-container
+          *ngTemplateOutlet="
+            multiCurrencies;
+            context: {
+              item,
+              index: i
+            }
+          "
+        ></ng-container>
+        <div class="card-inner-left">
+          <p class="balance">
+            {{ item.toParseIntAmount }}
+          </p>
+          <p class="currency">{{ item.currency }}</p>
+        </div>
+        <i class="icon-six-dots" *ngIf="showDots"></i>
+        <div class="card-inner-right">
+          <div class="right-title">{{ item?.title || '' }}</div>
+          <div class="right-labels">
+            <ng-container *ngFor="let label of item?.labels">
+              <div class="label" *ngIf="label?.length > 0">
+                {{ label || '' }}
+              </div>
+            </ng-container>
+          </div>
+          <ng-container *ngTemplateOutlet="cardCommon; context: { item }"></ng-container>
+        </div>
+      </div>
+      <div class="card-inner-layout" *ngIf="isH5()">
+        <ng-container
+          *ngTemplateOutlet="
+            multiCurrencies;
+            context: {
+              item,
+              index: i
+            }
+          "
+        ></ng-container>
+        <div class="h5-card-inner-top">
+          <div class="card-inner-left">
+            <p class="balance">
+              {{ item.toParseIntAmount }}
+            </p>
+            <p class="currency">{{ item.currency }}</p>
+          </div>
+          <div class="card-inner-right">
+            <div class="right-title">{{ item?.title || '' }}</div>
+            <div class="right-labels">
+              <ng-container *ngFor="let label of item?.labels">
+                <div class="label" *ngIf="label?.length > 0">
+                  {{ label || '' }}
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="h5-card-inner-bottom">
+          <ng-container *ngTemplateOutlet="cardCommon; context: { item }"></ng-container>
+        </div>
+        <i class="icon-six-dots" *ngIf="showDots"></i>
+      </div>
+    </div>
+    <!-- 占位符 -->
+    <div *ngIf="data.length % 2" style="flex: 1; height: 0"></div>
+  </div>
+
+  <app-empty
+    *ngIf="data?.length === 0 && !cardLoading"
+    [icon]="'assets/images/card-center/empty.png'"
+    [text]="'no_coupons_yet' | translate"
+  >
+  </app-empty>
+</ng-template>
+
+<!-- 多币种提示 -->
+<ng-template #multiCurrencies let-item="item" let-index="index">
+  <app-tool-tip
+    class="warning-tips"
+    *ngIf="item?.isAccumulate && (item?.amount > 0 || item?.balance > 0)"
+    (mouseover)="selectedIndex = index"
+  >
+    <i origin class="icon-warning mutual-opacity"></i>
+    <div tooltip class="tips-detail" *ngIf="selectedIndex === index">
+      <div *ngFor="let key of objectKeys(item.multiCurrency)">
+        {{ key }}
+        {{ item.multiCurrency[key] | currencyValue: key }}
+      </div>
+    </div>
+  </app-tool-tip>
+</ng-template>
+
+<!-- 一键领取按钮 -->
+<ng-template #collectAllBtn>
+  <customize-button
+    class="onact96-btn collect-all-btn"
+    size="medium"
+    type="primary"
+    [minWidth]="!isH5() ? '130px' : ''"
+    [width]="isH5() ? '100%' : ''"
+    [disabled]="bonusCount() === 0"
+    (onClick)="onBatchCards()"
+    >{{ 'batch_cards' | translate }}</customize-button
+  >
+</ng-template>
+
+<!-- 抵用金 排序按钮 -->
+<ng-template #betCreditOrderBtn>
+  <customize-button
+    class="onact96-btn credit-order-btn"
+    size="medium"
+    type="text"
+    [plain]="true"
+    [minWidth]="!isH5() ? '130px' : ''"
+    [width]="isH5() ? '100%' : ''"
+    [disabled]="!logined()"
+    (onClick)="openCreditCardPoppup()"
+  >
+    <app-tool-tip>
+      <i origin class="icon-warning mutual-opacity"></i>
+      <div tooltip>{{ 'order_tips' | translate }}</div>
+    </app-tool-tip>
+    <span class="credit-txt">{{ 'credit_bet_btn' | translate }}</span>
+    <i class="icon-bottom-menu"></i>
+  </customize-button>
+</ng-template>
+
+<!-- 抵用金排序弹窗 -->
+<ng-template #creditOrderPopup>
+  <div class="credit-order-popup">
+    <div class="header">
+      <span class="title">{{ 'order_tips_txt' | translate }}</span>
+      <i
+        class="mutual-opacity icon-close-simple onact96-not"
+        [class.active]="creditOrderLoading || orderLoading"
+        (click)="creditOrderPopupRef.close()"
+      ></i>
+    </div>
+    <div class="body-content" [class.disabled]="orderLoading">
+      <div class="popup-tips">{{ 'order_tips' | translate }}</div>
+      <div class="content" [appLoading]="creditOrderLoading">
+        <app-scrollbar>
+          <div class="card-details-list">
+            <ng-container
+              *ngTemplateOutlet="
+                card;
+                context: {
+                  data: creditBets,
+                  cardLoading: creditOrderLoading,
+                  showDots: true,
+                  isLeftMenuKeepOpen: false,
+                  disabledDrag: false
+                }
+              "
+            ></ng-container>
+          </div>
+        </app-scrollbar>
+      </div>
+      <customize-button
+        class="order-submit-btn"
+        width="100%"
+        type="primary"
+        size="medium"
+        [disabled]="disabledOrderSubmit || orderLoading"
+        [loading]="orderLoading"
+        (onClick)="onSubmitCreditOrder()"
+      >
+        {{ 'confirm_order' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- h5 & web 卡片公共部分 -->
+<ng-template #cardCommon let-item="item">
+  <div class="card-date">
+    <div class="date-text">
+      {{
+        ['Unclaimed', 'Invalid', 'Review', 'Rejected'].includes(item.cardStatus)
+          ? item.expiredTime === 0
+            ? ('no_expiration' | translate)
+            : ('expiration_date' | translate)
+          : ['Received', 'InUse', 'Used'].includes(item.cardStatus)
+            ? ('pick_date' | translate)
+            : ''
+      }}
+    </div>
+    <div class="date">
+      {{
+        ['Unclaimed', 'Invalid', 'Review', 'Rejected'].includes(item.cardStatus)
+          ? (item.expiredTime | mdate: 'YYYY-MM-DD HH:mm:ss')
+          : ['Received', 'InUse', 'Used'].includes(item.cardStatus)
+            ? (item.receiveTime | mdate: 'YYYY-MM-DD HH:mm:ss')
+            : '--/--/--'
+      }}
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="bottom-txt" *ngIf="item?.bottomText">
+      <app-tool-tip>
+        <div origin class="tool-tip-txt mutual-opacity">
+          {{ item?.bottomText || '' }}
+        </div>
+        <div tooltip>
+          {{ item?.bottomText || '' }}
+        </div>
+      </app-tool-tip>
+    </div>
+    <i
+      *ngIf="
+        (item.grantType === 'Cash' && item.isAccumulate) || (item.grantType === 'Coupon' && item.cardStatus === 'InUse')
+      "
+      class="icon-double-arrow onact96-not mutual-opacity"
+      (click)="onClickOpenDetailPopup(item.cardStatus, item.id, item.grantType, item.isAccumulate)"
+    ></i>
+  </div>
+  <customize-button
+    class="bottom-btn"
+    [class.disabled-btn]="item.disbaledBtn"
+    [loading]="clickLoading && item?.id === selectedCardId"
+    [radius]="'30px'"
+    [width]="'100%'"
+    (onClick)="onClickOpenConfirmPopup(item.cardStatus, item.id)"
+  >
+    {{ item?.cardStatusDesc || '' }}
+  </customize-button>
+</ng-template>

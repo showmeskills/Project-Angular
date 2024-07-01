@@ -1,0 +1,63 @@
+<ng-template let-item #permissionTpl>
+  <!-- 末尾权限显示 -->
+  <ng-container *ngIf="item?.permissions?.length">
+    <div class="d-flex px-6">
+      <!-- 权限组名 -->
+      <div class="expansion-item-header">
+        <label class="checkbox checkbox-lg" [class.checkbox-indeterminate]="item['indeterminatePermission']">
+          <input type="checkbox" [(ngModel)]="item['checkedPermission']" (change)="onChangeSub(item)" />
+          <span class="mr-4"></span>{{ item.name }}
+        </label>
+      </div>
+
+      <!-- 权限内容 -->
+      <div class="item-list text-nowrap d-flex flex-wrap">
+        <div class="d-flex flex-wrap mr-8" *ngFor="let sub of item.permissions">
+          <label class="checkbox checkbox-lg">
+            <input type="checkbox" [(ngModel)]="sub['checked']" (change)="onChange(sub)" />
+            <span class="mr-4"></span>{{ sub.name }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<div class="expansion-wrap" *ngIf="data">
+  <ng-container *ngIf="data?.subTitles?.length">
+    <div class="expansion-header" (click)="onChangeOpen($event)">
+      <!-- 组名 -->
+      <div>
+        <label class="checkbox checkbox-lg" [class.checkbox-indeterminate]="data['indeterminate']">
+          <input type="checkbox" [(ngModel)]="data['checked']" (change)="onChange(data)" />
+          <span class="mr-4"></span>{{ data.name }}
+        </label>
+      </div>
+
+      <div class="mat-mdc-select-arrow arrow" *ngIf="hasPermission(data)"></div>
+    </div>
+
+    <div class="expansion-list" *ngIf="open">
+      <ng-container *ngFor="let item of data.subTitles">
+        <div class="expansion-item" *ngIf="item?.permissions?.length || item?.subTitles?.length">
+          <!-- 层级嵌套 -->
+          <ng-container
+            [ngTemplateOutlet]="permissionTpl"
+            [ngTemplateOutletContext]="{ $implicit: item }"
+          ></ng-container>
+
+          <ng-container *ngIf="item.subTitles.length">
+            <permission-item [data]="item" (updateCheck)="updateAllCheck()"></permission-item>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <!-- 只有权限渲染 -->
+  <ng-container
+    *ngIf="!data?.subTitles?.length && data?.permissions?.length"
+    [ngTemplateOutlet]="permissionTpl"
+    [ngTemplateOutletContext]="{ $implicit: data }"
+  ></ng-container>
+</div>

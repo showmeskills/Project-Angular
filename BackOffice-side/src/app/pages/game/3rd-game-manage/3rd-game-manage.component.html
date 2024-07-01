@@ -1,0 +1,56 @@
+<div class="provider-edit-wrap bg-fff rounded-3 p-12">
+  <div class="fz-20 mb-8">
+    {{ 'game.3rdgame.title' | lang }}
+  </div>
+  <ng-container [formGroup]="formGroup">
+    <div>
+      <div
+        class="pt-0 mt-5 mb-2 rounded"
+        [formGroup]="item"
+        *ngFor="let item of formGroup.controls.product.controls; index as i"
+      >
+        <!-- 产品配置 -->
+        <div class="w-100 d-flex my-4 py-4 flex-ac fz-16 color-999">
+          <!-- 厂商游戏分类 -->
+          <div class="game-label-list-item">
+            <!-- <img [src]="item.value.icon" width="18" height="18" /> -->
+            <span class="mr-5 ml-5">{{ type[item.value.gameType] }}</span>
+          </div>
+
+          <!-- 有效的营业额计算 -->
+          <label class="mr-10 mb-0 label-title"
+            >{{ 'game.3rdgame.calculation' | lang }} <span style="color: red">*</span></label
+          >
+
+          <label class="switch switch-success mr-10">
+            <input type="checkbox" formControlName="isTurnover" [attrDisabled]="!ls.isGB" />
+            <span></span>
+          </label>
+          <!-- 场馆费 -->
+          <!-- 有效换手率 -->
+          <span class="mx-5">{{ 'game.3rdgame.percentage' | lang }}</span>
+          <div>
+            <form-wrap *ngIf="ls.isGB">
+              <input
+                [style.width.px]="100"
+                formControlName="turnoverPercentage"
+                [min]="1"
+                input-percentage
+                type="number"
+              />
+              <span>%</span>
+            </form-wrap>
+            <span *ngIf="!ls.isGB">{{ item.value.turnoverPercentage || 100 }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 按钮组 -->
+    <div class="btn-wrap pt-14 flex-center d-flex" *ngIf="ls.isGB">
+      <button type="button" class="c-btn c-btn-primary" (click)="onSubmit()">
+        {{ 'game.provider.confirm' | lang }}
+      </button>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,26 @@
+.balance {
+  &-wrap {
+    max-height: 360px;
+    padding: 20px;
+  }
+
+  &-item {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    justify-content: space-between;
+  }
+}
+
+.full-tab {
+  &::ng-deep {
+    .mat-mdc-tab {
+      flex-grow: 1 !important;
+    }
+
+    .mat-tab-label-active .mat-tab-label-content {
+      color: var(--bs-primary);
+    }
+  }
+}

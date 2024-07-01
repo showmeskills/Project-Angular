@@ -1,0 +1,153 @@
+div {
+  display: flex;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.main-container {
+  width: 413px;
+  min-height: 316px;
+  flex-direction: column;
+  background-color: var(--container-bg-color);
+  border-radius: 4px;
+  &.is-success {
+    width: 384px;
+    @media (max-width: 767px) {
+      width: 80vw;
+    }
+  }
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 20px 24px;
+
+    //标题
+    .title {
+      color: var(--text-color);
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    //关闭icon
+    .icon-close {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+  .container {
+    padding: 0 20px 20px 20px;
+    flex-direction: column;
+    .form-group {
+      flex-direction: column;
+      width: 100%;
+      label {
+        font-size: 14px;
+        color: var(--text-color-20);
+        line-height: 14px;
+      }
+      .phone-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-top: 8px;
+
+        ::ng-deep {
+          app-customize-input {
+            flex: 1;
+          }
+        }
+
+        app-customize-input {
+          flex: 1;
+        }
+
+        .area-code {
+          width: 96px;
+          margin-top: 0px;
+          margin-right: 8px;
+          display: flex;
+        }
+
+        .country-image {
+          display: flex;
+        }
+        .code {
+          color: var(--text-color);
+        }
+
+        .input-group {
+          margin-top: 4px;
+        }
+        //输入框错误信息
+      }
+      .error-msg {
+        color: var(--txt-err-color);
+        font-size: 14px;
+        line-height: 14px;
+        margin: 7px 0;
+      }
+      app-verify-code {
+        margin-top: 20px;
+      }
+    }
+    customize-button {
+      margin-top: 20px;
+    }
+  }
+  .success-cont {
+    padding: 43px 36px 33px 36px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    //关闭icon
+    .icon-close {
+      height: 50px;
+      width: 50px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+      background-position: center center;
+      cursor: pointer;
+      user-select: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    img {
+      width: 91px;
+      height: 83px;
+      margin-bottom: 16px;
+    }
+    .text-bold {
+      color: var(--text-color);
+      font-size: 20px;
+      line-height: 28px;
+      margin-bottom: 30px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .text-normal {
+      color: var(--text-color-20);
+      font-size: 14px;
+      font-weight: 400;
+      text-align: center;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+  }
+}

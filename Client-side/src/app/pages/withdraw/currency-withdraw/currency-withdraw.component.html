@@ -1,0 +1,751 @@
+<div class="container" *ngIf="!withdrawService.getOrdered; else orderedPage">
+  <ng-container *ngIf="orderSuccess; else formatPage">
+    <app-withdraw-success-page [submitData]="submitRecipet"></app-withdraw-success-page>
+  </ng-container>
+  <ng-template #formatPage>
+    <div class="row-container">
+      <div class="options-container" [class.disabled]="isPayLoading || loadingCurrencies">
+        <div class="step">1. {{ 'select_curr_wd' | translate }}</div>
+        <div class="select-input">
+          <div class="input-column select-curr-box" (click)="handleSelectCurrency()">
+            <div class="sub-title">{{ 'curr' | translate }}</div>
+            <div class="select">
+              <!--已选择-->
+              <ng-container *ngIf="selectedCurrency != null; else default">
+                <div class="selected-row">
+                  <img [src]="selectedCurrency.icon" />
+                  <span>{{ selectedCurrency.currency | uppercase }}</span>
+                  <span class="value">{{ selectedCurrency.name }}</span>
+                </div>
+              </ng-container>
+              <!--初始：未选时-->
+              <ng-template #default>
+                <span>{{ 'sel_coin' | translate }}</span>
+              </ng-template>
+              <i class="animation-icon-loading-dot" *ngIf="isPayLoading || loadingCurrencies"><i></i><i></i><i></i></i>
+              <i class="icon-drop-down" [class.clicked]="isOpen"></i>
+            </div>
+          </div>
+          <!--支付方式-->
+          <div
+            class="input-column"
+            style="margin-top: 28px"
+            *ngIf="selectedCurrency != null && paymentWayList.length > 0"
+          >
+            <span>{{ 'pay_methods' | translate }}</span>
+            <!-- 推荐充值方式 其他支付方式 -->
+            <div class="tabs" [appLoading]="isPayLoading">
+              <div
+                class="tab onact96-not mutual-opacity"
+                [class.hide]="item.list.length == 0"
+                [class.active]="selectedTabIndex === item.key"
+                *ngFor="let item of paymentWayList; let i = index"
+                (click)="onChangeTab(item)"
+              >
+                {{ item.typeName }}
+              </div>
+            </div>
+            <!-- 普通充值方式/推荐充值方式 -->
+            <ng-container *ngIf="!isShowCryptoToFiat">
+              <div class="form-group">
+                <mat-radio-button
+                  *ngFor="let item of currentPaymenyList.list; let i = index"
+                  (change)="handleWithdrawOption(item)"
+                  [checked]="selectedWithdraw?.code === item.code && selectedWithdraw.actionType === item.actionType"
+                >
+                  <div class="option-clounm">
+                    <div class="row">
+                      <!-- 修改icon class name 可以显示所有icon图标 -->
+                      <i class="icon-1" *ngIf="!item.icons || item.icons.length == 0"></i>
+                      <img
+                        *ngIf="item?.icons && item.icons.length > 0"
+                        class="icon-style"
+                        [src]="item.icons[0]"
+                        alt=""
+                      />
+                      {{ item.name }}
+                    </div>
+                    <!-- <div class="p">{{item.fee}}% {{'fee'|translate}}
+                    <ng-container *ngIf="item.tipsInfo&&item.tipsInfo[0]?.Operate?.content">
+                      <div class="green-txt" [innerHTML]="item.tipsInfo[0].Operate.content|toHtmlElement">
+                      </div>
+
+                    </ng-container>
+                  </div> -->
+                  </div>
+                </mat-radio-button>
+              </div>
+              <!-- <ng-container *ngIf="!isMore">
+              <button class="submit-btn small" [disabled]="isCanNext()" (click)="handleNext()">继续</button>
+            </ng-container> -->
+            </ng-container>
+          </div>
+          <!-- 提法得虚的 充值方式 -->
+          <ng-container *ngIf="isShowCryptoToFiat">
+            <ng-container *ngTemplateOutlet="crypToFiat"></ng-container>
+          </ng-container>
+          <customize-button
+            *ngIf="selectedWithdraw && !onMaintainance"
+            [loading]="checkLoading || loadingSelectedCurrency || rateLoading"
+            [disabled]="checkLoading || loadingSelectedCurrency || rateLoading"
+            type="primary"
+            size="medium"
+            (onClick)="checkContinue()"
+          >
+            {{ 'continue' | translate }}
+          </customize-button>
+          <ng-container *ngIf="isShowPaymentIq">
+            <customize-button
+              *ngIf="!allowPaymentIq"
+              [loading]="checkingPaymentIq || currentKycLevel === null"
+              type="primary"
+              size="medium"
+              (onClick)="checkKycForPaymentIq(true)"
+            >
+              {{ 'continue' | translate }}
+            </customize-button>
+            <app-payment-iq
+              *ngIf="allowPaymentIq"
+              [selectedCurrency]="piqSelectedCurrency"
+              method="withdrawal"
+              (getHistory)="getCurrencyWithdrawHistory()"
+              [paymentIqCoinLimit]="paymentIqCoinLimit"
+            >
+            </app-payment-iq>
+          </ng-container>
+        </div>
+      </div>
+      <!-- 提现信息 -->
+      <div class="info-container">
+        <ng-container *ngIf="onMaintainance">
+          <div class="step">2. {{ 'wd_info' | translate }}</div>
+          <div class="content-container" *ngIf="!checkLoading">
+            <ng-container [ngSwitch]="onMaintainance">
+              <ng-container *ngSwitchCase="'transferVaild'">
+                <div class="amount-input-container">
+                  <div class="title">{{ 'enter_amount' | translate }}</div>
+                  <div class="input-container">
+                    <div class="label-container">
+                      <div>{{ 'number' | translate }}</div>
+                      <div class="right-avail-amount">
+                        {{ 'w_able_amount' | translate }}:
+                        <span class="black-txt">
+                          {{ coinLimit.availQuota | currencyValue: selectedCurrency?.currency ?? '' }}
+                          {{ selectedCurrency?.currency }}
+                        </span>
+                        <app-tool-tip [overlayMaxWidth]="'320px'">
+                          <i origin class="icon-warning mutual-opacity"></i>
+                          <div tooltip class="limit-pop">
+                            <div class="limit-title">
+                              {{ 'acc_limits' | translate }}
+                              <span class="onact96" [routerLink]="kycPageUrl"
+                                >{{ 'learn_more' | translate }}<i class="icon-arrow-right-simple"></i
+                              ></span>
+                            </div>
+                            <div class="upgrade-fail-box" *ngIf="!topUpSuccess">
+                              <div class="title">
+                                <i class="icon-toast-fail"></i>
+                                {{ 'up_fail' | translate }}
+                              </div>
+                              <span class="yellow-contants">{{ 'not_approved' | translate }}</span>
+                            </div>
+                            <ul class="limit-info">
+                              <li>
+                                {{ 'ava_balance' | translate }}：
+                                <span>
+                                  {{ coinLimit.balance | currencyValue: selectedCurrency?.currency ?? '' }}
+                                  {{ selectedCurrency?.currency }}
+                                </span>
+                              </li>
+                              <li>
+                                {{ 'wd_limit' | translate }}：
+                                <span>
+                                  {{ coinLimit.withdrawQuota | currencyValue: selectedCurrency?.currency ?? '' }}
+                                  {{ selectedCurrency?.currency }}
+                                </span>
+                              </li>
+                              <!-- <li>
+                                {{'lock_amount'|translate}}：
+                                <span>{{ coinLimit.freezeAmount | currencyValue:selectedCurrency?.currency }}
+                                  {{ selectedCurrency?.currency }}</span>
+                              </li> -->
+                              <li>
+                                {{ 'daily_limit' | translate }}：
+                                <ng-container *ngIf="coinLimit.todayQuota !== -1; else unlimit">
+                                  <span>{{ coinLimit.todayQuota | currencyValue: 'USDT' }} USDT</span>
+                                </ng-container>
+                                <ng-template #unlimit>
+                                  <span> {{ 'no_limit' | translate }} </span>
+                                </ng-template>
+                              </li>
+                              <li>
+                                {{ 'w_able_amount' | translate }}：
+                                <span>
+                                  {{ coinLimit.availQuota | currencyValue: selectedCurrency?.currency ?? '' }}
+                                  {{ selectedCurrency?.currency }}
+                                </span>
+                              </li>
+                            </ul>
+                            <ng-container
+                              *ngIf="
+                                currentKycLevel !== 3 &&
+                                kycLimitInfor?.fiatWithdrawLimit !== '-1' &&
+                                coinLimit.todayQuota !== -1
+                              "
+                            >
+                              <div class="limit-btns">
+                                <div class="upgrade-text">
+                                  <div class="upgrade">{{ 'up_limits' | translate }}:</div>
+                                  <div class="upgrade">
+                                    {{ kycLimitInfor?.fiatWithdrawLimit }} {{ 'usdt_d' | translate }}
+                                  </div>
+                                </div>
+                                <div
+                                  class="upgrade-btn onact96-not"
+                                  [class.txt-white]="topUpSuccess"
+                                  [class.txt-orange]="!topUpSuccess"
+                                  [routerLink]="kycPageUrl"
+                                >
+                                  {{ topUpSuccess ? ('upgrade' | translate) : ('continue_cer' | translate) }}
+                                </div>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </app-tool-tip>
+                      </div>
+                    </div>
+                    <!-- 输入框 -->
+                    <app-customize-input
+                      #iAmount
+                      size="large"
+                      type="number"
+                      [error]="!amountValid.isValid ? errorMsg : false"
+                      [placeholder]="'per_tran_amou_v' | translate: coinRange.realmin : coinRange.max"
+                      [(value)]="amount"
+                      (keydown)="amountKeydown($event)"
+                      [format]="amountFormat"
+                      (onChange)="onAmountInput()"
+                    >
+                      <div class="balance-row" right-content>
+                        <div class="fill-all mutual-opacity onact96-not" (click)="inputAll()">
+                          {{ 'all' | translate }}
+                        </div>
+                        <em></em>
+                        <span>{{ selectedCurrency?.currency | uppercase }}</span>
+                      </div>
+                    </app-customize-input>
+                  </div>
+                  <div class="fee">
+                    <div class="small-text" *ngIf="fee !== 0">
+                      {{ 'fee' | translate }} {{ fee }}
+                      <!-- {{ selectedCurrency?.currency | uppercase }} -->
+                      <span class="fee-tips">
+                        {{ 'keep_invest' | translate }} {{ feeSubtract(fee) }}
+                        {{ selectedCurrency?.currency | uppercase }}
+                        {{ 'ava_reduce_fee' | translate }}
+                      </span>
+                    </div>
+                    <div class="small-text">
+                      {{ 'actual_arrival' | translate }}
+                      {{
+                        !amountValid.isValid
+                          ? (0 | currencyValue: selectedCurrency?.currency ?? '')
+                          : (realAmount | currencyValue: selectedCurrency?.currency ?? '')
+                      }}
+                      {{ selectedCurrency?.currency | uppercase }}
+                    </div>
+                  </div>
+                  <!-- 普通 收款人信息 -->
+                  <ng-container *ngIf="!isShowCryptoToFiat && !isNeedWalletAddress">
+                    <div class="receivee-info">
+                      <div class="title">{{ 'payee_info' | translate }}</div>
+                      <div class="small-text">{{ 'wd_to' | translate }}</div>
+                      <!-- 满五张进入银行卡管理页面 -->
+                      <ng-container *ngIf="cardList && cardList.length < 5; else manageCard">
+                        <div class="card-box onact96-not" (click)="addBankCard()">
+                          + {{ 'add_new_card' | translate }}
+                        </div>
+                      </ng-container>
+                      <ng-template #manageCard>
+                        <div class="card-box onact96-not" (click)="jumpToCards()">
+                          {{ 'bc_manage' | translate }}
+                        </div>
+                      </ng-template>
+                      <!--已添加银行卡 -->
+                      <ng-container *ngIf="cardList">
+                        <ng-container *ngFor="let card of cardList; let i = index; trackBy: trackMethod">
+                          <div
+                            class="card-box added onact96"
+                            [class.default]="card.isDefault"
+                            [class.disabled]="card.isLock"
+                            (click)="handleSelectCard(card)"
+                            [appLoading]="bankCardLoading"
+                          >
+                            <div class="left">
+                              <mat-radio-button type="radio" [checked]="card.selected" name="bankList">
+                              </mat-radio-button>
+                              <img
+                                class="bank-icon"
+                                src="assets/images/bankicon/{{ card.bankCode }}.png"
+                                oading="lazy"
+                              />
+                              <div class="back-name">{{ card.bankName }}</div>
+                              <div class="back-num">{{ card.cardNum }}</div>
+                            </div>
+                            <div
+                              class="right-btn onact96"
+                              tabindex="{{ i }}"
+                              (click)="card.isShow = !card.isShow; $event.stopPropagation()"
+                              (blur)="card.isShow = false"
+                            >
+                              <div class="box-item manage" [class.active]="showManageOption">
+                                {{ 'management' | translate }}
+                                <div class="new-down-arraw"></div>
+                              </div>
+                              <div *ngIf="card.isShow" class="box">
+                                <div class="box-item onact96-not" *ngIf="!card.isDefault" (click)="setDefault(card)">
+                                  {{ 'default' | translate }}
+                                </div>
+                                <div class="box-item onact96-not" (click)="deleteCard(card)">
+                                  {{ 'delete' | translate }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                  <!-- 提法得虚收款地址信息  -->
+                  <ng-container *ngIf="isShowCryptoToFiat">
+                    <ng-container *ngTemplateOutlet="crypToConfig"></ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="isNeedWalletAddress">
+                    <ng-container *ngTemplateOutlet="ebPay"></ng-container>
+                  </ng-container>
+                  <!-- 重要提示 -->
+                  <div class="important" *ngIf="selectedWithdraw?.tipsInfo">
+                    <div class="title">{{ 'import_notes' | translate }}</div>
+                    <p
+                      [innerHTML]="
+                        selectedWithdraw.tipsInfo | filterByKeyValue: 'tipsType' : 'Deposit' : 'content' | toHtmlElement
+                      "
+                    ></p>
+                  </div>
+                  <!-- 提现 按钮 -->
+                  <div class="small-next-btn">
+                    <customize-button
+                      type="primary"
+                      size="medium"
+                      [minWidth]="isH5 ? '100%' : '160px'"
+                      [disabled]="!canSubmit()"
+                      (onClick)="handleNext()"
+                      >{{ 'continue' | translate }}</customize-button
+                    >
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'maintainance'">
+                <div class="maintainance-box">
+                  <img src="assets/images/wallet/maintainance.svg" />
+                  <div class="title">{{ 'in_maint' | translate }}</div>
+                  <div class="content">
+                    {{ 'channel_try' | translate }}
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'transferUnvaild'">
+                <div class="transferUnvaild-box">
+                  <span class="important-icon"></span>
+                  <span class="title">{{ 'not_ava' | translate }}</span>
+                  <span class="contants"
+                    >{{ 'not_match' | translate }} {{ 'visa_continue' | translate
+                    }}<span class="orange-txt">{{ 'contact_cust' | translate }}</span></span
+                  >
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <!-- 法币提现记录 web -->
+    <div class="history-container" *ngIf="!isH5">
+      <div class="title-row">
+        <div class="title">{{ 'fiat_wd' | translate }}</div>
+        <div class="more">
+          <div class="all onact96-not" (click)="openHistoryPage()" [class.hide]="currencyWithdrawHistory.length == 0">
+            {{ 'view_all' | translate }}
+          </div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <th>{{ 'order' | translate }}</th>
+          <th>{{ 'date' | translate }}</th>
+          <th>{{ 'curr' | translate }}</th>
+          <th>{{ 'withdraw_amount' | translate }}</th>
+          <th>{{ 'overhead_fee_deduct' | translate }}</th>
+          <th>{{ 'real_overhead_fee_deduct' | translate }}</th>
+          <th>
+            {{ 'crypto_fee' | translate }}
+            <app-tool-tip class="tip inline-block">
+              <i origin class="icon-warning mutual-opacity"></i>
+              <p tooltip>{{ 'mine_fee' | translate }}</p>
+            </app-tool-tip>
+          </th>
+          <th>{{ 'total_receive' | translate }}</th>
+          <th>{{ 'status' | translate }}</th>
+        </thead>
+        <tbody [appLoading]="isLoading">
+          <ng-container *ngIf="!isLoading">
+            <ng-container *ngIf="currencyWithdrawHistory.length > 0; else historyEmpty">
+              <tr *ngFor="let item of currencyWithdrawHistory">
+                <td>{{ item.orderNum }}</td>
+                <td>{{ item.date | mdate: 'YYYY-MM-DD HH:mm' }}</td>
+                <td>{{ item.currency }}</td>
+                <td [attr.data-label]="'number' | translate">
+                  {{ item.amount | currencyValue: item.currency }}
+                </td>
+                <td>
+                  {{ (item.feeWaiver < 0 ? 0 : item.feeWaiver) | currencyValue: item.currency }}
+                </td>
+                <td>
+                  {{ item.fee | currencyValue: item.currency }}
+                </td>
+                <td>
+                  {{ item.coinFee !== 0 ? (item.coinFee | currencyValue: item.token) : '-' }}
+                  <img class="currency-img" *ngIf="item.coinFee !== 0" [src]="item.token | currencyIcon" />
+                </td>
+                <td>
+                  <!-- 提法得虚 -->
+                  <ng-container *ngIf="item.token">
+                    {{ item.coinAmount !== 0 ? (item.coinAmount | currencyValue: item.token) : '-' }}
+                    <img *ngIf="item.coinAmount !== 0" class="currency-img" [src]="item.token | currencyIcon" />
+                  </ng-container>
+                  <!-- 普通提法 -->
+                  <ng-container *ngIf="!item.token">
+                    {{ item.receiveAmount !== 0 ? (item.receiveAmount | currencyValue: item.currency) : '-' }}
+                  </ng-container>
+                </td>
+                <td>
+                  <div class="status-control">
+                    <span class="status">
+                      {{ item.statusName }}
+                      <app-tool-tip class="tool-tip" *ngIf="item.status === 'Canceled'">
+                        <i origin class="icon-warning mutual-opacity"></i>
+                        <span tooltip>
+                          <ng-container [ngSwitch]="item.failReason">
+                            <ng-container *ngSwitchCase="0">
+                              {{ 'other_reason' | translate }}
+                            </ng-container>
+                            <ng-container *ngSwitchCase="1">
+                              {{ 'user_cancel' | translate }}
+                            </ng-container>
+                            <ng-container *ngSwitchCase="2">
+                              {{ 'withdraw_fail' | translate }}
+                            </ng-container>
+                          </ng-container>
+                        </span>
+                      </app-tool-tip>
+                    </span>
+                    <span
+                      class="cancel-order mutual-opacity onact96"
+                      *ngIf="['Created', 'Waiting', 'Review', 'Passed'].includes(item.status)"
+                      (click)="cancelOrder(item.orderNum)"
+                    >
+                      <i class="icon-cancel-order"></i>{{ 'cancel' | translate }}
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <!--  空页面  -->
+            <ng-template #historyEmpty>
+              <td colspan="8">
+                <app-empty></app-empty>
+              </td>
+            </ng-template>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <!--法币提现记录 h5-->
+    <div class="history-container" *ngIf="isH5">
+      <div class="title-row">
+        <div class="title">{{ 'fiat_wd' | translate }}</div>
+        <div class="more">
+          <div class="all onact96-not" (click)="openHistoryPage()">{{ 'view_all' | translate }}</div>
+        </div>
+      </div>
+      <ng-container *ngIf="!isLoading">
+        <ng-container *ngIf="currencyWithdrawHistory.length > 0; else historyEmpty">
+          <div class="history-container-details" [appLoading]="isLoading" *ngFor="let item of currencyWithdrawHistory">
+            <div class="history-container-details-left">
+              <p>{{ 'order' | translate }} {{ item.orderNum }}</p>
+              <p class="gray-txt">{{ item.date | mdate: 'YYYY-MM-DD HH:mm' }}</p>
+            </div>
+            <div class="history-container-details-right">
+              <p>{{ item.amount }} {{ item.currency }}</p>
+              <p class="gray-txt">
+                {{ item.statusName }}
+                <app-tool-tip class="tool-tip" *ngIf="item.status === 'Canceled'">
+                  <i origin class="icon-warning mutual-opacity"></i>
+                  <span tooltip>
+                    <ng-container [ngSwitch]="item.failReason">
+                      <ng-container *ngSwitchCase="0">
+                        {{ 'other_reason' | translate }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="1">
+                        {{ 'user_cancel' | translate }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="2">
+                        {{ 'withdraw_fail' | translate }}
+                      </ng-container>
+                    </ng-container>
+                  </span>
+                </app-tool-tip>
+              </p>
+              <p
+                class="gray-txt cancel-order mutual-opacity onact96"
+                *ngIf="['Created', 'Waiting', 'Review', 'Passed'].includes(item.status)"
+                (click)="cancelOrder(item.orderNum)"
+              >
+                <i class="icon-cancel-order"></i>{{ 'cancel' | translate }}
+              </p>
+            </div>
+          </div>
+        </ng-container>
+        <!--  空页面  -->
+        <ng-template #historyEmpty>
+          <td colspan="5">
+            <app-empty></app-empty>
+          </td>
+        </ng-template>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>
+
+<!-- 提法得虚 成功页面 -->
+<ng-template #orderedPage>
+  <div class="container">
+    <app-success-page [submitData]="withdrawService.submitRecipet" [coinAmount]="getToAccount"></app-success-page>
+  </div>
+</ng-template>
+
+<!-- 提法得虚 货币选择 -->
+<ng-template #crypToFiat>
+  <app-customize-form-group class="customize-from-group" [column]="true" marginTop="20px">
+    <div class="form-item mutual-opacity" (click)="onSelectCurrency()" [appLoading]="loadingSelectedCurrency">
+      <app-customize-input
+        *ngIf="!loadingSelectedCurrency"
+        width="100%"
+        [label]="'选择加密货币'"
+        size="large"
+        [leftIcon]="selectedCryptoCurrency?.icon || ''"
+        [value]="
+          selectedCryptoCurrency
+            ? selectedCryptoCurrency.currency + '   ' + selectedCryptoCurrency.name
+            : ('sel_coin' | translate)
+        "
+        [readonly]="true"
+      >
+        <i right-content class="icon-drop-down"></i>
+      </app-customize-input>
+    </div>
+  </app-customize-form-group>
+</ng-template>
+
+<!-- ebPay -->
+<ng-template #ebPay>
+  <div class="receivee-info ebpay">
+    <div class="title">{{ 'payee_info' | translate }}</div>
+    <ng-container [ngTemplateOutlet]="selAddType"></ng-container>
+    <ng-container></ng-container>
+    <app-customize-form-group class="customize-from-group" [column]="true" marginTop="20px">
+      <!--使用新地址-->
+      <ng-container *ngIf="selectedNetTabIndex === 0">
+        <div class="form-item mutual-opacity">
+          <app-customize-input
+            size="large"
+            placeholder="{{ 'enter_wd_curr_ad' | translate }}"
+            [(value)]="walletaddress"
+            (onChange)="onEbpayAddressChange()"
+            [error]="!walletaddressValid.isValid ? walletaddressValid.text : false"
+          >
+          </app-customize-input>
+        </div>
+        <div class="form-item mutual-opacity">
+          <!--手机验证码 -->
+          <!--otp验证-->
+          <app-verify-code
+            [otpType]="otpType"
+            [phone]="phone"
+            [inputLabel]="'p_code' | translate"
+            [authStatus]="authStatus"
+            [tips]="
+              ('enter_phone' | translate) +
+              (userAccountInfor?.areaCode || '') +
+              ' ' +
+              (userAccountInfor?.mobile || '') +
+              ('ver_code' | translate)
+            "
+            (onChangeAuthStatus)="onfirstSendAuthcode($event)"
+            (verfityInputSuccess)="onOtpCode($event)"
+          >
+          </app-verify-code>
+        </div>
+      </ng-container>
+      <!--地址簿-->
+      <ng-container *ngIf="selectedNetTabIndex === 1">
+        <div class="form-item mutual-opacity">
+          <app-customize-select
+            class="customize-select"
+            [width]="'100%'"
+            [readonly]="true"
+            (onClickInput)="handleSelectAddress(true)"
+            [inputTemplate]="addresskInputTemplate"
+          >
+          </app-customize-select>
+          <ng-template #addresskInputTemplate>
+            <div class="c-input-text" [class.hold]="!selectedAddress">
+              <ng-container *ngIf="selectedAddress">
+                <span>{{ selectedAddress.address }}</span>
+                <span>{{ selectedAddress.currency }}</span>
+              </ng-container>
+              <ng-container *ngIf="!selectedAddress">
+                <span>{{ 'select_add_book' | translate }}</span>
+              </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
+    </app-customize-form-group>
+  </div>
+</ng-template>
+
+<!-- 提法得虚 地址配置 -->
+<ng-template #crypToConfig>
+  <div class="rate">
+    <div class="text-20">
+      {{ 'check_rate' | translate }}：
+      <p class="text">
+        <ng-container *ngIf="!rateLoading">
+          1 {{ selectedCryptoCurrency?.currency || '' }} = {{ currentRateData?.rate || 0
+          }}{{ selectedCurrency?.currency }}
+        </ng-container>
+        <i class="animation-icon-loading-dot" *ngIf="rateLoading"><i></i><i></i><i></i></i>
+      </p>
+    </div>
+    <div class="text-20">
+      {{ 'pre_widthdraw' | translate }}：
+      <p class="text">
+        <ng-container *ngIf="!rateLoading">
+          {{ getPreWidthdraw | currencyValue: selectedCryptoCurrency?.currency || '' }}
+          {{ selectedCryptoCurrency?.currency || '' }}
+        </ng-container>
+        <i class="animation-icon-loading-dot" *ngIf="rateLoading"><i></i><i></i><i></i></i>
+      </p>
+    </div>
+    <div class="text-20">
+      {{ 'crypto_fee' | translate }}
+      <app-tool-tip class="tip">
+        <i origin class="icon-warning mutual-opacity"></i>
+        <p tooltip>{{ 'mine_fee' | translate }}</p>
+      </app-tool-tip>
+      :
+      <p class="text">
+        <ng-container *ngIf="!rateLoading">
+          {{ getCrypToFee | currencyValue: selectedCryptoCurrency?.currency || '' }}
+          {{ selectedCryptoCurrency?.currency || '' }}
+        </ng-container>
+        <i class="animation-icon-loading-dot" *ngIf="rateLoading"><i></i><i></i><i></i></i>
+      </p>
+    </div>
+    <div class="text-20">
+      {{ 'exp_arr' | translate }}：
+      <p class="text">
+        <ng-container *ngIf="!rateLoading">
+          {{ getToAccount | currencyValue: selectedCryptoCurrency?.currency || '' }}
+          {{ selectedCryptoCurrency?.currency || '' }}
+        </ng-container>
+        <i class="animation-icon-loading-dot" *ngIf="rateLoading"><i></i><i></i><i></i></i>
+      </p>
+    </div>
+  </div>
+  <div class="receivee-info">
+    <div class="title">{{ 'payee_info' | translate }}</div>
+    <div class="small-text">{{ 'wd_curr_add' | translate }}</div>
+    <ng-container [ngTemplateOutlet]="selAddType"></ng-container>
+    <app-customize-form-group [column]="true" marginTop="30px">
+      <!--使用新地址-->
+      <ng-container *ngIf="selectedNetTabIndex === 0">
+        <div class="form-item mutual-opacity" (click)="handleTransNetWork()">
+          <app-customize-input
+            [disabled]="!selectedCryptoCurrency"
+            size="large"
+            [label]="'trans_network' | translate"
+            [readonly]="true"
+            [value]="
+              selectedNetwork ? selectedNetwork.network + ' ' + selectedNetwork.desc : ('select_net' | translate)
+            "
+          >
+            <i right-content class="icon-drop-down"></i>
+          </app-customize-input>
+        </div>
+        <div class="form-item mutual-opacity">
+          <app-customize-input
+            [disabled]="!selectedNetwork"
+            #iAddress
+            size="large"
+            [error]="!addressValid.isValid ? addressValid.text : false"
+            [label]="'wd_curr_add' | translate"
+            placeholder="{{ 'enter_wd_curr_ad' | translate }}"
+            [(value)]="address"
+            (onChange)="onNetWorkInput(iAddress)"
+          >
+          </app-customize-input>
+        </div>
+      </ng-container>
+      <!--地址簿-->
+      <ng-container *ngIf="selectedNetTabIndex === 1">
+        <div class="form-item mutual-opacity" (click)="handleSelectAddress()">
+          <app-customize-input
+            [label]="'add_book' | translate"
+            size="large"
+            [loading]="loadingAddress"
+            [disabled]="loadingAddress"
+            [readonly]="true"
+            [value]="
+              selectedAddress
+                ? selectedAddress?.address + ' ' + selectedAddress?.network
+                : ('select_add_book' | translate)
+            "
+          ></app-customize-input>
+        </div>
+      </ng-container>
+    </app-customize-form-group>
+  </div>
+</ng-template>
+
+<ng-template #selAddType>
+  <div class="net-tabs">
+    <div class="tabs-container">
+      <ng-container *ngFor="let item of ['use_new_add', 'add_book']; let index = index">
+        <customize-button
+          [type]="selectedNetTabIndex === index ? 'default' : 'text'"
+          (onClick)="onSelectedMethod(index)"
+        >
+          <span [class.active]="selectedNetTabIndex === index">{{ item | translate }}</span>
+        </customize-button>
+      </ng-container>
+    </div>
+    <span
+      class="address-link mutual-opacity onact96-not"
+      [routerLink]="'/' + appService.languageCode + '/wallet/address'"
+      *ngIf="selectedNetTabIndex === 1"
+      >{{ 'address_management' | translate }}</span
+    >
+  </div>
+</ng-template>

@@ -1,0 +1,163 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12 mt-8">
+  <!-- 时间 -->
+  <form-row [label]="'common.time' | lang" class="mr-8" [contentWidth]="264">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card card-body mt-8">
+  <div class="fz-20 pb-8">
+    {{ 'nav.badDataDetail' | lang }}
+  </div>
+
+  <!-- 不良数据信息 -->
+  <div class="px-8 info-box">
+    <div class="py-4 d-flex box-items">
+      <!-- 类型 -->
+      <div class="pr-4 flex-1 item">
+        <div class="fz-14 color-aaa">{{ 'common.type' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ getCategoryLang(badDatainfo?.type) | lang }}</div>
+      </div>
+      <!-- 不良数据值 -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'risk.badData.value' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ badDatainfo?.value || '-' }}</div>
+      </div>
+    </div>
+
+    <div class="py-4 d-flex box-items">
+      <!-- 添加人 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'risk.badData.addPerson' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ badDatainfo?.createdUserName || '-' }}</div>
+      </div>
+      <!-- 添加时间 -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'risk.badData.addTime' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ badDatainfo?.createdTime | timeFormat }}</div>
+      </div>
+    </div>
+
+    <div class="py-4 d-flex box-items">
+      <!-- 评论信息 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'risk.badData.commentInformation' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ badDatainfo?.comment || '-' }}</div>
+      </div>
+      <!-- 品牌 -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'risk.badData.brand' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          <div class="d-flex flex-wrap" style="gap: 5px">
+            <app-label type="success" *ngFor="let item of getMerchantNameList(badDatainfo?.tenantIds)">{{
+              item.name
+            }}</app-label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 列表 -->
+  <div class="mt-12">
+    <div class="d-flex">
+      <div class="flex-1"></div>
+      <!-- 导出全部 -->
+      <button (click)="onExport()" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+    </div>
+
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 品牌 -->
+          <th>
+            <span class="cell">{{ 'risk.badData.brand' | lang }}</span>
+          </th>
+          <!-- UID -->
+          <th>
+            <span class="cell">{{ 'UID' }}</span>
+          </th>
+          <!-- 时间 -->
+          <th>
+            <span class="cell">{{ 'common.time' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">
+              <div class="d-flex flex-wrap" style="gap: 5px">
+                <app-label type="success">{{ getMerchantName(item.tenantId) }}</app-label>
+              </div>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.uid }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.createdTime | timeFormat }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

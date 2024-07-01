@@ -1,0 +1,60 @@
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'system.statistics.againStatistics' | lang }}</div>
+
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 导出 -->
+      <button
+        type="button"
+        class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        (click)="onExport()"
+      >
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 统计时间 -->
+          <th>
+            <span class="cell">{{ 'system.memberBonus.th_16' | lang }}</span>
+          </th>
+          <!-- 统计类别 -->
+          <th>
+            <span class="cell">{{ 'system.againStatistics.th_1' | lang }}</span>
+          </th>
+          <!-- 状态 -->
+          <th>
+            <span class="cell">{{ 'system.againStatistics.th_2' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.statDate || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.category || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.status || '-' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+</div>

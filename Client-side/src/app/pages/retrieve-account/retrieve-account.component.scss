@@ -1,0 +1,28 @@
+:host {
+  flex: 1 1 0%;
+}
+
+div {
+  display: flex;
+}
+
+.retrieve-account-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+  width: 100%;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    background-color: #fafafa;
+    overflow-x: hidden;
+  }
+
+  //pages
+  .page-container {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,98 @@
+// 标题栏
+.title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 80px;
+  width: 100%;
+  justify-content: center;
+
+  div {
+    display: flex;
+  }
+
+  .header-container {
+    justify-content: space-between;
+    flex: 1;
+
+    .header {
+      align-items: center;
+
+      //返回icon
+      .icon-back {
+        font-size: 20px;
+        color: var(--text-color-20);
+
+        @media (max-width: 767px) {
+          font-size: 16px;
+        }
+
+        &:hover,
+        &.focus {
+          // color: var(--default-border-color);
+          color: var(--text-color);
+          border-radius: 4px;
+        }
+      }
+
+      .title {
+        color: var(--text-color);
+        font-size: 24px;
+        padding-left: 12.8px;
+        font-weight: bold;
+
+        @media (max-width: 767px) {
+          font-size: 24px;
+          padding-left: 12.5px;
+        }
+      }
+    }
+
+    .to-other-page {
+      font-size: 14px;
+      background-color: var(--default-border-color);
+      height: 32px;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 4px;
+      color: var(--text-color);
+      cursor: pointer;
+      user-select: none;
+      @media (max-width: 767px) {
+        font-size: 12px;
+      }
+
+      &:hover .right-arrow {
+        background-image: url(src/assets/svg/arrow_gray.svg);
+
+        &:host-context(.dark) & {
+          background-image: url(src/assets/svg/arrow_orange.svg);
+        }
+      }
+
+      // &:hover .right-arrow {
+      //   background-image: url(src/assets/svg/arrow_gray.svg);
+      // }
+
+      .right-arrow {
+        margin-left: 8px;
+        background-size: 100%;
+        background-position: center;
+        height: 16px;
+        width: 18px;
+        background-repeat: no-repeat;
+        background-image: url(src/assets/svg/arrow_black.svg);
+
+        &:host-context(.dark) & {
+          background-image: url(src/assets/svg/arrow_gray.svg);
+        }
+
+        @media (max-width: 767px) {
+          height: 10px;
+          width: 12px;
+          margin-left: 3px;
+        }
+      }
+    }
+  }
+}

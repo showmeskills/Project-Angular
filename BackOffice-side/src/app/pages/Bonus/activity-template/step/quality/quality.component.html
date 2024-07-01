@@ -1,0 +1,1193 @@
+<ng-template #SuperiorUserTpl let-controlGroup let-category="category" let-type="type" let-list="radioList">
+  <!-- 全部、选择 -->
+  <form-row [control]="controlGroup.controls.type" [showLabel]="false" class="py-0">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="d-flex flex-wrap">
+        <ng-container *ngFor="let item of list">
+          <ng-container *ngIf="type.includes('Black') ? item.value === 1 : true">
+            <label class="radio radio-lg lh-32 my-2 fz-16 mr-12" [attrDisabled]="isReadonly">
+              <input type="radio" [name]="type" [value]="item.value" [formControl]="control" />
+              <span class="mr-4"></span>{{ item.lang | lang }}
+            </label>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 代理、推荐好友操作 -->
+  <form-row [control]="controlGroup.controls.uids" *ngIf="controlGroup.value.type === 1" [showLabel]="false">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div>
+        <div class="d-flex flex-ac lh-1">
+          <button
+            type="button"
+            class="btn btn-light-primary px-9 fz-14 py-2 mr-8"
+            (click)="openSelectParent(category, controlGroup.controls.uids)"
+            *ngIf="!isReadonly"
+          >
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            <span class="vam">{{ 'luckRoulette.qualification' | lang: type }}</span>
+          </button>
+
+          <!-- 已选择N个代理、推荐好友 -->
+          <div class="color-aaa">
+            {{ 'member.coupon.model.chosen' | lang }}{{ lang.isLocal ? '' : ' ' }}{{ control.value.length
+            }}{{ lang.isLocal ? '' : ' ' }}{{ 'luckRoulette.qualification.num' | lang: type }}
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select" *ngIf="control.value.length">
+          <div class="d-flex flex-ac member-select-item" *ngFor="let item of control.value; let i = index">
+            <span>{{ item || '-' }}</span>
+            <div class="del-icon d-flex flex-center" *ngIf="!isReadonly">
+              <svg-icon
+                [src]="'./assets/images/svg/admin-del.svg'"
+                class="d-flex svg-icon svg-icon-2x"
+                (click)="control.value.splice(i, 1)"
+              ></svg-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+</ng-template>
+
+<div class="text-center fz-16 color-999 py-8" *ngIf="!loadFinish && !emptyId">{{ 'common.loading' | lang }}</div>
+<div class="text-center fz-16 color-999 py-8" *ngIf="emptyId">{{ 'luckRoulette.emptyActivity' | lang }}</div>
+
+<div *ngIf="loadFinish">
+  <!-- 渠道状况 - 新 -->
+  <form-row
+    class="mt-8"
+    [label]="'luckRoulette.channelStu' | lang"
+    label-width="120"
+    required
+    [control]="formGroup.controls.channelTypes"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="d-flex flex-wrap lh-42">
+        <ng-container>
+          <label class="checkbox checkbox-lg mr-8 fz-16" *ngFor="let item of channelType">
+            <input
+              type="checkbox"
+              (change)="onChannelTypes(item.value)"
+              [checkboxArrayControl]="control"
+              [checkboxArrayValue]="item.value"
+              [attrDisabled]="isReadonly"
+            />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 指定上级白名单 -->
+  <div class="py-2 lh-42 fz-16 color-999" [style.padding-left.px]="120" *ngIf="hasSuperior">
+    <div>{{ 'luckRoulette.superiorWhite' | lang }}：</div>
+
+    <!-- 推荐好友上级 -->
+    <div
+      [style.padding-left.px]="120"
+      *ngIf="formGroup.getRawValue().channelTypes!.includes(ActivityStep2ChannelType.Refer)"
+      class="pb-8"
+    >
+      <form-row
+        class="border-1 px-8 rounded"
+        [control]="formGroup.controls.channelRecommenderWhite"
+        [label]="'luckRoulette.superiorFriend' | lang"
+        [label-width]="120"
+      >
+        <ng-template let-invalid="invalid" let-controlGroup="formControl">
+          <div>
+            <ng-container
+              *ngTemplateOutlet="
+                SuperiorUserTpl;
+                context: {
+                  $implicit: controlGroup,
+                  category: 2,
+                  type: 'friendUserWhite',
+                  radioList: superiorFriendType
+                }
+              "
+            ></ng-container>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <!-- 代理上级 -->
+    <div
+      [style.padding-left.px]="120"
+      *ngIf="formGroup.getRawValue().channelTypes!.includes(ActivityStep2ChannelType.Proxy)"
+      class="pb-8"
+    >
+      <form-row
+        class="border-1 px-8 rounded"
+        [control]="formGroup.controls.channelAgentWhite"
+        [label]="'luckRoulette.superiorProxy' | lang"
+        [label-width]="120"
+      >
+        <ng-template let-invalid="invalid" let-controlGroup="formControl">
+          <div>
+            <ng-container
+              *ngTemplateOutlet="
+                SuperiorUserTpl;
+                context: { $implicit: controlGroup, category: 3, type: 'proxyUserWhite', radioList: superiorProxyType }
+              "
+            ></ng-container>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+  </div>
+
+  <!-- 指定上级黑名单 -->
+  <div class="py-2 lh-42 fz-16 color-999" [style.padding-left.px]="120" *ngIf="hasSuperior">
+    <div>{{ 'luckRoulette.superiorBlack' | lang }}：</div>
+
+    <!-- 推荐好友上级 -->
+    <div
+      [style.padding-left.px]="120"
+      *ngIf="formGroup.getRawValue().channelTypes!.includes(ActivityStep2ChannelType.Refer)"
+      class="pb-8"
+    >
+      <form-row
+        class="border-1 px-8 rounded"
+        [control]="formGroup.controls.channelRecommenderBlack"
+        [label]="'luckRoulette.superiorFriend' | lang"
+        [label-width]="120"
+      >
+        <ng-template let-invalid="invalid" let-controlGroup="formControl">
+          <div>
+            <ng-container
+              *ngTemplateOutlet="
+                SuperiorUserTpl;
+                context: {
+                  $implicit: controlGroup,
+                  category: 2,
+                  type: 'friendUserBlack',
+                  radioList: superiorFriendType
+                }
+              "
+            ></ng-container>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <!-- 代理上级 -->
+    <div
+      [style.padding-left.px]="120"
+      *ngIf="formGroup.getRawValue().channelTypes!.includes(ActivityStep2ChannelType.Proxy)"
+      class="pb-8"
+    >
+      <form-row
+        class="border-1 px-8 rounded"
+        [control]="formGroup.controls.channelAgentBlack"
+        [label]="'luckRoulette.superiorProxy' | lang"
+        [label-width]="120"
+      >
+        <ng-template let-invalid="invalid" let-controlGroup="formControl">
+          <div>
+            <ng-container
+              *ngTemplateOutlet="
+                SuperiorUserTpl;
+                context: { $implicit: controlGroup, category: 3, type: 'proxyUserBlack', radioList: superiorProxyType }
+              "
+            ></ng-container>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+  </div>
+
+  <!-- 指定用户 -->
+  <form-row
+    [style.padding-left.px]="120"
+    [label]="'luckRoulette.specifyUser' | lang"
+    [control]="formGroup.controls.channelPersonal"
+    label-width="120"
+    *ngIf="formGroup.getRawValue().channelTypes!.includes(ActivityStep2ChannelType.Specify)"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div>
+        <!-- 白名单、黑名单类型 -->
+        <form-row [control]="control.controls.type" [showLabel]="false" class="py-0">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <div class="d-flex flex-wrap">
+              <label
+                class="radio radio-lg lh-32 my-2 fz-16 mr-12"
+                *ngFor="let item of specifyUserType"
+                [attrDisabled]="isReadonly"
+              >
+                <input type="radio" name="specifyUser" [value]="item.value" [formControl]="control" />
+                <span class="mr-4"></span>{{ item.lang | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 会员操作 -->
+        <form-row [control]="control.controls.inputType" [showLabel]="false">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <div class="channel-tab-hd">
+              <label
+                class="radio radio-lg radio-success fz-16 channel-tab-hd-item"
+                [class.active]="item.value === control.getRawValue()"
+                *ngFor="let item of specifyUserInputType"
+                [attrDisabled]="isReadonly"
+              >
+                <input type="radio" name="specifyUserInputType" [value]="item.value" [formControl]="control" />
+                <span class="mr-4"></span>{{ item.lang | lang }}
+              </label>
+            </div>
+
+            <div class="channel-tab-bd" [ngSwitch]="control.getRawValue()">
+              <!-- 选择会员 -->
+              <ng-container *ngSwitchCase="0">
+                <div class="d-flex flex-ac">
+                  <button
+                    type="button"
+                    class="btn btn-light-primary px-9 fz-14 py-2 mr-8"
+                    (click)="onOpenMemberSelectPopup()"
+                    *ngIf="!isReadonly"
+                  >
+                    <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+                    <span class="vam">{{ 'member.coupon.model.chooseMember' | lang }}</span>
+                  </button>
+
+                  <!-- 已选择N个会员< -->
+                  <div class="color-aaa">
+                    {{ 'member.coupon.model.chosen' | lang }}{{ memberSelectedList.length
+                    }}{{ 'member.coupon.model.members' | lang }}
+                  </div>
+                </div>
+
+                <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select" *ngIf="memberSelectedList.length">
+                  <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberSelectedList; let i = index">
+                    <span>{{ item.name || item.uact || '-' }}</span>
+                    <div class="del-icon d-flex flex-center" *ngIf="!isReadonly">
+                      <svg-icon
+                        [src]="'./assets/images/svg/admin-del.svg'"
+                        class="d-flex svg-icon svg-icon-2x"
+                        (click)="memberSelectedList.splice(i, 1)"
+                      ></svg-icon>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- 手动输入 -->
+              <ng-container *ngSwitchCase="1">
+                <!-- 请输入用户UID(以符号 ; 做拼接) -->
+                <div class="color-aaa">{{ 'member.coupon.model.pleaseEnterInfo' | lang }}</div>
+                <textarea
+                  [style.height.px]="290"
+                  type="text"
+                  class="form-control"
+                  autocomplete="off"
+                  [(ngModel)]="memberManualRemark"
+                  [attrDisabled]="isReadonly"
+                  input-trim
+                ></textarea>
+              </ng-container>
+
+              <!-- 上传名单 -->
+              <ng-container *ngSwitchCase="2">
+                <div class="d-flex flex-ac">
+                  <upload
+                    [disabledInput]="isReadonly"
+                    class="mt-5 mb-5 mr-15"
+                    [style.height.px]="50"
+                    mark="file"
+                    desc="Excel/xlsx"
+                    [customUpload]="customUpload"
+                    [accept]="['Excel', 'xlsx']"
+                    [showLimitText]="false"
+                    [limit]="2048"
+                  ></upload>
+                  <!-- 下载模板表格 -->
+                  <span class="download" (click)="downloadTemplate()">{{
+                    'member.coupon.model.downloadForm' | lang
+                  }}</span>
+                </div>
+
+                <!-- <textarea
+                  [style.height.px]="280"
+                  type="text"
+                  class="form-control"
+                  autocomplete="off"
+                  [(ngModel)]="memberManualUpload"
+                ></textarea> -->
+
+                <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select" *ngIf="memberManualUploadList.length">
+                  <div
+                    class="d-flex flex-ac member-select-item"
+                    *ngFor="let item of memberManualUploadList; index as i"
+                  >
+                    <span>{{ item.uact || item.uid }}</span>
+                    <div class="del-icon d-flex flex-center" *ngIf="!isReadonly">
+                      <svg-icon
+                        [src]="'./assets/images/svg/admin-del.svg'"
+                        class="d-flex svg-icon svg-icon-2x"
+                        (click)="memberManualUploadList.splice(i, 1)"
+                      ></svg-icon>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </ng-template>
+        </form-row>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 渠道状况 -->
+  <!--  <form-row-->
+  <!--    class="mt-8"-->
+  <!--    [label]="'luckRoulette.channelStu' | lang"-->
+  <!--    label-width="120"-->
+  <!--    required-->
+  <!--    [control]="formGroup.get('channel')"-->
+  <!--  >-->
+  <!--    <ng-template let-invalid="invalid" let-control="formControl">-->
+  <!--      <div class="d-flex flex-wrap lh-42">-->
+  <!--        <ng-container *ngIf="!isReadonly; else showChannelTpl">-->
+  <!--          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of channel">-->
+  <!--            <input-->
+  <!--              type="radio"-->
+  <!--              [formControl]="control"-->
+  <!--              name="channelRadio"-->
+  <!--              [value]="item.value"-->
+  <!--              (change)="onChannel()"-->
+  <!--            />-->
+  <!--            <span class="mr-4"></span>{{ item.lang | lang }}-->
+  <!--          </label>-->
+  <!--        </ng-container>-->
+  <!--        <ng-template #showChannelTpl>-->
+  <!--          <ng-container *ngFor="let item of channel">-->
+  <!--            <span class="fz-16" *ngIf="formGroup.getRawValue().channel === item.value">{{ item.lang | lang }}</span>-->
+  <!--          </ng-container>-->
+  <!--        </ng-template>-->
+
+  <!--        &lt;!&ndash; 指定渠道 &ndash;&gt;-->
+  <!--        <ng-container *ngIf="!isReadonly; else showTpl">-->
+  <!--          <label class="radio radio-lg radio-success fz-16">-->
+  <!--            <input-->
+  <!--              name="channelRadio"-->
+  <!--              type="radio"-->
+  <!--              [value]="ActivityStep2Channel.DesignatedChannel"-->
+  <!--              [formControl]="control"-->
+  <!--              (change)="onChannel()"-->
+  <!--            />-->
+  <!--            <span class="mr-4"></span>{{ 'luckRoulette.assChannel' | lang }}-->
+  <!--          </label>-->
+
+  <!--          <form-row class="py-0" [control]="formGroup.controls.channelCustomArr">-->
+  <!--            <ng-template let-invalid="invalid" let-control="formControl">-->
+  <!--              <input-->
+  <!--                [style.width.px]="280"-->
+  <!--                class="form-control"-->
+  <!--                autocomplete="off"-->
+  <!--                type="text"-->
+  <!--                [formControl]="control"-->
+  <!--                [class.is-invalid]="invalid"-->
+  <!--                [placeholder]="'luckRoulette.enterChannelName' | lang"-->
+  <!--                input-trim-->
+  <!--              />-->
+  <!--            </ng-template>-->
+  <!--          </form-row>-->
+  <!--        </ng-container>-->
+
+  <!--        <ng-template #showTpl>-->
+  <!--          <ng-container *ngIf="formGroup.getRawValue().channel === ActivityStep2Channel.DesignatedChannel">-->
+  <!--            <span>{{ 'luckRoulette.assChannel' | lang }}：{{ formGroup.getRawValue().channelCustomArr }}</span>-->
+  <!--          </ng-container>-->
+  <!--        </ng-template>-->
+  <!--      </div>-->
+  <!--    </ng-template>-->
+  <!--  </form-row>-->
+
+  <!-- 认证状态 -->
+  <form-row
+    [label]="'luckRoulette.verStu' | lang"
+    label-width="120"
+    required
+    [control]="formGroup.controls.kyc"
+    [invalidFeedback]="{ arrayRequired: 'form.arrayRequired' | lang }"
+  >
+    <ng-template let-control="formControl">
+      <div class="d-flex flex-wrap pt-2 lh-32" [formGroup]="control">
+        <ng-container selectChildren>
+          <label class="checkbox checkbox-lg fz-16 mr-8" *ngIf="!isReadonly">
+            <input type="checkbox" selectGroup />
+            <span class="mr-4"></span>{{ 'common.all' | lang }}
+          </label>
+          <label
+            class="checkbox checkbox-lg color-aaa fz-16 mr-8"
+            *ngFor="let item of kycList; index as i"
+            [attrDisabled]="isReadonly"
+          >
+            <input type="checkbox" name="KYC" [formControlName]="i" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </ng-container>
+        <!--        <ng-template #showKycTpl>-->
+        <!--          <ng-container *ngFor="let item of kycList; index as i">-->
+        <!--            <span class="mr-4" [formControlName]="i">{{ item.lang | lang }}</span>-->
+        <!--          </ng-container>-->
+        <!--        </ng-template>-->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- VIP等级 -->
+  <form-row
+    [label]="'content.insite.userStu' | lang"
+    label-width="120"
+    required
+    [control]="formGroup.controls.userLevel"
+    [invalidFeedback]="{ arrayRequired: 'form.arrayRequired' | lang }"
+  >
+    <ng-template let-control="formControl">
+      <ng-container>
+        <div class="d-flex flex-wrap" [selectChildren]="true" [formGroup]="control">
+          <label class="checkbox checkbox-lg color-aaa fz-16 mb-2 mr-8" *ngIf="!isReadonly">
+            <input type="checkbox" selectGroup />
+            <span class="mr-4"></span>{{ 'common.all' | lang }}
+          </label>
+
+          <ng-container *ngFor="let item of levelList; index as i">
+            <label class="checkbox checkbox-lg color-aaa fz-16 mb-2 mr-8" [class.disabled]="isReadonly">
+              <input type="checkbox" select [formControlName]="i" [attrDisabled]="isReadonly" />
+              <span class="mr-4"></span>{{ item.name }}
+            </label>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-template>
+  </form-row>
+
+  <!-- 国家状态类型 -->
+  <form-row [label]="'luckRoulette.countryType' | lang" label-width="120" [control]="formGroup.controls.countryType">
+    <ng-template let-control="formControl">
+      <div class="d-flex flex-wrap">
+        <!-- KYC国家 -->
+        <label class="radio radio-lg fz-16 mr-8" [attrDisabled]="isReadonly">
+          <input type="radio" name="countryType" [value]="1" [formControl]="control" />
+          <span class="mr-4"></span>{{ 'luckRoulette.countryKyc' | lang }}
+        </label>
+        <!-- 注册账号的国家 -->
+        <label class="radio radio-lg fz-16 mr-8" [attrDisabled]="isReadonly">
+          <input type="radio" name="countryType" [value]="2" [formControl]="control" />
+          <span class="mr-4"></span>{{ 'luckRoulette.countryRegistry' | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 国家状态 -->
+  <ng-template #countryStatusLabel>
+    {{
+      (formGroup.getRawValue().countryType === 1
+        ? 'luckRoulette.countryKycStatus'
+        : 'luckRoulette.countryRegistryStatus'
+      ) | lang
+    }}
+  </ng-template>
+  <form-row [label]="countryStatusLabel" label-width="120">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap" style="gap: 8px">
+        <label
+          class="radio radio-lg fz-16 mr-8"
+          [attrDisabled]="isReadonly"
+          *ngIf="!isReadonly || !selectCountryList.length"
+        >
+          <input
+            type="radio"
+            name="selectCountryList"
+            [value]="0"
+            [ngModel]="selectCountryList.length"
+            (ngModelChange)="selectCountryList = []"
+          />
+          <!-- 全部国家 -->
+          <span class="mr-4"></span>{{ 'luckRoulette.allCountry' | lang }}
+        </label>
+
+        <div
+          class="d-flex flex-ac px-5 h42"
+          style="background: #f5f8fa; border-radius: 6px"
+          *ngFor="let item of selectCountryList; index as i"
+        >
+          <i [iconCountry]="item.countryEnName"></i>
+          <div class="px-2">{{ lang.isLocal ? item.countryName : item.countryEnName }}</div>
+          <svg-icon
+            *ngIf="!isReadonly"
+            [src]="'./assets/images/svg/bar-close.svg'"
+            class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+            (click)="selectCountryList.splice(i, 1)"
+          >
+          </svg-icon>
+        </div>
+
+        <span
+          *ngIf="!isReadonly"
+          class="btn btn-light-primary fz-16 d-flex flex-ac py-2 h42"
+          (click)="openAddPopupCountry()"
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <!-- 添加国家 -->
+          {{ 'luckRoulette.addCountry' | lang }}
+        </span>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种状态 -->
+  <form-row [label]="'luckRoulette.currencyStatus' | lang" label-width="120">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap" style="gap: 8px">
+        <label
+          class="radio radio-lg fz-16 mr-8"
+          *ngIf="!isReadonly || !selectCurrencyList.length"
+          [attrDisabled]="isReadonly"
+        >
+          <input
+            type="radio"
+            name="currency"
+            [value]="0"
+            [ngModel]="selectCurrencyList.length"
+            (ngModelChange)="selectCurrencyList = []"
+          />
+          <!-- 全部币种 -->
+          <span class="mr-4"></span>{{ 'luckRoulette.allCurrency' | lang }}
+        </label>
+
+        <div
+          class="d-flex flex-ac px-5"
+          style="background: #f5f8fa; border-radius: 6px"
+          *ngFor="let item of selectCurrencyList; index as i"
+        >
+          <img [currencyIcon]="item" currencySize="18" class="mr-2" />
+          <div class="px-2">{{ item }}</div>
+          <svg-icon
+            *ngIf="!isReadonly"
+            [src]="'./assets/images/svg/bar-close.svg'"
+            class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+            (click)="selectCurrencyList.splice(i, 1)"
+          >
+          </svg-icon>
+        </div>
+
+        <span *ngIf="!isReadonly" class="btn btn-light-primary fz-16 d-flex flex-ac py-2 h42" (click)="openAddPopup()">
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <!-- 添加币种 -->
+          {{ 'luckRoulette.addCurrency' | lang }}
+        </span>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 活跃状态 -->
+  <form-row [label]="'luckRoulette.activePlayer' | lang" label-width="120">
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <!-- 不限 -->
+        <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+          <input
+            type="radio"
+            name="active"
+            [formControl]="formGroup.controls.isActiveUser"
+            [value]="ActivityStep2ActiveUser.NoLimit"
+          />
+          <!-- 全部会员 -->
+          <span class="mr-4"></span>{{ 'luckRoulette.allPlayer' | lang }}
+        </label>
+        <!-- 活跃 -->
+        <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">
+          <input
+            type="radio"
+            name="active"
+            [formControl]="formGroup.controls.isActiveUser"
+            [value]="ActivityStep2ActiveUser.Active"
+          />
+          <span class="mr-4"></span>{{ 'member.list.active' | lang }}
+        </label>
+        <!-- 不活跃 -->
+        <!-- TODO 存款后会变成活跃 -->
+        <!--        <label class="radio radio-lg lh-32 my-2 fz-16 mr-12">-->
+        <!--          <input-->
+        <!--            type="radio"-->
+        <!--            name="active"-->
+        <!--            [formControl]="formGroup.controls.isActiveUser"-->
+        <!--            [value]="ActivityStep2ActiveUser.NoActive"-->
+        <!--          />-->
+        <!--          <span class="mr-4"></span>{{ 'member.list.activeNo' | lang }}-->
+        <!--        </label>-->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 注册时间内的新用户 -->
+  <ng-template #registryCreatedUserTpl>
+    <label class="d-flex checkbox checkbox-lg color-aaa fz-16" [style.height.px]="22" [class.disabled]="isReadonly">
+      <input
+        type="checkbox"
+        [formControl]="formGroup.controls.isNewUser"
+        [attrDisabled]="isReadonly"
+        (change)="onRegistryTimeChange()"
+      />
+      <span class="mr-2"></span>
+      <div>{{ 'game.proxy.newUser' | lang }}</div>
+    </label>
+  </ng-template>
+  <form-row [label]="registryCreatedUserTpl" label-width="120" [control]="formGroup.controls.createDay">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <label class="color-aaa d-flex">
+        <input
+          [formControl]="control"
+          [style.width.px]="60"
+          input-number
+          class="form-control text-center mr-4"
+          type="text"
+          *ngIf="!isReadonly; else newRegTimeTpl"
+        />
+        <ng-template #newRegTimeTpl
+          ><span class="color-aaa">{{ control.getRawValue() }}</span></ng-template
+        >
+        <span class="mr-8">{{ 'game.proxy.registration' | lang }}</span>
+      </label>
+    </ng-template>
+  </form-row>
+
+  <!-- 存款状况 -->
+  <div class="d-flex align-items-start py-2">
+    <div class="d-flex lh-42">
+      <label class="checkbox checkbox-lg" [attrDisabled]="isReadonly">
+        <input type="checkbox" [formControl]="formGroup.controls.depositChoose" />
+        <span></span>
+        <i class="color-999 fz-16 fst-normal ml-2">{{ 'luckRoulette.depStu' | lang }}：</i>
+      </label>
+    </div>
+
+    <div class="d-flex flex-ac flex-wrap ml-5 lh-42">
+      <!-- 未存款 -->
+      <label class="radio radio-lg radio-success mr-12 fz-16 pb-2" [attrDisabled]="isReadonly">
+        <input
+          type="radio"
+          name="depositStatus"
+          [formControl]="formGroup.controls.depositType"
+          [value]="ActivityStep2DepositType.Undeposited"
+        />
+        <span class="mr-4"></span>{{ 'luckRoulette.undepsit' | lang }}
+      </label>
+
+      <!-- 距离上次存款 -->
+      <label for="lastDep" class="mr-12 pb-2 d-flex flex-ac cursor-pointer">
+        <label class="radio radio-lg radio-success fz-16" [attrDisabled]="isReadonly">
+          <input
+            id="lastDep"
+            type="radio"
+            name="depositStatus"
+            [formControl]="formGroup.controls.depositType"
+            [value]="ActivityStep2DepositType.LastDepositDay"
+          />
+          <span class="mr-4"></span>{{ 'luckRoulette.lastDep' | lang }}
+        </label>
+        <input
+          class="form-control fz-16 h40 py-2 mx-2 text-center"
+          [style.width.px]="60"
+          type="text"
+          input-number
+          [formControl]="formGroup.controls.depositLatestDay"
+          *ngIf="!isReadonly; else showDayTpl"
+        />
+        <ng-template #showDayTpl>{{ formGroup.getRawValue().depositLatestDay || 0 }}</ng-template>
+        {{ 'luckRoulette.days' | lang }}
+      </label>
+
+      <!-- 指定时间范围存款 -->
+      <label class="mr-12 fz-16 pb-2 d-flex flex-ac cursor-pointer">
+        <label class="radio radio-lg radio-success" [attrDisabled]="isReadonly">
+          <input
+            type="radio"
+            name="depositStatus"
+            [formControl]="formGroup.controls.depositType"
+            [value]="ActivityStep2DepositType.RangeDeposit"
+          />
+          <span class="mr-4"></span>
+        </label>
+        <div class="d-flex">
+          <div *ngIf="!isReadonly; else showDepositRangeTimeTpl" [style.width.px]="282" [style.flex]="'0 0 282px'">
+            <input
+              class="text-center form-control py-0 h40 lh-40 w-100"
+              type="text"
+              [placeholder]="'luckRoulette.chooseDepTime' | lang"
+              selectMode="range"
+              rangeSeparator="-"
+              [owlDateTime]="tradePicker"
+              [owlDateTimeTrigger]="tradePicker"
+              [formControl]="formGroup.controls.depositTime"
+            />
+            <owl-date-time [disabled]="isReadonly" pickerType="both" class="fz-20" #tradePicker></owl-date-time>
+          </div>
+
+          <ng-template #showDepositRangeTimeTpl>
+            <ng-container
+              *ngIf="
+                formGroup.getRawValue().depositTime?.[0] || formGroup.getRawValue().depositTime?.[1];
+                else showDepositRangeTimeEmptyTpl
+              "
+            >
+              {{ formGroup.getRawValue().depositTime?.[0] | timeFormat: 'YYYY-MM-DD hh:mm:ss' }} ~
+              {{ formGroup.getRawValue().depositTime?.[1] | timeFormat: 'YYYY-MM-DD hh:mm:ss' }}
+            </ng-container>
+            <ng-template #showDepositRangeTimeEmptyTpl> - </ng-template>
+          </ng-template>
+        </div>
+
+        <form-wrap class="h40 mx-2" *ngIf="!isReadonly; else showDepositTpl">
+          <input
+            class="fz-16 py-0 text-center"
+            autocomplete="off"
+            type="text"
+            [style.width.px]="65"
+            [formControl]="formGroup.controls.depositTimeUSDT"
+            input-float
+          />
+          <span class="pt-1">USDT</span>
+        </form-wrap>
+        <ng-template #showDepositTpl>
+          <span class="color-aaa">
+            <span class="ml-4 mr-2">{{ formGroup.getRawValue().depositTimeUSDT || 0 }}</span>
+            USDT
+          </span>
+        </ng-template>
+      </label>
+
+      <!-- 前一天存款 -->
+      <label class="d-flex flex-ac mr-12 cursor-pointer pb-2">
+        <label class="radio radio-lg radio-success fz-16" [attrDisabled]="isReadonly">
+          <input
+            type="radio"
+            name="depositStatus"
+            [formControl]="formGroup.controls.depositType"
+            [value]="ActivityStep2DepositType.PreviousDay"
+          />
+          <span class="mr-4"></span>{{ 'luckRoulette.previousDayDeposit' | lang }}
+        </label>
+
+        <form-wrap class="h40 mx-2" *ngIf="!isReadonly; else showPreDayDepositTpl">
+          <input
+            class="fz-16 py-0 text-center"
+            autocomplete="off"
+            type="text"
+            [style.width.px]="65"
+            [formControl]="formGroup.controls.lastDepositTotalUsdt"
+            input-float
+          />
+          <span class="pt-1">USDT</span>
+        </form-wrap>
+        <ng-template #showPreDayDepositTpl>
+          <span class="color-aaa">
+            <span class="ml-4 mr-2">{{ formGroup.getRawValue().lastDepositTotalUsdt || 0 }}</span>
+            USDT
+          </span>
+        </ng-template>
+      </label>
+
+      <!-- 当天存款 -->
+      <label class="d-flex flex-ac mr-12 cursor-pointer pb-2">
+        <label class="radio radio-lg radio-success fz-16" [attrDisabled]="isReadonly">
+          <input
+            type="radio"
+            name="depositStatus"
+            [formControl]="formGroup.controls.depositType"
+            [value]="ActivityStep2DepositType.OfTheDay"
+          />
+          <span class="mr-4"></span>{{ 'luckRoulette.ofTheDayDeposit' | lang }}
+        </label>
+
+        <form-wrap class="h40 mx-2" *ngIf="!isReadonly; else showTheDayDepositTpl">
+          <input
+            class="fz-16 py-0 text-center"
+            autocomplete="off"
+            type="text"
+            [style.width.px]="65"
+            [formControl]="formGroup.controls.currentDepositTotalUsdt"
+            input-float
+          />
+          <span class="pt-1">USDT</span>
+        </form-wrap>
+        <ng-template #showTheDayDepositTpl>
+          <span class="color-aaa">
+            <span class="ml-4 mr-2">{{ formGroup.getRawValue().currentDepositTotalUsdt || 0 }}</span>
+            USDT
+          </span>
+        </ng-template>
+      </label>
+    </div>
+  </div>
+
+  <!-- 交易状态 -->
+  <!--  <div class="d-flex align-items-start py-2">-->
+  <!--    <div class="d-flex lh-42" [style.width.px]="120">-->
+  <!--      <label class="checkbox checkbox-lg" [class.disabled]="formGroup.getRawValue().isNewUser || isReadonly">-->
+  <!--        <input-->
+  <!--          type="checkbox"-->
+  <!--          [attrDisabled]="formGroup.getRawValue().isNewUser || isReadonly"-->
+  <!--          [formControl]="formGroup.controls.isTransactionStatus"-->
+  <!--        />-->
+  <!--        <span></span>-->
+  <!--        <i class="color-999 fz-16 fst-normal ml-2">{{ 'luckRoulette.transStu' | lang }}：</i>-->
+  <!--      </label>-->
+  <!--    </div>-->
+
+  <!--    <div class="flex-1">-->
+  <!--      &lt;!&ndash; 厂商 &ndash;&gt;-->
+  <!--      <ng-container>-->
+  <!--        <form-row-->
+  <!--          class="pt-0"-->
+  <!--          label-width="111px"-->
+  <!--          [label]="lang.isLocal ? category.description : category.code"-->
+  <!--          *ngFor="let category of providerList"-->
+  <!--        >-->
+  <!--          <ng-template>-->
+  <!--            <div class="d-flex flex-wrap pt-2 lh-20" selectChildren>-->
+  <!--              <label-->
+  <!--                class="checkbox checkbox-lg mr-12 my-2 fz-16"-->
+  <!--                [class.disabled]="formGroup.getRawValue().isNewUser || isReadonly"-->
+  <!--                *ngIf="!isReadonly"-->
+  <!--              >-->
+  <!--                <input-->
+  <!--                  type="checkbox"-->
+  <!--                  selectGroup-->
+  <!--                  (change)="onProviderChange()"-->
+  <!--                  [attrDisabled]="formGroup.getRawValue().isNewUser || isReadonly"-->
+  <!--                />-->
+  <!--                <span class="mr-4"></span>{{ 'common.all' | lang }}-->
+  <!--              </label>-->
+  <!--              <label-->
+  <!--                class="checkbox checkbox-lg mr-12 my-2 fz-16"-->
+  <!--                [class.disabled]="formGroup.getRawValue().isNewUser || isReadonly"-->
+  <!--                *ngFor="let item of category.providers"-->
+  <!--              >-->
+  <!--                <input-->
+  <!--                  type="checkbox"-->
+  <!--                  [(ngModel)]="item.checked"-->
+  <!--                  [attrDisabled]="formGroup.getRawValue().isNewUser || isReadonly"-->
+  <!--                  (change)="onProviderChange()"-->
+  <!--                />-->
+  <!--                <span class="mr-4"></span>{{ lang.isLocal ? item.providerName : item.providerId }}-->
+  <!--              </label>-->
+  <!--            </div>-->
+  <!--          </ng-template>-->
+  <!--        </form-row>-->
+  <!--      </ng-container>-->
+
+  <!--      &lt;!&ndash; 交易时间 &ndash;&gt;-->
+  <!--      <form-row [label]="'luckRoulette.transTime' | lang" label-width="111px">-->
+  <!--        <ng-template>-->
+  <!--          <div class="d-flex flex-ac flex-wrap">-->
+  <!--            &lt;!&ndash; 全部交易时间 &ndash;&gt;-->
+  <!--            <label-->
+  <!--              class="radio radio-lg radio-success mr-14 fz-16"-->
+  <!--              [class.radio-disabled]="-->
+  <!--                !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--              "-->
+  <!--            >-->
+  <!--              <input-->
+  <!--                type="radio"-->
+  <!--                name="tradeTime"-->
+  <!--                [formControl]="formGroup.controls.transactionTimeType"-->
+  <!--                [value]="ActivityStep2TransactionTime.all"-->
+  <!--                [attrDisabled]="-->
+  <!--                  !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--                "-->
+  <!--              />-->
+  <!--              <span class="mr-4"></span>{{ 'luckRoulette.allTime' | lang }}-->
+  <!--            </label>-->
+
+  <!--            &lt;!&ndash; 交易时间自定义范围 &ndash;&gt;-->
+  <!--            <label-->
+  <!--              class="radio radio-lg radio-success mr-14 fz-16"-->
+  <!--              [class.radio-disabled]="-->
+  <!--                !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--              "-->
+  <!--            >-->
+  <!--              <input-->
+  <!--                type="radio"-->
+  <!--                name="tradeTime"-->
+  <!--                [formControl]="formGroup.controls.transactionTimeType"-->
+  <!--                [value]="ActivityStep2TransactionTime.SpecifiedTime"-->
+  <!--                [attrDisabled]="-->
+  <!--                  !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--                "-->
+  <!--              />-->
+  <!--              <span class="mr-4"></span>-->
+  <!--              <div>-->
+  <!--                <div-->
+  <!--                  *ngIf="-->
+  <!--                    formGroup.getRawValue().isTransactionStatus && !formGroup.getRawValue().isNewUser && !isReadonly;-->
+  <!--                    else showTransactionTimeTpl-->
+  <!--                  "-->
+  <!--                >-->
+  <!--                  <input-->
+  <!--                    class="text-center form-control w-100"-->
+  <!--                    type="text"-->
+  <!--                    [placeholder]="'luckRoulette.selTranTime' | lang"-->
+  <!--                    selectMode="date-range"-->
+  <!--                    formatLabel="yyyy-MM-dd"-->
+  <!--                    rangeSeparator="-"-->
+  <!--                    [owlDateTime]="tranTimePicker"-->
+  <!--                    [owlDateTimeTrigger]="tranTimePicker"-->
+  <!--                    [formControl]="formGroup.controls.transactionTime"-->
+  <!--                  />-->
+  <!--                  <owl-date-time-->
+  <!--                    [disabled]="isReadonly"-->
+  <!--                    pickerType="calendar"-->
+  <!--                    class="fz-20"-->
+  <!--                    #tranTimePicker-->
+  <!--                  ></owl-date-time>-->
+  <!--                </div>-->
+
+  <!--                <ng-template #showTransactionTimeTpl>-->
+  <!--                  <ng-container-->
+  <!--                    *ngIf="formGroup.getRawValue().transactionTime?.[0] || formGroup.getRawValue().transactionTime?.[1]; else showTransactionTimeEmptyTpl"-->
+  <!--                  >-->
+  <!--                    {{ formGroup.getRawValue().transactionTime?.[0] | timeFormat: 'YYYY-MM-DD' }} ~-->
+  <!--                    {{ formGroup.getRawValue().transactionTime?.[1] | timeFormat: 'YYYY-MM-DD' }}-->
+  <!--                  </ng-container>-->
+  <!--                  <ng-template #showTransactionTimeEmptyTpl>-</ng-template>-->
+  <!--                </ng-template>-->
+  <!--              </div>-->
+  <!--            </label>-->
+
+  <!--            &lt;!&ndash; 距离上次交易 &ndash;&gt;-->
+  <!--            <label class="mr-12 d-flex flex-ac cursor-pointer">-->
+  <!--              <label-->
+  <!--                class="radio radio-lg radio-success fz-16"-->
+  <!--                [class.radio-disabled]="-->
+  <!--                  !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--                "-->
+  <!--              >-->
+  <!--                <input-->
+  <!--                  type="radio"-->
+  <!--                  name="tradeTime"-->
+  <!--                  [formControl]="formGroup.controls.transactionTimeType"-->
+  <!--                  [value]="ActivityStep2TransactionTime.BetLast"-->
+  <!--                  [attrDisabled]="-->
+  <!--                    !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--                  "-->
+  <!--                />-->
+  <!--                <span class="mr-4"></span>{{ 'luckRoulette.lastBet' | lang }}-->
+  <!--              </label>-->
+  <!--              <input-->
+  <!--                class="form-control fz-16 h40 py-2 mx-2 text-center"-->
+  <!--                [style.width.px]="60"-->
+  <!--                type="text"-->
+  <!--                input-number-->
+  <!--                [formControl]="formGroup.controls.transactionLatestDay"-->
+  <!--                *ngIf="-->
+  <!--                  formGroup.getRawValue().isTransactionStatus && !formGroup.getRawValue().isNewUser && !isReadonly;-->
+  <!--                  else showDayTpl-->
+  <!--                "-->
+  <!--              />-->
+  <!--              <ng-template #showDayTpl>{{ formGroup.getRawValue().transactionLatestDay || 0 }}</ng-template>-->
+  <!--              {{ 'luckRoulette.days' | lang }}-->
+  <!--            </label>-->
+
+  <!--            &lt;!&ndash; 本周期 &ndash;&gt;-->
+  <!--            <label-->
+  <!--              class="radio radio-lg radio-success mr-14 fz-16"-->
+  <!--              [class.radio-disabled]="-->
+  <!--                !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--              "-->
+  <!--            >-->
+  <!--              <input-->
+  <!--                type="radio"-->
+  <!--                name="tradeTime"-->
+  <!--                [formControl]="formGroup.controls.transactionTimeType"-->
+  <!--                [value]="ActivityStep2TransactionTime.ThisPeriod"-->
+  <!--                [attrDisabled]="-->
+  <!--                  !formGroup.getRawValue().isTransactionStatus || formGroup.getRawValue().isNewUser || isReadonly-->
+  <!--                "-->
+  <!--              />-->
+  <!--              <span class="mr-4"></span>{{ 'luckRoulette.period' | lang }}-->
+  <!--            </label>-->
+  <!--          </div>-->
+  <!--        </ng-template>-->
+  <!--      </form-row>-->
+
+  <!--      &lt;!&ndash; 交易状态 &ndash;&gt;-->
+  <!--      &lt;!&ndash; formGroup.getRawValue().transactionTimeType === ActivityStep2TransactionTime.SpecifiedTime || &ndash;&gt;-->
+  <!--      <form-row [label]="'luckRoulette.transStu' | lang" label-width="111px">-->
+  <!--        <ng-template>-->
+  <!--          <ng-container-->
+  <!--            *ngTemplateOutlet="-->
+  <!--              transStatusTpl;-->
+  <!--              context: {-->
+  <!--                $implicit: {},-->
+  <!--                disabled:-->
+  <!--                  formGroup.getRawValue().transactionTimeType === ActivityStep2TransactionTime.BetLast ||-->
+  <!--                  !formGroup.getRawValue().isTransactionStatus ||-->
+  <!--                  formGroup.getRawValue().isNewUser ||-->
+  <!--                  isReadonly-->
+  <!--              }-->
+  <!--            "-->
+  <!--          ></ng-container>-->
+  <!--        </ng-template>-->
+  <!--      </form-row>-->
+  <!--      <ng-template #transStatusTpl let-disabled="disabled">-->
+  <!--        <div class="d-flex flex-ac flex-wrap">-->
+  <!--          <label-->
+  <!--            class="radio radio-lg radio-success mr-20 fz-16 pb-4"-->
+  <!--            [class.radio-disabled]="disabled ? 'disabled' : null"-->
+  <!--          >-->
+  <!--            <input-->
+  <!--              type="radio"-->
+  <!--              name="transactionStatusRadio"-->
+  <!--              [formControl]="formGroup.controls.transactionType"-->
+  <!--              [value]="ActivityStep2TransactionConditionEnum.NotBet"-->
+  <!--              [attrDisabled]="disabled"-->
+  <!--            />-->
+  <!--            <span class="mr-4"></span>{{ 'luckRoulette.untrans' | lang }}-->
+  <!--          </label>-->
+
+  <!--          &lt;!&ndash; 交易笔数 &ndash;&gt;-->
+  <!--          <label-->
+  <!--            class="radio radio-lg radio-success mr-20 fz-16 pb-4 flex-wrap"-->
+  <!--            [class.radio-disabled]="disabled ? 'disabled' : null"-->
+  <!--          >-->
+  <!--            <input-->
+  <!--              type="radio"-->
+  <!--              name="transactionStatusRadio"-->
+  <!--              [formControl]="formGroup.controls.transactionType"-->
+  <!--              [value]="ActivityStep2TransactionConditionEnum.BetCount"-->
+  <!--              [attrDisabled]="disabled"-->
+  <!--            />-->
+  <!--            <span class="mr-4"></span>{{ 'luckRoulette.transTimes' | lang }}-->
+  <!--            <form-wrap [style.width.px]="65" class="mx-2" *ngIf="!disabled; else showTransactionCountTpl">-->
+  <!--              <input-->
+  <!--                class="form-control fz-16 px-0"-->
+  <!--                autocomplete="off"-->
+  <!--                type="text"-->
+  <!--                [formControl]="formGroup.controls.transactionCount"-->
+  <!--                input-number-->
+  <!--              />-->
+  <!--            </form-wrap>-->
+  <!--            <ng-template #showTransactionCountTpl>-->
+  <!--              <div class="ml-2 mr-6">{{ formGroup.getRawValue().transactionCount || 0 }}</div>-->
+  <!--            </ng-template>-->
+  <!--            {{ 'luckRoulette.lowerTransSingle' | lang }}-->
+  <!--            <form-wrap-->
+  <!--              [style.width.px]="120"-->
+  <!--              style="width: 65px"-->
+  <!--              class="mx-2"-->
+  <!--              *ngIf="!disabled; else showTransactionMinEveryTimeTpl"-->
+  <!--            >-->
+  <!--              <input-->
+  <!--                class="form-control fz-16 px-0"-->
+  <!--                autocomplete="off"-->
+  <!--                type="text"-->
+  <!--                [formControl]="formGroup.controls.transactionMinEveryTime"-->
+  <!--                input-float-->
+  <!--              />-->
+  <!--              <span suffix class="color-aaa pt-1">USDT</span>-->
+  <!--            </form-wrap>-->
+  <!--            <ng-template #showTransactionMinEveryTimeTpl>-->
+  <!--              <div class="ml-2 mr-6">{{ formGroup.getRawValue().transactionMinEveryTime || 0 }} USDT</div>-->
+  <!--            </ng-template>-->
+
+  <!--            &lt;!&ndash; 累计交易 &ndash;&gt;-->
+  <!--            <div><span class="mr-4"></span>{{ 'luckRoulette.totalTrans' | lang }}</div>-->
+  <!--            <form-wrap [style.width.px]="120" class="ml-2" *ngIf="!disabled; else showTransactionTotalTpl">-->
+  <!--              <input-->
+  <!--                class="form-control fz-16 px-0"-->
+  <!--                autocomplete="off"-->
+  <!--                type="text"-->
+  <!--                [formControl]="formGroup.controls.transactionTotal"-->
+  <!--                input-float-->
+  <!--              />-->
+  <!--              <span suffix class="color-aaa pt-1">USDT</span>-->
+  <!--            </form-wrap>-->
+  <!--            <ng-template #showTransactionTotalTpl>-->
+  <!--              <div class="ml-2">{{ formGroup.getRawValue().transactionTotal || 0 }} USDT</div>-->
+  <!--            </ng-template>-->
+  <!--          </label>-->
+
+  <!--          &lt;!&ndash; 累计交易 &ndash;&gt;-->
+  <!--          &lt;!&ndash;            <label class="radio radio-lg radio-success mr-20 fz-16 pb-4">&ndash;&gt;-->
+  <!--          &lt;!&ndash;              <input&ndash;&gt;-->
+  <!--          &lt;!&ndash;                type="radio"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                name="transactionStatusRadio"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                [formControl]="formGroup.controls.transactionType"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                [value]="ActivityStep2TransactionConditionEnum.TotalAmountUSDT"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                [attrDisabled]="isReadonly"&ndash;&gt;-->
+  <!--          &lt;!&ndash;              />&ndash;&gt;-->
+
+  <!--          &lt;!&ndash;              <span class="mr-4"></span>{{ 'luckRoulette.totalTrans' | lang }}&ndash;&gt;-->
+  <!--          &lt;!&ndash;              <form-wrap [style.width.px]="120" class="ml-2" *ngIf="!isReadonly; else showTransactionTotalTpl">&ndash;&gt;-->
+  <!--          &lt;!&ndash;                <input&ndash;&gt;-->
+  <!--          &lt;!&ndash;                  class="form-control fz-16 px-0"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                  autocomplete="off"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                  type="text"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                  [formControl]="formGroup.controls.transactionTotal"&ndash;&gt;-->
+  <!--          &lt;!&ndash;                  input-float&ndash;&gt;-->
+  <!--          &lt;!&ndash;                />&ndash;&gt;-->
+  <!--          &lt;!&ndash;                <span suffix class="color-aaa pt-1">USDT</span>&ndash;&gt;-->
+  <!--          &lt;!&ndash;              </form-wrap>&ndash;&gt;-->
+  <!--          &lt;!&ndash;              <ng-template #showTransactionTotalTpl>{{ formGroup.getRawValue().transactionTotal || 0 }} USDT</ng-template>&ndash;&gt;-->
+  <!--          &lt;!&ndash;            </label>&ndash;&gt;-->
+  <!--        </div>-->
+  <!--      </ng-template>-->
+  <!--    </div>-->
+  <!--  </div>-->
+</div>
+
+<!--  按钮组 -->
+<!--<div class="modal-footer btn-wrap" *ngIf="!isReadonly; else showTpl">-->
+<!--  <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'luckRoulette.lastStep' | lang }}</button>-->
+<!--  <button-->
+<!--    type="button"-->
+<!--    class="c-btn btn btn-primary"-->
+<!--    (click)="onSubmit()"-->
+<!--    [class.disabled]="appService.loading$ | async"-->
+<!--  >-->
+<!--    {{ 'common.save' | lang }}-->
+<!--  </button>-->
+<!--  <button-->
+<!--    type="button"-->
+<!--    class="c-btn btn btn-default"-->
+<!--    (click)="jump('activity')"-->
+<!--    [class.disabled]="appService.loading$ | async"-->
+<!--  >-->
+<!--    {{ 'luckRoulette.next' | lang }}-->
+<!--  </button>-->
+<!--</div>-->
+<div class="modal-footer btn-wrap" *ngIf="!isReadonly; else showTpl">
+  <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'luckRoulette.lastStep' | lang }}</button>
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ 'luckRoulette.next' | lang }}
+  </button>
+</div>
+
+<ng-template #showTpl>
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="jump('base')">
+      {{ 'luckRoulette.lastStep' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="jump('activity')">
+      {{ 'luckRoulette.next' | lang }}
+    </button>
+  </div>
+</ng-template>

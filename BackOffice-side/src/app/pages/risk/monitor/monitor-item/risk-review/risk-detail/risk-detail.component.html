@@ -1,0 +1,140 @@
+<modal-title [title]="'risk.wealthTitle' | lang" (close)="modal.close()"></modal-title>
+<div class="px-8 pt-8 main">
+  <!-- 基础模版 -->
+  <div class="box px-8">
+    <ng-container *ngIf="true">
+      <!-- 第一行 -->
+      <div class="box-items py-4 d-flex">
+        <!-- 年收入 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'risk.annualIncome' | lang }}：</div>
+          <div class="fz-16">{{ detail.annualIncome | currencyValue: 'USDT' }}$</div>
+        </div>
+        <div class="item px-4 flex-1">
+          <!-- 雇佣状态 -->
+          <div class="fz-14 color-aaa">{{ 'risk.employmentStatus' | lang }}：</div>
+          <div class="fz-16">{{ detail.employStatus }}</div>
+        </div>
+      </div>
+      <!-- 第二行 -->
+      <div class="box-items py-4 d-flex">
+        <div class="item pr-4 flex-1">
+          <!-- 雇主/公司名词 -->
+          <div class="fz-14 color-aaa">{{ 'risk.companyNoun' | lang }}：</div>
+          <div class="fz-16">{{ detail.companyName }}</div>
+        </div>
+        <div class="item px-4 flex-1">
+          <!-- 雇主/公司地址 -->
+          <div class="fz-14 color-aaa">{{ 'risk.companyAddress' | lang }}：</div>
+          <div class="fz-16">{{ detail.companyAddress }}</div>
+        </div>
+      </div>
+      <!-- 第三行 -->
+      <div class="box-items py-4 d-flex">
+        <div class="item pr-4 flex-1">
+          <!-- 估计总资产净值： -->
+          <div class="fz-14 color-aaa">{{ 'risk.netWorth' | lang }}：</div>
+          <div class="fz-16">{{ detail.netAsset | currencyValue: 'USDT' }}$</div>
+        </div>
+        <!-- 总资产净值来源： -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'risk.sourceNetWorth' | lang }}：</div>
+          <div class="fz-16">{{ detail.assetSource }}</div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- 工资证明 -->
+  <ng-container *ngIf="false">
+    <div class="py-4">
+      <div class="fz-14 color-aaa mb-4">{{ 'risk.wagePro' | lang }}：</div>
+      <div class="horizontal">
+        <div class="img-box mr-10" *ngFor="let item of data.form?.salaryImages">
+          <img nz-image [src]="item" />
+        </div>
+      </div>
+    </div>
+    <!-- 个体经营证明 -->
+    <div class="py-4">
+      <div class="fz-14 color-aaa mb-4">{{ 'risk.selfEmployment' | lang }}：</div>
+      <div class="horizontal">
+        <div class="img-box mr-10" *ngFor="let item of data.form?.soleTraderImages">
+          <img nz-image [src]="item" />
+        </div>
+      </div>
+    </div>
+    <!-- 交易证明 -->
+    <div class="py-4">
+      <div class="fz-14 color-aaa mb-4">{{ 'risk.proTransaction' | lang }}：</div>
+      <div class="horizontal">
+        <div class="img-box" *ngFor="let item of data.form?.businessImages">
+          <img nz-image [src]="item" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <!-- 图片展示 -->
+  <ng-container>
+    <div class="py-4" *ngFor="let item of imageList">
+      <div class="fz-14 color-aaa mb-4">{{ item.name | lang }}：</div>
+      <div class="horizontal">
+        <div class="img-box mr-10" *ngFor="let value of data.form?.[item.key]">
+          <img nz-image [src]="value" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <!-- 通用：审核 -->
+  <ng-container *ngIf="data?.status === 'Pending'">
+    <div class="box px-8 mt-5">
+      <form-row [label]="'risk.check' | lang" label-width="140">
+        <ng-template>
+          <div class="d-flex flex-wrap">
+            <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of auditList">
+              <input type="radio" name="audit" [value]="item.value" [(ngModel)]="audit" />
+              <span class="mr-4"></span>{{ item.lang | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+      <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="audit === 'Rejected'" required>
+        <ng-template>
+          <input class="form-control w-100" type="text" [(ngModel)]="remark" />
+        </ng-template>
+      </form-row>
+    </div>
+  </ng-container>
+  <!-- 审核状态 -->
+  <div class="d-flex py-4 px-8 box" *ngIf="!(data?.status === 'Pending')">
+    <div class="flex-1">
+      <!-- 完成时间： -->
+      <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+      <div class="fz-16">{{ data.auditTime | timeFormat }}</div>
+    </div>
+    <div class="flex-1 border-left pl-4">
+      <!-- 审核状态： -->
+      <div class="color-999">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+      <div class="fz-16 text-success space" *ngIf="data?.status === 'Finish'">
+        {{ 'member.kyc.authenticationSucceeded' | lang }}
+      </div>
+      <div class="fz-16 text-danger space" *ngIf="data?.status === 'Rejected'">
+        {{ 'member.kyc.authenticationFailed' | lang }}
+      </div>
+    </div>
+    <div class="flex-1 border-left pl-4" *ngIf="data?.status === 'Rejected'">
+      <!-- 拒绝原因 -->
+      <div class="color-999">{{ 'member.kyc.model.denialReason' | lang }}：</div>
+      <div class="d-flex">{{ data.remark }}</div>
+    </div>
+    <div class="flex-1 border-left pl-4">
+      <!-- 审核人： -->
+      <div class="color-999">{{ 'member.kyc.model.reviewer' | lang }}：</div>
+      <div class="fz-16">{{ data.auditUserName }}</div>
+    </div>
+  </div>
+</div>
+<!-- 按钮 -->
+<div class="modal-footer btn-wrap mt-10">
+  <button class="c-btn c-btn-primary" (click)="review()">{{ 'common.confirm' | lang }}</button>
+</div>

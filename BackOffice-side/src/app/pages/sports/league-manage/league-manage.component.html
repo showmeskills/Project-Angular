@@ -1,0 +1,196 @@
+<ng-template subHeader>
+  <div class="ml-4 d-flex flex-ac status">
+    <div class="item success" [class.active]="1 === curStatusValue" (click)="seletedStatus(1)">已匹配</div>
+    <div class="item fail" [class.active]="2 === curStatusValue" (click)="seletedStatus(2)">未匹配</div>
+  </div>
+</ng-template>
+
+<sports-category-menu (sportsChange)="sportsMenuChange($event)"></sports-category-menu>
+
+<div class="d-flex league-content">
+  <div class="card league-content-left">
+    <div class="d-flex flex-ac justify-content-between left-head">
+      <div class="fz-18 ml-8">国家/地区</div>
+      <div class="d-flex flex-ac head-right">
+        <span class="fz-16 color-aaa mr-4">排序</span>
+        <div
+          class="mr-4 sort"
+          [class.active]="curSort === item.value"
+          (click)="selectSort(item.value)"
+          *ngFor="let item of sortList"
+        >
+          {{ item.name }}
+        </div>
+      </div>
+    </div>
+    <form-wrap class="px-4">
+      <svg-icon
+        [src]="'./assets/images/svg/admin-search.svg'"
+        class="svg-icon svg-icon-2x5 svg-icon-primary"
+      ></svg-icon>
+      <input
+        class="form-control"
+        autocomplete="off"
+        type="text"
+        [(ngModel)]="areaSearch"
+        placeholder="请输入国家/地区或ID查询"
+      />
+    </form-wrap>
+    <div class="mt-4 left-content scroll-y">
+      <div class="d-flex flex-ac justify-content-between pl-3 pr-10 item" *ngFor="let item of areaList">
+        <label class="checkbox checkbox-lg color-222 fz-16">
+          <input type="checkbox" [checked]="false" />
+          <span class="mr-4"></span>
+          <svg-icon [src]="'./assets/images/svg/sports/dubai.svg'" class="svg-icon svg-icon-3x mr-4"></svg-icon>
+          Arab Emirates 阿拉伯联合酋长国
+        </label>
+        5
+      </div>
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!areaList.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </div>
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-5 pb-7 pl-3 table-footer" *ngIf="areaList.length > 0 && !isLoading">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="getAreaList()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="getAreaList()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+  <div class="card league-content-right">
+    <div class="d-flex flex-ac justify-content-between">
+      <div class="fz-20">联赛列表</div>
+      <form-wrap [style.width.px]="280">
+        <svg-icon
+          [src]="'./assets/images/svg/admin-search.svg'"
+          class="svg-icon svg-icon-2x5 svg-icon-primary"
+        ></svg-icon>
+        <input
+          class="form-control"
+          autocomplete="off"
+          type="text"
+          [(ngModel)]="leagueSearch"
+          placeholder="请输入联赛名称或ID查询"
+        />
+      </form-wrap>
+    </div>
+    <div class="right-table">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th><span class="cell">球种</span></th>
+            <th><span class="cell">联赛ID</span></th>
+            <th><span class="cell">Logo</span></th>
+            <th [style.width.px]="210"><span class="cell">联赛名</span></th>
+            <th [style.width.px]="365"><span class="cell">英文名</span></th>
+            <th><span class="cell">队伍数量</span></th>
+          </tr>
+        </thead>
+        <tbody class="scroll-y" *ngIf="curStatusValue === 1">
+          <tr *ngFor="let item of leagueList">
+            <td>
+              <span class="cell">
+                <svg-icon
+                  class="svg-icon svg-icon-2x5"
+                  [src]="'./assets/images/svg/sports/icon-category-0.svg'"
+                ></svg-icon>
+              </span>
+            </td>
+            <td>
+              <span class="cell"> GB00223344 </span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon class="svg-icon svg-icon-2x" [src]="'./assets/images/svg/sports/en-logo.svg'"></svg-icon>
+              </span>
+            </td>
+            <td [style.width.px]="230">
+              <span class="cell"> 英格兰足球超级联赛 </span>
+            </td>
+            <td [style.width.px]="346">
+              <span class="cell"> Southern League Premier Division </span>
+            </td>
+            <td>
+              <span class="cell"> 36 </span>
+            </td>
+          </tr>
+        </tbody>
+        <tbody class="scroll-y" style="color: #f64e60" *ngIf="curStatusValue === 2">
+          <tr *ngFor="let item of leagueList" (click)="onOpenMatchPopup()">
+            <td>
+              <span class="cell">
+                <svg-icon
+                  class="svg-icon svg-icon-2x5"
+                  [src]="'./assets/images/svg/sports/icon-category-0.svg'"
+                ></svg-icon>
+              </span>
+            </td>
+            <td>
+              <span class="cell"> GB00223344 </span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon class="svg-icon svg-icon-2x" [src]="'./assets/images/svg/sports/en-logo.svg'"></svg-icon>
+              </span>
+            </td>
+            <td [style.width.px]="230">
+              <span class="cell"> 英格兰足球超级联赛 </span>
+            </td>
+            <td [style.width.px]="346">
+              <span class="cell"> Southern League Premier Division </span>
+            </td>
+            <td>
+              <span class="cell"> 36 </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-5 table-footer" *ngIf="leagueList.length > 0 && !isLoading">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="leaguePaginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="getLeagueList()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="leaguePaginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="leaguePaginator"
+          (paginate)="getLeagueList()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

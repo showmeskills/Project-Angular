@@ -1,0 +1,177 @@
+:host {
+  .box {
+    width: 100%;
+    border: 1px solid #eff2f5;
+    border-radius: 4px;
+    .box-items {
+      border-bottom: 1px solid #eff2f5;
+      .item {
+        border-right: 1px solid #eff2f5;
+        &:last-child {
+          border-right: none;
+        }
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+  
+  .modal-footer {
+    border-top: none;
+  }
+
+  .img-box {
+    // width: 100%;
+    flex: 0 0 340px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed rgb(0, 158, 247);
+    background: rgb(241, 250, 255);
+    border-radius: 4px;
+    padding: 8px;
+    img {
+      cursor: pointer;
+      max-width: 100%;
+      max-height: 100%;
+      vertical-align: middle;
+    }
+  }
+}
+
+.tab-wrapper {
+  width: 100%;
+  height: 60px;
+
+  //matTab组件样式覆盖
+  &::ng-deep {
+    .mat-mdc-tab-link,
+    .mat-mdc-tab-links {
+      height: 100%;
+    }
+
+    .mat-mdc-tab-link {
+      opacity: 1;
+      height: auto;
+      padding: 0;
+
+      .mdc-tab__text-label {
+        position: relative;
+        flex-direction: column;
+        min-width: 58px;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        overflow: visible;
+        cursor: pointer;
+      }
+    }
+
+    .mat-ink-bar {
+      display: flex;
+      background-color: transparent;
+
+      &::before {
+        content: '';
+        width: 4px;
+        height: 2px;
+        border-radius: 5px;
+        position: relative;
+        flex: 1;
+        margin: 0 4px;
+        background-color: #009ef7;
+      }
+    }
+  }
+
+  .item {
+    position: relative;
+    flex-direction: column;
+    min-width: 58px;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-right: 80px;
+    overflow: visible;
+    cursor: pointer;
+
+    //选中
+    &.active {
+      color: #009ef7 !important;
+      .tab-name {
+        color: #009ef7 !important;
+      }
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: #009ef7;
+        .tab-name {
+          color: #009ef7 !important;
+        }
+      }
+    }
+
+    &:first-child {
+      margin-left: 5px;
+      transition: none;
+    }
+
+    &:last-child {
+      margin-right: 5px;
+    }
+
+    .tab-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #969bad;
+    }
+  }
+}
+
+.horizontal {
+  display: flex;
+  // height: 172px;
+  align-items: center;
+  flex: 1;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-radius: 4px;
+  border: dashed 1px #e4e6ef;
+  padding: 10px;
+  height: 100%;
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1em;
+    background-color: rgba(50, 50, 50, 0.3);
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 1em;
+    background-color: rgba(50, 50, 50, 0.1);
+  }
+}
+
+.video-box-div {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.video-body {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.item-img-detail {
+  height: 550px;
+  width: 700px;
+  border-radius: 14px;
+  background-color: #f5f8fa;
+}

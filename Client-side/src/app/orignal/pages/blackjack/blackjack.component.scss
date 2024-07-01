@@ -1,0 +1,514 @@
+:host {
+  width: 100%;
+  background-color: var(--orignal-bg);
+
+  @media (max-width: 767px) {
+    height: 100%;
+  }
+}
+
+// div {
+//   display: flex;
+// }
+
+.wrapper {
+  width: 878px;
+  margin: 10px auto 0px;
+  flex-direction: column;
+  position: relative;
+
+  @media (max-width: 937px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+  }
+
+  &-top {
+    padding: 10px 16px;
+
+    @media (max-width: 767px) {
+      padding-bottom: 0;
+    }
+  }
+  .blackjack_main {
+    background-color: var(--orignal-mian);
+    margin: 10px 16px 30px;
+    border-radius: 8px;
+    padding: 20px;
+
+    .stvmnp2 {
+      position: relative;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/orignal/images/blackjack/bg.png);
+      background-size: cover;
+      height: 542px;
+      width: 100%;
+      border-radius: 5px;
+      overflow: hidden;
+      @media (max-width: 767px) {
+        background-image: url(src/assets/orignal/images/blackjack/bg1.png);
+      }
+      @media (max-width: 436px) {
+        height: 380px;
+      }
+      .card_container {
+        position: relative;
+        width: 100%;
+        min-height: 540px;
+        display: grid;
+        flex-grow: 1;
+        grid-template-rows: repeat(2, max-content);
+        align-content: space-between;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: url(src/assets/orignal/images/blackjack/centerPic.png);
+        // &:host-context(.dark) & {
+        //   background-image: url(src/assets/orignal/images/blackjack/centerPic_moon.svg);
+        // }
+        @media (max-width: 436px) {
+          min-height: 380px;
+        }
+        .player {
+          display: flex;
+          width: 100%;
+          justify-content: space-around;
+          flex-direction: row-reverse;
+        }
+      }
+      .split-content {
+        justify-content: space-around !important;
+        margin-bottom: 30px;
+      }
+      .cards-group-wrap {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        // min-height: 240px;
+        padding-top: 30px;
+        flex-direction: row-reverse;
+        @media (max-width: 436px) {
+          padding-top: 45px;
+        }
+        .cards-group {
+          transition: width 0.3s;
+          position: relative;
+          min-width: 100px;
+          min-height: 140px;
+          @media (max-width: 767px) {
+            min-width: 90px;
+            min-height: 120px;
+          }
+          @media (max-width: 436px) {
+            min-width: 59px;
+            min-height: 82px;
+          }
+
+          .card-wrap {
+            width: 100px;
+            height: 140px;
+            // position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 2;
+            border: solid 3px transparent;
+            border-radius: 12px;
+            transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0s;
+            @media (max-width: 767px) {
+              width: 90px;
+              height: 120px;
+            }
+            @media (max-width: 436px) {
+              width: 59px;
+              height: 82px;
+            }
+            // &:nth-of-type(2) {
+            //   margin-left: 35px;
+            //   margin-top: -120px;
+            //   @media (max-width: 767px) {
+            //     margin-left: 2em;
+            //     margin-top: -8em;
+            //   }
+            //   @media (max-width: 436px) {
+            //     margin-left: 1.5em;
+            //     margin-top: -5.5em;
+            //   }
+            // }
+            // &:nth-of-type(3) {
+            //   margin-left: 70px;
+            //   margin-top: -120px;
+            //   @media (max-width: 767px) {
+            //     margin-left: 4em;
+            //     margin-top: -8em;
+            //   }
+            //   @media (max-width: 436px) {
+            //     margin-left: 3em;
+            //     margin-top: -5.5em;
+            //   }
+            // }
+            // &:nth-of-type(4) {
+            //   margin-left: 105px;
+            //   margin-top: -120px;
+            //   @media (max-width: 767px) {
+            //     margin-left: 6em;
+            //     margin-top: -8em;
+            //   }
+            //   @media (max-width: 436px) {
+            //     margin-left: 4.5em;
+            //     margin-top: -5.5em;
+            //   }
+            // }
+            // &:nth-of-type(5) {
+            //   margin-left: 140px;
+            //   margin-top: -120px;
+            //   @media (max-width: 767px) {
+            //     margin-left: 8em;
+            //     margin-top: -8em;
+            //   }
+            //   @media (max-width: 436px) {
+            //     margin-left: 6em;
+            //     margin-top: -5.5em;
+            //   }
+            // }
+            &.win {
+              .card-front {
+                border: solid 4px #15db41;
+              }
+            }
+            &.loss {
+              .card-front {
+                border: solid 4px #ee3d3d;
+              }
+            }
+            &.tip {
+              .card-front {
+                border: solid 4px #fd8b09;
+              }
+            }
+            &.blue {
+              .card-front {
+                border: solid 4px #145dd9;
+              }
+            }
+            .c1t29bx7 {
+              width: 100%;
+              height: 100%;
+              position: relative;
+              -webkit-transform: rotateY(-180deg);
+              -ms-transform: rotateY(-180deg);
+              transform: rotateY(-180deg);
+              -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
+              -webkit-transition: transform 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
+              transition: transform 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
+              -webkit-transform-style: preserve-3d;
+              -ms-transform-style: preserve-3d;
+              transform-style: preserve-3d;
+              &.active {
+                transform: rotateY(0);
+              }
+            }
+
+            .card-back {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background-image: url(src/assets/orignal/images/blackjack/poker_bg.png);
+              background-repeat: no-repeat;
+              background-size: 100% 100%;
+              border-radius: 12px;
+              -webkit-transform: rotateY(180deg);
+              -ms-transform: rotateY(180deg);
+              transform: rotateY(180deg);
+              box-shadow: 0 1px 3px #0003;
+              -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+              z-index: 1;
+            }
+            .card-front {
+              // position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              border-radius: 12px;
+              background-image: linear-gradient(38deg, #e6e7f0 8%, #fff 93%);
+              box-shadow: 0 0 5px #0000004d;
+              position: relative;
+              -webkit-transform: rotateY(0deg);
+              -ms-transform: rotateY(0deg);
+              transform: rotateY(0);
+              -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+              overflow: hidden;
+              z-index: 2;
+              .point {
+                position: absolute;
+                font-size: 33px;
+                left: 11%;
+                top: 3%;
+                width: 26%;
+                @media (max-width: 767px) {
+                  font-size: 20px;
+                }
+                &.card-back_hearts {
+                  color: #f04051;
+                }
+
+                &.card-back_diamonds {
+                  color: #f04051;
+                }
+
+                &.card-back_clubs {
+                  color: #1a2c38;
+                }
+
+                &.card-back_spades {
+                  color: #1a2c38;
+                }
+              }
+              .ssuit {
+                position: absolute;
+                font-size: 0;
+                left: 10%;
+                top: 30%;
+                width: 23%;
+              }
+              .suit {
+                width: 52%;
+                right: 5%;
+                bottom: 5%;
+                position: absolute;
+              }
+            }
+          }
+          .placehold {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 140px;
+            opacity: 0;
+            transition: all 0.5s;
+            @media (max-width: 767px) {
+              width: 113px;
+            }
+            &.is-visible {
+              opacity: 1;
+            }
+            > div {
+              position: absolute;
+              border-radius: 16px;
+              width: 100px;
+              height: 140px;
+              // background: var(--17qrx6p) no-repeat center;
+              // background-size: 100% 100%;
+              border: 1px dashed var(--orignal-border-color1);
+              background: var(--orignal-mian);
+              @media (max-width: 767px) {
+                width: 59px;
+                height: 82px;
+              }
+            }
+            .one {
+              left: 0;
+              top: 0;
+            }
+            .two {
+              left: 30%;
+              top: 15%;
+              @media (max-width: 767px) {
+                left: 25%;
+                top: 10%;
+              }
+            }
+            .three {
+              left: 60%;
+              top: 30%;
+              @media (max-width: 767px) {
+                left: 50%;
+                top: 20%;
+              }
+            }
+          }
+        }
+        .value {
+          &.win {
+            background-color: #15db41;
+          }
+          &.loss {
+            background-color: #ee3d3d;
+          }
+          &.tip {
+            background-color: #fd8b09;
+          }
+          &.blue {
+            background-color: #145dd9;
+          }
+        }
+        .capa {
+          font-size: 16px;
+          text-align: center;
+          line-height: 27px;
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          width: 159px;
+          position: absolute;
+          left: 110%;
+          top: 30%;
+          @media (max-width: 767px) {
+            width: 130px;
+            top: -52px;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+          &.win {
+            background-image: url(src/assets/orignal/images/blackjack/win-capa.png);
+            color: #15db41;
+          }
+          &.loss {
+            background-image: url(src/assets/orignal/images/blackjack/loss-capa.png);
+            color: #ee3d3d;
+          }
+          &.tip {
+            background-image: url(src/assets/orignal/images/blackjack/tea-capa.png);
+            color: #fd8b09;
+          }
+          &.topcape {
+            top: -52px;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+      }
+    }
+    .dealer {
+      position: absolute;
+      right: 7%;
+      top: 0;
+      @media (max-width: 767px) {
+        img {
+          width: 90px;
+        }
+      }
+      @media (max-width: 436px) {
+        img {
+          width: 59px;
+        }
+      }
+    }
+    .value {
+      background: #55657e;
+      border-radius: 16px;
+      position: absolute;
+      right: 0;
+      top: -20px;
+      text-align: center;
+      padding: 3px 16px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .arrow {
+      font-size: 40px;
+      top: 23%;
+      color: #145dd9;
+      position: absolute;
+      @media (max-width: 436px) {
+        font-size: 30px;
+        top: 18%;
+      }
+    }
+    .arrow-left {
+      left: -15%;
+      @media (max-width: 436px) {
+        left: -20%;
+      }
+    }
+    .arrow-right {
+      right: -15%;
+      @media (max-width: 436px) {
+        right: -20%;
+      }
+    }
+  }
+  &.loading {
+    ::ng-deep orignal-bet {
+      .wrapper .top .bet-button {
+        opacity: 0.5;
+      }
+    }
+  }
+}
+.blackjack_top {
+  background: var(--orignal-bg);
+  height: 542px;
+  width: 100%;
+  border-radius: 5px;
+  position: relative;
+  .blackjack_logo {
+    // background: url(src/assets/orignal/images/blackjack/blackjack_logo_sun.svg);
+  }
+}
+.blackjack_btns {
+  margin-top: 20px;
+
+  .check_btns,
+  .insurance_btn {
+    display: flex;
+    justify-content: space-between;
+    @media (max-width: 767px) {
+      flex-wrap: wrap;
+    }
+    button {
+      width: 23.5%;
+      background-color: var(--orignal-btn);
+      border-radius: 4px;
+      text-align: center;
+      font-size: 18px;
+      border-color: transparent;
+      opacity: 0.5;
+      cursor: pointer;
+      user-select: none;
+      &.active {
+        opacity: 1;
+      }
+      @media (max-width: 767px) {
+        width: 49%;
+        &:nth-child(-n + 2) {
+          margin-bottom: 10px;
+        }
+      }
+      img {
+        vertical-align: middle;
+      }
+      span {
+        line-height: 49px;
+        color: var(--orignal-text);
+      }
+      span::after {
+        content: '  ';
+        white-space: pre;
+      }
+    }
+  }
+  .insurance_btn {
+    button {
+      opacity: 1;
+      user-select: none;
+    }
+  }
+  .insurance_btn_title {
+    width: 49%;
+    font-size: 18px;
+    line-height: 49px;
+    padding-left: 30px;
+    color: var(--orignal-text);
+    @media (max-width: 767px) {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}

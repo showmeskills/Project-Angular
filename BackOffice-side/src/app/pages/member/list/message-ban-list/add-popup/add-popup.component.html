@@ -1,0 +1,98 @@
+<modal-title [title]="'member.list.messageBan.addBan' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body">
+  <!-- 发送对象 -->
+  <form-row [label]="'member.coupon.model.sendObject' | lang" label-width="150" required>
+    <ng-template>
+      <!-- tab -->
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of sendList">
+          <input type="radio" name="send" [value]="item.value" [(ngModel)]="send" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+
+      <div [style.height.px]="330" [ngSwitch]="send">
+        <!-- 选择会员 -->
+        <ng-container *ngSwitchCase="1">
+          <div class="d-flex flex-ac">
+            <button
+              type="button"
+              class="btn btn-light-primary px-9 fz-14 py-2 mr-8"
+              (click)="onOpenMemberSelectPopup()"
+            >
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              <span class="vam">{{ 'member.coupon.model.chooseMember' | lang }}</span>
+            </button>
+            <!-- 已选择N个会员渠道  -->
+            <div class="color-aaa">
+              {{ 'member.coupon.model.chosen' | lang }}{{ memberSelectedList.length
+              }}{{ 'member.coupon.model.members' | lang }}
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberSelectedList; let i = index">
+              <span>{{ item.name || item.uact || '-' }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberSelectedList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- 手动输入 -->
+        <ng-container *ngSwitchCase="2">
+          <!-- 请输入用户UID(以符号 ; 做拼接) -->
+          <div class="color-aaa">{{ 'member.coupon.model.pleaseEnterInfo' | lang }}</div>
+          <textarea
+            [style.height.px]="290"
+            type="text"
+            class="form-control resize-none"
+            autocomplete="off"
+            [(ngModel)]="memberManualRemark"
+            input-trim
+          ></textarea>
+        </ng-container>
+
+        <!-- 上传名单 -->
+        <ng-container *ngSwitchCase="3">
+          <div class="d-flex flex-ac">
+            <upload
+              class="mt-5 mb-5 mr-15"
+              [style.height.px]="50"
+              mark="file"
+              desc="Excel/xlsx"
+              [customUpload]="customUpload"
+              [accept]="['Excel', 'xlsx']"
+              [showLimitText]="false"
+              [limit]="2048"
+            ></upload>
+            <!-- 下载模板表格 -->
+            <span class="download" (click)="downloadTemplate()">{{ 'member.coupon.model.downloadForm' | lang }}</span>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberManualUploadList; index as i">
+              <span>{{ item?.userName || item?.uid || '-' }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberManualUploadList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+</div>
+
+<!-- 按钮组 -->
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

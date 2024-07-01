@@ -1,0 +1,372 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+// css web start
+.operation-wrapper {
+  background-color: var(--container-bg-color);
+  border-radius: 6px;
+  padding: 23px 24px;
+
+  .operation-title {
+    font-size: 21px;
+    font-weight: 600;
+    text-align: left;
+    color: var(--text-color);
+  }
+
+  .operation-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 36px;
+  }
+
+  .operation-table {
+    margin-top: 18px;
+
+    table {
+      width: 100%;
+      border-left: 7px solid #f9f9f9;
+      border-right: 7px solid #f9f9f9;
+      border-bottom: 7px solid #f9f9f9;
+
+      &:host-context(.dark) & {
+        border-left: 7px solid #071d2a;
+        border-right: 7px solid #071d2a;
+        border-bottom: 7px solid #071d2a;
+      }
+
+      thead {
+        tr {
+          text-align: left;
+          background-color: #f9f9f9;
+
+          &:host-context(.dark) & {
+            background-color: #2f4553;
+          }
+
+          th {
+            padding: 12px 13px 20px 0px;
+            font-size: 12px;
+            color: #848e9c;
+
+            &:host-context(.dark) & {
+              color: #b1bad3;
+            }
+          }
+
+          th:nth-child(2) {
+            padding-left: 12px;
+          }
+
+          th:nth-child(3) {
+            width: 260px;
+            padding-left: 15px;
+            white-space: nowrap;
+
+            @media (min-width: 768px) and (max-width: 991px) {
+              padding-left: 0px;
+            }
+          }
+
+          th:nth-child(4) {
+            width: 146px;
+          }
+
+          th:nth-child(5) {
+            width: 110px;
+          }
+
+          th:nth-child(6) {
+            width: 300px;
+          }
+
+          th:last-child {
+            width: 50px;
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid #f9f9f9;
+
+          td {
+            padding: 2px;
+            cursor: pointer;
+            user-select: none;
+
+            .text {
+              font-size: 14px;
+              color: var(--text-color);
+            }
+
+            .text-left {
+              margin-left: 5px;
+            }
+          }
+
+          .icon-toast-success {
+            font-size: 16px;
+            color: #afb4bd;
+          }
+
+          .second-td {
+            display: flex;
+            align-items: center;
+            margin-left: 6px;
+            line-height: 1.8;
+          }
+
+          .third-td {
+            padding-left: 14px;
+
+            &:host-context(.dark) & {
+              color: #fff;
+            }
+          }
+
+          .icon-copy-2 {
+            font-size: 22px;
+            color: #afb4bd;
+          }
+
+          .icon-three-line {
+            font-size: 16px;
+            color: #afb4bd;
+          }
+
+          .icon-pen {
+            font-size: 16px;
+            color: #afb4bd;
+            margin-left: 5px;
+          }
+
+          .active-red {
+            color: var(--primary-color);
+          }
+
+          .copy-text {
+            font-size: 14px;
+            line-height: 1.64;
+            color: var(--primary-color);
+            margin: 0 auto;
+          }
+
+          .last-td {
+            .default {
+              padding: 3px 10px;
+              border-radius: 4px;
+              background-color: var(--default-border-color);
+              cursor: pointer;
+              font-size: 12px;
+              color: var(--text-color-20);
+              white-space: nowrap;
+              user-select: none;
+            }
+
+            .active {
+              background-color: #ffeded;
+              color: var(--primary-color);
+              text-align: center;
+
+              &:host-context(.dark) & {
+                color: #b1bad3;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .bottom-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    .group-btns {
+      display: flex;
+      align-items: center;
+      @include polyfills.flex-gap(10px, 'row nowrap');
+    }
+  }
+}
+
+// css web end
+
+.main-container-h5 {
+  padding: 28px 20px 56px 20px;
+  background-color: var(--container-bg-color);
+  margin-top: 20px;
+
+  .h5-list {
+    min-height: 164px;
+
+    .h5-list-item {
+      margin-top: 23px;
+      border-bottom: 1px solid #f5f5f5;
+      padding-bottom: 20px;
+
+      &:host-context(.dark) & {
+        border-color: #2f4553;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &-group {
+          display: flex;
+          align-items: center;
+
+          .recommend-id {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-color);
+          }
+
+          .icon-copy-2 {
+            font-size: 22px;
+            color: #afb4bd;
+            margin-left: 6px;
+          }
+        }
+
+        .default {
+          padding: 3px 10px;
+          border-radius: 4px;
+          background-color: #eaecef;
+          cursor: pointer;
+          font-size: 16px;
+          color: var(--text-color-20);
+          user-select: none;
+        }
+
+        .active {
+          padding: 3px 10px;
+          border-radius: 4px;
+          background-color: #ffeded;
+          font-size: 16px;
+          color: var(--primary-color);
+        }
+      }
+
+      .ratio,
+      .link,
+      .note,
+      .friends {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 21px;
+
+        .title-text {
+          font-size: 14px;
+          color: var(--text-color-20);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 68%;
+        }
+
+        .link-group {
+          display: flex;
+        }
+
+        .content-text {
+          font-size: 16px;
+          color: var(--text-color);
+          white-space: nowrap;
+        }
+
+        .link-content-text {
+          width: 200px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .limit-width {
+          max-width: 220px;
+          text-align: right;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .icon-copy-2 {
+          font-size: 22px;
+          color: #afb4bd;
+          margin-left: 5px;
+        }
+
+        .icon-three-line {
+          font-size: 16px;
+          color: #afb4bd;
+          margin-left: 5px;
+        }
+
+        .icon-pen {
+          font-size: 18px;
+          color: #afb4bd;
+          margin-left: 5px;
+        }
+      }
+
+      .link,
+      .note,
+      .friends {
+        margin-top: 11px;
+      }
+    }
+  }
+}
+
+.fifth-td {
+  display: flex;
+
+  .text {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.note-container {
+  width: 480px;
+  padding: 18px 28px 33px 26px;
+  background-color: var(--container-bg-color);
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  .m-top-40 {
+    margin-top: 40px;
+  }
+
+  &-close {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .title {
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .icon-close-simple {
+      font-size: 18px;
+    }
+  }
+
+  &-btns {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    @include polyfills.flex-gap(10px, 'row nowrap');
+    margin-top: 60px;
+  }
+}

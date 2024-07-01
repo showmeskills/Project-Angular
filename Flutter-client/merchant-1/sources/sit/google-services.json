@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "622726847917",
+    "project_id": "thirdlogin-373003",
+    "storage_bucket": "thirdlogin-373003.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622726847917:android:287efea4c4793537ced524",
+        "android_client_info": {
+          "package_name": "com.gogaming.sit1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "622726847917-0joscip5kvi3m0g4hgeseplihocmuvh1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gogaming.sit1",
+            "certificate_hash": "14a0065426654ad5e2b09c41919b116b898489e8"
+          }
+        },
+        {
+          "client_id": "622726847917-6sjt3b5svd97hhrn97e00n6abeubonq0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gogaming.sit1",
+            "certificate_hash": "c018c7870c731fc428683c0b478628d6639135a4"
+          }
+        },
+        {
+          "client_id": "622726847917-iqfo14lr7jnac4fkv47dqh6khg4koaf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gogaming.sit1",
+            "certificate_hash": "f983dc902a15de696ff8193209849213b2e85922"
+          }
+        },
+        {
+          "client_id": "622726847917-rff77c8acrahjro0ccnjb0s6u29g1sr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf6QN0f83Vqt-bimVTD_0xrHvdbhjQQDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "622726847917-0fukm4u1ovm24bn6aaqp50h2b1e80283.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "622726847917-333i25p5l0vclmngct4tnn0jm34vnebn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gogaming.sit1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

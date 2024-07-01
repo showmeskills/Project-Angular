@@ -1,0 +1,450 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.container {
+  background-color: var(--container-bg-color);
+  border-radius: 10px;
+  width: 484px;
+
+  @media (max-width: 767px) {
+    width: 100vw;
+    border-radius: 30px 30px 0 0;
+  }
+}
+
+.flex-layout {
+  display: flex;
+}
+
+.setting-dialog {
+  padding: 20px 24px;
+
+  .setting-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .title {
+      font-size: 20px;
+      color: var(--text-color);
+    }
+
+    .icon-close-simple {
+      font-size: 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+
+  .info {
+    margin-top: 15px;
+    font-size: 12px;
+    color: var(--text-color-20);
+  }
+
+  .avator {
+    min-height: 370px;
+    text-align: center;
+
+    .avator-list {
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      row-gap: 30px;
+      column-gap: 34px;
+
+      @media (max-width: 767px) {
+        row-gap: 20px;
+        column-gap: 24px;
+      }
+
+      li {
+        .avator-img {
+          width: 64px;
+          height: 64px;
+        }
+
+        .active {
+          border: solid 4px #fb7755;
+          border-radius: 50%;
+        }
+      }
+    }
+
+    .upload {
+      width: 400px;
+      height: 150px;
+      margin: 40px auto 0px auto;
+      display: flex;
+      align-items: center;
+      position: relative;
+      justify-content: center;
+
+      @media (max-width: 767px) {
+        width: 100%;
+        height: 100%;
+      }
+
+      .upload-btn {
+        position: absolute;
+        top: 0;
+        width: inherit;
+        height: inherit;
+        opacity: 0;
+        z-index: 2;
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+
+    .upload-img {
+      width: auto !important;
+      position: relative;
+      z-index: 1;
+    }
+
+    .active-img {
+      opacity: 0.5;
+    }
+
+    .reload-btn {
+      margin: 12px auto;
+    }
+
+    .upload-info {
+      margin-top: 30px;
+      font-size: 14px;
+      color: var(--text-color-20);
+      line-height: 1.5;
+      text-align: left;
+    }
+  }
+
+  .btn-group {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    @include polyfills.flex-gap(10px, 'row nowrap');
+  }
+
+  .setting-item {
+    @media (max-width: 767px) {
+      margin-bottom: 256px;
+    }
+
+    .setting-item-title {
+      font-size: 14px;
+      color: var(--text-color-20);
+      margin-top: 26px;
+      margin-bottom: 6px;
+    }
+  }
+
+  .platform {
+    margin-top: 9px;
+
+    .platform-setting {
+      .platform-setting-item {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+
+        .platform-name {
+          font-size: 14px;
+          color: var(--text-color);
+          margin-left: 23px;
+        }
+      }
+    }
+  }
+
+  .save-btn {
+    margin-top: 33px;
+  }
+}
+
+::ng-deep {
+  .mat-mdc-dialog-container {
+    overflow: unset;
+  }
+}
+
+.area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  @media (max-width: 767px) {
+    height: unset;
+    max-width: 100%;
+    max-height: calc(100% - 50px);
+    overflow: hidden;
+  }
+}
+
+.bgd-layer {
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.view {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.img-gb-box {
+  width: 100%;
+  max-height: 620px;
+
+  @media (max-width: 767px) {
+    width: unset;
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+.img-in-cropper {
+  max-height: 654px;
+
+  @media (max-width: 767px) {
+    max-height: unset;
+  }
+}
+
+.rect {
+  width: 150px;
+  height: 150px;
+}
+
+.move {
+  cursor: move;
+}
+
+.content-inside {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.h5-cropper-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  background-color: #000;
+  min-width: 100vw;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.h5-bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+
+  ::ng-deep {
+    button {
+      color: #fff !important;
+    }
+  }
+
+  .opacity-half {
+    opacity: 0.5;
+  }
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+
+.tabs-group {
+  margin: 12px auto;
+  width: 167px;
+  height: 30px;
+
+  .tabs-wrap {
+    background-color: var(--list-hover-bg-color);
+    border: 1px solid var(--list-hover-bg-color);
+    height: 33px;
+    border-radius: 5px;
+    position: relative;
+
+    ::ng-deep {
+      .customize-button,
+      .primary {
+        background-color: unset;
+        border-color: unset;
+        border: none;
+      }
+    }
+
+    .btn-0 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+
+    .btn-1 {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 2;
+    }
+
+    .tab-active {
+      position: absolute;
+      width: 82px;
+      height: 30px;
+      top: 0;
+      background-color: var(--primary-color);
+      border-radius: 5px;
+      transition: 0.4s;
+    }
+  }
+}
+
+.betting-container {
+  position: relative;
+  overflow: hidden;
+  height: 460px;
+
+  .top-text {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+
+    .text {
+      width: 50%;
+      text-align: left;
+      font-size: 14px;
+      color: var(--text-color-20);
+    }
+  }
+
+  .currency-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 35px;
+
+    .list {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .currency,
+    .amount {
+      width: 50%;
+    }
+
+    .currency {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      .currency-icon {
+        width: 28px;
+        height: 28px;
+      }
+
+      .currency-name {
+        font-size: 14px;
+        color: var(--text-color);
+        margin-left: 16px;
+      }
+    }
+  }
+}
+
+image-cropper {
+  width: 100%;
+  height: 100%;
+  max-height: 620px;
+
+  ::ng-deep {
+    div {
+      width: 100%;
+      height: 100%;
+      max-height: 620px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      max-height: 620px;
+    }
+  }
+}
+
+:host::ng-deep {
+  .mat-mdc-slide-toggle.mat-accent {
+    --mdc-switch-selected-focus-state-layer-color: var(--primary-color);
+    --mdc-switch-selected-handle-color: #fff;
+    --mdc-switch-selected-hover-state-layer-color: var(--primary-color);
+    --mdc-switch-selected-pressed-state-layer-color: var(--primary-color);
+    --mdc-switch-selected-focus-handle-color: #fff;
+    --mdc-switch-selected-hover-handle-color: #fff;
+    --mdc-switch-selected-pressed-handle-color: #fff;
+    --mdc-switch-selected-focus-track-color: var(--primary-color);
+    --mdc-switch-selected-hover-track-color: var(--primary-color);
+    --mdc-switch-selected-pressed-track-color: var(--primary-color);
+    --mdc-switch-selected-track-color: var(--primary-color);
+
+    // 圆宽、高
+    --mdc-switch-handle-height: 28px;
+    --mdc-switch-handle-width: 16px;
+    --mdc-switch-selected-icon-size: 28px;
+    --mdc-switch-state-layer-size: 28px;
+    --mdc-switch-unselected-icon-size: 28px;
+
+    // 背景border-radius
+    --mdc-switch-track-shape: 20px;
+    // 圆border-radius
+    --mdc-switch-handle-shape: 20px;
+
+    --mdc-switch-track-width: 36px;
+    --mdc-switch-track-height: 14px;
+    --mdc-switch-disabled-selected-handle-color: #fff;
+    --mdc-switch-disabled-unselected-handle-color: #fff;
+    --mdc-switch-disabled-selected-track-color: #fff;
+    --mdc-switch-disabled-unselected-track-color: #fff;
+    --mdc-switch-unselected-focus-state-layer-color: #fff;
+    --mdc-switch-unselected-pressed-state-layer-color: #fff;
+    --mdc-switch-unselected-hover-state-layer-color: #fff;
+
+    --mdc-switch-unselected-hover-handle-color: #fff;
+    --mdc-switch-unselected-focus-handle-color: #fff;
+    --mdc-switch-unselected-pressed-handle-color: #fff;
+    --mdc-switch-handle-surface-color: #fff;
+    --mdc-switch-unselected-handle-color: #fff;
+    --mdc-switch-selected-icon-color: #fff;
+    --mdc-switch-disabled-selected-icon-color: #fff;
+    --mdc-switch-disabled-unselected-icon-color: #fff;
+    --mdc-switch-unselected-icon-color: #fff;
+    --mdc-switch-handle-elevation-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    .mdc-switch .mdc-switch__icon {
+      fill: none;
+    }
+
+    .mdc-switch__handle-track {
+      // transform: translateX(4px);
+    }
+
+    .mdc-switch--selected .mdc-switch__handle-track {
+      // transform: translateX(calc(100% - 4px));
+    }
+  }
+}

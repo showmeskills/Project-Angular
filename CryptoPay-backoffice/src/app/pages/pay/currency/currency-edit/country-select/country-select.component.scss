@@ -1,0 +1,40 @@
+:host {
+  .mat-accordion {
+    width: 100%;
+  }
+}
+
+// 重置mat-expansion样式
+.mat-expansion-panel {
+  .mat-expansion-panel-header {
+    border-bottom: 1px dashed #e4e6ef;
+    padding-left: 28px;
+  }
+
+  &::ng-deep {
+    .mat-expansion-panel-body {
+      padding: 0;
+    }
+
+    .mat-expansion-indicator::after {
+      border-width: 0 1px 1px 0;
+      color: #9899ac;
+    }
+  }
+
+  &:not([class*='mat-elevation-z']) {
+    box-shadow: none;
+    margin-top: 0;
+  }
+}
+
+.countriesList {
+  padding: 0 10px 20px 56px;
+  overflow: hidden;
+
+  .countries {
+    float: left;
+    margin-top: 12px;
+    margin-right: 26px;
+  }
+}

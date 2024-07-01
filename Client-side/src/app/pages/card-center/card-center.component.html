@@ -1,0 +1,60 @@
+<div class="page-container">
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="header-container container">
+      <p class="title">{{ 'bonus_center' | translate }}</p>
+      <img class="head-right" src="assets/images/card-center/cardLogo.png" alt="" lazy="loading" />
+    </div>
+    <ng-container
+      *ngTemplateOutlet="
+        btnTemp;
+        context: {
+          width: '100%',
+          isShow: isH5
+        }
+      "
+    ></ng-container>
+  </div>
+  <div class="main-container unity-padding-web unity-padding-h5-16 inner-page">
+    <div class="container card-page-container">
+      <div class="nav-container">
+        <ng-container
+          *ngTemplateOutlet="
+            btnTemp;
+            context: {
+              minWidth: '160px',
+              isShow: !isH5
+            }
+          "
+        ></ng-container>
+      </div>
+      <div class="card-component">
+        <ng-container [ngSwitch]="activeIndex">
+          <ng-container *ngSwitchCase="0">
+            <app-none-sticky-bonus></app-none-sticky-bonus>
+          </ng-container>
+          <ng-container *ngSwitchCase="1">
+            <app-coupon-card></app-coupon-card>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 按钮导航 -->
+<ng-template #btnTemp let-minWidth="minWidth" let-isShow="isShow" let-width="width">
+  <div class="top-btns" *ngIf="isShow">
+    <ng-container *ngFor="let btn of switchBtns; let index = index">
+      <customize-button
+        [size]="isH5 ? 'small' : 'medium'"
+        [type]="isH5 ? 'text' : activeIndex === index ? 'primary' : 'default'"
+        [radius]="isH5 ? '0px' : '50px'"
+        [minWidth]="isH5 ? '' : minWidth"
+        [width]="isH5 ? width : ''"
+        (onClick)="activeIndex = index"
+      >
+        <p class="btn-text" [class.active]="activeIndex === index">{{ btn.text }}</p>
+      </customize-button>
+    </ng-container>
+  </div>
+</ng-template>

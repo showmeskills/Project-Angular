@@ -1,0 +1,15 @@
+<div class="container">
+  <!-- 头部 -->
+  <div class="dialog-header">
+    <p>{{ data.title }}</p>
+    <i class="icon-close-simple onact96-not" (click)="close()"></i>
+  </div>
+  <!-- 主体 -->
+  <div class="dialog-body">
+    <div class="dialog-body-content">
+      <p class="article-title onact96-not" *ngFor="let item of articleList" (click)="onGoToDetail(item)">
+        {{ item.title }}
+      </p>
+    </div>
+  </div>
+</div>

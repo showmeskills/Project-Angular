@@ -1,0 +1,162 @@
+<app-friend-header [headerTitle]="'rp_h_gl' | translate" [bgColor]="true" *ngIf="isH5" [goRouter]="true">
+</app-friend-header>
+<!-- web弹窗 -->
+<ng-container *ngIf="!isH5">
+  <div class="operation-wrapper">
+    <div class="operation-title">{{ 'rp_h_s' | translate }}</div>
+    <div class="operation-top">
+      <div class="text-14 font-weight">{{ 'friends_l_n' | translate }} {{ 10 - listData.list.length }}</div>
+      <customize-button type="primary" minWidth="110px" size="small" (onClick)="onAddNewInviteCode()">
+        + {{ 'friends_add' | translate }}
+      </customize-button>
+    </div>
+    <div class="operation-table" [appLoading]="recomLoading">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>ID</th>
+            <th>{{ 'rp_h_mf' | translate }}</th>
+            <th>{{ 'rp_h_nf' | translate }}</th>
+            <th>{{ 'remark' | translate }}</th>
+            <th></th>
+            <th>{{ 'action' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listData.list; let i = index" (click)="onActiveItem(i)">
+            <td>
+              <i class="icon-toast-success" [class.active-red]="i == idx"></i>
+            </td>
+            <td class="second-td">
+              <app-tool-tip [copyMode]="'icon'" [copyIcon]="'icon-copy-2'" [copyContent]="item.inviteCode">
+              </app-tool-tip>
+              <span class="text text-left">{{ item.inviteCode }}</span>
+            </td>
+            <td class="third-td text">{{ item.commissionRate * 1000 }}‰ / {{ item.friendCommission * 1000 }}‰</td>
+            <td class="fourth-td onact96" (click)="openFriendListPopup(item.inviteCode)">
+              <i class="icon-three-line" [class.active-red]="i == idx"></i>
+              <span class="text text-left">{{ item.relationSize }}</span>
+            </td>
+            <td class="fifth-td mutual-opacity onact96" (click)="openNoteEditPopup(i)">
+              <i class="icon-pen" [class.active-red]="i == idx"></i>
+              <span class="text text-left">{{ item.remark }}</span>
+            </td>
+            <td>
+              <app-tool-tip [copyMode]="'custom'" [copyContent]="item.inviteUrl" (afterCopy)="afterCopyInviteUrl()">
+                <span origin class="copy-text mutual-opacity">{{ 'rp_h_cl' | translate }} </span>
+              </app-tool-tip>
+            </td>
+            <td class="last-td mutual-opacity onact96" (click)="setDefaultInviteCode(item.inviteCode)">
+              <p class="default" [class.active]="item.isDefault">
+                {{ item.isDefault ? ('default_text' | translate) : ('default_tab' | translate) }}
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bottom-group">
+      <div class="group-btns">
+        <customize-button size="medium" minWidth="100px" (onClick)="close()"
+          >{{ 'cancels' | translate }}
+        </customize-button>
+        <customize-button size="medium" type="primary" minWidth="100px" (onClick)="close()">
+          {{ 'confirm_button' | translate }}</customize-button
+        >
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- h5页面 -->
+<div class="main-container-h5" *ngIf="isH5">
+  <div class="h5-list" [appLoading]="recomLoading">
+    <div class="h5-list-item" *ngFor="let item of listData.list; let i = index">
+      <div class="top">
+        <div class="top-group">
+          <span class="recommend-id">{{ item.inviteCode }}</span>
+          <app-tool-tip [copyMode]="'icon'" [copyIcon]="'icon-copy-2'" [copyContent]="item.inviteCode"> </app-tool-tip>
+        </div>
+        <div
+          class="onact96-not mutual-opacity"
+          [class]="item.isDefault ? 'active' : 'default'"
+          (click)="setDefaultInviteCode(item.inviteCode)"
+        >
+          {{ item.isDefault ? ('default_text' | translate) : ('default_tab' | translate) }}
+        </div>
+      </div>
+      <div class="ratio">
+        <p class="title-text">{{ 'rp_h_mf' | translate }}</p>
+        <p class="content-text">{{ item.commissionRate * 1000 }}‰ / {{ item.friendCommission * 1000 }}‰</p>
+      </div>
+      <div class="link">
+        <p class="title-text">{{ 'rp_h_rl' | translate }}</p>
+        <div class="link-group">
+          <p class="link-content-text content-text">{{ item.inviteUrl }}</p>
+          <app-tool-tip
+            [copyMode]="'icon'"
+            [copyIcon]="'icon-copy-2'"
+            [copyContent]="item.inviteUrl"
+            (afterCopy)="afterCopyInviteUrl()"
+          >
+          </app-tool-tip>
+        </div>
+      </div>
+      <div class="note">
+        <p class="title-text">{{ 'remark' | translate }}</p>
+        <div class="note-group link-group">
+          <p class="content-text limit-width">{{ item.remark }}</p>
+          <i class="icon-pen mutual-opacity onact96-not" (click)="openNoteEditPopup(i)"></i>
+        </div>
+      </div>
+      <div class="friends">
+        <p class="title-text">{{ 'rp_h_nf' | translate }}</p>
+        <div class="friends-group">
+          <span class="content-text">{{ item.relationSize }}</span>
+          <i class="icon-three-line onact96-not" (click)="openFriendListPopup(item.inviteCode)"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <customize-button
+    [style.margin-top]="'40px'"
+    *ngIf="listData.list.length > 0"
+    size="medium"
+    width="100%"
+    type="primary"
+    (onClick)="onAddNewInviteCode()"
+  >
+    + {{ 'friends_add' | translate }}
+  </customize-button>
+</div>
+
+<!-- note 弹窗 -->
+<ng-template #noteDialog>
+  <div class="note-container">
+    <div class="note-container-close">
+      <span class="title">{{ isH5 ? ('remark' | translate) : ('notes_t' | translate) }}</span>
+      <i class="icon-close-simple mutual-opacity onact96-not" (click)="closeNoteDialog.close()"></i>
+    </div>
+    <div class="m-top-40">
+      <app-customize-input
+        [(value)]="remark"
+        [size]="'large'"
+        [width]="'100%'"
+        type="text"
+        [max]="20"
+        placeholder="{{ 'input_c_l' | translate : '1-20' }}"
+      >
+        <span right-content class="text-gray-14">{{ remark ? remark.length : 0 }}/20</span>
+      </app-customize-input>
+    </div>
+    <div class="note-container-btns">
+      <customize-button size="medium" width="100%" (onClick)="closeNoteDialog.close()"
+        >{{ 'cancels' | translate }}
+      </customize-button>
+      <customize-button size="medium" width="100%" type="primary" (onClick)="changeNote()"
+        >{{ 'save_btn' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>

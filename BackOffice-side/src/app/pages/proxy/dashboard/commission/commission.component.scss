@@ -1,0 +1,62 @@
+:host {
+  display: flex;
+}
+
+.commission {
+  margin-top: 15px;
+
+  &-wrap {
+    flex: 1;
+  }
+
+  &-row {
+    height: 80px;
+    line-height: 32px;
+    text-align: center;
+    display: flex;
+    border-top: 1px dashed #ebebeb;
+    border-bottom: 1px dashed #ebebeb;
+    margin-top: -1px;
+
+    > div {
+      padding: 8px 0;
+      flex: 1;
+
+      &:last-child {
+        border-left: 1px dashed #ebebeb;
+      }
+    }
+  }
+}
+
+.more {
+  padding: 28px;
+  background: #fff;
+  border-radius: 6px;
+  width: 76px;
+  flex: 0 0 76px;
+  font-size: 20px;
+  line-height: 50px;
+  color: #a1a5b7;
+  cursor: pointer;
+
+  &-line {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    > span {
+      width: 14px;
+      height: 2px;
+      background: #a1a5b7;
+      margin: 1px 0;
+    }
+  }
+  .txt {
+    display: flex;
+    justify-content: center;
+  }
+}

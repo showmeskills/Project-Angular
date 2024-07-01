@@ -1,0 +1,416 @@
+<div class="card px-12 py-8">
+  <div class="flex-1">
+    <div class="w-100 d-flex flex-ac flex-wrap">
+      <div class="d-flex py-2 flex-ac mr-16">
+        <label class="mb-0 mr-6 form-title">UID：</label>
+        <div class="flex-1 ml-6">
+          <input
+            [style.width.px]="244"
+            class="form-control"
+            type="text"
+            [placeholder]="'payment.finceBank.enterMemberID' | lang"
+            [(ngModel)]="data.uid"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </div>
+      </div>
+
+      <div class="d-flex py-2 flex-ac mr-16">
+        <label class="mb-0 mr-6 form-title">{{ 'payment.finceBank.accountName' | lang }}：</label>
+        <div class="flex-1 ml-6">
+          <input
+            [style.width.px]="184"
+            class="form-control"
+            type="text"
+            [placeholder]="'payment.finceBank.enterAccountName' | lang"
+            [(ngModel)]="data.name"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </div>
+      </div>
+
+      <div class="d-flex py-2 flex-ac mr-16">
+        <label class="mb-0 mr-6 form-title">{{ 'common.status' | lang }}：</label>
+        <div class="flex-1 ml-6">
+          <mat-form-field [style.width.px]="110">
+            <mat-select class="form-control" (selectionChange)="loadData(true)" [(ngModel)]="data.isLock">
+              <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+              <mat-option [value]="false">{{ 'payment.finceBank.normal' | lang }}</mat-option>
+              <mat-option [value]="true">{{ 'payment.finceBank.locking' | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex py-2 flex-ac mr-16">
+        <label class="mb-0 mr-6 form-title">{{ 'payment.finceBank.currencyType' | lang }}：</label>
+        <div class="flex-1 ml-6" style="width: 110px">
+          <div class="form-control d-flex flex-ac cursor-pointer" (click)="onOpenSelect('currency', '选择转账网络')">
+            <span class="flex-fill fz-16">{{ getCurrencyName }}</span>
+            <svg-icon
+              class="d-inline-block"
+              [src]="'./assets/images/svg/triangle.svg'"
+              style="transform: rotate(270deg)"
+            ></svg-icon>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex py-2 flex-ac mr-16">
+        <label class="mb-0 mr-6 form-title">{{ 'payment.bank.bankName' | lang }}：</label>
+        <div class="flex-1 ml-6">
+          <input
+            [style.width.px]="277"
+            class="form-control"
+            type="text"
+            [placeholder]="'payment.finceBank.enterBankName' | lang"
+            [(ngModel)]="data.bankName"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </div>
+      </div>
+
+      <div class="d-flex py-2 flex-ac mr-16">
+        <label class="mb-0 mr-6 form-title">{{ 'payment.finceBank.bankCardNumber' | lang }}：</label>
+        <div class="flex-1 ml-6">
+          <input
+            [style.width.px]="277"
+            class="form-control"
+            type="text"
+            [placeholder]="'payment.finceBank.enterBankCardNumber' | lang"
+            [(ngModel)]="data.cardNum"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </div>
+      </div>
+
+      <div class="d-flex py-3 flex-ac mr-16">
+        <label class="mb-0 mr-6 form-title">{{ 'payment.finceBank.bindingTime' | lang }}：</label>
+        <div class="d-flex flex-ac">
+          <label class="form-control clear-input-wrap mb-0" [style.width.px]="264">
+            <input
+              class="text-center clear-input flex-1"
+              type="text"
+              [placeholder]="'payment.finceBank.selectBindingTime' | lang"
+              selectMode="date-range"
+              formatLabel="yyyy-MM-dd"
+              rangeSeparator="-"
+              [owlDateTime]="bind"
+              [owlDateTimeTrigger]="bind"
+              [(ngModel)]="data.bindTime"
+              (dateTimeChange)="loadData(true)"
+            />
+
+            <svg-icon
+              (click)="onClear($event, 'bindTime')"
+              class="cursor-pointer py-2 px-4 svg-icon svg-icon-1x"
+              [src]="'assets/images/svg/close.svg'"
+            ></svg-icon>
+          </label>
+
+          <owl-date-time pickerType="calendar" class="fz-20" #bind></owl-date-time>
+        </div>
+      </div>
+
+      <div class="card-toolbar flex-1 justify-content-end d-flex">
+        <button class="c-btn c-btn-default mr-6" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card my-8 py-8 px-12">
+  <div class="d-flex flex-ac flex-between">
+    <h2 class="mb-0 fw-bolder">{{ 'payment.finceBank.bankCardManagement' | lang }}</h2>
+
+    <button (click)="onExport()" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-2 lh-18">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+      <span class="vam">{{ 'common.export' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="pt-5">
+    <!--begin::Datatable-->
+    <table class="table mb-0" selectChildren>
+      <thead>
+        <tr class="text-nowrap">
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" selectGroup />
+                <span></span>
+              </label>
+            </span>
+          </th>
+          <th><span class="cell">UID</span></th>
+          <th>
+            <span class="cell">{{ 'common.currency' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'payment.finceBank.accountName' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'payment.bank.bankName' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'payment.finceBank.bindingTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.operate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" [(ngModel)]="item.checked" />
+                <span></span>
+              </label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.uid }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.name }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.bankName }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.createdTime | timeFormat: 'YYYY-MM-DD HH:mm' }}</span>
+          </td>
+          <td class="text-nowrap">
+            <span class="cell" [ngSwitch]="item.isLocked">
+              <span
+                *ngSwitchCase="true"
+                style="height: 34px; width: 86px"
+                class="label label-lg label-inline label-light-danger fz-14"
+                >{{ 'payment.finceBank.accountLockout' | lang }}</span
+              >
+              <span
+                *ngSwitchDefault
+                style="height: 34px; width: 86px"
+                class="label label-lg label-inline label-light-success fz-14"
+                >{{ 'payment.finceBank.normal' | lang }}</span
+              >
+            </span>
+          </td>
+          <td class="text-nowrap">
+            <span class="cell">
+              <button class="btn fz-14 mx-2 py-0 lh-32 btn-light" (click)="onView(detailTpl, item)">
+                {{ 'payment.subChannel.view' | lang }}
+              </button></span
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-between pt-12">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'payment.method.prompt' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'payment.finceBank.confirmWhether' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+        {{ 'common.cancel' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c({ value: true })">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #detailTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title fw-bolder">{{ 'payment.finceBank.bankCardManagementDetails' | lang }}</div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body px-17 py-12">
+    <div class="w-100 fz-16">
+      <div class="d-flex">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">UID：</label>
+          <div class="flex-1">{{ detailData.uid }}</div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">币种：</label>
+          <div class="flex-1">{{ detailData.currency }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'payment.finceBank.accountName' | lang }}：</label>
+          <div class="flex-1">{{ detailData.name }}</div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'payment.bank.bankName' | lang }}：</label>
+          <div class="flex-1">{{ detailData.bankName }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px"
+            >{{ 'payment.finceBank.bankCardNumber' | lang }}：</label
+          >
+          <div class="flex-1">{{ detailData.cardNum }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'common.status' | lang }}：</label>
+          <div class="flex-1">
+            <span class="cell" [ngSwitch]="detailData.isLocked">
+              <span *ngSwitchCase="0">
+                <span style="height: 34px; width: 86px" class="label label-lg label-inline label-light-success fz-14">{{
+                  'payment.finceBank.normal' | lang
+                }}</span>
+                <!--                <span class="red text-danger ml-4 cursor-pointer" (click)="onOpera(operaTpl, '锁定')">锁定</span>-->
+              </span>
+              <span *ngSwitchCase="1">
+                <span style="height: 34px; width: 86px" class="label label-lg label-inline label-light-danger fz-14">{{
+                  'payment.finceBank.accountLockout' | lang
+                }}</span>
+                <span class="red text-primary ml-4 cursor-pointer" (click)="onOpera(operaTpl, '解锁')">{{
+                  'payment.finceBank.unlock' | lang
+                }}</span>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'payment.finceBank.bindingTime' | lang }}：</label>
+          <div class="flex-1">
+            {{ detailData.createdTime | timeFormat: 'YYYY-MM-DD HH:mm' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'payment.finceBank.operator' | lang }}：</label>
+          <div class="flex-1">{{ detailData.modifiedUserName }}</div>
+        </div>
+        <div class="flex-2 d-flex flex-ac">
+          <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'payment.finceBank.lockTime' | lang }}：</label>
+          <div class="flex-1">
+            {{ detailData.isLocked ? (detailData.lockTime | timeFormat: 'YYYY-MM-DD HH:mm') : '-' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex mt-3">
+        <label class="form-title fz-16" style="flex: 0 0 110px">{{ 'payment.finceBank.remarks' | lang }}：</label>
+        <div class="flex-1">
+          <textarea
+            type="text"
+            class="form-control"
+            autocomplete="off"
+            rows="6"
+            [(ngModel)]="editAdminRemark"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+      {{ 'common.cancel' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="onUpdateState(c)">
+      {{ 'payment.finceBank.save' | lang }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #operaTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'payment.method.prompt' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">
+        {{ 'common.confirm' | lang
+        }}{{ detailData.isLocked ? ('payment.finceBank.unlock' | lang) : ('payment.finceBank.locking' | lang)
+        }}{{ 'payment.finceBank.selecteBankCard' | lang }}
+      </p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+        {{ 'common.cancel' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

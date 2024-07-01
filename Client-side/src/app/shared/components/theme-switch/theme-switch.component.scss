@@ -1,0 +1,102 @@
+:host {
+  ::ng-deep {
+    ::ng-deep {
+      
+      .mat-mdc-slide-toggle {
+        --mdc-switch-selected-handle-color: var(--secondary-color);
+        --mdc-switch-selected-focus-handle-color: var(--secondary-color);
+        --mdc-switch-selected-hover-handle-color: var(--secondary-color);
+        --mdc-switch-selected-pressed-handle-color: var(--secondary-color);
+        // selected-bg
+        --mdc-switch-selected-focus-state-layer-color: var(--theme-switch-bg-checked);
+        --mdc-switch-selected-hover-state-layer-color: var(--theme-switch-bg-checked);
+        --mdc-switch-selected-pressed-state-layer-color: var(--theme-switch-bg-checked);
+        --mdc-switch-selected-focus-track-color: var(--theme-switch-bg-checked);
+        --mdc-switch-selected-hover-track-color: var(--theme-switch-bg-checked);
+        --mdc-switch-selected-pressed-track-color: var(--theme-switch-bg-checked);
+        --mdc-switch-selected-track-color: var(--theme-switch-bg-checked);
+        // unselected-bg
+        --mdc-switch-unselected-track-color: var(--theme-switch-bg);
+        --mdc-switch-unselected-hover-track-color: var(--theme-switch-bg);
+        --mdc-switch-unselected-focus-track-color: var(--theme-switch-bg);
+        --mdc-switch-unselected-pressed-track-color: var(--theme-switch-bg);
+
+        // 圆宽、高
+        --mdc-switch-handle-height: 18px;
+        --mdc-switch-handle-width: 18px;
+        --mdc-switch-selected-icon-size: 18px;
+        --mdc-switch-state-layer-size: 18px;
+        --mdc-switch-unselected-icon-size: 18px;
+
+        // 背景border-radius
+        --mdc-switch-track-shape: 10px;
+        // 圆border-radius
+        --mdc-switch-handle-shape: 10px;
+
+        --mdc-switch-track-width: 32px;
+        --mdc-switch-track-height: 16px;
+        --mdc-switch-disabled-selected-handle-color: #fff;
+        --mdc-switch-disabled-unselected-handle-color: #fff;
+        --mdc-switch-disabled-selected-track-color: #fff;
+        --mdc-switch-disabled-unselected-track-color: #fff;
+        --mdc-switch-unselected-focus-state-layer-color: #fff;
+        --mdc-switch-unselected-pressed-state-layer-color: #fff;
+        --mdc-switch-unselected-hover-state-layer-color: #fff;
+
+        --mdc-switch-unselected-hover-handle-color: var(--secondary-color);
+        --mdc-switch-unselected-focus-handle-color: var(--secondary-color);
+        --mdc-switch-unselected-pressed-handle-color: var(--secondary-color);
+        --mdc-switch-handle-surface-color: var(--secondary-color);
+        --mdc-switch-unselected-handle-color: var(--secondary-color);
+        --mdc-switch-selected-icon-color: var(--secondary-color);
+        --mdc-switch-disabled-selected-icon-color: var(--secondary-color);
+        --mdc-switch-disabled-unselected-icon-color: var(--secondary-color);
+        --mdc-switch-unselected-icon-color: var(--secondary-color);
+
+        .mdc-switch .mdc-switch__icon {
+          fill: none !important;
+        }
+
+        .mdc-form-field > label {
+          padding-left: 0;
+        }
+      }
+    }
+  }
+}
+
+.theme-slide {
+  position: relative;
+  color: var(--theme-switch-color);
+  height: 20px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+
+  &.checked {
+    color: var(--theme-switch-color-checked);
+  }
+
+  .theme-icon {
+    position: absolute;
+    line-height: inherit;
+    font-size: 12px;
+    transform: scale(0.7);
+    pointer-events: none;
+    top: -1px;
+  }
+
+  .theme-dark {
+    left: 3px;
+  }
+
+  .theme-light {
+    right: 3px;
+  }
+}
+
+.theme-simple-icon {
+  font-size: inherit;
+  color: inherit;
+  padding: 5px;
+}

@@ -1,0 +1,28 @@
+<div class="page-container">
+  <div class="main-container">
+    <div class="container overall-container">
+      <div class="title-container">
+        <div class="title">{{ 'trans_history' | translate }}</div>
+        <div class="export mutual-opacity">
+          <!-- TODO: lris反馈暂无此功能，暂时蔽掉 -->
+          <!-- <div class="export-icon"></div>
+          {{'gen_sta'|translate}} -->
+        </div>
+      </div>
+      <div class="table-container">
+        <div class="tabs" #tabs>
+          <div
+            class="tab onact96-not"
+            *ngFor="let item of menuData"
+            [routerLink]="item.page"
+            routerLinkActive="active"
+            (click)="clickTab($any($event).currentTarget, tabs)"
+          >
+            {{ item.name | translate }}
+          </div>
+        </div>
+        <router-outlet *ngIf="ready"></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,195 @@
+<div class="bg-fff rounded py-8 px-12 d-flex flex-wrap">
+  <form-row [label]="'original.bet.userId' | lang" class="mr-16" [contentWidth]="200" required>
+    <ng-template>
+      <input
+        class="form-control w-100"
+        type="text"
+        [placeholder]="'member.list.multipleSearchTips' | lang"
+        [(ngModel)]="UserId"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'original.bet.originalGame' | lang" class="mr-16" [contentWidth]="200">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="selectedType" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of typeList" [value]="item.gameId">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- <form-row [label]="'original.bet.operatingTime' | lang" label-min-width="106" class="mr-16">
+    <ng-template>
+      <div class="d-flex">
+        <input
+          class="form-control text-center"
+          type="text"
+          selectMode="rangeFrom"
+          [placeholder]="'common.startTime' | lang"
+          [style.width.px]="140"
+          [owlDateTime]="timeStart"
+          [owlDateTimeTrigger]="timeStart"
+          [(ngModel)]="time"
+          formatLabel="yyyy-MM-dd"
+          selectMode="rangeFrom"
+        />
+        <owl-date-time class="fz-20" pickerType="calendar" #timeStart></owl-date-time>
+
+        <div class="date-line lh-42"></div>
+
+        <input
+          class="form-control text-center"
+          type="text"
+          selectMode="rangeTo"
+          [placeholder]="'common.endTime' | lang"
+          [style.width.px]="140"
+          [owlDateTime]="timeEnd"
+          [owlDateTimeTrigger]="timeEnd"
+          [(ngModel)]="time"
+          formatLabel="yyyy-MM-dd"
+          (dateTimeChange)="loadData(true)"
+        />
+        <owl-date-time class="fz-20" pickerType="calendar" #timeEnd></owl-date-time>
+      </div>
+    </ng-template>
+  </form-row> -->
+
+  <form-row [label]="'original.bet.operatingTime' | lang" class="mr-8" [contentWidth]="264">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'original.bet.operatingTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="time"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button
+      class="c-btn c-btn-default"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="onReset(); loadData(true)"
+    >
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card mt-8">
+  <div class="card-body">
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.profitAnalysis.gameName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.profitAnalysis.winLossAmount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.profitAnalysis.bettingAmount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.profitAnalysis.profitRate' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.profitAnalysis.winNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.profitAnalysis.totalNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.profitAnalysis.chance' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.gameCode }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.winLossAmountAll | currencyValue: 'USDT' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.betAmountAll | currencyValue: 'USDT' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.profitRate }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.winCountAll }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.countAll }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.winRate }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="list.length === 0 && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <!-- <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>

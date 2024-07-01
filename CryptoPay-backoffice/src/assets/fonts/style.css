@@ -1,0 +1,204 @@
+@font-face {
+  font-family: 'dinpro';
+  src: url('./dinpro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.din {
+  font-family: 'dinpro', sans-serif;
+}
+
+[class^='icon-'],
+[class*=' icon-'] {
+  font-family: 'iconfont' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*----------------- 自定义图标 START --------------------*/
+/* 文本框清除 */
+.icon-clear::before {
+  content: '\E001';
+  color: #d8dce1;
+}
+
+/* 刷新 */
+.icon-refresh::before {
+  content: '\E002';
+  color: #d8dce1;
+}
+
+/* 密码隐藏 */
+.icon-pwd-hidden::before {
+  content: '\E004';
+  color: #d8dce1;
+}
+
+/* 密码显示 */
+.icon-pwd-show::before {
+  content: '\E003';
+  color: #d8dce1;
+}
+
+/* 搜索 */
+.icon-search::before {
+  content: '\E005';
+  color: #d8dce1;
+}
+
+/* 圈圈惊叹号 */
+.icon-warning::before {
+  content: '\E007';
+  color: #707a8a;
+}
+
+/* 关闭 */
+.icon-close-simple::before {
+  content: '\E006';
+  color: #383c41;
+}
+
+/* 下箭头 */
+.icon-arrow-down::before {
+  content: '\E008';
+  color: #707a8a;
+}
+
+/* 正确 */
+.icon-correct::before {
+  content: '\E009';
+  color: #15bf7b;
+}
+
+/* 错误 */
+.icon-error::before {
+  content: '\E00A';
+  color: #ff7272;
+}
+
+/* 上箭头 */
+.icon-arrow-up::before {
+  content: '\E00B';
+  color: #707a8a;
+}
+
+/* 用户头像 */
+.icon-user::before {
+  content: '\E00C';
+  color: #73787c;
+}
+
+/* 钱包 */
+.icon-wallet::before {
+  content: '\E00D';
+  color: #73787c;
+}
+
+/* 交易历史 */
+.icon-shopping::before {
+  content: '\E00E';
+  color: #73787c;
+}
+
+/* 积分商城 */
+.icon-pad::before {
+  content: '\E00F';
+  color: #73787c;
+}
+
+/* 钻石 */
+.icon-diamond::before {
+  content: '\E010';
+  color: #73787c;
+}
+
+/* 礼物 */
+.icon-gift::before {
+  content: '\E011';
+  color: #73787c;
+}
+
+/* 清单 */
+.icon-list::before {
+  content: '\E012';
+  color: #73787c;
+}
+
+/* 两个用户头像 */
+.icon-users::before {
+  content: '\E013';
+  color: #73787c;
+}
+
+/* 盾牌 */
+.icon-shield::before {
+  content: '\E014';
+  color: #73787c;
+}
+
+/* 控制开关 */
+.icon-control::before {
+  content: '\E015';
+  color: #73787c;
+}
+
+/* 纸片-有节制博彩 */
+.icon-note::before {
+  content: '\E016';
+  color: #73787c;
+}
+
+/* 书签 */
+.icon-bookmark::before {
+  content: '\E017';
+  color: #73787c;
+}
+
+/* 铃铛 */
+.icon-bell::before {
+  content: '\E018';
+  color: #73787c;
+}
+
+/* 成功 */
+.icon-success::before {
+  content: '\E019';
+}
+
+/* 失敗 */
+.icon-fail::before {
+  content: '\E01A';
+}
+
+/* 右箭头 */
+.icon-arrow-right::before {
+  content: '\E01B';
+}
+
+/* add */
+.icon-add::before {
+  content: '\E01C';
+}
+
+/* eye open */
+.icon-eye-open::before {
+  content: '\E01D';
+}
+
+/* eye close */
+.icon-eye-close::before {
+  content: '\E01E';
+}
+
+/* arrow right */
+.icon-arrow::before {
+  content: '\E01F';
+}

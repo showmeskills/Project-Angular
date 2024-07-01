@@ -1,0 +1,183 @@
+<div class="card mb-8">
+  <div class="p-8 d-flex flex-wrap">
+    <form-row [label]="'auManage.sys.acc' | lang" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.account"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'auManage.sys.role' | lang" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.role"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'auManage.sys.mer' | lang" [contentWidth]="264">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.merchant" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of merchantList" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac flex-between">
+    <div class="fz-20">{{ 'auManage.sys.accList' | lang }}</div>
+    <button (click)="onAddEdit('add')" type="button" class="btn btn-light-primary">
+      <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+      <span class="vam">{{ 'auManage.sys.newAdd' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th style="width: 20%">
+            <span class="cell">{{ 'auManage.sys.acc' | lang }}</span>
+          </th>
+          <th style="width: 45%">
+            <span class="cell">{{ 'auManage.sys.role' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('Status')">
+                <span>{{ 'auManage.sys.openStu' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="data.order === 'Status' && data.isAsc"></div>
+                  <div class="triangle-down" [class.active]="data.order === 'Status' && !data.isAsc"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.operate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.userName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell" style="gap: 10px">
+              <app-label *ngFor="let role of item.roleNames" type="primary">{{ role }}</app-label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="switch switch-success">
+                <label class="mx-auto">
+                  <input type="checkbox" (change)="updateStatus(warningTpl, item)" [(ngModel)]="item.status" />
+                  <span></span>
+                </label>
+              </span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <app-label
+                type="default"
+                class="label-light color-aaa cursor-pointer"
+                (click)="onAddEdit('edit', item.id)"
+                >{{ 'common.edit' | lang }}</app-label
+              >
+              <!-- 重置密码 -->
+              <app-label
+                *ngIf="item.isResetPassword"
+                type="default"
+                class="label-light color-aaa cursor-pointer ml-4"
+                (click)="resetPassword(resetTpl, item.id)"
+                >{{ 'auManage.sys.resetPassword' | lang }}</app-label
+              >
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-data let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'member.coupon.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ data.msg }}</p>
+    </div>
+    <modal-footer (confirm)="popupConfirm(c, data.item)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>
+<ng-template #resetTpl let-data let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'auManage.sys.resetPassword' | lang" (close)="c()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'auManage.sys.resetIps' | lang }}</p>
+    </div>
+    <modal-footer (confirm)="resetConfirm(c, data?.id)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

@@ -1,0 +1,115 @@
+<div class="page-container">
+  <div class="main-container">
+    <div class="text-container unity-padding-h5-16" [class.container]="isH5">
+      <p class="line-one">
+        {{ 'global_all_col' | translate }}
+      </p>
+      <p class="line-two">
+        {{ 'brand_name' | translate }}
+        {{ 'trade_info' | translate }}
+        {{ 'cover_width' | translate }}
+        {{ 'strong_belief' | translate }}
+      </p>
+      <p class="line-two">
+        {{ 'in_industry' | translate }}
+        {{ 'invite_you' | translate : '{Brand}' }}
+        {{ 'no_cost' | translate }}
+        {{ 'to_wealth' | translate }}
+      </p>
+      <p class="line-two m-top-10">{{ 'read_info' | translate }}</p>
+      <p
+        class="line-two mutual-opacity onact96-not"
+        [routerLink]="['/', appService.languageCode, 'referral', 'application', 'affiliate']"
+      >
+        {{ affiliateUrl }}
+      </p>
+    </div>
+    <div class="container unity-padding-web unity-padding-h5-16 form">
+      <div class="form-container">
+        <ng-container *ngFor="let item of formData; let i = index">
+          <div class="m-bottom-50-14">
+            <ng-container *ngIf="item.isInput">
+              <app-customize-input
+                [max]="item.max"
+                [label]="item.label"
+                [required]="item.required"
+                [placeholder]="item.placeHolder"
+                (onChange)="onChange($event, i, item.data)"
+                width="100%"
+                [disabled]="loading"
+                [loading]="loading"
+              >
+              </app-customize-input>
+            </ng-container>
+            <ng-container *ngIf="item.isRadio">
+              <label id="agent" class="label-name">{{ item.label }}<span class="star"> *</span></label>
+              <div class="radio-field">
+                <mat-radio-group
+                  aria-labelledby="agent"
+                  class="radio-group"
+                  aria-labelledby="contact"
+                  [(ngModel)]="item.proxyType"
+                >
+                  <mat-radio-button class="radio-button" *ngFor="let agent of item.agentList" [value]="agent">
+                    {{ agent }}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="item.isCheckBox">
+              <label id="region" class="label-name">{{ item.label }}<span class="star"> *</span></label>
+              <p class="multipel-select">{{ 'more_choice' | translate }}</p>
+              <div class="check-field-section">
+                <p *ngFor="let listItem of item.list; let idx = index">
+                  <mat-checkbox #checkBox [checked]="listItem.value" (change)="selectRegion(i, idx)">
+                    {{ listItem.game }}
+                  </mat-checkbox>
+                </p>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="item.isUpload">
+              <label [style.line-height]="1.48" for="upload" class="label-name">{{ 'prove_ceri' | translate }} </label>
+              <p class="multipel-select">{{ 'formates_support' | translate }}</p>
+              <div class="upload-field">
+                <div class="upload-section">
+                  <ng-container *ngIf="item.isReadyUploadedImg">
+                    <input
+                      class="mutual-opacity"
+                      type="file"
+                      id="upload"
+                      [(ngModel)]="item.fansNumberProveUrl"
+                      (change)="uploadImg($event)"
+                    />
+                    <i class="upload-icon"></i>
+                    <p class="text">{{ 'click_pic' | translate }}</p>
+                    <p class="text">{{ 'less_pic' | translate }}</p>
+                  </ng-container>
+                  <img #img class="upload-img" lazy="loading" alt="" />
+                  <i
+                    class="icon-clear mutual-opacity onact96-not"
+                    *ngIf="!item.isReadyUploadedImg"
+                    (click)="clearImg()"
+                  ></i>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+        <p class="info">{{ 'prove_info' | translate }}</p>
+        <div class="submit-button">
+          <customize-button
+            [loading]="loading"
+            [disabled]="!canSubmit()"
+            size="medium"
+            [minWidth]="isH5 ? '' : '180px'"
+            [width]="isH5 ? '100%' : ''"
+            type="primary"
+            (onClick)="onSubmitForm()"
+          >
+            {{ 'submit' | translate }}
+          </customize-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

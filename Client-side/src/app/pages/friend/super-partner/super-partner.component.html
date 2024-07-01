@@ -1,0 +1,15 @@
+<div class="page-container theme-background">
+  <div class="main-container unity-padding-web">
+    <div class="container super-container">
+      <p class="first-text">{{ 'comming' | translate }}，{{ 'waiting' | translate }}</p>
+      <p class="second-text">
+        {{ 'sup_partner' | translate }}
+        <img class="coming-soon" *ngIf="isH5" src="assets/images/friend/super-coming-soon.svg" alt="" lazy="loading" />
+      </p>
+      <p class="third-text">{{ 'super_text' | translate }}</p>
+      <div class="img-wrapper" *ngIf="!isH5">
+        <img src="assets/images/friend/super-coming-soon.svg" alt="" lazy="loading" />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,450 @@
+<div class="modal-header">
+  <div class="modal-title">{{ 'member.management.configuration' | lang }}</div>
+
+  <div class="c-btn-close" (click)="modal.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<div class="px-12 py-5">
+  <div class="base">
+    <div class="base-header">{{ 'member.management.Basic' | lang }}</div>
+
+    <div class="base-content-wrap">
+      <!-- 晋级周期 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.romotion' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="promotion" [value]="30" [(ngModel)]="basicConfigList.upgradePeriod" /><span
+              class="mr-4"
+            ></span
+            >30D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="promotion" [value]="90" [(ngModel)]="basicConfigList.upgradePeriod" /><span
+              class="mr-4"
+            ></span
+            >90D
+          </label>
+        </div>
+      </div>
+
+      <!-- 保级周期 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.relegation' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="safeLevel" [value]="30" [(ngModel)]="basicConfigList.keepPeriod" /><span
+              class="mr-4"
+            ></span
+            >30D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="safeLevel" [value]="90" [(ngModel)]="basicConfigList.keepPeriod" /><span
+              class="mr-4"
+            ></span
+            >90D
+          </label>
+        </div>
+      </div>
+
+      <!-- 救援金周期 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.Rescue' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="help" [value]="1" [(ngModel)]="basicConfigList.rescuePeriod" /><span
+              class="mr-4"
+            ></span
+            >{{ 'member.management.weekly' | lang }}
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="help" [value]="2" [(ngModel)]="basicConfigList.rescuePeriod" /><span
+              class="mr-4"
+            ></span
+            >{{ 'member.management.permonth' | lang }}
+          </label>
+        </div>
+      </div>
+
+      <!-- 单次晋级上限 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.Single' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="promotionMax" [value]="1" [(ngModel)]="basicConfigList.upgradeNum" /><span
+              class="mr-4"
+            ></span
+            >1
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="promotionMax" [value]="2" [(ngModel)]="basicConfigList.upgradeNum" /><span
+              class="mr-4"
+            ></span
+            >2
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="promotionMax" [value]="3" [(ngModel)]="basicConfigList.upgradeNum" /><span
+              class="mr-4"
+            ></span
+            >3
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="promotionMax" [value]="4" [(ngModel)]="basicConfigList.upgradeNum" /><span
+              class="mr-4"
+            ></span
+            >∞
+          </label>
+        </div>
+      </div>
+
+      <!-- 首存红利周期 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.firstDeposit' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="firstSave" [value]="1" [(ngModel)]="basicConfigList.depositBonusPeriod" /><span
+              class="mr-4"
+            ></span
+            >{{ 'member.management.day' | lang }}
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="firstSave" [value]="2" [(ngModel)]="basicConfigList.depositBonusPeriod" /><span
+              class="mr-4"
+            ></span
+            >{{ 'member.management.week' | lang }}
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="firstSave" [value]="3" [(ngModel)]="basicConfigList.depositBonusPeriod" /><span
+              class="mr-4"
+            ></span
+            >{{ 'member.management.month' | lang }}
+          </label>
+        </div>
+      </div>
+
+      <!-- 登录红包周期 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.loginRed' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input
+              type="radio"
+              name="loginRedEnvelope"
+              [value]="1"
+              [(ngModel)]="basicConfigList.loginRedPackagePeriod"
+            /><span class="mr-4"></span>{{ 'member.management.day' | lang }}
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input
+              type="radio"
+              name="loginRedEnvelope"
+              [value]="2"
+              [(ngModel)]="basicConfigList.loginRedPackagePeriod"
+            /><span class="mr-4"></span>{{ 'member.management.week' | lang }}
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input
+              type="radio"
+              name="loginRedEnvelope"
+              [value]="3"
+              [(ngModel)]="basicConfigList.loginRedPackagePeriod"
+            /><span class="mr-4"></span>{{ 'member.management.month' | lang }}
+          </label>
+        </div>
+      </div>
+
+      <!-- SVIP持续时间 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.svipDuration' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="continued" [value]="30" [(ngModel)]="basicConfigList.svipKeepTime" /><span
+              class="mr-4"
+            ></span
+            >30D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="continued" [value]="60" [(ngModel)]="basicConfigList.svipKeepTime" /><span
+              class="mr-4"
+            ></span
+            >60D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="continued" [value]="90" [(ngModel)]="basicConfigList.svipKeepTime" /><span
+              class="mr-4"
+            ></span
+            >90D
+          </label>
+        </div>
+      </div>
+
+      <!-- SVIP再邀请时间 -->
+      <div class="base-row d-flex">
+        <div class="base-title">{{ 'member.management.svipReinvitation' | lang }}</div>
+        <div class="base-content">
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="again" [value]="30" [(ngModel)]="basicConfigList.svipInviteTime" /><span
+              class="mr-4"
+            ></span
+            >30D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="again" [value]="60" [(ngModel)]="basicConfigList.svipInviteTime" /><span
+              class="mr-4"
+            ></span
+            >60D
+          </label>
+          <label class="radio radio-lg mr-8 fz-14 color-222">
+            <input type="radio" name="again" [value]="90" [(ngModel)]="basicConfigList.svipInviteTime" /><span
+              class="mr-4"
+            ></span
+            >90D
+          </label>
+        </div>
+      </div>
+
+      <!-- empty -->
+      <div class="base-row"></div>
+    </div>
+  </div>
+
+  <!-- 等级表格 -->
+  <table class="table mb-0 level-table">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'member.table.grade' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.promotionGrowth' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.relegationGrowth' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.promotionBonus' | lang }}<br />(USDT)</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.relegationBonus' | lang }}<br />(USDT)</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.birthdayBonus' | lang }}<br />(USDT)</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.loginRedPacket' | lang }}<br />(USDT)</span>
+        </th>
+        <th>
+          <span class="cell"
+            >{{ 'member.table.dailyCumulative' | lang }}<br />{{ 'member.table.withdrawalLimit' | lang }}</span
+          >
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.rescueMoney' | lang }}<br />{{ 'member.table.Proportion' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.reliefLimit' | lang }}<br />(USDT)</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.firstBonus' | lang }}<br />{{ 'member.table.Proportion' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell"
+            >{{ 'member.table.firstBonus' | lang }}<br />{{ 'member.table.upperLimit' | lang }}<br />(USDT)</span
+          >
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.sportsRebate' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.LiveRebate' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.Playground' | lang }}<br />{{ 'member.table.Rebate' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.lotteryRebate' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.chessRebate' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell"
+            >{{ 'member.table.dayRebate' | lang }}<br />{{ 'member.table.upperLimit' | lang }}<br />(USDT)</span
+          >
+        </th>
+        <!-- 自动返水金额上限 -->
+        <th>
+          <span class="cell">{{ 'member.table.autoCashbackLimit' | lang }}</span>
+        </th>
+        <!-- 单日免费 提款次数 -->
+        <th>
+          <span class="cell">{{ 'member.table.withdrawlCount' | lang }}</span>
+        </th>
+        <!-- 提款手续费 比例 -->
+        <th>
+          <span class="cell">{{ 'member.table.withdrawalFeeP' | lang }}</span>
+        </th>
+        <!-- 单笔手续费上限（USDT） -->
+        <th>
+          <span class="cell">{{ 'member.table.withdrawalFeeMax' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of levelConfigList">
+        <td>
+          <span class="cell">{{ item.vipLevel === 10 ? 'SVIP' : 'VIP' + item.vipLevel }}</span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap><input type="text" [value]="item.upgradePoints" [(ngModel)]="item.upgradePoints" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><input type="text" [value]="item.keepPeriodPoints" [(ngModel)]="item.keepPeriodPoints" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap><input type="text" [value]="item.upgradeBonus" [(ngModel)]="item.upgradeBonus" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap><input type="text" [value]="item.keepBonus" [(ngModel)]="item.keepBonus" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap><input type="text" [value]="item.birthdayBonus" [(ngModel)]="item.birthdayBonus" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><input type="text" [value]="item.loginRedPackage" [(ngModel)]="item.loginRedPackage" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>{{ 'member.table.times' | lang }}</span
+              ><input
+                type="text"
+                [value]="item.dayWithdrawLimitMoney"
+                [(ngModel)]="item.dayWithdrawLimitMoney" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>%</span
+              ><input type="text" [value]="item.rescueMoney" [(ngModel)]="item.rescueMoney" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix></span
+              ><input type="text" [value]="item.rescueMoneyMax" [(ngModel)]="item.rescueMoneyMax" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>%</span
+              ><input type="text" [value]="item.firstDepositBonus" [(ngModel)]="item.firstDepositBonus" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><input type="text" [value]="item.firstDepositMax" [(ngModel)]="item.firstDepositMax" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>%</span
+              ><input type="text" [value]="item.sportsCashback" [(ngModel)]="item.sportsCashback" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>%</span
+              ><input type="text" [value]="item.liveCashback" [(ngModel)]="item.liveCashback" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>%</span
+              ><input type="text" [value]="item.casinoCashback" [(ngModel)]="item.casinoCashback" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>%</span
+              ><input type="text" [value]="item.lotteryCashback" [(ngModel)]="item.lotteryCashback" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><span suffix>%</span
+              ><input type="text" [value]="item.chessCashback" [(ngModel)]="item.chessCashback" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><input type="text" [value]="item.dailyCashbackLimit" [(ngModel)]="item.dailyCashbackLimit" /></form-wrap
+          ></span>
+        </td>
+        <td>
+          <span class="cell"
+            ><form-wrap
+              ><input type="text" [value]="item.autoCashbackLimit" [(ngModel)]="item.autoCashbackLimit" /></form-wrap
+          ></span>
+        </td>
+        <!-- 单日免费 提款次数 -->
+        <td>
+          <span class="cell">
+            <form-wrap>
+              <input type="text" [(ngModel)]="item.freeWithdrawalsPerDay" />
+            </form-wrap>
+          </span>
+        </td>
+        <!-- 提款手续费 比例 -->
+        <td>
+          <span class="cell">
+            <form-wrap>
+              <input type="text" [(ngModel)]="item.withdrawalFeeProportion" />
+              <span suffix>%</span>
+            </form-wrap>
+          </span>
+        </td>
+        <!-- 单笔手续费上限（USDT） -->
+        <td>
+          <span class="cell">
+            <form-wrap>
+              <input type="text" [(ngModel)]="item.dailyFeeLimit" />
+            </form-wrap>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">{{ 'common.cancel' | lang }}</button>
+  <button type="button" class="c-btn btn btn-primary" (click)="onSubCommit()">{{ 'common.confirm' | lang }}</button>
+</div>

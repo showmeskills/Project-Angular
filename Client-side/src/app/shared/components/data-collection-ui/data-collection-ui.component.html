@@ -1,0 +1,91 @@
+<div *ngIf="isShowDetail" class="container">
+  <div class="title main-title" cdkDrag cdkDragHandle cdkDragBoundary="app-root" cdkDragRootElement=".container">
+    埋点测试UI
+    <div class="icon-close-simple" (click)="isShowDetail = false"></div>
+  </div>
+  <div class="title" (click)="toggle2(pointContainer, pointBtn, 200)">
+    操作信息({{ pointInfos.length }})
+    <div>
+      <div class="clear" (click)="clear($event)">清除</div>
+      <div class="arrow-right" #pointBtn style="margin-top: 5px"></div>
+    </div>
+  </div>
+  <div
+    class="scroll"
+    #pointContainer
+    style="
+      height: 0px;
+      transition: all 0.3s ease-out;
+      line-height: 1.2;
+      font-size: 12px;
+      flex-direction: column;
+      overflow: scroll;
+    "
+  >
+    <ng-container *ngFor="let item of pointInfos">
+      <div class="public-info-item" style="margin: 5px">{{ item }}</div>
+    </ng-container>
+  </div>
+  <div class="title" (click)="toggle2(sendContainer, sendBtn, 150)">
+    发送信息 间隔:{{ time }}s 累计:{{ count }} 计时:{{ time2 }}s
+    <div class="arrow-right" #sendBtn></div>
+  </div>
+  <div
+    class="scroll"
+    #sendContainer
+    style="
+      height: 0px;
+      transition: all 0.3s ease-out;
+      line-height: 1.2;
+      font-size: 12px;
+      flex-direction: column;
+      overflow: scroll;
+    "
+  >
+    <ng-container *ngFor="let item of sendInfos">
+      <div [class.failed]="!item.result">{{ item.result ? '发送成功' : '发送失败' }},累计发送{{ item.count }}</div>
+    </ng-container>
+  </div>
+  <div
+    class="title"
+    (click)="toggle(publicContainer, publicBtn)"
+    cdkDrag
+    cdkDragHandle
+    cdkDragRootElement=".container"
+    cdkDragBoundary="app-root"
+  >
+    公共信息
+    <div class="arrow-right expanded" #publicBtn></div>
+  </div>
+  <div
+    class="public-info-container"
+    #publicContainer
+    cdkDrag
+    cdkDragHandle
+    cdkDragRootElement=".container"
+    cdkDragBoundary="app-root"
+  >
+    <ng-container *ngFor="let item of publicInfos">
+      <div class="public-info-item">{{ item }}</div>
+    </ng-container>
+  </div>
+</div>
+<div
+  class="num-container"
+  *ngIf="!isShowDetail"
+  cdkDrag
+  cdkDragHandle
+  cdkDragBoundary="app-root"
+  (click)="isShowDetail = true; tipsInfo = []"
+>
+  <div style="line-height: 20px; font-size: 13px">{{ pointCount }}</div>
+  <div>
+    <div style="margin-right: 5px">{{ successCount }}</div>
+    <div style="color: #ff2b2b">{{ failCount }}</div>
+  </div>
+</div>
+<div class="tips-container" *ngIf="!isShowDetail">
+  <ng-container *ngFor="let item of tipsInfo; let index = index">
+    <div class="public-info-item" (animationend)="removeTip(index)">{{ item }}</div>
+  </ng-container>
+</div>

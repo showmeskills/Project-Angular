@@ -1,0 +1,165 @@
+<lottery-category-menu (lotteryChange)="lotteryChange($event)"></lottery-category-menu>
+<div class="content" [class.edit]="isEdit">
+  <ng-container *ngIf="currentMethods; else empty">
+    <div class="title">
+      <div class="name">{{ 'lotto.super' | lang }}</div>
+      <div class="edit" (click)="isEdit = !isEdit">
+        <img src="assets/images/svg/edit.svg" alt="" />
+        <span>{{ 'lotto.limitOddsAdj' | lang }}</span>
+      </div>
+    </div>
+    <div class="method-menu">
+      <div class="top-wrapper">
+        <div class="des">
+          <div class="item">
+            <div class="name">{{ 'lotto.min_limit' | lang }}</div>
+            <input
+              type="number"
+              autocomplete="off"
+              [min]="0"
+              [readonly]="!isEdit"
+              [(ngModel)]="data.lotteryPlayConfig.lotteryMinAmount"
+              (blur)="changeLimit()"
+            />
+          </div>
+          <div class="item">
+            <div class="name">{{ 'lotto.maxPupy' | lang }}</div>
+            <input
+              type="number"
+              autocomplete="off"
+              [min]="0"
+              [readonly]="!isEdit"
+              [(ngModel)]="data.lotteryPlayConfig.lotteryMaxQuota"
+              (blur)="changeLimit()"
+            />
+          </div>
+          <div class="item">
+            <div class="name">{{ 'lotto.maxSingle' | lang }}</div>
+            <input
+              type="number"
+              autocomplete="off"
+              [min]="0"
+              [readonly]="!isEdit"
+              [(ngModel)]="data.lotteryPlayConfig.lotterySingleMaxQuota"
+              (blur)="changeLimit()"
+            />
+          </div>
+        </div>
+        <ul class="switch-layout">
+          <li [class.active]="active === '双面盘'" (click)="changeActive('双面盘')">
+            <span>{{ 'lotto.doublePan' | lang }}</span>
+          </li>
+          <li [class.active]="active === '标准盘'" (click)="changeActive('标准盘')">
+            <span>{{ 'lotto.stanPan' | lang }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="menu-wrapper">
+        <ul class="one-menu" *ngIf="currentLayout && currentLayout.length > 0">
+          <ng-container *ngFor="let item of currentLayout; let index = index">
+            <li
+              [class.active]="index === layoutIndex"
+              (click)="index !== layoutIndex && switchLayout(index)"
+              *ngIf="item.type === active"
+            >
+              {{ item.lang | lang }}
+            </li>
+          </ng-container>
+        </ul>
+        <ul
+          class="two-menu"
+          *ngIf="currentLayout && currentLayout.length > 0 && currentLayout[layoutIndex].layout.length > 1"
+        >
+          <li
+            [class.active]="index === oneMenuIndex"
+            (click)="index !== oneMenuIndex && switchOneMenu(index)"
+            *ngFor="let item of currentLayout[layoutIndex].layout; let index = index"
+          >
+            <i class="checkBox-normal" [class.checkBox-active]="index === oneMenuIndex"></i>
+            <span>{{ item.lang | lang }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="layout-wrapper">
+        <div class="layout" *ngIf="currentLayout && currentLayout.length > 0">
+          <ul class="method-wrapper">
+            <li *ngFor="let item of currentMethods; let indexOne = index">
+              <div class="balls-wrapper" [ngStyle]="calcWidth()" #content>
+                <div>
+                  <div class="sub-title" *ngIf="item.title">
+                    {{ item.lang | lang }}
+                  </div>
+                  <ul
+                    [ngStyle]="ballWrapStyle(item)"
+                    [class]="currentLayout[layoutIndex].layout[oneMenuIndex].direction"
+                  >
+                    <li class="bet-container" *ngFor="let ball of item.balls; let indexBall = index">
+                      <div class="balls-type">
+                        <div class="balls">
+                          <span class="select-number">{{ ball.lotteryPlayName }}</span>
+                          <span class="rate">{{ ball.lotteryReturnRate }}</span>
+                        </div>
+                        <input
+                          type="number"
+                          autocomplete="off"
+                          [min]="0"
+                          [readonly]="!isEdit"
+                          name=""
+                          [value]="ball.lotteryOdds"
+                          (blur)="editRate($event, ball.lotteryPlayId)"
+                          id=""
+                        />
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div
+          class="edit"
+          *ngIf="isEdit && currentLayout[layoutIndex].layout[oneMenuIndex].showAllEdit"
+          (click)="showModel()"
+        >
+          <img src="assets/images/svg/edit.svg" alt="" />
+          <span>{{ 'lotto.allIn' | lang }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<ng-template #editall>
+  <div class="modal-header">
+    <div class="modal-title fz-16">{{ 'lotto.allIn' | lang }}</div>
+    <div class="c-btn-close" (click)="dialogRef.close()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="edit-button">
+      <span>{{ 'game.odds' | lang }}</span>
+      <input type="number" autocomplete="off" [min]="0" [(ngModel)]="lotteryOdds" />
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <div
+      class="c-btn c-btn-default"
+      style="margin-right: 13px"
+      (click)="isEdit = false; lotteryOdds = ''; dialogRef.close()"
+    >
+      {{ 'common.cancel' | lang }}
+    </div>
+    <div class="c-btn c-btn-primary" (click)="editAllRates(); dialogRef.close()">{{ 'common.confirm' | lang }}</div>
+  </div>
+</ng-template>
+<ng-template #empty>
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</ng-template>

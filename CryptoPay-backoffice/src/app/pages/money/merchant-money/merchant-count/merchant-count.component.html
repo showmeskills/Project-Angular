@@ -1,0 +1,176 @@
+<table class="table table-layout-fixed mb-0">
+  <thead theadAffix>
+    <tr>
+      <th>
+        <span class="cell">{{ 'common.date' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'payment.merchantFunding.depositAmount' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'payment.merchantFunding.depositCount' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'payment.merchantFunding.withdrawAmount' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'payment.merchantFunding.withdrawCount' | lang }}</span>
+      </th>
+      <!-- 兑换金额 -->
+      <th>
+        <span class="cell">{{ 'payment.merchantFunding.exchangeAmount' | lang }}</span>
+      </th>
+      <ng-container *ngIf="+merchantId === -1">
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.feeIncome' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.feeExpenditure' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.difference' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.backExpenditure' | lang }}</span>
+        </th>
+      </ng-container>
+      <ng-container *ngIf="+merchantId !== -1">
+        <th>
+          <span class="cell">{{ 'payment.transactionList.fee' | lang }}</span>
+        </th>
+      </ng-container>
+      <th>
+        <span class="cell">{{ 'payment.merchantFunding.adjustmentAmount' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'payment.merchantFunding.balance' | lang }}</span>
+      </th>
+      <th [style.width.px]="100">
+        <span class="cell">{{ 'common.details' | lang }}</span>
+      </th>
+    </tr>
+  </thead>
+  <tbody *ngIf="list.length">
+    <tr *ngFor="let item of list">
+      <td>
+        <span class="cell">{{ item.currentTimeStr }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.depositAmount | currencyValue : currency }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.depositNum }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.withdrawAmount | currencyValue : currency }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.withdrawNum }}</span>
+      </td>
+      <!-- 兑换金额 -->
+      <td>
+        <span class="cell">{{ item.exchangeAmount | currencyValue : currency }}</span>
+      </td>
+      <ng-container *ngIf="+merchantId === -1">
+        <td>
+          <span class="cell">{{ item.profitAmountIncome | currencyValue : currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.profitAmountOutcome | currencyValue : currency }}</span>
+        </td>
+        <!-- 兑换价差盈利 -->
+        <td>
+          <span class="cell">{{ item.exchangeProfitAmount | currencyValue : currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.managePayoutAmount | currencyValue : currency }}</span>
+        </td>
+      </ng-container>
+      <ng-container *ngIf="+merchantId !== -1">
+        <td>
+          <span class="cell">{{ item.fee | currencyValue : currency }}</span>
+        </td>
+      </ng-container>
+      <td>
+        <span class="cell">{{ item.adjustmentAmount | currencyValue : currency }}</span>
+      </td>
+      <td>
+        <span class="cell">
+          <span>{{ item.lastBalance | currencyValue : currency }}</span>
+          <img [currencyIcon]="currency" currencySize="18" class="ml-2" />
+        </span>
+      </td>
+      <td>
+        <span class="cell">
+          <span class="btn btn-light px-6 text-nowrap" (click)="onDetail(item)">{{ 'common.details' | lang }}</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="total">
+      <td>
+        <span class="cell">{{ 'lotto.total' | lang }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ list | reduceTotal : 'depositAmount' | currencyValue : currency }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ list | reduceTotal : 'depositNum' }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ list | reduceTotal : 'withdrawAmount' | currencyValue : currency }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ list | reduceTotal : 'withdrawNum' }}</span>
+      </td>
+      <!-- 兑换金额 -->
+      <td>
+        <span class="cell">{{ list | reduceTotal : 'payoutAmount' | currencyValue : currency }}</span>
+      </td>
+      <ng-container *ngIf="+merchantId === -1">
+        <td>
+          <span class="cell">{{ list | reduceTotal : 'profitAmountIncome' | currencyValue : currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ list | reduceTotal : 'profitAmountOutcome' | currencyValue : currency }}</span>
+        </td>
+        <!-- 兑换价差盈利 -->
+        <td>
+          <span class="cell">{{ list | reduceTotal : 'exchangeProfitAmount' | currencyValue : currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ list | reduceTotal : 'managePayoutAmount' | currencyValue : currency }}</span>
+        </td>
+      </ng-container>
+      <ng-container *ngIf="+merchantId !== -1">
+        <td>
+          <span class="cell">{{ list | reduceTotal : 'fee' | currencyValue : currency }}</span>
+        </td>
+      </ng-container>
+      <td>
+        <span class="cell">{{ list | reduceTotal : 'adjustmentAmount' | currencyValue : currency }}</span>
+      </td>
+      <td>
+        <span class="cell">
+          -
+          <!--          <span>{{ list | reduceTotal: 'lastBalance' | currencyValue: currency }}</span>-->
+          <!--          <img [currencyIcon]="currency" currencySize="18" class="ml-2" />-->
+        </span>
+      </td>
+      <td><span class="cell">-</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<empty *ngIf="!list.length"></empty>
+
+<div class="d-flex p-12 flex-between table-footer">
+  <div></div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+    ></app-paginator>
+  </div>
+</div>

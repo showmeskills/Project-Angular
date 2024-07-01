@@ -1,0 +1,134 @@
+<app-support-theme-detail-layout
+  [themeTitle]="'faq' | translate"
+  [h5FaqTitle]="h5FaqTitle"
+  [debounceBack]="debounceBack"
+  (goBack)="goBack()"
+  type="FAQ"
+  [h5DialogTitle]="h5DialogTitle"
+  [isListPage]="isListPage"
+  [relationArticleList]="article?.relationArticleList"
+  [menuListTemp]="menuListTemp"
+  [pageTemp]="pageTemp"
+  [article]="article"
+  [rightList]="article?.relationArticleList"
+  [h5ListPageTemp]="h5ListPageTemp"
+  [detailLoading]="detailLoading"
+>
+</app-support-theme-detail-layout>
+
+<!-- 左侧菜单 -->
+<ng-template #menuListTemp>
+  <div class="menu-item" *ngFor="let item of menuList; let i = index" [class.active-one]="isActiveIndex == i">
+    <div class="first-menu">
+      <div class="left onact96" (click)="$event.stopPropagation(); selectedMenuItem(i, item)">
+        <img class="left-img" [src]="item.iconAddress + item.icon" alt="" lazy="loading" />
+        <span class="left-title" [class.active-word-color]="isActiveIndex == i">{{ item.title }}</span>
+      </div>
+      <span *ngIf="item.children.length > 0" [class]="item.active ? 'icon-arrow-up' : 'icon-arrow-down'"> </span>
+    </div>
+    <!-- 二级菜单 -->
+    <ng-container *ngIf="item.active">
+      <div class="second-menu">
+        <p
+          class="sub-item onact96-not"
+          *ngFor="let subItem of item.children; let idx = index"
+          [class.active-two]="subItem.active"
+          (click)="$event.stopPropagation(); onSelectSubMenu(idx, subItem)"
+        >
+          {{ subItem.title }}
+        </p>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- 一级和二级分类列表显示 -->
+<ng-template #pageTemp>
+  <ng-container *ngIf="isListPage">
+    <div class="right-list">
+      <!-- 一级列表 -->
+      <ng-container *ngIf="isShowFirstList">
+        <div class="right-list-first">
+          <!-- 1级列表title -->
+          <p class="list-first-title">{{ currentTitle }}</p>
+          <!-- 显示二级列表 -->
+          <ul class="list-first-menu" [appLoading]="isLoading">
+            <li
+              class="list-first-item mutual-opacity onact96-not"
+              *ngFor="let item of subMenuList; let idx = index"
+              (click)="$event.stopPropagation(); onSelectSubMenu(idx, item)"
+            >
+              {{ item.title }}
+            </li>
+          </ul>
+          <!-- 问题列表 -->
+          <ng-container *ngTemplateOutlet="questionList"></ng-container>
+        </div>
+      </ng-container>
+      <!-- 二级列表 -->
+      <ng-container *ngIf="!isShowFirstList">
+        <div class="second-list">
+          <!-- 2级列表title -->
+          <p class="second-list-title">{{ currentSubTitle }}</p>
+          <div class="second-article-list" [appLoading]="isLoading">
+            <div class="second-article-list-left">
+              <p class="article-title onact96-not" *ngFor="let item of beforeHalfList" (click)="jumpToDetail(item)">
+                {{ item.title }}
+              </p>
+            </div>
+            <div class="second-article-list-right">
+              <p class="article-title onact96-not" *ngFor="let item of afterHalfList" (click)="jumpToDetail(item)">
+                {{ item.title }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+</ng-template>
+
+<!-- h5 -->
+<ng-template #h5ListPageTemp>
+  <ng-container *ngIf="isListPage">
+    <!-- 1级列表 -->
+    <ng-container *ngIf="isShowFirstList">
+      <div class="h5-first-list" [appLoading]="isLoading">
+        <p class="h5-first-list-title">{{ currentTitle }}</p>
+        <div class="h5-first-list-wrap">
+          <p class="h5-first-list-item onact96-not" *ngFor="let item of subMenuList" (click)="h5GoToListPage(item)">
+            {{ item.title }}
+          </p>
+        </div>
+        <ng-container *ngTemplateOutlet="questionList"></ng-container>
+      </div>
+    </ng-container>
+    <!-- 2级列表 -->
+    <ng-container *ngIf="!isShowFirstList">
+      <div class="h5-second-list" [appLoading]="isLoading">
+        <p class="h5-first-list-title">{{ currentSubTitle }}</p>
+        <div class="h5-questions-links onact96-not" *ngFor="let item of childrenList" (click)="jumpToDetail(item)">
+          {{ item.title }}
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #questionList>
+  <ng-container *ngIf="qestionsListBefore.length > 0">
+    <p class="question-title">{{ 'q_list' | translate }}</p>
+    <div class="question-list" [appLoading]="quesionListLoading">
+      <div class="question-list-left">
+        <p class="title onact96-not" *ngFor="let item of qestionsListBefore" (click)="jumpToDetail(item)">
+          {{ item.title }}
+        </p>
+      </div>
+      <div class="question-list-right">
+        <p class="title onact96-not" *ngFor="let item of qestionsListAfter" (click)="jumpToDetail(item)">
+          {{ item.title }}
+        </p>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

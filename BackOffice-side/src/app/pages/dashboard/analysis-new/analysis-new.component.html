@@ -1,0 +1,860 @@
+<!-- 常用功能/实时监控 -->
+<div class="d-flex flex-wrap">
+  <!-- 常用功能 -->
+  <div class="bg-fff rounded mr-4 mb-5" [style.height.px]="238" style="min-width: 584px">
+    <div class="fz-20 fw-bolder mt-6 ml-8">{{ 'member.list.commonFunc' | lang }}</div>
+    <div class="d-flex flex-wrap">
+      <a
+        class="text-center mt-9"
+        style="width: 20%"
+        *ngFor="let item of oftenList; index as i"
+        [routerLink]="[item.to]"
+      >
+        <img class="mb-5" [style.width.px]="36" [src]="item.iconSrc" />
+        <div class="color-222">{{ item.langPath | lang }}</div>
+      </a>
+    </div>
+  </div>
+  <!-- 实时监控 -->
+  <div
+    class="bg-fff rounded flex-1 mb-5"
+    [style.height.px]="238"
+    style="min-width: 584px"
+    [appLoading]="monitorLoading"
+  >
+    <div class="fz-20 fw-bolder mt-6 ml-8">{{ 'member.list.realTimeMonitor' | lang }}</div>
+    <div class="d-flex flex-wrap mx-5">
+      <!-- openDetailPopup(item.value) -->
+      <div
+        class="pt-3 text-center mt-8 monitor"
+        [class.active]="item.value === monitorValue"
+        (click)="monitorValue = item.value"
+        *ngFor="let item of monitorList"
+      >
+        <div class="fz-20 fw-bolder mb-6">
+          {{ item.amount || item.amount === 0 ? (item.amount | toFormatMoney) : 'NaN' }}
+        </div>
+        <div class="color-aaa">{{ item.lang | lang }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 实时概括 -->
+<div class="bg-fff rounded pt-6 mb-5" style="min-height: 360px" [appLoading]="realTimeSummaryLoading">
+  <div class="d-flex flex-ac mb-8 ml-8">
+    <div class="fz-20 fw-bolder mr-2">{{ 'member.list.realTimeOverview' | lang }}</div>
+    <div *ngIf="realTimeSummaryData?.updateTime" class="color-aaa fz-12 mt-1">
+      {{ 'member.list.update' | lang }} {{ realTimeSummaryData?.updateTime | timeFormat }}
+    </div>
+  </div>
+  <div class="d-flex flex-wrap">
+    <div class="px-5 mb-8 generalize" *ngFor="let item of realTimeSummaryData?.list">
+      <div class="d-flex flex-ac flex-between" style="word-break: keep-all">
+        <div class="d-flex flex-ac">
+          <div class="color-aaa" style="font-size: 15px">{{ item.title || '-' }}</div>
+          <!-- NGR, 红利概况, 推荐佣金 ：显示计算公式 -->
+          <svg-icon
+            *ngIf="['NGR', 'BonusSummary', 'RecommendCommission'].includes(item.key)"
+            [ngbTooltip]="getFormulaLang(item.key) | lang"
+            placement="right"
+            class="w20 ml-2 d-flex cursor-pointer svg-icon svg-icon-sm"
+            src="./assets/images/svg/question.svg"
+          ></svg-icon>
+        </div>
+        <div class="color-aaa fz-12">
+          <!-- 区别 活跃用户数/存款用户数  -->
+          {{
+            ['ActiveUserSummary', 'DepositUserSummary'].includes(item.key)
+              ? (item.day7Avg | toFormatMoney)
+              : (item.day7Avg | currencyValue: true)
+          }}
+        </div>
+      </div>
+      <div class="fz-20 fw-bolder h36 lh-36">
+        <!-- 区别 活跃用户数/存款用户数  -->
+        {{
+          ['ActiveUserSummary', 'DepositUserSummary'].includes(item.key)
+            ? (item.todayValue | toFormatMoney)
+            : (item.todayValue | currencyValue: true)
+        }}
+      </div>
+      <div class="d-flex flex-ac fz-14">
+        <div class="color-aaa" style="word-break: keep-all">{{ 'dashboard.info.vsYesterday' | lang }}</div>
+        <ng-container *win="item.todayRate; let value; prev as prev">
+          <div class="d-flex flex-ac mx-2" [winColor]="value" [winColorReverse]="true">
+            {{ prev }}{{ (value * 100 | currencyValue: false) || '-' }}%
+            <svg-icon
+              *ngIf="item.todayRate"
+              class="ml-1 d-flex svg-icon svg-icon-sm"
+              [src]="'./assets/images/svg/' + (item.todayRate > 0 ? 'analysis-new-on' : 'analysis-new-down') + '.svg'"
+            ></svg-icon>
+          </div>
+        </ng-container>
+        <div class="flex-1 d-flex justify-content-center" [style.height.px]="25">
+          <apx-chart
+            [series]="[{ name: '', data: item.day7Value }]"
+            [chart]="realBarChartOptions.chart"
+            [xaxis]="realBarChartOptions.xAxis"
+            [yaxis]="realBarChartOptions.yAxis"
+            [grid]="realBarChartOptions.grid"
+            [dataLabels]="realBarChartOptions.dataLabels"
+            [stroke]="realBarChartOptions.stroke"
+            [fill]="realBarChartOptions.fill"
+            [tooltip]="realBarChartOptions.tooltip"
+            [colors]="[item.color || '#AFD9FF']"
+            #realChart
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 游戏排行榜/会员排行榜/交易概括 -->
+<div class="d-flex flex-wrap">
+  <!-- 游戏排行榜 -->
+  <div
+    class="bg-fff rounded rank-box mb-5"
+    [style.height.px]="334"
+    style="min-width: 400px"
+    [appLoading]="gameRankLoading"
+  >
+    <div class="modal-header py-7">
+      <div class="d-flex flex-ac game-rank-title">
+        <div class="rank-title" [class.active]="curGanmeRankValue === 1" (click)="onGameRankTab(1)">
+          {{ 'dashboard.info.casino' | lang }}
+          <ng-container *ngIf="curGanmeRankValue === 1">{{ 'dashboard.info.ranking' | lang }}</ng-container>
+        </div>
+        <div class="fz-20 mx-1">/</div>
+        <div class="rank-title" [class.active]="curGanmeRankValue === 2" (click)="onGameRankTab(2)">
+          {{ 'game.type.LiveCasino' | lang }}
+          <ng-container *ngIf="curGanmeRankValue === 2">{{ 'dashboard.info.ranking' | lang }}</ng-container>
+        </div>
+      </div>
+      <div class="color-aaa fz-14 cursor-pointer d-flex flex-ac" (click)="openDetailPopup('ganmeRank')">
+        {{ 'dashboard.info.viewAll' | lang }}
+        <svg-icon class="pr-1 form-icon-triangle" [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+      </div>
+    </div>
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 名称 -->
+          <th>
+            <span class="cell">{{ 'dashboard.info.name' | lang }}</span>
+          </th>
+          <!-- 单量 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerCount', 'getGameRank')">
+                <span>{{ 'dashboard.info.count' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="gameRankSort.sort === 'WagerCount' && gameRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="gameRankSort.sort === 'WagerCount' && !gameRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 交易额 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerTotal', 'getGameRank')">
+                <span>{{ 'dashboard.info.transAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="gameRankSort.sort === 'WagerTotal' && gameRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="gameRankSort.sort === 'WagerTotal' && !gameRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 输赢 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('PayoutTotal', 'getGameRank')">
+                <span>{{ 'dashboard.info.winLose' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="gameRankSort.sort === 'PayoutTotal' && gameRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="gameRankSort.sort === 'PayoutTotal' && !gameRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of gameRankList; let i = index">
+          <td class="px-4" [style.width.px]="120">
+            <div class="game-name">
+              <div class="name">{{ item.gameName || '-' }}</div>
+              <div class="zoom">{{ item.gameName }}</div>
+            </div>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerTotal | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <ng-container *win="item.payoutTotal; let value; prev as prev">
+              <span class="cell" [winColor]="value" [winColorReverse]="true">
+                {{ prev }}{{ value | currencyValue: 'USDT' }}
+              </span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 空显示 -->
+    <empty [style.height.px]="230" *ngIf="!gameRankList.length && !gameRankLoading"></empty>
+  </div>
+  <!-- 会员排行榜 -->
+  <div
+    class="bg-fff rounded mx-5 rank-box mb-5"
+    [style.height.px]="334"
+    style="min-width: 400px"
+    [appLoading]="userRankLoading"
+  >
+    <div class="modal-header py-7">
+      <div class="fz-20 fw-bolder">{{ 'dashboard.vipRank.title' | lang }}</div>
+      <div class="color-aaa fz-14 cursor-pointer d-flex flex-ac" (click)="openDetailPopup('memberRank')">
+        {{ 'dashboard.info.viewAll' | lang }}
+        <svg-icon class="pr-1 form-icon-triangle" [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+      </div>
+    </div>
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 名称 -->
+          <th>
+            <span class="cell">{{ 'dashboard.info.name' | lang }}</span>
+          </th>
+          <!-- 单量 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerCount', 'getUserRank')">
+                <span>{{ 'dashboard.info.count' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="userRankSort.sort === 'WagerCount' && userRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="userRankSort.sort === 'WagerCount' && !userRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 交易额 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerTotal', 'getUserRank')">
+                <span>{{ 'dashboard.info.transAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="userRankSort.sort === 'WagerTotal' && userRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="userRankSort.sort === 'WagerTotal' && !userRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 输赢 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('PayoutTotal', 'getUserRank')">
+                <span>{{ 'dashboard.info.winLose' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="userRankSort.sort === 'PayoutTotal' && userRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="userRankSort.sort === 'PayoutTotal' && !userRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of userRankList; let i = index">
+          <td>
+            <span class="cell">{{ item.userName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerTotal | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <ng-container *win="item.payoutTotal; let value; prev as prev">
+              <span class="cell" [winColor]="value" [winColorReverse]="true">
+                {{ prev }}{{ value | currencyValue: 'USDT' }}
+              </span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 空显示 -->
+    <empty [style.height.px]="230" *ngIf="!userRankList.length && !userRankLoading"></empty>
+  </div>
+
+  <!-- 交易概括 -->
+  <div class="flex-1 bg-fff rounded mb-5" [style.height.px]="334" style="min-width: 450px" [appLoading]="tredeLoading">
+    <div class="d-flex flex-ac flex-between py-5 px-8">
+      <div class="fz-20 fw-bolder d-flex flex-ac">
+        {{ 'dashboard.transaction.title' | lang }}
+        <svg-icon
+          [ngbTooltip]="langService.get('dashboard.transaction.tooltip') | async"
+          placement="right"
+          class="ml-3 d-flex"
+          src="./assets/images/svg/question.svg"
+        ></svg-icon>
+      </div>
+      <div class="d-flex flex-ac">
+        <div
+          class="mr-6 generalizePay"
+          [class.active]="item.value === tradeType"
+          (click)="selectTradeType(item.value)"
+          *ngFor="let item of tradeTypeList"
+        >
+          {{ 'dashboard.transaction.type' | lang: item.value }}
+        </div>
+      </div>
+    </div>
+    <div class="py-4 pl-8">
+      <span class="color-999 fz-12"
+        >{{ headerTimeDiffDays }} {{ 'dashboard.transaction.dayReduce' | lang
+        }}{{ 'dashboard.transaction.type' | lang: tradeType }}：
+      </span>
+      <span class="fz-20 ml-4 mr-3">{{
+        tradeType === 'orderQuantity'
+          ? (tradeList | reduceTotal: tradeType)
+          : (tradeList | reduceTotal: tradeType | currencyValue: 'USDT')
+      }}</span>
+      <span class="fz-12 color-999">{{
+        tradeType === 'orderQuantity' ? ('dashboard.info.quantity' | lang) : 'USDT'
+      }}</span>
+    </div>
+    <div class="chart-wrap pr-8">
+      <apx-chart
+        *ngIf="['payoutAmount', 'orderQuantity'].includes(tradeType)"
+        [series]="tradeLineChartOptions.series"
+        [chart]="tradeLineChartOptions.chart"
+        [xaxis]="tradeLineChartOptions.xAxis"
+        [yaxis]="tradeLineChartOptions.yAxis"
+        [grid]="tradeLineChartOptions.grid"
+        [dataLabels]="tradeLineChartOptions.dataLabels"
+        [stroke]="tradeLineChartOptions.stroke"
+        [fill]="tradeLineChartOptions.fill"
+        [tooltip]="tradeLineChartOptions.tooltip"
+        [colors]="tradeLineChartOptions.colors"
+        #tradeLineChart
+      ></apx-chart>
+
+      <apx-chart
+        *ngIf="tradeType === 'activeFlowAmount'"
+        [series]="tradeBarChartOptions.series"
+        [chart]="tradeBarChartOptions.chart"
+        [xaxis]="tradeBarChartOptions.xAxis"
+        [yaxis]="tradeBarChartOptions.yAxis"
+        [grid]="tradeBarChartOptions.grid"
+        [dataLabels]="tradeBarChartOptions.dataLabels"
+        [stroke]="tradeBarChartOptions.stroke"
+        [fill]="tradeBarChartOptions.fill"
+        [tooltip]="tradeBarChartOptions.tooltip"
+        #tradeLineChart
+      ></apx-chart>
+    </div>
+  </div>
+</div>
+
+<!-- 会员趋势/国家排行榜/货币排行榜 -->
+<div class="d-flex flex-wrap">
+  <!-- 会员趋势 -->
+  <div
+    class="flex-1 bg-fff rounded mb-5"
+    [style.height.px]="366"
+    style="min-width: 450px"
+    [appLoading]="userTrendLoading"
+  >
+    <div class="d-flex flex-ac flex-between py-5 px-8">
+      <div class="fz-20 fw-bolder d-flex flex-ac">
+        {{ 'dashboard.memberTrend.title' | lang }}
+        <svg-icon
+          [ngbTooltip]="langService.get('dashboard.transaction.tooltip') | async"
+          placement="right"
+          class="ml-3 d-flex"
+          src="./assets/images/svg/question.svg"
+        ></svg-icon>
+      </div>
+      <div class="d-flex flex-ac">
+        <div
+          class="mr-6 generalizePay"
+          [class.active]="item.value === userTrendType"
+          (click)="selectTrendType(item.value)"
+          *ngFor="let item of userTrendTypeList"
+        >
+          {{ 'dashboard.memberTrend.type' | lang: item.value }}
+        </div>
+      </div>
+    </div>
+    <div class="py-4 px-8 d-flex flex-ac flex-between">
+      <div>
+        <ng-container *ngIf="userTrendType === 'depositAndwager'">
+          <span class="color-999 fz-12"
+            >{{ headerTimeDiffDays }} {{ 'dashboard.memberTrend.dayReduce' | lang
+            }}{{ 'dashboard.memberTrend.type' | lang: 'depositCount' }}：
+          </span>
+          <span class="fz-20 ml-4 mr-3">{{ userTrendData?.totalDeposits | toFormatMoney }}</span>
+        </ng-container>
+        <ng-container *ngIf="userTrendType === 'registerAndDeposit'">
+          <span class="color-999 fz-12"
+            >{{ headerTimeDiffDays }} {{ 'dashboard.memberTrend.dayReduce' | lang
+            }}{{ 'dashboard.memberTrend.type' | lang: 'registerCount' }}：
+          </span>
+          <span class="fz-20 ml-4 mr-3">{{ userTrendData?.totalRegisters | toFormatMoney }}</span>
+        </ng-container>
+        <span class="fz-12 color-999">{{ 'dashboard.memberTrend.people' | lang }}</span>
+      </div>
+      <div>
+        <ng-container *ngIf="userTrendType === 'depositAndwager'">
+          <span class="color-999 fz-12"
+            >{{ headerTimeDiffDays }} {{ 'dashboard.memberTrend.dayReduce' | lang
+            }}{{ 'dashboard.memberTrend.type' | lang: 'wagerCount' }}：
+          </span>
+          <span class="fz-20 ml-4 mr-3">{{ userTrendData?.totalTransactions | toFormatMoney }}</span>
+        </ng-container>
+
+        <ng-container *ngIf="userTrendType === 'registerAndDeposit'">
+          <span class="color-999 fz-12"
+            >{{ headerTimeDiffDays }} {{ 'dashboard.memberTrend.dayReduce' | lang
+            }}{{ 'dashboard.memberTrend.type' | lang: 'depositFirstCount' }}：
+          </span>
+          <span class="fz-20 ml-4 mr-3">{{ userTrendData?.totalFirstDeposits | toFormatMoney }}</span>
+        </ng-container>
+
+        <span class="fz-12 color-999">{{ 'dashboard.memberTrend.people' | lang }}</span>
+      </div>
+    </div>
+    <div class="chart-wrap pr-8">
+      <apx-chart
+        [series]="userTrendChartOptions.series"
+        [chart]="userTrendChartOptions.chart"
+        [xaxis]="userTrendChartOptions.xAxis"
+        [yaxis]="userTrendChartOptions.yAxis"
+        [grid]="userTrendChartOptions.grid"
+        [dataLabels]="userTrendChartOptions.dataLabels"
+        [stroke]="userTrendChartOptions.stroke"
+        [fill]="userTrendChartOptions.fill"
+        [tooltip]="userTrendChartOptions.tooltip"
+        #userTrendChart
+      ></apx-chart>
+    </div>
+  </div>
+  <!-- 国家排行榜 -->
+  <div
+    class="bg-fff rounded mx-5 rank-box mb-5"
+    [style.height.px]="366"
+    style="min-width: 400px"
+    [appLoading]="countryRankLoading"
+  >
+    <div class="modal-header py-7">
+      <div class="fz-20 fw-bolder">{{ 'dashboard.info.countriesRank' | lang }}</div>
+      <div class="color-aaa fz-14 cursor-pointer d-flex flex-ac" (click)="openDetailPopup('coutryRank')">
+        {{ 'dashboard.info.viewAll' | lang }}
+        <svg-icon class="pr-1 form-icon-triangle" [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+      </div>
+    </div>
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 国家 -->
+          <th>
+            <span class="cell">{{ 'dashboard.info.countries' | lang }}</span>
+          </th>
+          <!-- 交易量 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerCount', 'getCountryRank')">
+                <span>{{ 'dashboard.info.transVolum' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="countryRankSort.sort === 'WagerCount' && countryRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="countryRankSort.sort === 'WagerCount' && !countryRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 交易额 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerTotal', 'getCountryRank')">
+                <span>{{ 'dashboard.info.transAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="countryRankSort.sort === 'WagerTotal' && countryRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="countryRankSort.sort === 'WagerTotal' && !countryRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 输赢 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('PayoutTotal', 'getCountryRank')">
+                <span>{{ 'dashboard.info.winLose' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="countryRankSort.sort === 'PayoutTotal' && countryRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="countryRankSort.sort === 'PayoutTotal' && !countryRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 用户数 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('UserCount', 'getCountryRank')">
+                <span>{{ 'dashboard.info.users' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="countryRankSort.sort === 'UserCount' && countryRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="countryRankSort.sort === 'UserCount' && !countryRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of countryRankList; let i = index">
+          <td>
+            <span class="cell">
+              <div class="country-image">
+                <i iconSize="20" [iconCountry]="item.country"></i>
+              </div>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerTotal | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <ng-container *win="item.payoutTotal; let value; prev as prev">
+              <span class="cell" [winColor]="value" [winColorReverse]="true">
+                {{ prev }}{{ value | currencyValue: 'USDT' }}
+              </span>
+            </ng-container>
+          </td>
+          <td>
+            <span class="cell">{{ item.userCount | toFormatMoney }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 空显示 -->
+    <empty [style.height.px]="230" *ngIf="!countryRankList.length && !countryRankLoading"></empty>
+  </div>
+  <!-- 货币排行榜 -->
+  <div
+    class="bg-fff rounded rank-box mb-5"
+    [style.height.px]="366"
+    style="min-width: 400px"
+    [appLoading]="currencyRankLoading"
+  >
+    <div class="modal-header py-7">
+      <div class="fz-20 fw-bolder">{{ 'dashboard.info.currencyRank' | lang }}</div>
+      <div class="color-aaa fz-14 cursor-pointer d-flex flex-ac" (click)="openDetailPopup('currencyRank')">
+        {{ 'dashboard.info.viewAll' | lang }}
+        <svg-icon class="pr-1 form-icon-triangle" [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+      </div>
+    </div>
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 货币 -->
+          <th>
+            <span class="cell">{{ 'dashboard.info.currency' | lang }}</span>
+          </th>
+          <!-- 交易量 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerCount', 'getCurrencyRank')">
+                <span>{{ 'dashboard.info.transVolum' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="currencyRankSort.sort === 'WagerCount' && currencyRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="currencyRankSort.sort === 'WagerCount' && !currencyRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 交易额 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerTotal', 'getCurrencyRank')">
+                <span>{{ 'dashboard.info.transAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="currencyRankSort.sort === 'WagerTotal' && currencyRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="currencyRankSort.sort === 'WagerTotal' && !currencyRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 输赢 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('PayoutTotal', 'getCurrencyRank')">
+                <span>{{ 'dashboard.info.winLose' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="currencyRankSort.sort === 'PayoutTotal' && currencyRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="currencyRankSort.sort === 'PayoutTotal' && !currencyRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 用户数 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('UserCount', 'getCurrencyRank')">
+                <span>{{ 'dashboard.info.users' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div
+                    class="triangle-up"
+                    [class.active]="currencyRankSort.sort === 'UserCount' && currencyRankSort.isAsc"
+                  ></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="currencyRankSort.sort === 'UserCount' && !currencyRankSort.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of currencyRankList; let i = index">
+          <td>
+            <span class="cell">
+              <img [currencyIcon]="item.currency" currencySize="18" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.wagerTotal | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <ng-container *win="item.payoutTotal; let value; prev as prev">
+              <span class="cell" [winColor]="value" [winColorReverse]="true">
+                {{ prev }}{{ value | currencyValue: 'USDT' }}
+              </span>
+            </ng-container>
+          </td>
+          <td>
+            <span class="cell">{{ item.userCount | toFormatMoney }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 空显示 -->
+    <empty [style.height.px]="230" *ngIf="!currencyRankList.length && !currencyRankLoading"></empty>
+  </div>
+</div>
+
+<!-- 支付一览/用户存留率 -->
+<div class="d-flex flex-wrap">
+  <!-- 支付一览 -->
+  <div class="bg-fff rounded mr-5 mb-5" [style.height.px]="470" style="min-width: 600px" [appLoading]="payMentLoading">
+    <div class="modal-header py-5 flex-ac">
+      <div class="fz-20 fw-bolder">{{ 'dashboard.info.paymentList' | lang }}</div>
+
+      <mat-form-field [style.width.px]="130">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="payCurrency"
+          [style.height.px]="36"
+          (selectionChange)="onRequestChange('getPayMentList')"
+          (openedChange)="openSearchSelect($event, 'currencyList', currencyRef)"
+        >
+          <mat-select-trigger>
+            <div class="d-flex flex-ac">
+              <img *ngIf="payCurrency" [currencyIcon]="payCurrency" currencySize="18" class="mr-4" />
+              <span>{{ payCurrency || ('common.all' | lang) }}</span>
+            </div>
+          </mat-select-trigger>
+          <input
+            [placeholder]="'common.searchPlaceholder' | lang"
+            type="text"
+            #currencyRef
+            (keyup)="searchGroup['currencyList'] = $event.target?.['value'] || ''"
+            class="select-search"
+          />
+          <mat-option
+            *ngFor="let item of currencyList | search: 'code' : searchGroup['currencyList']"
+            [value]="item.code"
+          >
+            <div class="d-flex flex-ac">
+              <img *ngIf="item.code" [currencyIcon]="item.code" currencySize="18" class="mr-4" />
+              <span>{{ item.code || ('common.all' | lang) }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="chart-wrap pr-8 mt-4">
+      <apx-chart
+        [series]="payBarChartOptions.series"
+        [chart]="payBarChartOptions.chart"
+        [xaxis]="payBarChartOptions.xAxis"
+        [yaxis]="payBarChartOptions.yAxis"
+        [grid]="payBarChartOptions.grid"
+        [dataLabels]="payBarChartOptions.dataLabels"
+        [stroke]="payBarChartOptions.stroke"
+        [legend]="payBarChartOptions.legend"
+        [fill]="payBarChartOptions.fill"
+        [tooltip]="payBarChartOptions.tooltip"
+        #payBarChart
+      ></apx-chart>
+    </div>
+  </div>
+  <!-- 用户存留率 -->
+  <div class="flex-1 bg-fff rounded mb-5" style="min-width: 650px" [appLoading]="retainLoading">
+    <div class="d-flex flex-ac flex-between py-8 px-8" style="overflow: hidden">
+      <div class="fz-20 fw-bolder d-flex flex-ac" style="word-break: keep-all">
+        {{ 'dashboard.retain.title' | lang }}
+        <svg-icon
+          [ngbTooltip]="langService.get('dashboard.transaction.tooltip') | async"
+          placement="right"
+          class="ml-3 d-flex"
+          src="./assets/images/svg/question.svg"
+        ></svg-icon>
+      </div>
+      <div class="d-flex flex-ac">
+        <!-- <form-wrap [style.width.px]="langService.isLocal ? '200' : '260'" class="mr-6" style="border-radius: 21px">
+          <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+          <input
+            class="form-control"
+            autocomplete="off"
+            type="text"
+            [(ngModel)]="retainSearch"
+            (keyup)="$event.keyCode === 13 && selecRetainType('xxx')"
+            [placeholder]="'dashboard.info.referrerManager' | lang"
+          />
+        </form-wrap> -->
+        <!-- <div class="d-flex flex-ac">
+          <div
+            class="mr-6 generalizePay"
+            [class.active]="item.value === retainType"
+            (click)="selecRetainType(item.value)"
+            *ngFor="let item of retainTypeList"
+          >
+            {{ 'dashboard.retain.type' | lang : item.value }}
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <div class="px-5 custom-scroll-x">
+      <table class="retain-table">
+        <thead>
+          <tr>
+            <th *ngFor="let item of retainTheadList; index as i">{{ item }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of retainList">
+            <td>{{ item.date }}</td>
+            <td>{{ item.depositCount | toFormatMoney }}</td>
+            <td>{{ item.arpu | toFormatMoney }}</td>
+            <td *ngIf="item.firstWeek !== null" [style]="getTdBg(item.firstWeek)">{{ item.firstWeek }}%</td>
+            <td *ngIf="item.secendWeek !== null" [style]="getTdBg(item.secendWeek)">{{ item.secendWeek }}%</td>
+            <td *ngIf="item.thirdWeek !== null" [style]="getTdBg(item.thirdWeek)">{{ item.thirdWeek }}%</td>
+            <td *ngIf="item.fourthWeek !== null" [style]="getTdBg(item.fourthWeek)">{{ item.fourthWeek }}%</td>
+            <td *ngIf="item.fifthWeek !== null" [style]="getTdBg(item.fifthWeek)">{{ item.fifthWeek }}%</td>
+            <td *ngIf="item.sixthWeek !== null" [style]="getTdBg(item.sixthWeek)">{{ item.sixthWeek }}%</td>
+            <td *ngIf="item.seventhWeek !== null" [style]="getTdBg(item.seventhWeek)">{{ item.seventhWeek }}%</td>
+            <td *ngIf="item.eighthWeek !== null" [style]="getTdBg(item.eighthWeek)">{{ item.eighthWeek }}%</td>
+            <td *ngIf="item.ninthWeek !== null" [style]="getTdBg(item.ninthWeek)">{{ item.ninthWeek }}%</td>
+            <td *ngIf="item.tenthWeek !== null" [style]="getTdBg(item.tenthWeek)">{{ item.tenthWeek }}%</td>
+            <td *ngIf="item.eleventhWeek !== null" [style]="getTdBg(item.eleventhWeek)">{{ item.eleventhWeek }}%</td>
+            <td *ngIf="item.twelfthWeek !== null" [style]="getTdBg(item.twelfthWeek)">{{ item.twelfthWeek }}%</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- 空显示 -->
+      <empty *ngIf="!retainList.length && !retainLoading"></empty>
+    </div>
+  </div>
+</div>

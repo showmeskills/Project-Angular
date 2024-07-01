@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="54" height="52" viewBox="0 0 54 52">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-2 {
+        fill: #8d96a1;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-4 {
+        fill: #e6e8ea;
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-6 {
+        fill: #f04e23;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ececec"/>
+      <stop offset="1" stop-color="#d9dfe5"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#f04e23"/>
+      <stop offset="1" stop-color="#ff896c" stop-opacity="0.502"/>
+    </linearGradient>
+  </defs>
+  <g id="组_233" data-name="组 233" transform="translate(-688 4540)">
+    <rect id="矩形_418" data-name="矩形 418" class="cls-1" width="48" height="32" rx="3" transform="translate(688 -4523)"/>
+    <path id="多边形_34" data-name="多边形 34" class="cls-2" d="M2.5,0,5,2.5,2.5,5,0,2.5Z" transform="translate(709 -4493)"/>
+    <path id="多边形_35" data-name="多边形 35" class="cls-2" d="M2.5,0,5,2.5,2.5,5,0,2.5Z" transform="translate(688 -4530)"/>
+    <path id="多边形_36" data-name="多边形 36" class="cls-2" d="M1.5,0,3,1.5,1.5,3,0,1.5Z" transform="translate(739 -4515)"/>
+    <path id="矩形_428" data-name="矩形 428" class="cls-3" d="M5.5,0H20a0,0,0,0,1,0,0V11a0,0,0,0,1,0,0H5.5A5.5,5.5,0,0,1,0,5.5v0A5.5,5.5,0,0,1,5.5,0Z" transform="translate(716 -4512)"/>
+    <circle id="椭圆_63" data-name="椭圆 63" class="cls-4" cx="3.5" cy="3.5" r="3.5" transform="translate(719 -4510)"/>
+    <g id="组_233-2" data-name="组 233" transform="translate(-60 1.192)">
+      <circle id="椭圆_60" data-name="椭圆 60" class="cls-5" cx="12.5" cy="12.5" r="12.5" transform="translate(759 -4541.192)"/>
+      <circle id="椭圆_62" data-name="椭圆 62" class="cls-6" cx="8.5" cy="8.5" r="8.5" transform="translate(763 -4537.192)"/>
+    </g>
+  </g>
+</svg>

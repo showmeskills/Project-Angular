@@ -1,0 +1,185 @@
+<modal-title [title]="'luckRoulette.selPrize' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="prize-select w-100 px-12 py-8 d-flex">
+  <div class="prize-type" [formGroup]="formGroup">
+    <label class="radio radio-lg mr-5 fz-16 lh-32 mb-8" *ngFor="let item of typeList">
+      <input type="radio" [value]="item.prizeTypeValue" name="prizeType" formControlName="type" (change)="onType()" />
+      <span class="mr-4"></span>{{ item.prizeTypeName }}
+    </label>
+  </div>
+
+  <div class="flex-1 pl-8 d-flex flex-column">
+    <div class="d-flex flex-wrap" [formGroup]="formGroup">
+      <!-- 奖品名称 -->
+      <form-row class="mr-8" name="prizeName" [label]="'luckRoulette.prizeName' | lang">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input
+            [style.width.px]="140"
+            [placeholder]="'form.enterTips' | lang: { label: 'luckRoulette.prizeName' | lang }"
+            [formControl]="control"
+            (keyup)="$event.key === 'Enter' && loadData(true)"
+            class="form-control"
+            type="text"
+          />
+        </ng-template>
+      </form-row>
+
+      <!-- 券码 -->
+      <form-row class="mr-8" name="prizeCode" [label]="'member.coupon.couponCode' | lang">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input
+            [style.width.px]="120"
+            [placeholder]="'form.enterTips' | lang: { label: 'member.coupon.couponCode' | lang }"
+            [formControl]="control"
+            (keyup)="$event.key === 'Enter' && loadData(true)"
+            class="form-control"
+            type="text"
+          />
+        </ng-template>
+      </form-row>
+
+      <!-- 金额/比列 -->
+      <ng-container
+        *ngIf="
+          [
+            PrizeType.Cash,
+            PrizeType.Credit,
+            PrizeType.AfterCash,
+            PrizeType.NonStickyBonus,
+            PrizeType.StickyBonus
+          ].includes(formGroup.value.type)
+        "
+      >
+        <label class="radio radio-lg mr-8 lh-32 py-2" *ngFor="let item of amountType">
+          <input
+            formControlName="amountType"
+            [value]="item.value"
+            type="radio"
+            name="amountType"
+            (change)="loadData(true)"
+          />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </ng-container>
+
+      <div class="btn-wrap py-2">
+        <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="reset()">
+          {{ 'common.reset' | lang }}
+        </button>
+        <button
+          class="c-btn c-btn-primary"
+          [disabled]="appService.isContentLoadingSubject | async"
+          (click)="loadData(true)"
+        >
+          {{ 'common.confirm' | lang }}
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1 custom-scroll-y" #scrollDOM>
+      <table class="table prize-table mb-0">
+        <thead>
+          <tr>
+            <th><span class="cell"></span></th>
+            <th>
+              <span class="cell">{{ 'luckRoulette.prizeName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.couponCode' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'luckRoulette.prizeType' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.config' | lang }}</span>
+            </th>
+            <th *ngIf="[PrizeType.Cash, PrizeType.Credit, PrizeType.AfterCash].includes(formGroup.value.type)">
+              <span class="cell">{{ 'common.type' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'bonus.activity.quantityNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.creadTime' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list; index as i">
+            <td>
+              <span class="cell">
+                {{ item['checked'] }}
+                <label class="radio radio-lg mr-8 fz-14 color-222">
+                  <input
+                    [value]="item.id"
+                    [ngModel]="item['checked']"
+                    (ngModelChange)="onSelect(item)"
+                    name="prizeItem"
+                    type="radio"
+                  /><span></span>
+                </label>
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ item.prizeName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.prizeCode || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ prizeService.getPrizeName(typeList, item.prizeType) }}
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ item | prizeConfig }}</span>
+            </td>
+            <td *ngIf="[PrizeType.Cash, PrizeType.Credit, PrizeType.AfterCash].includes(formGroup.value.type)">
+              <span class="cell">
+                <ng-container *ngFor="let at of amountType">
+                  <ng-container *ngIf="at.value === item.amountType">{{ at.lang | lang }}</ng-container>
+                </ng-container>
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ item.totalIssuedCount | toFormatMoney }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createdTime | timeFormat }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!list.length" [style.height.%]="76"></empty>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<modal-footer [dismissClose] (confirm)="onSubmit()"></modal-footer>

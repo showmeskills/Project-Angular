@@ -1,0 +1,379 @@
+<div class="page-container">
+  <app-header-title-bar [title]="headerName" [clickForRouterBack]="true"></app-header-title-bar>
+
+  <div class="main-container unity-padding-h5-24 unity-padding-web inner-page">
+    <!--标题栏-->
+    <div class="form-container container">
+      <!--输入交易ID-->
+      <ng-container
+        *ngTemplateOutlet="formTitle; context: { name: ('enter_id' | translate), show: false, optional: false }"
+      >
+      </ng-container>
+      <ng-container
+        *ngTemplateOutlet="form; context: { item: matchedOrderInfor, disable: isSupplement }"
+      ></ng-container>
+      <!--上传付款证明-->
+      <ng-container
+        *ngTemplateOutlet="formTitle; context: { name: ('up_pay_cert' | translate), show: true, optional: false }"
+      >
+      </ng-container>
+      <ng-container *ngIf="isSupplement">
+        <!--处理结果-->
+        <div class="deal-result">
+          {{ matchedOrderInfor?.supplementExplanation || matchedOrderInfor?.handleResultTxt }}
+          <ng-container *ngIf="['NoSupplement'].includes(matchedOrderInfor?.handleResult)">
+            {{ 'supplement_order' | translate }}
+          </ng-container>
+        </div>
+        <!--补充材料 上传视频-->
+        <ng-container *ngIf="['SupplementVerify'].includes(matchedOrderInfor?.handleResult)">
+          <ng-container *ngTemplateOutlet="suplementBox"></ng-container>
+        </ng-container>
+      </ng-container>
+      <!--上传文件-->
+      <ng-container
+        *ngIf="
+          !isSupplement ||
+          [
+            'NoSupplement',
+            'SupplementComplete',
+            'SupplementOrder',
+            'SupplementNewsComplete',
+            'SupplementRemark'
+          ].includes(matchedOrderInfor?.handleResult)
+        "
+      >
+        <div *ngIf="!isSupplement" class="notice-txt">{{ 'pay_proof' | translate }}</div>
+        <ng-container
+          *ngTemplateOutlet="
+            updateFiles;
+            context: {
+              list: fileList,
+              show:
+                isSupplement &&
+                ['SupplementComplete', 'SupplementOrder', 'SupplementNewsComplete'].includes(
+                  matchedOrderInfor?.handleResult
+                )
+            }
+          "
+        >
+        </ng-container>
+      </ng-container>
+      <!--补充信息 Supplement:hide-->
+      <ng-container>
+        <ng-container
+          *ngTemplateOutlet="formTitle; context: { name: ('addi_info' | translate), show: false, optional: true }"
+        >
+        </ng-container>
+        <div class="notice-txt">{{ 'add_info' | translate }}</div>
+        <div class="remark-box">
+          <textarea
+            id="remark"
+            [(ngModel)]="remarkValue"
+            name="story"
+            rows="5"
+            cols="33"
+            maxlength="500"
+            (keyup.enter)="checkToSubmit()"
+          ></textarea>
+          <p class="txt-count">
+            <span id="textCount">{{ remarkValue.length }}</span
+            >/500
+          </p>
+        </div>
+      </ng-container>
+      <div class="btn-group">
+        <customize-button width="100%" size="large" (onClick)="back()">
+          {{ 'back' | translate }}
+        </customize-button>
+        <customize-button
+          width="100%"
+          size="large"
+          [disabled]="vidioUpLoading || imgUpLoading || loading"
+          type="primary"
+          (onClick)="submit(isSupplement)"
+          [loading]="loading"
+        >
+          {{ 'submit' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--表单标题-->
+<ng-template #formTitle let-name="name" let-show="show" let-optional="optional">
+  <div class="form-title-txx">
+    {{ name }}
+    <ng-container *ngIf="show"><span class="star-pointer">*</span></ng-container>
+    <ng-container *ngIf="optional"
+      ><span class="optional-txt">（{{ 'optional' | translate }}）</span></ng-container
+    >
+  </div>
+</ng-template>
+
+<!--上传文件-->
+<ng-template #updateFiles let-list="list" let-show="show">
+  <div class="update">
+    <div class="deal-notice-detail" *ngIf="show && matchedOrderInfor?.precautions">
+      <div>{{ 'appeal_announcements' | translate }}：</div>
+      <pre>{{ matchedOrderInfor?.precautions }}</pre>
+    </div>
+    <div
+      class="update-box mutual-opacity"
+      [class.disabled]="imgUpLoading"
+      [class.error]="submitValid2 && list.length == 0"
+    >
+      <input
+        type="file"
+        (change)="upFile($event)"
+        style="opacity: 0; width: 126px; height: 48px; position: absolute; top: 0; left: 0"
+      />
+      <ng-container *ngIf="imgUpLoading">
+        <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+      </ng-container>
+      <ng-container *ngIf="!imgUpLoading">
+        <i class="icon-exit" [class.error]="submitValid2 && list.length == 0"></i>{{ 'up_files' | translate }}
+      </ng-container>
+    </div>
+    <div class="error-msg" *ngIf="submitValid2 && list.length == 0">
+      {{ 'require_field' | translate }}
+    </div>
+    <ng-container *ngIf="!isSupplement">
+      <span class="small-notice"> {{ 'up_four' | translate }}</span>
+      <span class="small-notice"> {{ 'file_size_formats' | translate }}</span>
+    </ng-container>
+    <div class="files-box" *ngIf="list.length > 0">
+      <div class="item-row" *ngFor="let item of list; let i = index">
+        <object [type]="item.type" [data]="filesData[i] | safe"></object>
+        <span class="close-icon onact96-not" (click)="delFilesData(i)">x</span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!--补充资料：suplementBox-->
+<ng-template #suplementBox>
+  <div class="suplement-box">
+    <div class="notice-details" *ngIf="!isSupplement; else dealNoticeDetails">
+      <div class="notice-txt font-16">{{ 'veri_video' | translate }}</div>
+      <div class="bold-txt offset-both">{{ 'retreat_asset_info' | translate }}</div>
+      <div class="bold-txt">
+        {{ 'up_video' | translate }}
+        <div class="orange-txt">
+          <span class="icon-play-video"></span>
+          <span class="txt-underline">{{ 'video_tutorial' | translate }}</span>
+        </div>
+      </div>
+      <div class="details-txt">
+        <span>{{ 'up_key_content' | translate }}</span>
+        <span>{{ 'shot_valid' | translate }}</span>
+        <span>{{ 'clear_display' | translate }}</span>
+        <span>{{ 'login_inter_bank' | translate }}</span>
+        <span>{{ 'find_correct_record' | translate }}</span>
+        <span>{{ 'display_all_info' | translate }}</span>
+        <span>{{ 'precautions' | translate }}</span>
+        <span>{{ 'invalid_submit' | translate }}</span>
+        <span>{{ 'trans_record_display' | translate }}</span>
+        <span>{{ 'show_other_device' | translate }}</span>
+      </div>
+    </div>
+    <ng-template #dealNoticeDetails>
+      <div class="notice-details" *ngIf="matchedOrderInfor?.precautions">
+        <div class="details-txt" style="margin-top: 0">
+          <span>{{ 'appeal_announcements' | translate }}：</span>
+          <pre>{{ matchedOrderInfor?.precautions }}</pre>
+        </div>
+      </div>
+    </ng-template>
+    <div class="notice-txt">{{ 'sure_content' | translate }}</div>
+    <div class="supplement-update-box" [class.error]="submitValidVideo" [appLoading]="vidioUpLoading">
+      <video class="video-player" width="268" height="150" controls *ngIf="videoData">
+        <source [src]="videoData" type="video/mp4" />
+      </video>
+      <ng-container *ngIf="!videoData && !vidioUpLoading">
+        <input
+          type="file"
+          (change)="upvideo($event)"
+          style="opacity: 0; width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: pointer"
+        />
+        <span class="icon-cloud-upload"></span>
+        <span class="txt" *ngIf="!isH5"
+          >{{ 'drag_sp' | translate }}<span class="orange"> {{ 'view_sp' | translate }}</span></span
+        >
+        <span class="txt-small" *ngIf="isH5">{{ 'click_up_video' | translate }}</span>
+        <span class="txt-gray" *ngIf="isH5">{{ 'file_not_big' | translate }}</span>
+      </ng-container>
+    </div>
+    <div class="error-msg" *ngIf="submitValidVideo">
+      {{ 'require_field' | translate }}
+    </div>
+    <div class="supplement-notice notice-txt font-16" *ngIf="!isH5">{{ 'file_not_big' | translate }}</div>
+  </div>
+</ng-template>
+
+<!--提示:noticeCard-->
+<ng-template #noticeCard let-content="content">
+  <div class="notice-box">
+    <span class="icon-important"></span>
+    <span class="txt">{{ content }}</span>
+  </div>
+</ng-template>
+
+<!-- web申请单弹窗模板 -->
+<ng-template #orderDialog>
+  <div class="select-popup webFilterPopup animate__fill_none web">
+    <div class="contants">
+      <span class="correct-icon"></span>
+      <span class="bold-txt">{{ 'submitted' | translate }}</span>
+      <div class="notice-colunm">
+        <div class="header">{{ 'appeal_id' | translate }}{{ successlAppealID }}</div>
+        <p class="txt">
+          {{ 'cen_first' | translate }}<span style="color: var(--primary-color)">5-7</span>
+          {{ 'cen_two' | translate }}
+        </p>
+      </div>
+      <customize-button
+        type="primary"
+        [size]="isH5 ? 'large' : 'medium'"
+        [width]="isH5 ? '100%' : '164px'"
+        (onClick)="orderDialogPopup.close(); back()"
+        >{{ 'back' | translate }}</customize-button
+      >
+    </div>
+  </div>
+</ng-template>
+
+<!-- 修改金额确定弹窗 -->
+<ng-template #amountReviseDialog>
+  <div class="select-popup webFilterPopup animate__fill_none web">
+    <div class="contants contants-uc">
+      <span class="correct-icon"></span>
+      <span class="bold-txt">{{ 'statem_00' | translate }}</span>
+      <div class="notice-colunm">
+        <p class="txt">
+          {{ 'statem_01' | translate }}
+        </p>
+        <mat-checkbox class="example-margin" [(ngModel)]="isAmountRevise">{{ 'statem_02' | translate }}</mat-checkbox>
+      </div>
+      <customize-button
+        type="primary"
+        [size]="isH5 ? 'large' : 'medium'"
+        [width]="isH5 ? '100%' : '164px'"
+        (onClick)="amountReviseDialogPopup.close()"
+        >{{ 'confirm' | translate }}</customize-button
+      >
+    </div>
+  </div>
+</ng-template>
+
+<!--表单 -->
+<ng-template #form let-item="item" let-disable="disable">
+  <div class="form-column">
+    <!--提示-->
+    <div class="offset-bottom" *ngIf="item?.status == 'Supplement'">
+      <div class="notice-txt">{{ 'fill_return' | translate }}</div>
+      <ng-container *ngTemplateOutlet="noticeCard; context: { content: ('up_info' | translate) }"> </ng-container>
+    </div>
+
+    <!--交易ID-->
+    <div class="form-group" [appLoading]="loadingForm">
+      <div class="header">{{ 'trans_id' | translate }}<span [class.star-pointer]="true">*</span></div>
+      <!-- 输入框 -->
+      <div
+        class="input-group"
+        [class.focus]="$any(orderId).isFocus"
+        [class.disabled]="disable"
+        [class.error]="$any(orderId).isValid || $any(orderId).isValid1 || $any(orderId).isValid3 || submitValid1"
+      >
+        <input
+          #orderId
+          type="text"
+          [(ngModel)]="id"
+          placeholder="{{ 'please_enter_id' | translate }}"
+          (focus)="onFocus(orderId)"
+          [class.disable]="disable"
+          [disabled]="disable"
+          (blur)="onBlurOrderId(orderId)"
+          (input)="onInput(orderId)"
+        />
+      </div>
+      <!-- 输入框下面的错误信息 -->
+      <div class="error-msg" *ngIf="(orderId.value.length === 0 && $any(orderId).isFocus) || submitValid1">
+        {{ 'require_field' | translate }}
+      </div>
+      <div class="error-msg" *ngIf="orderId.value.length > 0">
+        <ng-container *ngIf="$any(orderId).isValid1">
+          {{ orderStatusError }}
+        </ng-container>
+        <ng-container *ngIf="$any(orderId).isValid3">
+          {{ 'not_find_failed' | translate }}
+        </ng-container>
+      </div>
+    </div>
+    <!-- *ngIf="$any(orderId).isValid"-->
+    <ng-container *ngIf="item?.orderNum">
+      <!--币种 in-->
+      <div class="form-group">
+        <div class="header">{{ 'curr' | translate }}</div>
+        <div class="selected-row">
+          <!-- //TODO: 这里应该使用icon字段，但暂时使用currency来匹配了 -->
+          <img class="currency-icon offset-icon-left" [src]="item.currency | currencyIcon" />
+          <span>{{ item?.currency }}</span>
+          <span class="value">{{ item?.currency }}</span>
+        </div>
+      </div>
+
+      <!--支付方式 in-->
+      <div class="form-group">
+        <div class="header">{{ 'pay_methods' | translate }}</div>
+        <div class="option-row" [class.constant-width]="isH5" [class.active]="true">
+          <div class="option">
+            <i class="icon-1" *ngIf="item.paymentIcon.length == 0"></i>
+            <img *ngIf="item.paymentIcon.length > 0" class="payment-icon" [src]="item.paymentIcon" />
+            {{ item.paymentName }}
+          </div>
+          <span class="icon-fin"></span>
+        </div>
+      </div>
+      <!--金额-->
+      <div class="form-group">
+        <div class="header">{{ 'amount' | translate }}</div>
+        <!-- 输入框 -->
+        <div class="amount-input-box">
+          <div
+            class="input-group"
+            [class.focus]="$any(amount).isFocus"
+            [class.disabled]="!isAmountRevise"
+            [class.error]="!amount.value || currentAmount.length == 0"
+          >
+            <input
+              #amount
+              type="number"
+              [(ngModel)]="currentAmount"
+              placeholder="{{ 'please_enter_id' | translate }}"
+              (focus)="onFocus(amount)"
+              [class.disable]="!isAmountRevise"
+              [disabled]="!isAmountRevise"
+              (blur)="onBlurAmount(amount)"
+              (input)="onAmountInput(amount)"
+            />
+          </div>
+          <div class="amount-btn-box onact96" (click)="openAmountReviseDialog()">
+            <img src="assets/svg/edit-icon.svg" />{{ 'ame_amo00' | translate }}
+          </div>
+        </div>
+        <ng-container *ngIf="showAmountNotice">
+          <ng-container *ngTemplateOutlet="noticeCard; context: { content: ('person_deal' | translate) }">
+          </ng-container>
+        </ng-container>
+      </div>
+      <!--存款人 in-->
+      <div class="form-group">
+        <div class="header">{{ 'depositor' | translate }}</div>
+        <div class="selected-row">
+          <span>{{ item.userName }}</span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

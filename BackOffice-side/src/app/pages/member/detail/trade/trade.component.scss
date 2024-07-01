@@ -1,0 +1,133 @@
+.return-info {
+  border-radius: 10px;
+}
+
+.item {
+  height: 80px;
+  border-radius: 10px;
+  background: #f7f7f7;
+  flex: 1 1 216px;
+  max-width: 260px;
+  min-width: 216px;
+  white-space: nowrap;
+  .icon {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.color-purple {
+  color: #7e4aeb;
+}
+
+.bg-purple {
+  background: #fcfaff;
+}
+
+.color-green {
+  color: #50cd89;
+}
+
+.bg-green {
+  background: #e8fff3;
+}
+
+.color-blue {
+  color: #31a0f7;
+}
+
+.bg-skyblue {
+  background: #f2f8ff;
+}
+
+.color-grass {
+  color: #77be43;
+}
+
+.bg-grass {
+  background: #f7fff2;
+}
+
+.color-red {
+  color: #e45174;
+}
+
+.bg-red {
+  background: #fff4ff;
+}
+
+.label.label-lg {
+  height: 34px;
+
+  &.label-light-danger {
+    background: #fff5f8;
+    color: #f1416c;
+  }
+
+  &.label-light-warning {
+    background: #fff8dd;
+    color: #ffc700;
+  }
+}
+
+.filter-wrap {
+  form-row {
+    margin-right: 30px;
+  }
+}
+
+.table {
+  td .cell {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    flex-flow: column wrap;
+    justify-content: center;
+    &.has-icon {
+      flex-flow: inherit;
+    }
+  }
+}
+.modal-body {
+  font-size: 16px;
+}
+.red-text {
+  color: #f1416c !important;
+}
+
+.green-text {
+  color: #50cd89 !important;
+}
+
+/*新增样式--》imRg电竞模块样式*/
+.info-item-wrap {
+  .item {
+    height: 100px;
+    min-width: 288px;
+    flex: 1 1 288px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+  }
+}
+.game-module {
+  &:nth-child(4n - 3) {
+    color: #e45174;
+    background: #fff4ff;
+  }
+
+  &:nth-child(4n - 2) {
+    color: #31a0f7;
+    background: #f2f8ff;
+  }
+
+  &:nth-child(4n - 1) {
+    color: #7e4aeb;
+    background: #fcfaff;
+  }
+
+  &:nth-child(4n) {
+    color: #77be43;
+    background: #f7fff2;
+  }
+}

@@ -1,0 +1,246 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12">
+  <!-- UID -->
+  <form-row [label]="'UID'" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 发放人员 -->
+  <form-row [label]="'member.activity.sencli16.issuer' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.issuer"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 发放时间 -->
+  <form-row [label]="'member.giveOut.IssuanceTime' | lang" class="mr-8" [contentWidth]="250">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <!-- 状态 -->
+  <!-- <form-row [label]="'common.status' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of statusList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row> -->
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card card-body mt-8">
+  <!-- 发放查询 -->
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'member.giveOut.title' | lang }}</div>
+
+    <div>
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <!-- 活动标题 -->
+        <th>
+          <span class="cell">{{ 'member.giveOut.eventTitle' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">UID</span>
+        </th>
+        <!-- 奖品 -->
+        <th>
+          <span class="cell">{{ 'luckRoulette.prize' | lang }}</span>
+        </th>
+        <!-- 奖品类型 -->
+        <th>
+          <span class="cell">{{ 'luckRoulette.drawRecord.prizeType' | lang }}</span>
+        </th>
+        <!-- 配置 -->
+        <th>
+          <span class="cell">{{ 'system.merchants.config' | lang }}</span>
+        </th>
+        <!-- 金额 -->
+        <th>
+          <span class="cell">{{ 'common.amount' | lang }}</span>
+        </th>
+        <!-- 发放人员 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli16.issuer' | lang }}</span>
+        </th>
+        <!-- 发放时间 -->
+        <th>
+          <span class="cell">{{ 'member.giveOut.IssuanceTime' | lang }}</span>
+        </th>
+        <!-- 状态 -->
+        <!-- <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list; let i = index">
+        <td>
+          <span class="cell">{{ item.activityName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ getPrizeName(item?.prizeDetail?.prizeName) }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ prizeService.getPrizeName(prizeTypeList, item?.prizeDetail?.prizeType) }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item?.prizeDetail | prizeConfig }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.money | currencyValue: item.moneyType }}
+            <img class="ml-2" [currencyIcon]="item.moneyType" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createBy || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createTime | timeFormat }}</span>
+        </td>
+        <!-- <td>
+          <span class="cell" [ngSwitch]="item.releaseStatus">
+            送审失败(可再次送审)
+            <app-label type="danger" *ngSwitchCase="VoucherStatus.ReviewFail">{{
+              'member.coupon.toReviewFail' | lang
+            }}</app-label>
+            审核中
+            <app-label type="yellow" *ngSwitchCase="VoucherStatus.Reviewing">{{
+              'member.kyc.underReview' | lang
+            }}</app-label>
+            审核拒绝
+            <app-label type="yellow" *ngSwitchCase="VoucherStatus.ReviewReject">{{
+              'member.kyc.declined' | lang
+            }}</app-label>
+            表示发放失败
+            <app-label type="danger" *ngSwitchCase="VoucherStatus.IssueFail">{{
+              'member.giveOut.failedissue' | lang
+            }}</app-label>
+
+            待领取
+            <ng-container *ngSwitchCase="VoucherStatus.Unclaimed">
+              Fitch - 后发现金券/非粘性奖金：【待领取】改为【已领取】
+              <app-label
+                type="warning"
+                *ngIf="
+                  [PrizeType.AfterCash, PrizeType.NonStickyBonus].includes(item?.prizeDetail?.prizeType);
+                  else NormalTpl
+                "
+                >{{ 'member.giveOut.received' | lang }}</app-label
+              >
+              <ng-template #NormalTpl>
+                <app-label type="primary">{{ 'member.giveOut.pendingCollection' | lang }}</app-label>
+              </ng-template>
+            </ng-container>
+
+            已领取
+            <app-label type="warning" *ngSwitchCase="VoucherStatus.Received">{{
+              'member.giveOut.received' | lang
+            }}</app-label>
+            使用中
+            <app-label type="success" *ngSwitchCase="VoucherStatus.InUse">{{
+              'member.giveOut.Using' | lang
+            }}</app-label>
+            已使用
+            <app-label type="default" *ngSwitchCase="VoucherStatus.Used">{{ 'member.giveOut.Used' | lang }}</app-label>
+            已失效
+            <app-label type="default" *ngSwitchCase="VoucherStatus.Invalid">{{
+              'member.giveOut.expired' | lang
+            }}</app-label>
+            已失效
+            <app-label type="default" *ngSwitchCase="VoucherStatus.Expired">{{
+              'member.coupon.expired' | lang
+            }}</app-label>
+          </span>
+        </td> -->
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

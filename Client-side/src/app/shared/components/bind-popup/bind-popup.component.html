@@ -1,0 +1,40 @@
+<div class="popup-common standard-popup">
+  <img class="background-img" [src]="'assets/images/new-deposit-dialog/' + langCode + '.png'" alt="" lazy="loading" />
+  <div class="btn-group">
+    <customize-button
+      class="left-btn onact96-btn"
+      radius="16px"
+      size="medium"
+      type="text"
+      width="100%"
+      [routerLink]="langCode + '/deposit/fiat'"
+      (onClick)="cancel()"
+    >
+      <span class="text-weight">{{ 'popup_flat_pay' | translate }}</span>
+    </customize-button>
+    <customize-button
+      class="onact96-btn"
+      radius="16px"
+      class="popup-btn-top"
+      size="medium"
+      type="text"
+      [width]="langCode === 'vi' && isH5 ? '90%' : '100%'"
+      [routerLink]="langCode + '/deposit/crypto'"
+      (onClick)="cancel()"
+    >
+      <span class="text-weight"> {{ 'popup_crypt_pay' | translate }}</span>
+    </customize-button>
+  </div>
+  <div class="bottom-btn">
+    <customize-button
+      class="onact96-btn"
+      radius="16px"
+      size="medium"
+      type="primary"
+      [width]="isH5 ? '62%' : '50%'"
+      (onClick)="cancel()"
+    >
+      <p class="text text-weight">{{ 'popup_new' | translate }}</p>
+    </customize-button>
+  </div>
+</div>

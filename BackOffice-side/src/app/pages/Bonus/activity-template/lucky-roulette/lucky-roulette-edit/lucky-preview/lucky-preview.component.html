@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <div class="modal-title">{{ 'luckRoulette.checkexample' | lang }}</div>
+  <div class="c-btn-close" (click)="modal.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<span class="symbol-label">
+  <img class="vam" src="./assets/images/bonus/luck-bg-min.jpg" width="936" height="446" alt="boy avatar" />
+  <div class="luck-desc">{{ desc }}</div>
+  <div class="luck-recent" [class.local]="lang.isLocal">{{ 'luckRoulette.latestRecord' | lang }}</div>
+  <div class="luck-draw">{{ 'luckRoulette.drawNow' | lang }}</div>
+  <div class="luck">
+    <img src="./assets/images/bonus/luck-pin-min.png" alt="" />
+    <img class="point" src="./assets/images/bonus/luck-point.png" alt="" />
+    <div class="luck-item-wrap">
+      <div class="luck-item" *ngFor="let item of list">
+        <div class="text-nowrap" style="transform: rotate(115deg)">
+          <img style="transform: rotate(180deg)" [iconSrc]="item.icon | host" iconSize="44px" src="" alt="" />
+          <span style="transform: rotate(180deg)" class="fz-18 ml-4 text-white d-inline-block">{{ item.value }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="luck-currency">
+    <div class="luck-currency-item" *ngFor="let item of list.slice(0, 3)">
+      <img [iconSrc]="item.icon | host" iconSize="28px" src="" alt="" />
+      <span class="color-fff ml-2">
+        <span>{{ item.currency }}</span>
+        <span class="ml-2">{{ item.value }}</span>
+      </span>
+    </div>
+  </div>
+</span>
+
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-default" (click)="modal.dismiss()">
+    {{ 'common.cancel' | lang }}
+  </button>
+  <button type="button" class="c-btn btn btn-primary" (click)="checkConfirm()">
+    {{ 'common.confirm' | lang }}
+  </button>
+</div>

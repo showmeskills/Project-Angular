@@ -1,0 +1,335 @@
+<div class="d-flex flex-wrap flex-ac mb-6 withdrawals-tab">
+  <div
+    class="btn mr-6 fz-16 p-5"
+    [class.btn-white]="curTab !== item.value"
+    [class.btn-primary]="curTab === item.value"
+    *ngFor="let item of tabList"
+    (click)="onTabChange(item)"
+  >
+    {{ item.lang | lang }}
+    <!--    <ng-container *ngIf="item.value === 1 && curTab === 1">（{{ currentTime }}）</ng-container>-->
+  </div>
+</div>
+
+<div class="card rounded p-8 d-flex flex-row flex-wrap">
+  <!-- 交易单号 -->
+  <form-row [label]="'finance.withdrawals.orderNumber' | lang" [contentWidth]="200">
+    <ng-template>
+      <input
+        [(ngModel)]="data.orderNum"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+        class="form-control rounded-0"
+        type="text"
+        [placeholder]="'finance.withdrawals.enterOrderNum' | lang"
+        input-trim="input"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- UID -->
+  <form-row label="UID" [contentWidth]="200">
+    <ng-template>
+      <input
+        [(ngModel)]="data.uid"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+        class="form-control rounded-0"
+        type="text"
+        [placeholder]="'finance.withdrawals.enterUid' | lang"
+        input-trim="input"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 订单状态 -->
+  <form-row [label]="'finance.withdrawals.orderStatus' | lang">
+    <ng-template>
+      <mat-form-field [style.width.px]="166" [style.cursor]="curTab === 1 ? 'no-drop' : undefined">
+        <mat-select
+          multiple
+          class="form-control rounded-0"
+          [placeholder]="'finance.withdrawals.selectedOrderStatus' | lang"
+          [(ngModel)]="data.status"
+          (openedChange)="!$event && loadData(true)"
+          [attrDisabled]="curTab === 1"
+        >
+          <mat-select-trigger>
+            <span *ngIf="!data.status?.length || data.status.includes('')">
+              {{ 'common.all' | lang }}
+            </span>
+            <ng-container *ngIf="data.status.length < statusList.length">
+              <ng-container *ngFor="let status of statusList">
+                <ng-container *ngFor="let item of data.status; last as last">
+                  <span *ngIf="item !== '' && item === status.categoryCode"
+                    >{{ status.langText }}{{ !last ? ', ' : '' }}</span
+                  >
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </mat-select-trigger>
+
+          <mat-option [value]="''" (click)="onAllStatus()">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.categoryCode" *ngFor="let item of statusList" (click)="onCheckStatus()">{{
+            item.langText
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种分类 -->
+  <form-row [label]="'finance.deposit.currencyType' | lang">
+    <ng-template>
+      <mat-form-field [style.width.px]="130">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.isDigital"
+          (selectionChange)="data.currency = ''; loadData(true)"
+        >
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.value" *ngFor="let item of currencyTypeList">{{ item.name | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种 -->
+  <form-row [label]="'common.currency' | lang">
+    <ng-template>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.code" *ngFor="let item of isDigitalCurrencyList">{{ item.code }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 申请时间 -->
+  <form-row [label]="'finance.withdrawals.applyTime' | lang">
+    <ng-template>
+      <input
+        [style.width.px]="210"
+        class="form-control text-center rounded-0"
+        type="text"
+        [placeholder]="'finance.withdrawals.enterApplyTime' | lang"
+        selectMode="date-range"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="~"
+        [(ngModel)]="data.createdTime"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <!-- 完成时间 -->
+  <form-row [label]="'finance.deposit.completeTime' | lang" [contentWidth]="264">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'finance.deposit.selectedCompleteTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.finishedTime"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="updateTab()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8">
+  <div class="card-body">
+    <div class="d-flex flex-ac flex-between">
+      <div class="fz-20">{{ 'finance.withdrawals.paymentRecord' | lang }}</div>
+
+      <div>
+        <!-- 导出全部 -->
+        <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+          <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+        </button>
+        <!-- 导出 -->
+        <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-2 lh-18">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'finance.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'finance.withdrawals.ruleName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.orderNum' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.vipLevel' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.currency' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.withdrawals.withdrawalMethod' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell cursor-pointer flex-nowrap" (click)="onSort('Amount')">
+                <span>{{ 'finance.deposit.transactionAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="data.order === 'Amount' && data.isAsc"></div>
+                  <div class="triangle-down" [class.active]="data.order === 'Amount' && !data.isAsc"></div>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell cursor-pointer flex-nowrap" (click)="onSort('ReceiveAmount')">
+                <span>{{ 'finance.withdrawals.amount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="data.order === 'ReceiveAmount' && data.isAsc"></div>
+                  <div class="triangle-down" [class.active]="data.order === 'ReceiveAmount' && !data.isAsc"></div>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.applyTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.completeTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.status' | lang }}</span>
+            </th>
+            <!--            <th>-->
+            <!--              <span class="cell">{{ 'common.operate' | lang }}</span>-->
+            <!--            </th>-->
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.policyName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.orderNum }}</span>
+            </td>
+            <td>
+              <span class="cell jumpRoute" (click)="openUID(item)">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.vipLevel || 0 }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.paymentMethod }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="red">-{{ item.amount | currencyValue: item.currency }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ item.receiveAmount | currencyValue: item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createdTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.finishedTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell cursor-pointer" (click)="onDetail(item.id)">
+                <finance-status-label [status]="item.status" [isReviewLevel]="item.isApprove2"></finance-status-label>
+              </span>
+            </td>
+            <!--            <td>-->
+            <!--              <span class="cell">-->
+            <!--                <span-->
+            <!--                  *ngIf="item.status === $any(OrderStatusEnum[OrderStatusEnum.Review])"-->
+            <!--                  class="btn btn-default px-6 text-nowrap"-->
+            <!--                  (click)="getWithdrawDetail(confirmTpl, item.id)"-->
+            <!--                  >{{ 'finance.withdrawals.aduit' | lang }}</span-->
+            <!--                >-->
+            <!--              </span>-->
+            <!--            </td>-->
+          </tr>
+
+          <!--          <tr class="count">-->
+          <!--            <td><span class="cell">总计</span></td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td>-->
+          <!--              <span class="cell green">+{{ list | reduceTotal: 'amount' }}</span>-->
+          <!--            </td>-->
+          <!--            <td>-->
+          <!--              <span class="cell red">{{ list | reduceTotal: 'receiveAmount' }}</span>-->
+          <!--            </td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--          </tr>-->
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!list.length"></empty>
+
+      <div class="d-flex flex-between pt-30">
+        <div>
+          <mat-form-field [style.width.px]="76">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #confirmTpl let-id let-c="close" let-d="dismiss">
+  <modal-title [title]="'finance.withdrawals.aduit' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-14 text-center fz-16">{{ 'finance.withdrawals.passTips' | lang }}</div>
+
+  <modal-footer (confirm)="onPass(id, true, c)" (dismiss)="onPass(id, false, c)" dismissKey="reject"></modal-footer>
+</ng-template>

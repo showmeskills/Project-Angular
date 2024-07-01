@@ -1,0 +1,210 @@
+<div class="d-flex justify-content-end pt-6">
+  <button
+    *ngFor="let item of service.tabList"
+    class="c-btn btn fz-16 ml-6"
+    [class.btn-white]="service.curTab !== item.value"
+    [class.btn-primary]="service.curTab === item.value"
+    (click)="service.onTab(item.value)"
+  >
+    {{ item.lang | lang }}
+  </button>
+</div>
+
+<!--  筛选 -->
+<div class="card mt-8 d-flex flex-row flex-wrap py-8 px-12">
+  <!-- 审核类型 -->
+  <form-row [label]="'common.type' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="service.curType">
+          <mat-option *ngFor="let item of service.monitorTypeList" [value]="item.value">{{ item.langText }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- Tab - 实时监控 -->
+  <ng-container *ngIf="service.curTab === 1">
+    <!-- KYC审核 -->
+    <ng-container *ngIf="service.is.KycAudit">
+      <!-- 国家 -->
+      <form-row [label]="'common.country' | lang" class="mr-8">
+        <ng-template>
+          <mat-form-field>
+            <mat-select
+              class="form-control"
+              [(ngModel)]="service.data.countryCode"
+              (selectionChange)="service.reload(true)"
+              *search="let searchList$ of subHeaderService.countryList; key: 'countryName'"
+            >
+              <input type="search" searchInput />
+              <mat-option *ngFor="let item of searchList$ | async" [value]="item?.countryIso3">{{
+                item.countryName
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </ng-container>
+  </ng-container>
+
+  <!-- Tab - 历史记录 -->
+  <ng-container *ngIf="service.curTab === 2">
+    <!-- 除了批量审核 -->
+    <ng-container *ngIf="!service.is.BatchReview">
+      <!-- 审核状态 -->
+      <form-row [label]="'common.status' | lang" class="mr-8">
+        <ng-template>
+          <mat-form-field>
+            <mat-select class="form-control" [(ngModel)]="service.data.status" (selectionChange)="service.reload(true)">
+              <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+              <mat-option [value]="KYCReviewTypeEnum.Finish">{{ 'risk.pass' | lang }}</mat-option>
+              <mat-option [value]="KYCReviewTypeEnum.Rejected">{{ 'risk.reject' | lang }}</mat-option>
+
+              <!-- KYC审核：审批中 -->
+              <mat-option *ngIf="service.curType === 'kycAudit'" [value]="KYCReviewTypeEnum.Pending">{{
+                'member.kyc.underReview' | lang
+              }}</mat-option>
+
+              <!-- 异常会员：待补充 -->
+              <mat-option *ngIf="service.curType === 'AbnormalMember'" [value]="KYCReviewTypeEnum.Processing">{{
+                'risk.addWait' | lang
+              }}</mat-option>
+
+              <!-- 存款申诉的状态 -->
+              <ng-container *ngIf="service.curType === 'deposit'">
+                <mat-option [value]="KYCReviewTypeEnum.Pending">{{ 'risk.pending' | lang }}</mat-option>
+                <mat-option [value]="KYCReviewTypeEnum.Supplement">{{ 'risk.addWait' | lang }}</mat-option>
+                <mat-option [value]="KYCReviewTypeEnum.Cancel">{{ 'common.cancel' | lang }}</mat-option>
+                <mat-option [value]="KYCReviewTypeEnum.TimeOut">{{ 'risk.expired' | lang }}</mat-option>
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </ng-container>
+  </ng-container>
+
+  <!-- 除了批量审核 - 1.UID搜索 -->
+  <ng-container *ngIf="!service.is.BatchReview">
+    <!-- UID -->
+    <form-row [label]="'UID'" class="mr-8" [contentWidth]="180">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="service.data.uid"
+          (keyup)="$event.key === 'Enter' && service.reload(true)"
+        />
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- 风控审核 - 1.文件类型下拉筛选 -->
+  <ng-container *ngIf="service.is.RiskReview">
+    <!-- 文件类型 -->
+    <form-row [label]="'risk.docType' | lang" class="mr-8">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="service.data.formType" (selectionChange)="service.reload(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of service.formTypeList" [value]="item.code">{{
+              item.description
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- 批量审核 - 1.批量ID搜索 -->
+  <ng-container *ngIf="service.is.BatchReview">
+    <!-- 批量ID -->
+    <form-row [label]="'risk.batchList.batchID' | lang" class="mr-8">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="service.data.batchId"
+          (keyup)="$event.key === 'Enter' && service.reload(true)"
+        />
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- 时间 -->
+  <form-row [label]="'common.time' | lang" class="mr-8" [contentWidth]="250">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="service.data.time"
+        (dateTimeChange)="service.reload(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="service.reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="service.reload()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<!-- 导出 -->
+<div class="d-flex justify-content-end mt-8" *ngIf="!service.is.BatchReview">
+  <button (click)="service.triggerExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+    <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+    <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+  </button>
+  <button (click)="service.triggerExport(false)" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-2 lh-18">
+    <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+    <span class="vam">{{ 'game.provider.export' | lang }}</span>
+  </button>
+</div>
+
+<!-- 实时监控列表&&历史记录 -->
+<div class="mt-8">
+  <ng-container *ngComponentOutlet="service.currentTypeItem?.component; inputs: {}"></ng-container>
+</div>
+
+<!-- 全部 -->
+<ng-container *ngIf="service.isAllType">
+  <!-- 空显示: 需要收集所有list是否为空 -->
+  <!--<empty class="bg-fff rounded" *ngIf="!list.length"></empty>-->
+
+  <!-- 全部的页码：接管内部的组件分页 -->
+  <div class="d-flex flex-between pt-6 flex-ac">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          style="background: #fff"
+          [(ngModel)]="service.paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="service.reload(true)"
+        >
+          <mat-option *ngFor="let size of service.pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="service.paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="service.paginator"
+        (paginate)="service.reload()"
+      ></app-paginator>
+    </div>
+  </div>
+</ng-container>
+
+<!-- 筛选： UID搜索模版 -->
+<ng-template #UidTpl> </ng-template>

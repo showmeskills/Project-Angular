@@ -1,0 +1,20 @@
+<div class="page-container">
+  <!--标题栏-->
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container title-row">
+      <div class="header-container">
+        <div class="header onact96" (click)="back()">
+          <i class="icon-back mutual-opacity"></i>
+          <div class="title">{{ titleMap[page] }}</div>
+        </div>
+        <div class="to-other-page onact96" [routerLink]="toPageLinkMap[page]">
+          {{ toPagetitleMap[page] }}<i class="right-arrow"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--内容-->
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-16">
+    <router-outlet></router-outlet>
+  </div>
+</div>

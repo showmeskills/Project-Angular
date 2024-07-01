@@ -1,0 +1,265 @@
+<div class="d-flex flex-ac bouns-top">
+  <div class="card marketing">
+    <div class="w-100 fz-20 pl-8 marketing-header">{{ 'member.activity.marketing' | lang }}</div>
+    <div class="marketing-content">
+      <div class="item">
+        <div class="fz-14 mb-2">{{ 'member.activity.ongoingActivity' | lang }}</div>
+        <div class="fz-18 amount">NaN</div>
+      </div>
+      <div class="item">
+        <div class="fz-14 mb-2">{{ 'member.activity.activityNot' | lang }}</div>
+        <div class="fz-18 amount">NaN</div>
+      </div>
+      <div class="item">
+        <div class="fz-14 mb-2">{{ 'member.activity.totalAmount' | lang }}</div>
+        <div class="fz-18 amount">NaN</div>
+      </div>
+      <div class="item">
+        <div class="fz-14 mb-2">{{ 'member.activity.totalNumber' | lang }}</div>
+        <div class="fz-18 amount">NaN</div>
+      </div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+    </div>
+  </div>
+  <div class="card activity-box">
+    <div class="d-flex flex-ac justify-content-between px-8 activity-box-header">
+      <div class="fz-20">{{ selectedStatusItem.title | lang }}（{{ selectedStatusItem.total }}）</div>
+      <ul class="statusList">
+        <li
+          *ngFor="let item of statusMenuList"
+          [class.active]="selectedStatusItem.value === item.value"
+          (click)="onSelectStatusMenu(item)"
+        >
+          {{ item.title | lang }}
+        </li>
+      </ul>
+    </div>
+    <div class="activity-box-content scroll-x">
+      <div class="item" *ngFor="let item of activityList">
+        <div class="item-content">
+          <div class="item-content-main">
+            <div class="d-flex flex-ac justify-content-between title" (click)="goEdit(item)">
+              {{ bonusService.activityLang(item.bonusActivitiesNo) | lang }}
+              <span class="fz-14" style="color: #969bad; font-weight: normal">No. {{ item.bonusActivitiesId }}</span>
+            </div>
+            <div class="mb-4">
+              <div class="fz-14 d-flex mt-3">
+                <svg-icon class="vam lh-18 svg-icon mr-3" [src]="'./assets/images/bonus/tenant.svg'"></svg-icon>
+                <p style="color: #969bad">{{ subHeaderService.getMerchantName(item.tenantId) }}</p>
+              </div>
+            </div>
+            <ul class="center-bottom">
+              <li>
+                <p>{{ 'member.activity.participants' | lang }}</p>
+                <span>{{ item.joinNumber || 0 }}</span>
+              </li>
+              <li (click)="openBalanceDetail(item.bonusActivitiesNo, item.tenantId)">
+                <p>{{ 'member.activity.dividendsPaid' | lang }}</p>
+                <span>{{ item.releaseNumber || 0 | currencyValue: 'USDT' }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <ul class="item-content-foot">
+            <li *ngFor="let item of item.label.slice(0, 3)">{{ item }}</li>
+            <span *ngIf="item.label.length > 3">...</span>
+            <span *ngIf="item.label.length === 0" style="line-height: 30px">{{
+              'member.activity.unlabeledData' | lang
+            }}</span>
+          </ul>
+        </div>
+      </div>
+      <div class="container-empty w-100" *ngIf="activityList.length === 0 && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body bouns-activity">
+  <div class="bouns-activity-item cursor-pointer" *ngFor="let item of tepActivityList" (click)="goActivityEdit(item)">
+    <svg-icon class="vam lh-18 svg-icon-3x mr-5" [src]="item.src"></svg-icon>
+    <div>
+      <div class="fz-16">{{ item.title | lang }}</div>
+      <div *ngIf="item?.detail" class="mt-2 color-aaa">{{ item?.detail | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body mt-5">
+  <div class="fz-20 mb-8 fw-bold">{{ 'member.activity.dataOverview' | lang }}</div>
+
+  <div class="bonus-list">
+    <div class="bonus-list-item" *ngFor="let items of activityStatsList; index as i">
+      <div class="px-5 py-8 item-header">
+        <div style="font-weight: 600">{{ items.nameLang | lang }}</div>
+        <div class="color-aaa">No.{{ i + 1 }}</div>
+      </div>
+
+      <div class="d-flex w-100 px-5 item-cneter">
+        <div class="flex-1 p-4 text-primary item-cneter-detail">
+          <!-- 参与人数 -->
+          <div class="mb-2">{{ 'member.activity.participants' | lang }}</div>
+          <div>{{ items.count | toFormatMoney }}</div>
+        </div>
+        <div class="flex-1 p-4 text-primary detail item-cneter-detail">
+          <!-- 进行中活动（个） -->
+          <div class="mb-2">{{ 'member.activity.ongoingActivity' | lang }}</div>
+          <div>{{ items.progress | toFormatMoney }}</div>
+        </div>
+        <div class="flex-1 p-4 text-primary detail item-cneter-detail">
+          <!-- 参与总次数（次） -->
+          <div class="mb-2">{{ 'member.activity.participations' | lang }}</div>
+          <div>{{ items.times | toFormatMoney }}</div>
+        </div>
+      </div>
+
+      <div class="p-5 item-bottom" *ngIf="items.data; else noDataTpl">
+        <!-- wallet:钱包 later:后发现金券 inkind:实物 cash:现金券 svip: SVIP券 coupon: 抵用金券 non_sticky: 非粘性券 freespin: 免费旋转券 -->
+        <ng-container *ngFor="let item of items.data | keyvalue">
+          <ng-container [ngSwitch]="item.key">
+            <!-- 钱包（USDT） -->
+            <div class="item-bottom-detail" *ngSwitchCase="'wallet'">
+              <div class="d-flex flex-between">
+                <!-- 钱包 -->
+                <div class="text-primary">{{ 'member.detail.balance.wallet' | lang }}（USDT）</div>
+                <div class="color-aaa">
+                  {{ item.value['joinTimes'] | toFormatMoney }}{{ 'member.activity.times' | lang }}
+                </div>
+              </div>
+              <div class="my-2 fz-16 fw-bold">{{ item.value['grantTotal'] | currencyValue: true }}</div>
+            </div>
+
+            <!-- 发放现金券（USDT） -->
+            <div class="item-bottom-detail" *ngSwitchCase="'cash'">
+              <div class="d-flex flex-between">
+                <div class="text-primary">
+                  {{ 'member.activity.prizeCommon.configurationList.cashCoupon' | lang }}（USDT）
+                </div>
+                <div class="color-aaa">
+                  {{ item.value['joinTimes'] | toFormatMoney }}{{ 'member.activity.times' | lang }}
+                </div>
+              </div>
+              <div class="my-2 fz-16 fw-bold">{{ item.value['grantTotal'] | currencyValue: true }}</div>
+              <!-- 已领取 -->
+              <div class="color-aaa">
+                {{ 'member.detail.discount.received' | lang }}：{{ item.value['receiveTotal'] | currencyValue: true }}
+              </div>
+              <!-- 已过期 -->
+              <div class="color-aaa">
+                {{ 'member.detail.discount.expired' | lang }}：{{ item.value['expiredTotal'] | currencyValue: true }}
+              </div>
+            </div>
+
+            <!-- 后发现金券（USDT） -->
+            <div class="item-bottom-detail" *ngSwitchCase="'later'">
+              <div class="d-flex flex-between">
+                <div class="text-primary">
+                  {{ 'member.activity.prizeCommon.configurationList.goldCouponsLater' | lang }}（USDT）
+                </div>
+                <div class="color-aaa">
+                  {{ item.value['joinTimes'] | toFormatMoney }}{{ 'member.activity.times' | lang }}
+                </div>
+              </div>
+              <div class="my-2 fz-16 fw-bold">{{ item.value['grantTotal'] | currencyValue: true }}</div>
+              <!-- 已领取 -->
+              <div class="color-aaa">
+                {{ 'member.detail.discount.received' | lang }}：{{ item.value['receiveTotal'] | currencyValue: true }}
+              </div>
+            </div>
+
+            <!-- 发放抵用金（USDT） -->
+            <div class="item-bottom-detail" *ngSwitchCase="'coupon'">
+              <div class="d-flex flex-between">
+                <div class="text-primary">
+                  {{ 'member.activity.prizeCommon.configurationList.credit' | lang }}（USDT）
+                </div>
+                <div class="color-aaa">
+                  {{ item.value['joinTimes'] | toFormatMoney }}{{ 'member.activity.times' | lang }}
+                </div>
+              </div>
+              <div class="my-2 fz-16 fw-bold">{{ item.value['grantTotal'] | currencyValue: true }}</div>
+              <!-- 已使用 -->
+              <div class="color-aaa">
+                {{ 'member.giveOut.Used' | lang }}：{{ item.value['usedTotal'] | currencyValue: true }}
+              </div>
+              <!-- 已清零/过期 -->
+              <div class="color-aaa">
+                {{ 'member.activity.clearedExpired' | lang }}：{{ item.value['expiredTotal'] | currencyValue: true }}
+              </div>
+            </div>
+
+            <!-- 发放非粘性奖金（USDT） -->
+            <div class="item-bottom-detail" *ngSwitchCase="'non_sticky'">
+              <div class="d-flex flex-between">
+                <div class="text-primary">
+                  {{ 'member.activity.prizeCommon.configurationList.nonStickyBonus' | lang }}（USDT）
+                </div>
+                <div class="color-aaa">
+                  {{ item.value['joinTimes'] | toFormatMoney }}{{ 'member.activity.times' | lang }}
+                </div>
+              </div>
+              <div class="my-2 fz-16 fw-bold">{{ item.value['grantTotal'] | currencyValue: true }}</div>
+              <!-- 已领取 -->
+              <div class="color-aaa">
+                {{ 'member.detail.discount.received' | lang }}：{{ item.value['receiveTotal'] | currencyValue: true }}
+              </div>
+              <!-- 已过期 -->
+              <div class="color-aaa">
+                {{ 'member.detail.discount.expired' | lang }}：{{ item.value['expiredTotal'] | currencyValue: true }}
+              </div>
+              <!-- 已放弃 -->
+              <div class="color-aaa">
+                {{ 'member.activity.abandoned' | lang }}：{{ item.value['giveupTotal'] | currencyValue: true }}
+              </div>
+            </div>
+
+            <!-- SVIP体验卷（张） -->
+            <div class="item-bottom-detail" *ngSwitchCase="'svip'">
+              <div class="text-primary">
+                {{ 'member.activity.prizeCommon.configurationList.svipExperienceCoupon' | lang }}（{{
+                  'member.activity.times' | lang
+                }}）
+              </div>
+              <div class="my-2 fz-16 fw-bold">{{ item.value['joinTimes'] | toFormatMoney }}</div>
+            </div>
+
+            <!-- 实物/装备（张） -->
+            <div class="item-bottom-detail" *ngSwitchCase="'inkind'">
+              <div class="text-primary">
+                {{ 'member.activity.prizeCommon.configurationList.realObject' | lang }}/{{
+                  'member.activity.prizeCommon.configurationList.equipment' | lang
+                }}（{{ 'member.activity.times' | lang }}）
+              </div>
+              <div class="my-2 fz-16 fw-bold">{{ item.value['joinTimes'] | toFormatMoney }}</div>
+            </div>
+
+            <!-- Free Spin（次） -->
+            <!-- <div class="item-bottom-detail" *ngSwitchCase="'freespin'">
+              <div class="d-flex flex-between">
+                <div class="text-primary">Free Spin（次）</div>
+                <div>{{ item.value['joinTimes'] | toFormatMoney }}张</div>
+              </div>
+              <div class="my-2 fz-16 fw-bold">1000</div>
+              <div>已使用：50次</div>
+              <div>已获得奖金：5000USDT</div>
+            </div> -->
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <ng-template #noDataTpl>
+        <!-- 空显示 -->
+        <div [style.min-height.px]="150" class="flex-1 d-flex flex-center" [appLoading]="activityStatsLoading">
+          <empty *ngIf="!activityStatsLoading" [style.height.px]="150"></empty>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

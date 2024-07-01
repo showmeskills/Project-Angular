@@ -1,0 +1,36 @@
+<ng-container *ngIf="(alwaysWeb || !isH5) && !alwaysH5">
+  <div class="container" *ngIf="total > 0" [class.disabled]="disabled">
+    <span
+      class="icon icon-arrow-left-simple onact96-not"
+      *ngIf="pagesLength > 4"
+      [class.disabled]="!prevPage"
+      (click)="goPage(page - 1)"
+    ></span>
+    <ng-container *ngFor="let item of showPages">
+      <span class="page ellipsis" *ngIf="judgeEndDot(item)">...</span>
+      <span class="page onact96-not" [class.active]="item === page" (click)="clickPage(item)">{{ item }}</span>
+      <span class="page ellipsis" *ngIf="judgeBeginDot(item)">...</span>
+    </ng-container>
+    <span
+      class="icon icon-arrow-right-simple onact96-not"
+      *ngIf="pagesLength > 4"
+      [class.disabled]="!nextPage"
+      (click)="goPage(page + 1)"
+    ></span>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="(alwaysH5 || isH5) && !alwaysWeb">
+  <div class="h5Paginator" [intersectionObserver]="true" (intersectChange)="checkToLoad($event)">
+    <div class="paginator-info" *ngIf="total > 0">
+      <!-- 已经加完了，没有数据了 -->
+      <span *ngIf="!nextPage && !loading">- {{ 'page_no_more_t' | translate }} -</span>
+      <!-- 加载数据中 -->
+      <i *ngIf="loading" class="paginator-loading-icon animation-icon-loading-dot">
+        <i></i>
+        <i></i>
+        <i></i>
+      </i>
+    </div>
+  </div>
+</ng-container>

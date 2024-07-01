@@ -1,0 +1,331 @@
+<div class="card p-8 head">
+  <div class="d-flex flex-ac fz-16 head-top">
+    <div class="d-flex flex-ac" style="margin-right: 82px">
+      <span class="color-aaa">赛事ID：</span>
+      <div class="d-flex flex-ac">GB11223344</div>
+    </div>
+
+    <div class="d-flex flex-ac" style="margin-right: 82px">
+      <span class="color-aaa">国家:</span>
+      <div class="d-flex flex-ac">
+        <svg-icon class="svg-icon svg-icon-2x mx-4" [src]="'./assets/images/svg/sports/en-logo.svg'"></svg-icon>
+        英国
+      </div>
+    </div>
+
+    <div class="d-flex flex-ac" style="margin-right: 82px">
+      <span class="color-aaa">联赛:</span>
+      <div class="d-flex flex-ac">
+        <svg-icon
+          class="svg-icon svg-icon-2x5 mx-4"
+          [src]="'./assets/images/svg/sports/competition/team-logo.svg'"
+        ></svg-icon>
+        英格兰足球超级联赛
+      </div>
+    </div>
+  </div>
+  <div class="d-flex flex-ac flex-between mt-12 head-bottom">
+    <div class="d-flex flex-ac">
+      <svg-icon class="svg-icon svg-icon-8x mx-4" [src]="'./assets/images/svg/sports/finish-ans.svg'"></svg-icon>
+      <div>
+        <div class="fz-18 fw-bolder">阿納森</div>
+        <div class="d-flex flex-ac my-4">
+          <div class="lh-24 text-center w18 mr-1 yellow">D</div>
+          <div class="lh-24 text-center w18 mr-1 green">W</div>
+          <div class="lh-24 text-center w18 mr-1 red">L</div>
+          <div class="lh-24 text-center w18 mr-1 green">W</div>
+          <div class="lh-24 text-center w18 green">W</div>
+        </div>
+        <div>
+          GBID: 22334455
+          <br />
+          所属国家:英国
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <div class="fz-16 mb-6">2022 年 1 月 22 日 (六) 23:00</div>
+      <div class="fz-16 mb-4">伍尔弗汉普顿流浪者 2 : 0 弗利特伍德镇 FC</div>
+      <div class="fz-16 mb-2"><span class="mr-12">半场</span> 1 : 0</div>
+      <div class="fz-16 mb-2"><span class="mr-12">加時</span> 1 : 0</div>
+    </div>
+
+    <div class="d-flex flex-ac">
+      <div>
+        <div class="fz-18 text-right fw-bolder">曼城</div>
+        <div class="d-flex flex-ac my-4">
+          <div class="lh-24 text-center w18 mr-1 yellow">D</div>
+          <div class="lh-24 text-center w18 mr-1 green">W</div>
+          <div class="lh-24 text-center w18 mr-1 red">L</div>
+          <div class="lh-24 text-center w18 mr-1 green">W</div>
+          <div class="lh-24 text-center w18 green">W</div>
+        </div>
+        <div>
+          GBID: 22334455
+          <br />
+          所属国家:英国
+        </div>
+      </div>
+      <svg-icon class="svg-icon svg-icon-8x mx-4" [src]="'./assets/images/svg/sports/finish-mc.svg'"></svg-icon>
+    </div>
+  </div>
+</div>
+
+<div class="card my-8">
+  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+  <div class="tab-wrapper px-10" *ngIf="tabs && tabs.length > 0" mat-tab-nav-bar [tabPanel]="tabPanel">
+    <div
+      class="item"
+      mat-tab-link
+      *ngFor="let item of tabs; let index = index"
+      [disableRipple]="true"
+      [active]="item.value === currentTab"
+      [class.active]="item.value === currentTab"
+      (click)="changeTabIndex(item.value)"
+    >
+      <div class="tab-name">{{ item.name }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- 本场概况 -->
+<div class="card mb-8">
+  <div class="modal-header fz-20 fw-bolder">本场概况</div>
+  <div class="card-body overview">
+    <div class="d-flex flex-ac mb-3">
+      <div class="flex-1 text-right">
+        <span class="fz-18 fw-bolder">阿納森</span>
+        <svg-icon class="svg-icon svg-icon-5x ml-4" [src]="'./assets/images/svg/sports/finish-ans.svg'"></svg-icon>
+      </div>
+      <div style="flex: 0 0 230px"></div>
+      <div class="flex-1 text-left">
+        <svg-icon class="svg-icon svg-icon-5x mr-4" [src]="'./assets/images/svg/sports/finish-mc.svg'"></svg-icon>
+        <span class="fz-18 fw-bolder">曼城</span>
+      </div>
+    </div>
+
+    <div class="d-flex flex-ac h36 fz-16 mb-1 item" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+      <div class="flex-1 text-right">1</div>
+      <div class="text-center" style="flex: 0 0 273px">进球</div>
+      <div class="flex-1 text-left">2</div>
+    </div>
+
+    <div
+      class="d-flex flex-ac h36 fz-16 mb-1"
+      *ngFor="let item of ['green', 'red', 'yellow', 'blue', 'green']; let i = index"
+    >
+      <div class="flex-1 d-flex flex-ac">
+        <div class="h20 flex-1 d-flex flex-end progress">
+          <div class="h-100 bar" [class]="item" [style.width]="50 + i * 10 + '%'"></div>
+        </div>
+        <div class="text-right" [style.width.px]="80">{{ 50 + i * 10 }}</div>
+      </div>
+
+      <div class="text-center" style="flex: 0 0 273px">进球</div>
+
+      <div class="flex-1 d-flex flex-ac">
+        <div class="text-left" [style.width.px]="80">{{ 50 + i * 10 }}</div>
+        <div class="h20 flex-1 progress">
+          <div class="h-100 bar" [class]="item" [style.width]="50 + i * 10 + '%'"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-ac h36 fz-16 mb-1 color-blue" *ngFor="let item of [1, 2]">
+      <div class="flex-1 text-right">¥9,999,999.00</div>
+      <div class="text-center" style="flex: 0 0 273px">交易金额</div>
+      <div class="flex-1 text-left">¥9,999,999.00</div>
+    </div>
+  </div>
+</div>
+
+<!-- 首发阵容 -->
+<div class="card mb-8">
+  <div class="modal-header fz-20 fw-bolder">首发阵容</div>
+  <div class="card-body overview">
+    <div class="d-flex flex-ac mb-3">
+      <div class="flex-1 text-right">
+        <span class="fz-18 fw-bolder">阿納森</span>
+        <svg-icon class="svg-icon svg-icon-5x ml-4" [src]="'./assets/images/svg/sports/finish-ans.svg'"></svg-icon>
+      </div>
+      <div style="flex: 0 0 230px"></div>
+      <div class="flex-1 text-left">
+        <svg-icon class="svg-icon svg-icon-5x mr-4" [src]="'./assets/images/svg/sports/finish-mc.svg'"></svg-icon>
+        <span class="fz-18 fw-bolder">曼城</span>
+      </div>
+    </div>
+
+    <div class="d-flex flex-ac h36 fz-16 mb-1 item" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+      <div class="flex-1 text-right">32-拉姆斯戴尔 门将</div>
+      <div class="text-center" style="flex: 0 0 273px"></div>
+      <div class="flex-1 text-left">门将 31-埃德森</div>
+    </div>
+
+    <!-- 换人 -->
+    <div class="text-center my-3 fw-bolder fz-18">换人</div>
+    <div class="d-flex flex-ac h36 fz-16 mb-1 item" *ngFor="let item of [1, 2, 3, 4]">
+      <div class="flex-1 d-flex flex-end">
+        <ng-container *ngIf="item !== 2">
+          <div class="d-flex flex-ac mr-10">
+            厄德高
+            <svg-icon class="svg-icon svg-icon-lg ml-2" [src]="'./assets/images/svg/sports/finish-dwon.svg'"></svg-icon>
+          </div>
+          <div class="d-flex flex-ac">
+            霍尔丁
+            <svg-icon class="svg-icon svg-icon-lg ml-2" [src]="'./assets/images/svg/sports/finish-on.svg'"></svg-icon>
+          </div>
+        </ng-container>
+      </div>
+      <div class="text-center" style="flex: 0 0 273px">63’</div>
+      <div class="flex-1 d-flex flex-ac">
+        <ng-container *ngIf="item === 2">
+          <div class="d-flex flex-ac mr-10">
+            厄德高
+            <svg-icon class="svg-icon svg-icon-lg ml-2" [src]="'./assets/images/svg/sports/finish-dwon.svg'"></svg-icon>
+          </div>
+          <div class="d-flex flex-ac">
+            霍尔丁
+            <svg-icon class="svg-icon svg-icon-lg ml-2" [src]="'./assets/images/svg/sports/finish-on.svg'"></svg-icon>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- 替补球员 -->
+    <div class="text-center my-4 fw-bolder fz-18">替补球员</div>
+    <div class="d-flex flex-ac h36 fz-16 mb-1 item" *ngFor="let item of [1, 2, 3, 4]">
+      <div class="flex-1 d-flex flex-end">
+        <div class="d-flex flex-ac mr-10">20-努诺-塔瓦…</div>
+        <div class="d-flex flex-ac">23-洛孔加</div>
+      </div>
+      <div class="text-center" style="flex: 0 0 273px">63’</div>
+      <div class="flex-1 d-flex flex-ac">
+        <div class="d-flex flex-ac mr-10">87-James McAtee</div>
+        <div class="d-flex flex-ac">80-帕尔默</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 结算信息 -->
+<div class="card mb-8">
+  <div class="modal-header flex-ac">
+    <div class="fz-20 fw-bolder">结算信息</div>
+    <button type="button" class="btn btn-light-primary py-3" (click)="onEdit()">
+      <svg-icon class="vam svg-icon svg-icon-2x mr-0" [src]="'./assets/images/svg/sports/finish-edit.svg'"></svg-icon>
+    </button>
+  </div>
+  <div class="px-8 py-5">
+    <div class="d-flex flex-ac flex-wrap">
+      <form-row label="事件变更" class="mr-8">
+        <ng-template>
+          <mat-form-field [style.width.px]="120">
+            <mat-select class="form-control" [(ngModel)]="eventChange" (selectionChange)="getSettlement()">
+              <mat-option value="">全部</mat-option>
+              <mat-option *ngFor="let item of eventChangeList" [value]="item.value">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+      <form-row label="对象" class="mr-8">
+        <ng-template>
+          <mat-form-field [style.width.px]="120">
+            <mat-select class="form-control" [(ngModel)]="objects" (selectionChange)="getSettlement()">
+              <mat-option value="">全部</mat-option>
+              <mat-option *ngFor="let item of objectsList" [value]="item.value">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+      <form-row label="事件" class="mr-8">
+        <ng-template>
+          <mat-form-field [style.width.px]="270">
+            <mat-select class="form-control" [(ngModel)]="event" (selectionChange)="getSettlement()">
+              <mat-option value="">全部</mat-option>
+              <mat-option *ngFor="let item of eventList" [value]="item.value">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+      <form-row label="时间" class="mr-8" [contentWidth]="120">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="time"
+            (keyup)="$event.keyCode === 13 && getSettlement()"
+          />
+        </ng-template>
+      </form-row>
+
+      <button class="c-btn c-btn-primary" (click)="getSettlement()">提交</button>
+
+      <div class="btn-wrap py-2 mt-4">
+        <button class="c-btn c-btn-default" (click)="getSettlement()">重置</button>
+        <button class="c-btn c-btn-primary" (click)="getSettlement()">完成编辑</button>
+      </div>
+    </div>
+  </div>
+  <div class="card-body settlement">
+    <div class="d-flex flex-ac mb-3">
+      <div class="flex-1 text-right">
+        <span class="fz-18 fw-bolder">阿納森</span>
+        <svg-icon class="svg-icon svg-icon-5x ml-4" [src]="'./assets/images/svg/sports/finish-ans.svg'"></svg-icon>
+      </div>
+      <div style="flex: 0 0 230px"></div>
+      <div class="flex-1 text-left">
+        <svg-icon class="svg-icon svg-icon-5x mr-4" [src]="'./assets/images/svg/sports/finish-mc.svg'"></svg-icon>
+        <span class="fz-18 fw-bolder">曼城</span>
+      </div>
+    </div>
+
+    <div class="d-flex flex-center my-4">
+      <div class="point"></div>
+    </div>
+
+    <div class="d-flex flex-ac fz-16 mb-4" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8]">
+      <div class="flex-1">
+        <div class="w-100 px-8 item-left" *ngIf="item === 5 || item === 6">
+          <div>0:0</div>
+          <div class="d-flex flex-ac">
+            4’ - 第1角球 - 曼城
+            <svg-icon
+              class="svg-icon svg-icon-2x5 ml-4"
+              [src]="'./assets/images/svg/sports/finish-flag.svg'"
+            ></svg-icon>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-center fz-18" style="flex: 0 0 140px">
+        <div class="middle">4’</div>
+      </div>
+      <div class="flex-1">
+        <div class="w-100 px-8 item-right" *ngIf="item !== 5 && item !== 6">
+          <div class="d-flex flex-ac">
+            <svg-icon
+              class="svg-icon svg-icon-2x5 mr-4"
+              [src]="'./assets/images/svg/sports/finish-flag.svg'"
+            ></svg-icon>
+            4’ - 第1角球 - 曼城
+          </div>
+          <div>0:0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-center my-4">
+      <div class="point"></div>
+    </div>
+
+    <div class="text-center py-5 fw-bolder fz-18">全场后得分 - 1-2</div>
+
+    <div class="text-center">
+      <svg-icon
+        class="svg-icon svg-icon-2x5 cursor-pointer"
+        [src]="'./assets/images/svg/sports/competition/matched-fold.svg'"
+      ></svg-icon>
+    </div>
+  </div>
+</div>

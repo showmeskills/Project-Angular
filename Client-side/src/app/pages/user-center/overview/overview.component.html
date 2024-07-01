@@ -1,0 +1,678 @@
+<div class="page-container">
+  <div class="main-container unity-padding-web">
+    <div class="container home-page">
+      <!-- 顶部header -->
+      <div class="header">
+        <!-- 用户头像 -->
+        <ng-container *ngIf="userInfor">
+          <div class="user-name">
+            <img class="avater" [src]="userInfor?.avater" alt="" />
+          </div>
+        </ng-container>
+        <!-- 用户信息 -->
+        <div class="user-info">
+          <div class="top">
+            <div class="left">
+              <!-- 用户名，没有则用ID代替 -->
+              <div class="account">
+                {{ userInfor.userName || userInfor.uid }}
+              </div>
+              <div class="id">
+                {{ 'user_id_text' | translate }}
+                <p>{{ userInfor.uid }}</p>
+              </div>
+            </div>
+            <div class="vip-verify">
+              <!-- VIP等级 -->
+              <div class="onact96-not" (click)="jumpToPage('promotions/vip-level')">
+                <span class="icon-diamond"></span>
+                {{ (isSuperVip ? 'customize_vip10' : 'customize_vip' + currentVipLevel) | translate }}
+              </div>
+              <!-- 去认证VIP -->
+              <ng-container *ngIf="currenKycStatus?.level < 1">
+                <p (click)="jumpToPage('userCenter/kyc')" class="kyc-btn onact96-not">
+                  {{ currenKycStatus?.kycStatusName | translate }}
+                </p>
+              </ng-container>
+              <ng-container *ngIf="currenKycStatus?.level > 0">
+                <p class="kyc-btn kyc-vaild onact96-not" (click)="jumpToPage('userCenter/kyc')">
+                  {{ currenKycStatus?.kycStatusName | translate }}
+                </p>
+              </ng-container>
+            </div>
+          </div>
+          <div class="bottom">
+            <!-- 上次登录时间 -->
+            <div class="last-login">
+              {{ 'last_login_time' | translate }}
+              <p>
+                {{ userInfor.lastLoginTime * 1000 | mdate: 'YYYY-MM-DD HH:mm:ss' }}
+              </p>
+            </div>
+            <!-- 上次登录ip -->
+            <div>IP:{{ userInfor.lastLoginIp }}</div>
+            <!-- 查看安全记录 -->
+            <div class="security onact96-not" (click)="jumpToPage('userCenter/security/activities')">
+              {{ 'view_sec_records' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 页面卡片 -->
+      <div class="rows">
+        <!-- 第一行 -->
+        <!-- 余额详情 -->
+        <div class="row1-left">
+          <div class="left-container">
+            <div class="header">
+              <div class="row1-header">
+                <div class="title">{{ 'bal_det' | translate }}</div>
+                <div class="icon-arrow-right-simple h5-icon onact96-not" (click)="jumpToPage('wallet/overview')"></div>
+              </div>
+              <div class="option">
+                <customize-button
+                  type="primary"
+                  radius="14px"
+                  size="small"
+                  [plain]="true"
+                  [disabled]="renderPiqCheckedLoading()"
+                  (onClick)="toWalletPage('deposit')"
+                >
+                  {{ 'deposit' | translate }}</customize-button
+                >
+                <customize-button
+                  type="text"
+                  radius="14px"
+                  [plain]="true"
+                  size="small"
+                  (onClick)="toWalletPage('withdraw')"
+                >
+                  {{ 'withdrawl' | translate }}</customize-button
+                >
+                <customize-button
+                  type="text"
+                  radius="14px"
+                  [plain]="true"
+                  size="small"
+                  (onClick)="openWalletTransDialog('Main')"
+                >
+                  {{ 'trans' | translate }}</customize-button
+                >
+                <div class="icon-arrow-right-simple web-icon onact96-not" (click)="jumpToPage('wallet/overview')"></div>
+              </div>
+            </div>
+            <!-- tab -->
+            <mat-tab-group (selectedIndexChange)="onSelectIndexChange($event)" [appLoading]="isLoading">
+              <ng-container *ngFor="let wallet of walletArr; let i = index">
+                <mat-tab [label]="wallet.label">
+                  <ng-container *ngTemplateOutlet="userAssetTemplate; context: { wallet: wallet.walletInfo, index: i }">
+                  </ng-container>
+                </mat-tab>
+              </ng-container>
+            </mat-tab-group>
+          </div>
+        </div>
+        <!-- 第一行右侧 -->
+        <div class="row1-right">
+          <!-- 立刻邀请好友，赚取高额返佣 -->
+          <div class="invite onact96" (click)="jumpToPage('referral')">
+            <div>{{ 'earn_reb' | translate }}</div>
+            <div class="icon-arrow-right-simple white-arraw"></div>
+          </div>
+          <!-- 公告中心 -->
+          <div class="message">
+            <div class="title onact96" (click)="jumpToPage('help-center/announcement')">
+              <div class="message-theme text-hover">{{ 'announcements' | translate }}</div>
+              <div class="icon-arrow-right-simple text-hover"></div>
+            </div>
+            <div class="content">
+              <app-empty *ngIf="!(newsData.length > 0)"></app-empty>
+              <ng-container *ngIf="newsData.length > 0">
+                <div class="message-item onact96" *ngFor="let item of newsData" (click)="toDetailPage(item)">
+                  <div class="message-title">{{ item.title }}</div>
+                  <div class="message-date">
+                    {{ item.releaseTime | mdate: 'YYYY-MM-DD' }}
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <!-- 第二行 -->
+        <!-- 第二行左侧 设备管理-->
+        <div class="row2-left">
+          <div class="left device-management">
+            <div class="title onact96" (click)="jumpToPage('userCenter/security/device-management')">
+              <div class="text-hover">{{ 'device_management' | translate }}</div>
+              <div class="forbidden">{{ 'dis_dev' | translate }}</div>
+              <div class="icon-arrow-right-simple text-hover"></div>
+            </div>
+            <div class="content" [appLoading]="deviceLoading">
+              <ng-container *ngFor="let item of deviceData; let index = index">
+                <div class="content-item">
+                  <div class="item-title">
+                    {{ item.browser }} [{{ item.os }}]
+                    <div>{{ item.createIp }}</div>
+                  </div>
+                  <div class="bottom">
+                    <div class="text">{{ item.lastLoginZone }}</div>
+                    <div class="date">
+                      {{ item.lastLoginTime | mdate: 'YYYY-MM-DD HH:mm:ss' }}
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <app-empty *ngIf="!deviceLoading && deviceData.length <= 0"></app-empty>
+            </div>
+          </div>
+          <!-- 第二行中间 安全推荐 newkyc UI调整-->
+          <div class="mid">
+            <div class="title onact96" (click)="jumpToPage('userCenter/security')">
+              <div class="text-hover">{{ 'inc_acc_sec' | translate }}</div>
+              <div class="icon-arrow-right-simple text-hover"></div>
+            </div>
+            <!--非亚洲安全验证-->
+            <ng-container *ngIf="isEurope && kycService.getSwitchEuKyc; else defaultMidBox">
+              <ng-container *ngTemplateOutlet="euroSecurityTmp"> </ng-container>
+            </ng-container>
+            <!--亚洲安全验证-->
+            <ng-template #defaultMidBox>
+              <ng-container *ngTemplateOutlet="asiaSecurityTmp"> </ng-container>
+            </ng-template>
+          </div>
+        </div>
+        <!-- 第二行右侧 -->
+        <div class="row2-right">
+          <div class="inner-container">
+            <div class="title onact96" (click)="jumpToPage('promotions/offer')">
+              <div class="text-hover">{{ 'pro' | translate }}</div>
+              <div class="icon-arrow-right-simple text-hover"></div>
+            </div>
+            <div class="content">
+              <app-empty *ngIf="!(promotData.length > 0)"></app-empty>
+              <ng-container *ngIf="promotData.length > 0">
+                <div
+                  class="message-item onact96"
+                  *ngFor="let promo of promotData"
+                  (click)="jumpToPage('promotions/offer/' + promo.activitiesNo)"
+                >
+                  <div class="message-title">{{ promo.title }}</div>
+                  <div class="message-date">
+                    {{ promo.endTime | mdate: 'YYYY-MM-DD' }}
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <!-- 第三行 -->
+        <!-- 第三行左侧 -->
+        <div class="row3-left">
+          <div class="left-container">
+            <div class="title">
+              <div class="text-hover">{{ 'rec_deals' | translate }}</div>
+              <div
+                class="icon-arrow-right-simple text-hover onact96-not"
+                (click)="jumpToPage('transaction-record/deal')"
+              ></div>
+            </div>
+            <div class="content overflow-scollbar" [appLoading]="recentTransactionsLoading">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'gname' | translate }}</th>
+                    <th scope="col" *ngIf="!isH5">{{ 'time' | translate }}</th>
+                    <th scope="col">{{ 'odds' | translate }}</th>
+                    <th scope="col">{{ 'betting' | translate }}</th>
+                    <th scope="col" *ngIf="!isH5">{{ 'wol' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container
+                    *ngIf="recentTransactionsData.length > 0 && !recentTransactionsLoading; else exchangeEmpty"
+                  >
+                    <tr *ngFor="let item of recentTransactionsData">
+                      <td>
+                        <span class="firstName">{{ item.gameName }}</span>
+                      </td>
+                      <td *ngIf="!isH5">{{ item.betTime | mdate: 'YYYY-MM-DD HH:mm:ss' }}</td>
+                      <td>{{ item.odds | elegantDisplay: '-' }}</td>
+                      <td>
+                        {{ item.betAmount | currencyValue: item.currency }}
+                        <img class="currency-img" [src]="item.currency | currencyIcon" />
+                      </td>
+                      <td *ngIf="!isH5">
+                        <span [ngClass]="{ win: item.payoutAmount > 0, loser: item.payoutAmount < 0 }">
+                          {{ item.payoutAmount | currencyValue: item.currency : ['-', ''] : true }}
+                        </span>
+                        <img
+                          *ngIf="item.payoutAmount !== null"
+                          class="currency-img"
+                          [src]="item.currency | currencyIcon"
+                        />
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <!--  空页面  -->
+                  <ng-template #exchangeEmpty>
+                    <td colspan="6" rowspan="6">
+                      <app-empty></app-empty>
+                    </td>
+                  </ng-template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- 第三行右侧 -->
+        <div class="row3-right">
+          <div class="inner-container" [appLoading]="!userVipInfo">
+            <ng-container *ngIf="userVipInfo">
+              <div class="vip-header onact96" (click)="jumpToPage('promotions/vip-level')">
+                <div class="vip-header-top" [class.p-top]="isSuperVip" [class.svip-header]="isSuperVip">
+                  <p class="vip-level">
+                    {{ (isSuperVip ? 'customize_vip10' : 'customize_vip' + currentVipLevel) | translate }}
+                  </p>
+                  <ng-container *ngIf="!isSuperVip">
+                    <img
+                      class="vip-badge"
+                      *ngIf="userVipInfo.currentVipLevel != 0"
+                      [src]="'assets/images/vip/web-vip' + userVipInfo.currentVipLevel + '.png'"
+                      alt=""
+                    />
+                    <p *ngIf="userVipInfo.currentVipLevel == 0" class="h5-empty"></p>
+                  </ng-container>
+                </div>
+
+                <ng-container *ngIf="!isSuperVip && currentVipLevel !== 0">
+                  <div class="bar-container">
+                    <div class="promo-progress">
+                      <span class="promo-title">{{ 'promo_p' | translate }}</span>
+                      <div class="pro-bar">
+                        <div class="bar">
+                          <div
+                            class="bar-in"
+                            [style.width]="((userVipInfo.process || 0) > 100 ? 100 : userVipInfo.process || 0) + '%'"
+                          ></div>
+                        </div>
+                        <div
+                          class="bar-percent"
+                          [style.left]="((userVipInfo.process || 0) > 100 ? 100 : userVipInfo.process || 0) + '%'"
+                        >
+                          {{ (userVipInfo.process || 0) > 100 ? 100 : userVipInfo.process || 0 }}%
+                        </div>
+                      </div>
+                    </div>
+                    <div class="empty-keep" *ngIf="currentVipLevel === 1"></div>
+                    <div class="keep-progress" *ngIf="currentVipLevel !== 1">
+                      <span class="keep-title">{{ 'rele_pro' | translate }}</span>
+                      <div class="pro-bar">
+                        <div class="bar">
+                          <div
+                            class="bar-in"
+                            [style.width]="
+                              ((userVipInfo.processKeep || 0) > 100 ? 100 : userVipInfo.processKeep || 0) + '%'
+                            "
+                          ></div>
+                        </div>
+                        <div
+                          class="bar-percent"
+                          [style.left]="
+                            ((userVipInfo.processKeep || 0) > 100 ? 100 : userVipInfo.processKeep || 0) + '%'
+                          "
+                        >
+                          {{ (userVipInfo.processKeep || 0) > 100 ? 100 : userVipInfo.processKeep || 0 }}%
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="isSuperVip">
+                  <img
+                    class="super-vip"
+                    [class.super-vip-scale]="theme === 'dark'"
+                    alt=""
+                    lazy="lodaing"
+                    [src]="'assets/images/vip/web-vip10-' + theme + '.png'"
+                  />
+                  <div class="bottom-container">
+                    <p class="bottom-left">
+                      {{ 'cumu_value' | translate }}: {{ userVipInfo.currentPoints | sliceSymbolStr }}
+                    </p>
+                    <p class="bottom-right-text">
+                      {{ 'expiry' | translate }}:{{ userVipInfo.svipInvalidTime | mdate: 'YYYY/MM/DD' }}
+                    </p>
+                  </div>
+                </ng-container>
+              </div>
+              <ng-container *ngTemplateOutlet="vipBenefitListTmp"></ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 资产图 -->
+<ng-template #userAssetTemplate let-wallet="wallet" let-index="index">
+  <div class="main">
+    <div class="main-left">
+      <div class="balance">
+        <!-- 账户余额 -->
+        <div class="balance-title">
+          <span> {{ 'acc_bal' | translate }}</span>
+          <span class="hide-assets-value mutual-opacity onact96" (click)="onHideAssetsValue()">
+            <i [class]="hideAssetsValue ? 'icon-pwd-show' : 'icon-pwd-hidden'"></i>
+            <em>{{ hideAssetsValue ? ('show_bal' | translate) : ('hide_bal' | translate) }}</em>
+          </span>
+        </div>
+        <div>
+          <!-- 产品特殊要求 固定2位小数显示 不区分是否虚拟币 -->
+          {{
+            hideAssetsValue
+              ? whenHideValue
+              : (wallet.totalBalance | currencyValue: serverCurrency : undefined : undefined : 2)
+          }}
+          <p>{{ serverCurrency }}</p>
+          <div *ngIf="isH5">
+            <span class="hide-assets-value mutual-opacity onact96" (click)="onHideAssetsValue()">
+              <i [class]="hideAssetsValue ? 'icon-pwd-show' : 'icon-pwd-hidden'"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="balance equal-web" *ngIf="!isH5">
+        <div class="balance-title">
+          <span>{{ 'es_val' | translate }}</span>
+        </div>
+        <div class="total">
+          {{ hideAssetsValue ? whenHideValue : withRate(wallet.totalBalance) }}
+          <p>{{ currentWalletCurrency }}</p>
+        </div>
+      </div>
+      <div class="equal-h5" *ngIf="isH5">
+        <div class="total">
+          ≈
+          {{ hideAssetsValue ? whenHideValue : withRate(wallet.totalBalance) }}
+          <p>
+            {{ currentWalletCurrency }}
+          </p>
+        </div>
+        <div class="onact96-not" [ngClass]="openChart ? 'up-arraw' : 'grey-down-arraw'" (click)="toggleChart()"></div>
+      </div>
+    </div>
+    <!-- 统计表 -->
+    <div
+      class="chart"
+      [class.disabled]="!wallet || wallet.currencies.length < 1 || hideAssetsValue || chartDisabled"
+      [style.display]="chartReady ? 'flex' : 'none'"
+      [class.active]="(isH5 && openChart) || !isH5"
+    >
+      <apx-chart
+        #apxChart
+        *ngIf="((isH5 && openChart) || !isH5) && chartReady && index === selectedIndex"
+        [series]="pieChart.series"
+        [chart]="pieChart.chart"
+        [labels]="pieChart.labels"
+        [colors]="pieChart.colors"
+        [dataLabels]="pieChart.dataLabels"
+        [stroke]="pieChart.stroke"
+        [plotOptions]="pieChart.plotOptions"
+        [legend]="pieChart.legend"
+        [responsive]="pieChart.responsive"
+        [states]="pieChart.states"
+        [tooltip]="pieChart.tooltip"
+      >
+      </apx-chart>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 活动list -->
+<ng-template #vipBenefitListTmp>
+  <ul class="vip-benefit-list">
+    <li class="onact96" *ngFor="let item of vipBenefitList" (click)="jumpToPage('promotions/vip-level')">
+      <div class="item-container">
+        <div class="value">
+          <p class="value-one">{{ item.data }} {{ item.isPercent ? '%' : '' }}</p>
+          <p class="value-two" *ngIf="!item.isPercent && item.isMoney">USDT</p>
+          <p class="value-two" *ngIf="item.isPercent"></p>
+        </div>
+        <p class="benefit-title">
+          {{ item.name | translate }}
+        </p>
+      </div>
+    </li>
+    <li class="onact96" *ngIf="currentVipLevel > 4" (click)="jumpToPage('promotions/vip-level')">
+      <div class="item-container">
+        <div class="value"><img src="assets/images/vip/service.{{ theme }}.svg" /></div>
+        <p class="benefit-title">
+          {{ 'exclusive_cs' | translate }}
+        </p>
+      </div>
+    </li>
+  </ul>
+</ng-template>
+
+<!--亚洲安全推荐-->
+<ng-template #asiaSecurityTmp>
+  <div class="content">
+    <div class="line1 row">
+      <!-- 手机验证 -->
+      <div class="full-w">
+        <div class="box">
+          <div class="line-text" [class.active]="userInfor.isBindMobile">
+            {{ 'phone_verification' | translate }}
+          </div>
+          <ng-container *ngIf="userInfor.isBindMobile; else mobile2fa">
+            <span class="status active">{{ 'ver' | translate }}</span>
+          </ng-container>
+          <ng-template #mobile2fa>
+            <span class="status onact96-not" (click)="jumpToPage('verification/enable-phone')">{{
+              'binding' | translate
+            }}</span>
+          </ng-template>
+        </div>
+        <!-- 身份认证 -->
+        <div class="box" *ngIf="currenKycStatus?.level > 0">
+          <div
+            class="line-text"
+            [class.active]="intermediateVerificationStatus == 'S'"
+            [class.pending]="intermediateVerificationStatus == 'P'"
+          >
+            {{ 'id_ver' | translate }}
+          </div>
+          <ng-container
+            *ngIf="intermediateVerificationStatus == 'S' || intermediateVerificationStatus == 'P'; else kyc"
+          >
+            <span class="status active">
+              <ng-container *ngIf="intermediateVerificationStatus == 'S'">
+                {{ 'cer' | translate }}
+              </ng-container>
+              <ng-container *ngIf="intermediateVerificationStatus == 'P'">
+                {{ 'app_process' | translate }}
+              </ng-container>
+            </span>
+          </ng-container>
+          <ng-template #kyc>
+            <span class="status onact96-not" (click)="jumpToPage('userCenter/kyc')">{{
+              'verification' | translate
+            }}</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div class="line2 row">
+      <!-- 身份验证器验证 -->
+      <div class="full-w">
+        <div class="box">
+          <div class="line-text" [class.active]="userInfor.isBindGoogleValid">
+            {{ 'auth_ver' | translate }}
+          </div>
+          <ng-container *ngIf="userInfor.isBindGoogleValid; else goggle2fa">
+            <span class="status active">{{ 'ver' | translate }}</span>
+          </ng-container>
+          <ng-template #goggle2fa>
+            <span class="status onact96-not" (click)="jumpToPage('verification/enable-google')">{{
+              'verification' | translate
+            }}</span>
+          </ng-template>
+        </div>
+        <!-- 开启提现白名单 -->
+        <div class="box">
+          <div class="line-text" [class.active]="userInfor.hasWhiteList">
+            {{ 'turn_on_ww' | translate }}
+          </div>
+          <span *ngIf="userInfor.hasWhiteList" class="status active">{{ 'opened' | translate }}</span>
+          <span
+            *ngIf="!userInfor.hasWhiteList"
+            class="status onact96-not"
+            (click)="jumpToPage('userCenter/security')"
+            >{{ 'open' | translate }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!--欧洲安全推荐-->
+<ng-template #euroSecurityTmp>
+  <div class="content">
+    <div class="line1">
+      <div class="box-header">{{ 'verification_infor' | translate }}</div>
+      <div class="full-w">
+        <!-- 手机验证 -->
+        <div class="box">
+          <div class="line-text" [class.active]="userInfor.isBindMobile">
+            {{ 'phone_verification' | translate }}
+          </div>
+          <ng-container *ngIf="userInfor.isBindMobile; else mobile2fa">
+            <span class="status active">{{ 'ver' | translate }}</span>
+          </ng-container>
+          <ng-template #mobile2fa>
+            <span class="status onact96-not" (click)="jumpToPage('verification/enable-phone')">{{
+              'binding' | translate
+            }}</span>
+          </ng-template>
+          <!--POA 认证-->
+          <ng-container *ngIf="currenKycStatus?.level > 0">
+            <div class="child-box">
+              <div
+                class="line-text"
+                [class.active]="poaFileStatus === 2"
+                [class.pending]="intermediateVerificationStatus === 'P' && poaFileStatus !== 2"
+              >
+                {{ 'prof_ad' | translate }}
+              </div>
+              <i class="animation-icon-loading-dot" *ngIf="fileStatusLoading"><i></i><i></i><i></i></i>
+              <ng-container *ngIf="!fileStatusLoading">
+                <ng-container *ngIf="intermediateVerificationStatus === 'P'; else poaProcessor">
+                  <span class="status active"> {{ 'app_process' | translate }}</span>
+                </ng-container>
+                <ng-template #poaProcessor>
+                  <ng-container [ngSwitch]="poaFileStatus">
+                    <!-- 此状态为 Jumio 验证中 -->
+                    <ng-container *ngSwitchCase="0">
+                      <span class="status active"> {{ 'app_process' | translate }}</span>
+                    </ng-container>
+                    <!-- 失败转人工 -->
+                    <ng-container *ngSwitchCase="1">
+                      <span class="status onact96-not" (click)="jumpToKycPage('userCenter/kyc')">{{
+                        'verification' | translate
+                      }}</span>
+                    </ng-container>
+                    <!-- 最终状态 -->
+                    <ng-container *ngSwitchCase="2">
+                      <span class="status active"> {{ 'cer' | translate }}</span>
+                    </ng-container>
+                    <!-- 默认 未验证 -->
+                    <ng-container *ngSwitchDefault="null">
+                      <span class="status onact96-not" (click)="jumpToKycPage('userCenter/kyc')">{{
+                        'verification' | translate
+                      }}</span>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+        <!-- 身份认证 -->
+        <ng-container *ngIf="currenKycStatus?.level > 0">
+          <div class="box" [class.flex-star]="currenKycStatus?.level > 0">
+            <div
+              class="line-text"
+              [class.active]="idFileStatus === 2"
+              [class.pending]="intermediateVerificationStatus === 'P' && idFileStatus !== 2"
+            >
+              {{ 'id_ver' | translate }}
+            </div>
+            <i class="animation-icon-loading-dot" *ngIf="fileStatusLoading"><i></i><i></i><i></i></i>
+            <ng-container *ngIf="!fileStatusLoading">
+              <ng-container *ngIf="intermediateVerificationStatus === 'P'; else idProcessor">
+                <span class="status active"> {{ 'app_process' | translate }}</span>
+              </ng-container>
+              <ng-template #idProcessor>
+                <ng-container [ngSwitch]="idFileStatus">
+                  <!-- 此状态为 Jumio 验证中 -->
+                  <ng-container *ngSwitchCase="0">
+                    <span class="status active"> {{ 'app_process' | translate }}</span>
+                  </ng-container>
+                  <!-- 失败转人工 -->
+                  <ng-container *ngSwitchCase="1">
+                    <span class="status onact96-not" (click)="jumpToKycPage('userCenter/kyc')">{{
+                      'verification' | translate
+                    }}</span>
+                  </ng-container>
+                  <!-- 最终状态 -->
+                  <ng-container *ngSwitchCase="2">
+                    <span class="status active"> {{ 'cer' | translate }}</span>
+                  </ng-container>
+                  <!-- 默认 未验证 -->
+                  <ng-container *ngSwitchDefault="null">
+                    <span class="status onact96-not" (click)="jumpToKycPage('userCenter/kyc')">{{
+                      'verification' | translate
+                    }}</span>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="line2">
+      <div class="box-header">{{ 'security_veri' | translate }}</div>
+      <div class="full-w">
+        <!-- 身份验证器验证 -->
+        <div class="box">
+          <div class="line-text" [class.active]="userInfor.isBindGoogleValid">
+            {{ 'auth_ver' | translate }}
+          </div>
+          <ng-container *ngIf="userInfor.isBindGoogleValid; else goggle2fa">
+            <span class="status active">{{ 'ver' | translate }}</span>
+          </ng-container>
+          <ng-template #goggle2fa>
+            <span class="status onact96-not" (click)="jumpToPage('verification/enable-google')">{{
+              'verification' | translate
+            }}</span>
+          </ng-template>
+        </div>
+        <!-- 开启提现白名单 -->
+        <div class="box">
+          <div class="line-text" [class.active]="userInfor.hasWhiteList">
+            {{ 'turn_on_ww' | translate }}
+          </div>
+          <span *ngIf="userInfor.hasWhiteList" class="status active">{{ 'opened' | translate }}</span>
+          <span
+            *ngIf="!userInfor.hasWhiteList"
+            class="status onact96-not"
+            (click)="jumpToPage('userCenter/security')"
+            >{{ 'open' | translate }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

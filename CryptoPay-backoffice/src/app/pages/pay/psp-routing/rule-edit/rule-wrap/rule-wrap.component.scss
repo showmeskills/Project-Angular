@@ -1,0 +1,18 @@
+:host {
+  display: flex;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+  form-row {
+    flex: 1;
+
+    &::ng-deep {
+      .label-text {
+        line-height: 1;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        word-break: break-word;
+      }
+    }
+  }
+}

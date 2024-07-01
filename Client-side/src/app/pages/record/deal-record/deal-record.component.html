@@ -1,0 +1,204 @@
+<app-header-title-bar [title]="'tran_record' | translate" [showIcon]="false" [clickForRouterBack]="true">
+</app-header-title-bar>
+<div class="page-container">
+  <div class="main-container">
+    <div class="container">
+      <div class="content-box tabs">
+        <div
+          *ngFor="let item of tabs"
+          class="mutual-opacity tab onact96-not"
+          [routerLink]="'../' + item.page"
+          [replaceUrl]="true"
+          [routerLinkActive]="'active'"
+        >
+          {{ item.name | translate }}
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content-box main-content">
+        <div class="search-bar" [class.disabled]="totalListLoading || detailLoading">
+          <app-customize-form-group marginBottom="8px">
+            <app-customize-select
+              [(value)]="statusSelectValue"
+              [disabled]="statusLoading"
+              [label]="'status' | translate"
+              [options]="statusSelect"
+              [fixedHeight]="true"
+              (onSelect)="onStatusSelect()"
+              [valueKey]="'code'"
+              [textKey]="'description'"
+            >
+            </app-customize-select>
+
+            <app-customize-select
+              [(value)]="selectedTimeType"
+              [(timeValue)]="selectedTime"
+              [timeDance]="true"
+              [width]="isH5 ? '100%' : 'auto'"
+              [minWidth]="'150px'"
+              [useUTC0]="true"
+              [fixedHeight]="true"
+              [label]="'scope' | translate"
+              (onSelect)="onTimeSelect()"
+              [options]="timeOptions"
+            >
+            </app-customize-select>
+
+            <div class="form-group-align btn-group" *ngIf="!isH5">
+              <div class="search-bar-btn margin-left-8 onact96-not" (click)="reset()">{{ 'reset' | translate }}</div>
+              <div class="search-bar-btn active onact96-not" (click)="loadTotalDataList()">
+                {{ 'filter' | translate }}
+              </div>
+            </div>
+
+            <div class="form-group-align total-all" *ngIf="totalDataList && totalDataList.list.length > 0">
+              <div>
+                <span>{{ 'deal_cout' | translate }}:</span><em>{{ totalDataList.count }}</em>
+              </div>
+              <div>
+                <span>{{ 'deal_flow' | translate }}:</span>
+                <em>{{ totalDataList.betTotal | currencyValue : 'USDT' }}</em>
+                <img [src]="'USDT' | currencyIcon" />
+              </div>
+              <div>
+                <span>{{ 'wol' | translate }}:</span>
+                <em>{{ totalDataList.payoutTotal | currencyValue : 'USDT' : ['-', ''] : true }}</em>
+                <img *ngIf="totalDataList.payoutTotal !== null" [src]="'USDT' | currencyIcon" />
+              </div>
+            </div>
+          </app-customize-form-group>
+        </div>
+        <div class="data-list" [appLoading]="totalListLoading || detailLoading">
+          <ng-container *ngIf="totalDataList && totalDataList.list.length > 0">
+            <ng-container *ngFor="let day of totalDataList.list">
+              <div class="day-group">
+                <div
+                  class="total-bar mutual-opacity onact96"
+                  [class.disabled]="day.loading && day.data.length < 1"
+                  (click)="toggleExpand(day)"
+                >
+                  <div>{{ day.day }} (GMT+0)</div>
+                  <div>
+                    <span>{{ 'deal_cout' | translate }}:</span><em>{{ day.count }}</em>
+                  </div>
+                  <div>
+                    <span>{{ 'deal_flow' | translate }}:</span>
+                    <em>{{ day.betTotal | currencyValue : 'USDT' }}</em>
+                    <img [src]="'USDT' | currencyIcon" />
+                  </div>
+                  <div>
+                    <span>{{ 'wol' | translate }}:</span>
+                    <em [class.well]="day.payoutTotal > 0" [class.bad]="day.payoutTotal < 0">
+                      {{ day.payoutTotal | currencyValue : 'USDT' : ['-', ''] : true }}</em
+                    >
+                    <img *ngIf="day.payoutTotal !== null" [src]="'USDT' | currencyIcon" />
+                  </div>
+                  <div class="day-status-icons">
+                    <span *ngIf="day.loading && day.data.length < 1" class="loading-icon animation-icon-loading-dot"
+                      ><i></i><i></i><i></i
+                    ></span>
+                    <span [class.expand]="day.expanded" class="expand-icon icon-arrow-left-simple"></span>
+                  </div>
+                </div>
+                <div class="list-group" *ngIf="day.expanded && day.data.length > 0">
+                  <ng-container *ngFor="let item of $any(day.data)">
+                    <ng-container [ngSwitch]="ident">
+                      <app-deal-sport
+                        *ngSwitchCase="'sport'"
+                        [show]="'item'"
+                        [isH5]="isH5"
+                        [dataItem]="item"
+                        (clickItem)="loadDetail($event)"
+                      ></app-deal-sport>
+                      <app-deal-lottery
+                        *ngSwitchCase="'lottery'"
+                        [show]="'item'"
+                        [isH5]="isH5"
+                        [dataItem]="item"
+                        (clickItem)="loadDetail($event)"
+                      ></app-deal-lottery>
+                      <app-deal-casino
+                        *ngSwitchCase="'casino'"
+                        [show]="'item'"
+                        [isH5]="isH5"
+                        [dataItem]="item"
+                        (clickItem)="loadDetail($event)"
+                      ></app-deal-casino>
+                      <app-deal-poker
+                        *ngSwitchCase="'poker'"
+                        [show]="'item'"
+                        [isH5]="isH5"
+                        [dataItem]="item"
+                        (clickItem)="loadDetail($event)"
+                      ></app-deal-poker>
+                    </ng-container>
+                  </ng-container>
+                </div>
+                <div
+                  class="more-area"
+                  *ngIf="day.expanded && day.data.length > 0 && day.data.length < day.paginator.total"
+                >
+                  <span *ngIf="day.loading" class="loading-icon animation-icon-loading-dot"><i></i><i></i><i></i></span>
+                  <span class="more-text mutual-opacity onact96-not" (click)="loadDailyData(day)">{{
+                    'load_m' | translate
+                  }}</span>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <app-empty
+            *ngIf="(!totalDataList || totalDataList.list.length < 1) && !totalListLoading"
+            [text]="'no_record' | translate"
+          ></app-empty>
+        </div>
+      </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <ng-template #detailData>
+      <div class="deal-data-detail-popup">
+        <div class="title">
+          <span>{{ 'transfer_details' | translate }}</span>
+          <i class="mutual-opacity icon-close-simple onact96-not" (click)="detailDataPopup.close()"></i>
+        </div>
+        <div class="info-box">
+          <app-scrollbar>
+            <ng-container [ngSwitch]="ident">
+              <app-deal-sport
+                *ngSwitchCase="'sport'"
+                [show]="'detail'"
+                [isH5]="isH5"
+                [dealDetailData]="$any(dealDetailData)"
+              ></app-deal-sport>
+              <app-deal-lottery
+                *ngSwitchCase="'lottery'"
+                [show]="'detail'"
+                [isH5]="isH5"
+                [dealDetailData]="$any(dealDetailData)"
+              ></app-deal-lottery>
+              <app-deal-casino
+                *ngSwitchCase="'casino'"
+                [show]="'detail'"
+                [isH5]="isH5"
+                [dealDetailData]="$any(dealDetailData)"
+              ></app-deal-casino>
+              <app-deal-poker
+                *ngSwitchCase="'poker'"
+                [show]="'detail'"
+                [isH5]="isH5"
+                [dealDetailData]="$any(dealDetailData)"
+              ></app-deal-poker>
+            </ng-container>
+          </app-scrollbar>
+        </div>
+        <div class="bottom-box">
+          <div *ngIf="!isH5" class="mutual-opacity popup-btn active onact96-not" (click)="detailDataPopup.close()">
+            {{ 'sure' | translate }}
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

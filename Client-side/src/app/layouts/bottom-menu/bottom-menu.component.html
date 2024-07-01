@@ -1,0 +1,12 @@
+<div class="bottom-menu" @slideInOut *ngIf="isH5 && !hide && active && (layout.h5BottomMenuHide$ | async) === false">
+  <div
+    class="menu-item onact96"
+    *ngFor="let item of toolsData"
+    (click)="handleClick(item)"
+    [routerLink]="item.page"
+    [routerLinkActive]="item.page ? 'active' : ''"
+  >
+    <span class="item-icon {{ item.icon }}"></span>
+    <span class="item-txt">{{ item.name }}</span>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<nav-header>
+  <div class="cursor-pointer d-flex flex-ac">
+    <mat-form-field [style.width.px]="94">
+      <mat-select class="fz-14 px-4" [(ngModel)]="proxyService.year" [style.height.px]="34">
+        <mat-option [value]="item" *ngFor="let item of proxyService.yearList">{{ item }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field [style.width.px]="94">
+      <mat-select class="fz-14 px-4" [(ngModel)]="proxyService.month" [style.height.px]="34">
+        <mat-option [value]="item.value" *ngFor="let item of proxyService.monthList">{{ item.lang | lang }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="ml-8 cursor-pointer d-flex flex-ac">
+    <mat-form-field [style.width.px]="114">
+      <mat-select
+        class="fz-14 px-4 team-select"
+        [(ngModel)]="proxyService.curTeamId"
+        [style.height.px]="34"
+        [placeholder]="'dashboard.selectTeam' | lang"
+        [class.is-invalid]="!+proxyService.curTeamId"
+      >
+        <mat-option *ngFor="let item of proxyService.teamList" [value]="item.id">{{ item.groupName }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</nav-header>
+
+<div class="d-flex flex-wrap gap-10">
+  <info></info>
+
+  <graph-panel class="flex-2"></graph-panel>
+
+  <manager-rank></manager-rank>
+</div>
+
+<div class="d-flex mt-8 align-items-start">
+  <alliance style="flex: 0 0 62%"></alliance>
+  <plan class="ml-10"></plan>
+</div>
+
+<commission class="mt-8"></commission>
+
+<div class="d-flex mt-8">
+  <latest></latest>
+  <transaction-history></transaction-history>
+</div>

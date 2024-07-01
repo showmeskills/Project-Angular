@@ -1,0 +1,70 @@
+<modal-title
+  [title]="'member.detail.tournamentRank.activitiesParticipatedIn' | lang"
+  (close)="modal.dismiss()"
+></modal-title>
+
+<!-- tabs -->
+<mat-tab-group [(selectedIndex)]="curtbasValue" (selectedTabChange)="onSelectTabs()">
+  <mat-tab [label]="tabs.lang | lang" *ngFor="let tabs of tabsList"> </mat-tab>
+</mat-tab-group>
+
+<!-- 内容 -->
+<div class="modal-body p-8 fz-16" style="min-height: 222px">
+  <ng-container *ngIf="campaignList.length; else emptyTpl">
+    <!-- 活动选择 -->
+    <div class="d-flex flex-ac flex-between mb-6">
+      <!-- 活动名称 -->
+      <div>{{ 'member.detail.nonsticky.eventName' | lang }}：</div>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="curCampaignCode" (selectionChange)="onSelectCampaign()">
+          <mat-option *ngFor="let item of campaignList" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 排名 -->
+    <div class="d-flex flex-ac flex-between mb-6">
+      <div>{{ 'dashboard.alliance.ranking' | lang }}：</div>
+      <div>{{ campaignInfo?.rankNumber }}</div>
+    </div>
+
+    <!-- 下注总金额 -->
+    <div class="d-flex flex-ac flex-between mb-6">
+      <div>{{ 'member.detail.tournamentRank.totalAmountBet' | lang }}：</div>
+      <div class="d-flex flex-ac">
+        {{ campaignInfo?.uidBetMoney | currencyValue: true }}
+        <img class="vam ml-2" [currencyIcon]="'USDT'" />
+      </div>
+    </div>
+
+    <!-- W/L -->
+    <div class="d-flex flex-ac flex-between mb-6">
+      <div>W/L：</div>
+      <div lass="d-flex flex-ac">
+        {{ campaignInfo?.uidWinOrLost | currencyValue: true }}
+        <img class="vam ml-2" [currencyIcon]="'USDT'" />
+      </div>
+    </div>
+
+    <!-- 奖金 -->
+    <div class="d-flex flex-ac flex-between">
+      <div>{{ 'member.detail.tournamentRank.bonus' | lang }}：</div>
+      <div
+        lass="d-flex flex-ac"
+        *ngIf="campaignInfo?.currency && campaignInfo?.currency !== 'Unknown'; else noBonusTpl"
+      >
+        {{ campaignInfo?.amount | currencyValue: campaignInfo?.currency || false }}
+        <img class="vam ml-2" [currencyIcon]="campaignInfo?.currency" />
+      </div>
+      <ng-template #noBonusTpl>NaN</ng-template>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyTpl>
+    <!-- 空显示 -->
+    <empty style="height: 182px"></empty>
+  </ng-template>
+</div>
+
+<!-- 按钮组 -->
+<modal-footer [dismissShow]="false" (confirm)="modal.dismiss()"></modal-footer>

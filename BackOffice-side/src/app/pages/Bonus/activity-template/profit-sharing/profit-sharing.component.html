@@ -1,0 +1,163 @@
+<div class="card card-body">
+  <div class="fz-20 mb-10">利润分享活动</div>
+
+  <!-- 验证表单 -->
+  <form class="form w-100 mb-10" [formGroup]="formGroup" #form>
+    <!-- 多语系 -->
+    <lang-tab #langTab formArrayName="lang" [(value)]="selectLang" (languageChange)="updateLanguageForm()">
+      <ng-template let-i="i" let-current="current">
+        <!-- 活动标题 -->
+        <form-row
+          class="mb-8"
+          required
+          name="name"
+          label-width="200"
+          [label]="'活动标题（' + current?.name + '）'"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" />
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+  </form>
+
+  <div class="pl-8 pr-8">
+    <!-- 活动周期 -->
+    <form-row class="mb-10" label="活动周期" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-wrap mb-5">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of cycleList">
+            <input type="radio" name="cycle" [value]="item.value" [(ngModel)]="cycle" />
+            <span class="mr-4"></span>{{ item.name }}
+          </label>
+        </div>
+        <!-- 周 -->
+        <div class="d-flex flex-wrap" *ngIf="cycle === 1">
+          <div
+            class="week-bg"
+            *ngFor="let item of weekList"
+            [class.active]="item.value <= getMaxWeek && item.value >= getMinWeek"
+            [class.active-last]="item.value === getMaxWeek"
+            [class.active-first]="item.value === getMinWeek"
+          >
+            <div class="week" [class.active]="curWeekList.includes(item.value)" (click)="seletcdWeek(item.value)">
+              {{ item.name }}
+            </div>
+          </div>
+
+          <span class="ml-10 color-aaa">（只能单选或者连续选择）</span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 活动时间 -->
+    <form-row class="mb-10" label="活动时间" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <div class="d-flex">
+            <input
+              class="form-control text-center"
+              type="text"
+              selectMode="rangeFrom"
+              placeholder="开始时间"
+              [style.width.px]="148"
+              [owlDateTime]="timeStart"
+              [owlDateTimeTrigger]="timeStart"
+              [(ngModel)]="time"
+            />
+            <owl-date-time class="fz-20" #timeStart></owl-date-time>
+
+            <div class="date-line lh-42"></div>
+
+            <input
+              class="form-control text-center"
+              type="text"
+              selectMode="rangeTo"
+              placeholder="结束时间"
+              [style.width.px]="148"
+              [owlDateTime]="timeEnd"
+              [owlDateTimeTrigger]="timeEnd"
+              [(ngModel)]="time"
+            />
+            <owl-date-time class="fz-20" #timeEnd></owl-date-time>
+          </div>
+
+          <span class="ml-10 color-aaa">（根据周期来选择起始日期）</span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 活动内容 -->
+    <form-row class="mb-10" label="活动内容" label-width="200">
+      <ng-template>
+        <div class="mb-5">交易量</div>
+        <div class="d-flex flex-ac mb-10">
+          日均
+          <input
+            class="form-control text-center mx-5"
+            [style.width.px]="77"
+            autocomplete="off"
+            type="text"
+            value="50"
+          />
+          —
+          <input
+            class="form-control text-center ml-5"
+            [style.width.px]="91"
+            autocomplete="off"
+            type="text"
+            value="1000"
+          />
+        </div>
+        <div class="mb-5">负盈利</div>
+        <div class="d-flex flex-ac mb-5">
+          日均
+          <input
+            class="form-control text-center mx-5"
+            [style.width.px]="77"
+            autocomplete="off"
+            type="text"
+            value="50"
+          />
+          —
+          <input
+            class="form-control text-center ml-5"
+            [style.width.px]="91"
+            autocomplete="off"
+            type="text"
+            value="1000"
+          />
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 资金配置 -->
+    <form-row class="mb-10" label="资金配置" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap">
+          <div class="d-flex flex-ac mr-12">
+            交易量分配
+            <form-wrap [style.width.px]="80" class="ml-4 mr-12">
+              <input class="form-control" autocomplete="off" type="text" value="50" />
+              <span suffix class="color-aaa">%</span>
+            </form-wrap>
+          </div>
+          <div class="d-flex flex-ac mr-12">
+            负盈利分配
+            <form-wrap [style.width.px]="80" class="ml-4 mr-12">
+              <input class="form-control" autocomplete="off" type="text" value="0" />
+              <span suffix class="color-aaa">%</span>
+            </form-wrap>
+          </div>
+          <div class="d-flex flex-ac"><span class="mr-4">合计</span>0%</div>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="pt-10 flex-center d-flex">
+    <button type="button" class="c-btn c-btn-primary" (click)="onSubmit()">提交</button>
+  </div>
+</div>

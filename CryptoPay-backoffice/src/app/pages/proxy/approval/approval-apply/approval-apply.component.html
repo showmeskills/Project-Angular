@@ -1,0 +1,1048 @@
+<div class="modal-header">
+  <div class="modal-title fw-bolder fz-18">{{ 'budget.paymentRequest' | lang }}</div>
+</div>
+
+<div class="pl-24 pr-14 py-8" [formGroup]="formGroup">
+  <form-row [label]="'budget.department' | lang" contentWidth="200" label-width="146px">
+    <mat-form-field class="w-100">
+      <mat-select class="form-control" [value]="''" [placeholder]="'budget.selectDepartment' | lang">
+        <mat-option value="''">{{ 'budget.no' | lang }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form-row>
+
+  <!-- 添加标签的按钮 -->
+  <form-row
+    [label]="'budget.label' | lang"
+    label-width="146px"
+    contentWidth="252"
+    name="label"
+    [invalidFeedback]="{ required: 'budget.selectLabel' | lang }"
+  >
+    <ng-template let-invalid="invalid">
+      <div class="d-flex">
+        <mat-form-field>
+          <mat-select
+            [class.is-invalid]="invalid"
+            class="form-control"
+            formControlName="label"
+            [placeholder]="'budget.selectLabel' | lang"
+            *search="let labelList$ of labelList; key: 'name'"
+          >
+            <input type="search" searchInput />
+            <!--            <mat-select-trigger>{{formGroup.value.label ? labelName.join(', ') : ''}}</mat-select-trigger>-->
+            <mat-option *ngFor="let item of labelList$ | async" [value]="item.id">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="ml-4" *ngIf="!labelList.length && isEditTag">
+          <div class="tag-add d-flex flex-center" (click)="openEditLabel(addTagTpl)">
+            <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <div afterContent class="tag-wrap d-flex" *ngIf="labelList.length && isEditTag">
+      <div>
+        <div class="tag-add d-flex flex-center" (click)="openEditLabel(addTagTpl)">
+          <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap">
+        <div
+          class="tag-item"
+          [class.special]="item.category === 'Special'"
+          *ngFor="let item of labelList"
+          (click)="openDelTag(delTagTpl, item)"
+        >
+          {{ item.name }}
+          <!-- 不要加载元素避免打开调试工具显示出来，而进行删除特殊标签 -->
+          <svg-icon
+            *ngIf="item.category !== 'Special'"
+            class="tag-close cursor-pointer svg-icon svg-icon-1x"
+            [src]="'assets/images/svg/close.svg'"
+          ></svg-icon>
+        </div>
+      </div>
+    </div>
+  </form-row>
+
+  <form-row class="pb-0" [label]="'budget.currency' | lang" label-width="146px">
+    <ng-template>
+      <div class="tab">
+        <mat-tab-group class="tab-header d-inline-block" [(selectedIndex)]="payService.curCurrencyTab">
+          <ng-container *ngFor="let item of currencyListType">
+            <mat-tab *ngIf="item.onlyGBShow ? ls.isGB : true" [label]="item.label | lang"></mat-tab>
+          </ng-container>
+        </mat-tab-group>
+
+        <!-- 法币 开始 -->
+        <div class="tab-bd mt-2" *ngIf="payService.curCurrencyTab === 0">
+          <mat-tab-group class="w-100" [(selectedIndex)]="curApplyType">
+            <!-- TODO 没有了暂时注释 -->
+            <!--            <mat-tab label="自动获取">-->
+            <!--              <div class="">-->
+            <!--                <form-row label="选择用户名" label-width="106" contentWidth="246">-->
+            <!--                  <mat-form-field class="w-100">-->
+            <!--                    <mat-select class="form-control" [ngModel]="''">-->
+            <!--                      <mat-option [value]="''">张三</mat-option>-->
+            <!--                      <mat-option [value]="''">李四</mat-option>-->
+            <!--                    </mat-select>-->
+            <!--                  </mat-form-field>-->
+            <!--                </form-row>-->
+
+            <!--                <form-row label="货币类型" label-width="106" contentWidth="246">-->
+            <!--                  <mat-form-field class="w-100">-->
+            <!--                    <mat-select class="form-control" [ngModel]="''">-->
+            <!--                      <mat-option [value]="''">CNY</mat-option>-->
+            <!--                    </mat-select>-->
+            <!--                  </mat-form-field>-->
+            <!--                </form-row>-->
+
+            <!--                <form-row label="银行选择" label-width="106" contentWidth="499">-->
+            <!--                  <mat-form-field class="w-100">-->
+            <!--                    <mat-select class="form-control" [ngModel]="''">-->
+            <!--                      <mat-option [value]="''">-->
+            <!--                        <span>中国农业银行</span>-->
+            <!--                        <span class="ml-15">张****</span>-->
+            <!--                        <span class="ml-15">6228************493</span>-->
+            <!--                      </mat-option>-->
+            <!--                    </mat-select>-->
+            <!--                  </mat-form-field>-->
+            <!--                </form-row>-->
+
+            <!--                <form-row label="金额" label-width="106" contentWidth="186">-->
+            <!--                  <input class="form-control w-100" />-->
+
+            <!--                  <div afterContent class="lh-22">-->
+            <!--                    <div class="fz-16 color-999 mt-4">实际到账：$100.00</div>-->
+            <!--                    <div class="fz-16 color-999 mt-2">您的剩余预算：$100.00</div>-->
+            <!--                  </div>-->
+            <!--                </form-row>-->
+            <!--              </div>-->
+            <!--            </mat-tab>-->
+
+            <!-- 手动 - 法币 -->
+            <mat-tab [label]="'budget.manualEntry' | lang" [formGroup]="manualFiat">
+              <div class="lh-1n">
+                <div [class.catch]="manualFiatList.value.length > 1" #fiatScroll>
+                  <div *ngFor="let item of manualFiatList.controls; let i = index" [formGroup]="item">
+                    <div class="catch-title" *ngIf="manualFiatList.value.length > 1" [style.margin-top.px]="i ? 15 : 0">
+                      <div class="flex-1">
+                        {{ 'budget.Information' | lang }}{{ i + 1 }}
+                        {{ item?.controls?.['bankPerson']?.value ? ' - ' + item?.controls?.['bankPerson']?.value : '' }}
+                      </div>
+
+                      <svg-icon
+                        src="./assets/images/svg/admin-close.svg"
+                        class="svg-icon svg-icon-lg px-4 cursor-pointer"
+                        (click)="manualFiatList!.removeAt(i)"
+                      ></svg-icon>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <form-row
+                        class="mr-30"
+                        [label]="'budget.currencyType' | lang"
+                        label-width="150"
+                        contentWidth="246"
+                        [control]="manualFiat.get('currency')"
+                        [invalidFeedback]="{ required: 'budget.SelectCurrencyType' | lang }"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <mat-form-field class="w-100">
+                            <mat-select
+                              [class.is-invalid]="invalid"
+                              class="form-control"
+                              [placeholder]="'budget.SelectCurrencyType' | lang"
+                              [formControl]="control"
+                              (selectionChange)="fiatCurrencyChange($event)"
+                              *search="let currencyListFiat$ of payService.currencyListFiatSignal(); key: 'code'"
+                            >
+                              <input type="search" searchInput />
+                              <mat-option *ngFor="let item of currencyListFiat$ | async" [value]="item.code">{{
+                                item.code
+                              }}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </ng-template>
+                      </form-row>
+
+                      <form-row
+                        class="mr-12"
+                        [label]="'budget.payeeName' | lang"
+                        label-width="150"
+                        contentWidth="246"
+                        name="bankPerson"
+                        [invalidFeedback]="{ required: 'budget.EnterPayeeName' | lang }"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <input
+                            [class.is-invalid]="invalid"
+                            [formControl]="control"
+                            input-trim
+                            class="form-control"
+                            type="text"
+                            [placeholder]="'budget.EnterPayeeName' | lang"
+                          />
+                        </ng-template>
+                      </form-row>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <form-row
+                        class="mr-30 position-relative"
+                        [label]="'budget.bankName' | lang"
+                        label-width="150"
+                        contentWidth="246"
+                        name="bankCode"
+                        [invalidFeedback]="{
+                          required: 'budget.selectBankName' | lang,
+                          notSupportBank: 'budget.selectBankNotSupport' | lang
+                        }"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <mat-form-field class="w-100">
+                            <mat-select
+                              class="form-control"
+                              [formControl]="control"
+                              [class.is-invalid]="invalid"
+                              [placeholder]="'budget.selectBankName' | lang"
+                              (selectionChange)="onFiatManualBankChange($event, control)"
+                              *search="let list of fiatManualBankList; key: 'bankNameLocal'"
+                            >
+                              <input type="text" searchInput />
+                              <mat-option [value]="item.bankCode" *ngFor="let item of list | async">{{
+                                item.bankNameLocal
+                              }}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <div class="copy" (click)="onCopy(item.get('bankName')!?.value || '')">
+                            {{ 'budget.copy' | lang }}
+                          </div>
+                        </ng-template>
+                      </form-row>
+
+                      <form-row
+                        class="mr-12"
+                        [label]="'budget.bankCardNumber' | lang"
+                        label-width="150"
+                        contentWidth="246"
+                        name="bankCard"
+                        [invalidFeedback]="{
+                          required: 'budget.enterBankCard' | lang,
+                          invalid: 'budget.validBankCard' | lang
+                        }"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <input
+                            [class.is-invalid]="invalid"
+                            [formControl]="control"
+                            input-trim
+                            input-number
+                            class="form-control"
+                            type="text"
+                            [placeholder]="'budget.enterBankCard' | lang"
+                          />
+                        </ng-template>
+                      </form-row>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <form-row
+                        [label]="'budget.amount' | lang"
+                        label-width="150"
+                        contentWidth="246"
+                        name="amount"
+                        class="mr-30"
+                        [invalidFeedback]="{
+                          numberRequired: 'budget.EnterAmount' | lang,
+                          limitRange:
+                            'budget.amountRange'
+                            | lang
+                              : {
+                                  min: minMaxAmount.minAmount || '∞',
+                                  max: minMaxAmount.maxAmount || '∞'
+                                }
+                        }"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <input
+                            [class.is-invalid]="invalid"
+                            [formControl]="control"
+                            input-float
+                            decimal="8"
+                            [placeholder]="'budget.EnterAmount' | lang"
+                            class="form-control w-100"
+                            maxlength="12"
+                          />
+                        </ng-template>
+
+                        <!--                    <div afterContent class="lh-22">-->
+                        <!--                      <div class="fz-16 color-999 mt-4">-->
+                        <!--                        实际到账：${{ manualFiat.value.amount ? (manualFiat.value.amount | toFormatMoney) : 0 }}-->
+                        <!--                      </div>-->
+                        <!--                      &lt;!&ndash;                    <div class="fz-16 color-999 mt-2">您的剩余预算：$100.00</div>&ndash;&gt;-->
+                        <!--                    </div>-->
+                      </form-row>
+
+                      <!-- 积分 -->
+                      <form-row
+                        [label]="'budget.integral' | lang"
+                        label-width="150"
+                        contentWidth="246"
+                        name="integral"
+                        class="mr-12"
+                        [invalidFeedback]="{ required: 'budget.enterPoints' | lang : { n: 0 } }"
+                        *ngIf="ls.isGB"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <input
+                            [class.is-invalid]="invalid"
+                            input-number
+                            decimal="8"
+                            [formControl]="control"
+                            [placeholder]="'budget.enterPoints' | lang : { n: 0 }"
+                            class="form-control w-100"
+                            maxlength="12"
+                          />
+                        </ng-template>
+                      </form-row>
+                    </div>
+                  </div>
+                </div>
+
+                <span class="text-primary fz-14 cursor-pointer" (click)="addManualFiat(fiatScroll)">
+                  <svg-icon class="lh-18 svg-icon svg-icon-xl vam" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+                  <span class="vam">{{ 'budget.addSum' | lang }}</span>
+                </span>
+              </div>
+            </mat-tab>
+
+            <!-- 批量 - 法币 -->
+            <mat-tab [label]="'budget.withdrawalBatches' | lang" [formGroup]="fiatBatch">
+              <form-row [label]="'budget.uploadForm' | lang" label-width="107" name="excel">
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <div class="d-flex flex-wrap">
+                    <div>
+                      <upload
+                        mark="file"
+                        class="mr-30"
+                        [style.height.px]="60"
+                        [accept]="['xlsx']"
+                        [showLimitText]="false"
+                        [desc]="''"
+                        [limit]="2048"
+                        [customRequestSteam]="uploadExcelFiat"
+                        [class.is-invalid]="invalid"
+                        [formControl]="control"
+                        (change)="onUploadChange($event, fiatBatch, false)"
+                        (clear)="onClearExcel(fiatBatch)"
+                      ></upload>
+
+                      <div class="invalid-feedback lh-1n" *ngIf="invalid">{{ 'budget.PleaseUploadForm' | lang }}</div>
+                    </div>
+
+                    <div
+                      class="d-flex flex-column flex-bt lh-1n fz-16 w-100 flex-1 text-nowrap py-2"
+                      style="height: 58px"
+                    >
+                      <div class="d-flex w-100">
+                        <div class="flex-1">
+                          <span class="color-777">{{ 'budget.totalWithdrawalAmount' | lang }}：</span>
+                          <span class="ml-8">¥{{ fiatBatch.value['list'] || [] | toFormatMoneyArr : 'amount' }}</span>
+                        </div>
+                        <div class="">
+                          <span class="cursor-pointer download-excel mr-15" (click)="onDownloadTemplate('Currency')">{{
+                            'budget.downloadForm' | lang
+                          }}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <span class="color-777">{{ 'budget.remainingBudget' | lang }}：</span>
+                        <span class="ml-8">¥0</span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </form-row>
+
+              {{ isLoadingFiatBatch ? ('budget.parsingLoading' | lang) : '' }}
+              <div class="catch mt-17" *ngIf="fiatBatchExcelList.length">
+                <div class="" *ngFor="let item of fiatBatchExcelList; let i = index">
+                  <div class="catch-title">
+                    <div class="flex-1">
+                      {{ 'budget.Information' | lang }}{{ i + 1 }}
+                      {{ item.bankAccountHolder ? ' - ' + item.bankAccountHolder : '' }}
+                    </div>
+
+                    <svg-icon
+                      src="./assets/images/svg/admin-close.svg"
+                      class="svg-icon svg-icon-lg px-4 cursor-pointer"
+                      (click)="onRemoveBatch(fiatBatch, i)"
+                    ></svg-icon>
+                  </div>
+
+                  <div class="d-flex flex-wrap">
+                    <form-row class="mr-30" [label]="'budget.currencyType' | lang" label-width="106" contentWidth="246">
+                      <div class="form-control w-100 color-777">
+                        {{ item.currency }}
+                      </div>
+                    </form-row>
+
+                    <form-row [label]="'budget.payeeName' | lang" label-width="106" contentWidth="399">
+                      <div class="form-control w-100 color-777">
+                        {{ item.bankAccountHolder }}
+                      </div>
+                    </form-row>
+                  </div>
+
+                  <div class="d-flex flex-wrap">
+                    <form-row
+                      class="mr-30 position-relative"
+                      [label]="'budget.bankName' | lang"
+                      label-width="106"
+                      contentWidth="246"
+                    >
+                      <div class="form-control w-100 color-777" [class.is-invalid]="item.invalidBank">
+                        {{ item.bankName }}
+                      </div>
+
+                      <div class="copy" (click)="onCopy(item.bankName)">{{ 'budget.copy' | lang }}</div>
+                    </form-row>
+
+                    <form-row
+                      [label]="'budget.bankCardNumber' | lang"
+                      label-width="106"
+                      contentWidth="399"
+                      class="position-relative"
+                    >
+                      <ng-template>
+                        <div class="form-control w-100 color-777">{{ item.bankAccountNumber }}</div>
+
+                        <!--                        <div class="copy" (click)="onCopy(item.bankAccountNumber)">复制</div>-->
+                      </ng-template>
+                    </form-row>
+                  </div>
+
+                  <div class="d-flex flex-wrap">
+                    <form-row class="mr-30" [label]="'budget.amount' | lang" label-width="106" contentWidth="246">
+                      <div class="form-control w-100 color-777">
+                        {{ item.presetAmount | toFormatMoney }}
+                      </div>
+
+                      <!--                      <div afterContent class="lh-22">-->
+                      <!--                        <div class="fz-16 color-999 mt-4">实际到账：${{ item.presetAmount | toFormatMoney }}</div>-->
+                      <!--                      </div>-->
+                    </form-row>
+
+                    <form-row *ngIf="ls.isGB" [label]="'budget.integral' | lang" label-width="106" contentWidth="246">
+                      <div class="form-control w-100 color-777">
+                        {{ item.integrals }}
+                      </div>
+                    </form-row>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+        <!-- 法币 结束 -->
+
+        <!-- 数字货币 开始 -->
+        <div class="tab-bd mt-2" *ngIf="payService.curCurrencyTab === 1">
+          <mat-tab-group class="w-100" [(selectedIndex)]="curApplyType">
+            <!--            <mat-tab label="自动获取">-->
+            <!--              <div class="">-->
+            <!--                <form-row label="用户名" label-width="106" contentWidth="246">-->
+            <!--                  <mat-form-field class="w-100">-->
+            <!--                    <mat-select class="form-control" [ngModel]="''">-->
+            <!--                      <mat-option [value]="''">张三</mat-option>-->
+            <!--                      <mat-option [value]="''">李四</mat-option>-->
+            <!--                    </mat-select>-->
+            <!--                  </mat-form-field>-->
+            <!--                </form-row>-->
+
+            <!--                <form-row label="币种" label-width="106" contentWidth="246">-->
+            <!--                  <mat-form-field class="w-100">-->
+            <!--                    <mat-select class="form-control" [ngModel]="''">-->
+            <!--                      <mat-option [value]="''">CNY</mat-option>-->
+            <!--                    </mat-select>-->
+            <!--                  </mat-form-field>-->
+            <!--                </form-row>-->
+
+            <!--                <form-row label="提币地址" label-width="106" contentWidth="399">-->
+            <!--                  <input class="form-control w-100" type="text" />-->
+            <!--                </form-row>-->
+
+            <!--                <form-row label="转账网络" label-width="106" contentWidth="246">-->
+            <!--                  <mat-form-field class="w-100">-->
+            <!--                    <mat-select class="form-control" [ngModel]="''">-->
+            <!--                      <mat-option [value]="''">RC2</mat-option>-->
+            <!--                    </mat-select>-->
+            <!--                  </mat-form-field>-->
+            <!--                </form-row>-->
+
+            <!--                <form-row label="币种数量" label-width="106" contentWidth="246">-->
+            <!--                  <input placeholder="最多可付款 0.00000000" class="form-control w-100" />-->
+
+            <!--                  <div afterContent class="lh-22">-->
+            <!--                    <div class="fz-16 color-999 mt-4">实际到账：$100.00</div>-->
+            <!--                    <div class="fz-16 color-999 mt-2">您的剩余预算：$100.00</div>-->
+            <!--                  </div>-->
+            <!--                </form-row>-->
+            <!--              </div>-->
+            <!--            </mat-tab>-->
+
+            <!-- 手动 - 虚拟币 -->
+            <mat-tab [label]="'budget.manualEntry' | lang" [formGroup]="manualDigital">
+              <div class="lh-1n">
+                <div [class.catch]="manualDigitalList.value.length > 1" #digitalScroll>
+                  <div *ngFor="let item of manualDigitalList.controls; let i = index" [formGroup]="item">
+                    <div
+                      class="catch-title"
+                      *ngIf="manualDigitalList.value.length > 1"
+                      [style.margin-top.px]="i ? 15 : 0"
+                    >
+                      <div class="flex-1">{{ 'budget.Information' | lang }}{{ i + 1 }}</div>
+
+                      <svg-icon
+                        src="./assets/images/svg/admin-close.svg"
+                        class="svg-icon svg-icon-lg px-4 cursor-pointer"
+                        (click)="manualDigitalList.removeAt(i)"
+                      ></svg-icon>
+                    </div>
+
+                    <form-row
+                      [label]="'budget.selectCurrency' | lang"
+                      [label-width]="lang.isLocal ? '106' : '165'"
+                      contentWidth="246"
+                      [control]="manualDigital.get('currency')"
+                      [invalidFeedback]="{ required: 'budget.pleaseSelectCurrency' | lang }"
+                    >
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <mat-form-field class="w-100">
+                          <mat-select
+                            class="form-control"
+                            [placeholder]="'budget.pleaseSelectCurrency' | lang"
+                            [formControl]="control"
+                            [class.is-invalid]="invalid"
+                            (selectionChange)="digitalCurrencyChange($event)"
+                            *search="let currencyListDigital$ of payService.currencyListDigitalSignal(); key: 'code'"
+                          >
+                            <input type="search" searchInput />
+                            <mat-option *ngFor="let item of currencyListDigital$ | async" [value]="item.code">{{
+                              item.code
+                            }}</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </ng-template>
+                    </form-row>
+
+                    <form-row
+                      class="mr-12"
+                      [label]="'budget.withdrawalAddress' | lang"
+                      [label-width]="lang.isLocal ? '106' : '165'"
+                      contentWidth="442"
+                      name="bankNum"
+                      [invalidFeedback]="{
+                        required: 'budget.pleaseenterWithdrawalAddress' | lang
+                      }"
+                    >
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <div class="d-flex">
+                          <input
+                            [class.is-invalid]="invalid"
+                            [formControl]="control"
+                            input-trim
+                            class="form-control"
+                            [placeholder]="'budget.pleaseenterWithdrawalAddress' | lang"
+                            type="text"
+                          />
+                          <span
+                            class="ml-4 fz-16 cursor-pointer text-primary flex-1 text-nowrap"
+                            (click)="onPaste(control)"
+                            >{{ 'budget.paste' | lang }}</span
+                          >
+                        </div>
+                      </ng-template>
+                    </form-row>
+
+                    <form-row
+                      [label]="'budget.transferNetwork' | lang"
+                      [label-width]="lang.isLocal ? '106' : '165'"
+                      contentWidth="246"
+                      [control]="manualDigital.get('network')"
+                      [invalidFeedback]="{ required: 'budget.transferNetwork' | lang }"
+                    >
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <mat-form-field class="w-100">
+                          <mat-select
+                            [class.is-invalid]="invalid"
+                            [formControl]="control"
+                            class="form-control"
+                            [placeholder]="'budget.transferNetwork' | lang"
+                            (selectionChange)="networkChange($event)"
+                          >
+                            <mat-option *ngFor="let item of networkList" [value]="item.paymentMethodId">{{
+                              item.paymentMethodId
+                            }}</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </ng-template>
+                    </form-row>
+
+                    <form-row
+                      [label]="'budget.numberCurrencies' | lang"
+                      [label-width]="lang.isLocal ? '106' : '170'"
+                      contentWidth="246"
+                      name="amount"
+                      [invalidFeedback]="{
+                        numberRequired: 'budget.enterAmountCurrency' | lang,
+                        limitRange:
+                          'budget.numberRange'
+                          | lang
+                            : {
+                                min: minMaxAmount.minAmount || '∞',
+                                max: minMaxAmount.maxAmount || '∞'
+                              }
+                      }"
+                    >
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <input
+                          input-float
+                          decimal="8"
+                          formControlName="amount"
+                          [placeholder]="'budget.enterAmountCurrency' | lang"
+                          class="form-control w-100"
+                          [class.is-invalid]="invalid"
+                          maxlength="14"
+                        />
+                      </ng-template>
+
+                      <!--                      <div afterContent class="lh-22">-->
+                      <!--                        <div class="fz-16 color-999 mt-4">-->
+                      <!--                          实际到账：${{ manualDigital.value.amount ? (manualDigital.value.amount | toFormatMoney) : 0 }}-->
+                      <!--                        </div>-->
+                      <!--                      </div>-->
+                    </form-row>
+
+                    <!-- 积分 -->
+                    <!--                    <form-row-->
+                    <!--                      [label]="'budget.integral' | lang"-->
+                    <!--                      label-width="106"-->
+                    <!--                      contentWidth="246"-->
+                    <!--                      name="integral"-->
+                    <!--                      class="mr-12"-->
+                    <!--                      [invalidFeedback]="{ required: 'budget.enterPoints' | lang: { n: 300 } }"-->
+                    <!--                    >-->
+                    <!--                      <ng-template let-invalid="invalid" let-control="formControl">-->
+                    <!--                        <input-->
+                    <!--                          [class.is-invalid]="invalid"-->
+                    <!--                          input-number-->
+                    <!--                          decimal="8"-->
+                    <!--                          [formControl]="control"-->
+                    <!--                          [placeholder]="'budget.enterPoints' | lang: { n: 300 }"-->
+                    <!--                          class="form-control w-100"-->
+                    <!--                          maxlength="12"-->
+                    <!--                        />-->
+                    <!--                      </ng-template>-->
+                    <!--                    </form-row>-->
+                  </div>
+                </div>
+
+                <span class="text-primary fz-14 cursor-pointer" (click)="addManualDigital(digitalScroll)">
+                  <svg-icon class="lh-18 svg-icon svg-icon-xl vam" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+                  <span class="vam">{{ 'budget.addSum' | lang }}</span>
+                </span>
+              </div>
+            </mat-tab>
+
+            <!-- 批量 - 虚拟币 -->
+            <mat-tab [label]="'budget.withdrawalBatches' | lang" [formGroup]="digitalBatch">
+              <form-row [label]="'budget.uploadForm' | lang" label-width="107" name="excel">
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <div class="d-flex flex-wrap">
+                    <div>
+                      <upload
+                        mark="file"
+                        class="mr-30"
+                        [style.height.px]="60"
+                        [accept]="['xlsx']"
+                        [showLimitText]="false"
+                        [desc]="''"
+                        [limit]="2048"
+                        [customRequestSteam]="uploadExcelDigital"
+                        [class.is-invalid]="invalid"
+                        [formControl]="control"
+                        (change)="onUploadChange($event, digitalBatch, true)"
+                        (clear)="onClearExcel(digitalBatch)"
+                      ></upload>
+
+                      <div class="invalid-feedback lh-1n" *ngIf="invalid">{{ 'budget.PleaseUploadForm' | lang }}</div>
+                    </div>
+
+                    <div
+                      class="d-flex flex-column flex-bt lh-1n fz-16 w-100 flex-1 text-nowrap py-2"
+                      style="height: 58px"
+                    >
+                      <div class="d-flex w-100">
+                        <div class="flex-1">
+                          <span class="color-777">{{ 'budget.totalWithdrawalAmount' | lang }}：</span>
+                          <span class="ml-8">{{ digitalBatch.value.list || [] | toFormatMoneyArr : 'amount' }}</span>
+                        </div>
+                        <div class="">
+                          <span class="cursor-pointer download-excel mr-15" (click)="onDownloadTemplate('Coin')">{{
+                            'budget.downloadForm' | lang
+                          }}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <span class="color-777">{{ 'budget.remainingBudget' | lang }}：</span>
+                        <span class="ml-8">¥0</span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </form-row>
+
+              {{ isLoadingDigitalBatch ? ('budget.parsingLoading' | lang) : '' }}
+              <div class="catch mt-17" *ngIf="digitalBatchExcelList.length">
+                <div class="" *ngFor="let item of digitalBatchExcelList || []; let i = index">
+                  <div class="catch-title">
+                    <div class="flex-1">{{ 'budget.Information' | lang }}{{ i + 1 }}</div>
+
+                    <svg-icon
+                      src="./assets/images/svg/admin-close.svg"
+                      class="svg-icon svg-icon-lg px-4 cursor-pointer"
+                      (click)="onRemoveBatch(digitalBatch, i)"
+                    ></svg-icon>
+                  </div>
+
+                  <form-row [label]="'budget.selectCurrency' | lang" label-width="106" contentWidth="246">
+                    <div class="form-control w-100 color-777">
+                      {{ item.currency }}
+                    </div>
+                  </form-row>
+
+                  <form-row [label]="'budget.withdrawalAddress' | lang" label-width="106" contentWidth="399">
+                    <div class="form-control w-100 color-777">
+                      {{ item.address }}
+                    </div>
+                  </form-row>
+
+                  <form-row [label]="'budget.transferNetwork' | lang" label-width="106" contentWidth="246">
+                    <div class="form-control w-100 color-777">
+                      {{ item.paymentMethodId }}
+                    </div>
+                  </form-row>
+
+                  <form-row [label]="'budget.numberCurrencies' | lang" label-width="106" contentWidth="246">
+                    <div class="form-control w-100 color-777">
+                      {{ item.presetAmount | toFormatMoney }}
+                    </div>
+
+                    <!-- 实际到账 -->
+                    <!--                    <div afterContent class="lh-22">-->
+                    <!--                      <div class="fz-16 color-999 mt-4">-->
+                    <!--                        {{ 'budget.actuallyArrived' | lang }}：${{ item.presetAmount | toFormatMoney }}-->
+                    <!--                      </div>-->
+                    <!--                    </div>-->
+                  </form-row>
+
+                  <!-- 积分 -->
+                  <!--                  <form-row [label]="'budget.integral' | lang" label-width="106" contentWidth="246">-->
+                  <!--                    <div class="form-control w-100 color-777">-->
+                  <!--                      {{ item.integrals }}-->
+                  <!--                    </div>-->
+                  <!--                  </form-row>-->
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+        <!-- 数字货币 结束 -->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <div class="tab-bd mt-2" [hidden]="payService.curCurrencyTab !== 2">
+    <asset-distribution #asset></asset-distribution>
+  </div>
+
+  <!-- 指定子渠道 - 法币手动输入 -->
+  <form-row
+    *ngIf="isFiat && isManual && ls.isGB"
+    class="mt-4"
+    label-width="146px"
+    [label]="'budget.subchannels' | lang"
+    [control]="manualFiat.get('channel')"
+    [invalidFeedback]="{ required: 'budget.selectChannel' | lang }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <mat-form-field [style.width.px]="200">
+        <mat-select
+          (selectionChange)="subChannelFiatChange()"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          class="form-control"
+          [placeholder]="'budget.selectChannel' | lang"
+          *search="let manualFiatChannelList$ of manualFiatChannelListSignal(); key: 'channelAccountAlias'"
+        >
+          <input type="search" searchInput />
+          <mat-option *ngIf="manualFiatChannelListSignal().length" [value]="''">{{
+            'budget.automaticAllocation' | lang
+          }}</mat-option>
+          <mat-option [value]="item.channelAccountId" *ngFor="let item of manualFiatChannelList$ | async">
+            {{ item.channelAccountAlias }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 指定子渠道 - 虚拟币手动输入 -->
+  <form-row
+    *ngIf="isDigital && isManual && ls.isGB"
+    class="mt-4"
+    label-width="146px"
+    [label]="'budget.subchannels' | lang"
+    [control]="manualDigital.get('channel')"
+    [invalidFeedback]="{ required: 'budget.selectChannel' | lang }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <mat-form-field [style.width.px]="200">
+        <mat-select
+          (selectionChange)="triggerAmountBlur()"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          class="form-control"
+          [placeholder]="'budget.selectChannel' | lang"
+          *search="
+            let allowManualDigitalChannelList$ of allowManualDigitalChannelListSignal();
+            key: 'channelAccountAlias'
+          "
+        >
+          <input type="search" searchInput />
+          <mat-option [value]="item.channelAccountId" *ngFor="let item of allowManualDigitalChannelList$ | async">{{
+            item.channelAccountAlias
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 指定子渠道 - 法币批量 -->
+  <form-row
+    *ngIf="isFiat && isBatch && ls.isGB"
+    class="mt-4"
+    label-width="146px"
+    [label]="'budget.subchannels' | lang"
+    [control]="fiatBatch.get('channel')"
+    [invalidFeedback]="{ required: 'budget.selectChannel' | lang }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <mat-form-field [style.width.px]="200">
+        <mat-select
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          class="form-control"
+          [placeholder]="'budget.selectChannel' | lang"
+          (selectionChange)="subChannelFiatChange()"
+          *search="let allowFiatBatchChannelList$ of allowFiatBatchChannelListSignal(); key: 'channelAccountAlias'"
+        >
+          <input type="search" searchInput />
+          <mat-option *ngIf="allowFiatBatchChannelListSignal()?.length" [value]="''">{{
+            'budget.automaticAllocation' | lang
+          }}</mat-option>
+          <mat-option [value]="item.channelAccountId" *ngFor="let item of allowFiatBatchChannelList$ | async">{{
+            item.channelAccountAlias
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 指定子渠道 - 虚拟币批量 -->
+  <form-row
+    *ngIf="isDigital && isBatch && ls.isGB"
+    class="mt-4"
+    label-width="146px"
+    [label]="'budget.subchannels' | lang"
+    [control]="digitalBatch.get('channel')"
+    [invalidFeedback]="{ required: 'budget.selectChannel' | lang }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <mat-form-field [style.width.px]="200">
+        <mat-select
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          class="form-control"
+          [placeholder]="'budget.selectChannel' | lang"
+          *search="
+            let allowDigitalBatchChannelList$ of allowDigitalBatchChannelListSignal();
+            key: 'channelAccountAlias'
+          "
+        >
+          <input type="search" searchInput />
+          <mat-option [value]="item.channelAccountId" *ngFor="let item of allowDigitalBatchChannelList$ | async">{{
+            item.channelAccountAlias
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 不要了 -->
+  <!--  <form-row *ngIf="!payService.curCurrencyTab" label="转账时间">-->
+  <!--    <ng-template>-->
+  <!--      <div class="d-flex">-->
+  <!--        <label class="radio radio-lg radio-success">-->
+  <!--          <input type="radio" name="time" [value]="0" [formControl]="timeGetControl('transferType')" />-->
+  <!--          <span class="mr-4"></span>-->
+  <!--          即时到账-->
+  <!--        </label>-->
+  <!--        <label class="radio radio-lg radio-yellow ml-26" *ngIf="!isDigital">-->
+  <!--          <input-->
+  <!--            type="radio"-->
+  <!--            name="time"-->
+  <!--            [value]="1"-->
+  <!--            (change)="onChangeTimeType()"-->
+  <!--            [formControl]="timeGetControl('transferType')"-->
+  <!--          />-->
+  <!--          <span class="mr-4"></span>-->
+  <!--          预约到账-->
+  <!--        </label>-->
+  <!--      </div>-->
+  <!--    </ng-template>-->
+  <!--  </form-row>-->
+
+  <!--  <form-row-->
+  <!--    label="预约时间"-->
+  <!--    contentWidth="490"-->
+  <!--    [hidden]="formGroup.value.time.transferType !== 1"-->
+  <!--    name="time"-->
+  <!--    [invalidFeedback]="{ required: '请选择预约时间', lg: '请选择大于当前时间' }"-->
+  <!--  >-->
+  <!--    <ng-template let-invalid="invalid">-->
+  <!--      <form-wrap [invalid]="invalid">-->
+  <!--        <input-->
+  <!--          class="text-center clear-input flex-1"-->
+  <!--          type="text"-->
+  <!--          placeholder="请选择预约时间"-->
+  <!--          rangeSeparator="-"-->
+  <!--          [owlDateTime]="reserve"-->
+  <!--          [owlDateTimeTrigger]="reserve"-->
+  <!--          [formControl]="timeGetControl('appointmentTime')"-->
+  <!--        />-->
+  <!--        &lt;!&ndash;        <svg-icon (click)="onClear()" class="cursor-pointer py-2 px-4 svg-icon svg-icon-1x"&ndash;&gt;-->
+  <!--        &lt;!&ndash;          [src]="'assets/images/svg/close.svg'"></span>&ndash;&gt;-->
+
+  <!--        <owl-date-time class="fz-20" #reserve></owl-date-time>-->
+  <!--      </form-wrap>-->
+  <!--    </ng-template>-->
+  <!--  </form-row>-->
+
+  <!-- 备注 -->
+  <form-row [label]="'budget.remarks' | lang" label-width="146px">
+    <textarea maxlength="30" formControlName="description" class="form-control resize-none" rows="4"></textarea>
+  </form-row>
+
+  <!-- 截图 -->
+  <form-row class="mt-4" label-width="146px" contentWidth="148px" *ngIf="payService.curCurrencyTab === 2">
+    <ng-template>
+      <img-viewer
+        [hidden]="!imgList?.length"
+        class="mb-8"
+        #viewer
+        [(list)]="imgList"
+        [style.height.px]="148"
+      ></img-viewer>
+
+      <upload
+        class="p-0"
+        type="TxReview"
+        [style.width.px]="150"
+        [style.height.px]="56"
+        [style.borderRadius.px]="4"
+        [desc]="''"
+        [showLimitText]="false"
+        (change)="onUpload($event, upload, viewer)"
+        #upload
+      ></upload>
+    </ng-template>
+  </form-row>
+</div>
+
+<!-- 提交 -->
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-light" (click)="back()">{{ 'common.back' | lang }}</button>
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [disabled]="appService.isContentLoadingSubject | async"
+  >
+    {{ 'common.confirm' | lang }}
+  </button>
+</div>
+
+<!-- 删除标签提示 -->
+<ng-template #delTagTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title fw-bolder">{{ 'budget.prompt' | lang }}</div>
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body text-center">
+    <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+    <p class="fz-16 fw-bolder mt-8">{{ 'budget.deleteTag' | lang }}</p>
+    <p class="fz-16">{{ 'budget.sureDeleteLabel' | lang }}</p>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</ng-template>
+
+<!-- 添加标签 -->
+<ng-template #addTagTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'budget.addTag' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <form-row
+        [control]="labelControl"
+        [contentWidth]="405"
+        [invalidFeedback]="{ required: 'budget.enterLbelContent' | lang }"
+      >
+        <ng-template let-invalid="invalid">
+          <input
+            type="text"
+            class="form-control w-100"
+            [class.is-invalid]="invalid"
+            [formControl]="labelControl"
+            input-trim
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="updateTag(c)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

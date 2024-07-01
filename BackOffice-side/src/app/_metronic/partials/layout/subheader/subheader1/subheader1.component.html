@@ -1,0 +1,208 @@
+<!--begin::Subheader-->
+<div class="subheader py-2 py-lg-6" [ngClass]="subheaderCSSClasses" id="kt_subheader">
+  <div
+    [ngClass]="subheaderContainerCSSClasses"
+    class="d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap"
+  >
+    <!--begin::Info-->
+    <div class="d-flex align-items-center flex-wrap mr-1">
+      <ng-container *ngIf="subheaderMobileToggle">
+        <!--begin::Mobile Toggle-->
+        <button class="burger-icon burger-icon-left mr-4 d-inline-block d-lg-none" id="kt_subheader_mobile_toggle">
+          <span></span>
+        </button>
+        <!--end::Mobile Toggle-->
+      </ng-container>
+
+      <!--begin::Page Heading-->
+      <div class="d-flex align-items-center flex-wrap mr-5">
+        <!--begin::Page Title-->
+        <ng-container *ngIf="title$ | async as _title">
+          <h4 class="text-dark fw-bold my-1 mr-5">
+            {{ _title }}
+            <ng-container *ngIf="subheaderDisplayDesc">
+              <ng-container *ngIf="description$ | async as _description">
+                <small>{{ _description }}</small>
+              </ng-container>
+            </ng-container>
+          </h4>
+
+          <div class="tt-line"></div>
+        </ng-container>
+        <!--end::Page Title-->
+
+        <!--begin::Breadcrumb-->
+<!--        <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot fw-bold p-0 my-2 font-size-sm">-->
+<!--          <li class="breadcrumb-item" *ngFor="let bc of breadcrumbs" routerLinkActive="active">-->
+<!--            <a [routerLink]="bc.linkPath" class="text-muted">-->
+<!--              {{ bc.linkText }}-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+        <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot fw-bold p-0 my-2 font-size-sm">
+          <li class="breadcrumb-item" *ngFor="let bc of breadcrumbsService.list" routerLinkActive="active">
+            <a [routerLink]="bc.link" (click)="onBreadcrumbs(bc)" class="text-muted" [class.cursor-pointer]="!!bc.click">
+              {{ bc.lang | lang: bc.langArgs }}
+            </a>
+          </li>
+        </ul>
+        <!--end::Breadcrumb-->
+      </div>
+      <!--end::Page Heading-->
+    </div>
+    <!--end::Info-->
+
+    <div class="d-flex flex-ac">
+      <!-- Custom header content -->
+      <ng-container subHeaderContainer></ng-container>
+
+      <!-- end::Custom header content -->
+      <ng-container *ngIf="subHeaderService.showTime">
+        <div class="ml-8 form-control d-flex time-wrap">
+          <ng-container *ngFor="let item of subHeaderService.timeList">
+            <div
+              class="time-item"
+              *ngIf="item.value !== 'custom'"
+              [class.active]="subHeaderService.timeCurrent === item.value"
+              (click)="subHeaderService.timeCurrent = item.value"
+            >{{ item.label }}</div>
+
+            <div
+              class="time-item"
+              [class.active]="subHeaderService.timeCurrent === item.value"
+              *ngIf="item.value === 'custom'"
+              [owlDateTimeTrigger]="timePicker"
+            >
+              <svg-icon class="" [src]="'./assets/images/svg/time.svg'"></svg-icon>
+
+              <input
+                class="form-control text-center time-item-custom"
+                type="text"
+                selectMode="range"
+                [placeholder]="'common.endTime' | lang"
+                formatLabel="yyyy-MM-dd"
+                rangeSeparator="-"
+                [style.width.px]="148"
+                [owlDateTime]="timePicker"
+                [owlDateTimeTrigger]="timePicker"
+                [(ngModel)]="subHeaderService.customTime"
+                (dateTimeChange)="subHeaderService.timeCurrent = item.value"
+              />
+              <owl-date-time [showTimer]="false" class="fz-20" #timePicker></owl-date-time>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+
+      <!-- 地区 -->
+      <ng-container *ngIf="subHeaderService.showRegion">
+        <div class="ml-8 text-nowrap">
+          <label class="mb-0">{{ 'common.region' | lang }}：</label>
+
+          <mat-form-field class="ml-4" [style.width.px]="106">
+            <mat-select class="form-control" [(ngModel)]="subHeaderService.regionCurrent" [style.height.px]="36">
+              <mat-option *ngFor="let item of subHeaderService.regionList" [value]="item.value">{{
+                item.lang | lang
+                }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="subHeaderService.showMerchant">
+        <div class="ml-8 text-nowrap">
+          <label class="mb-0">{{ 'common.merchant' | lang }}：</label>
+
+          <mat-form-field class="ml-4" [style.width.px]="106">
+            <mat-select class="form-control" [(ngModel)]="subHeaderService.merchantCurrentId" [style.height.px]="36">
+              <mat-option *ngFor="let item of subHeaderService.merchantList" [value]="item.value">{{
+                item.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="subHeaderService.showCountry">
+        <div class="ml-8 text-nowrap">
+          <label class="mb-0">{{ 'common.country' | lang }}：</label>
+
+          <mat-form-field class="ml-4" [style.width.px]="106">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="subHeaderService.countryCurrentCode"
+              [style.height.px]="36"
+              (openedChange)="openSearchSelect($event, 'countryList', countryRef)"
+            >
+              <input
+                [placeholder]="('common.search' | lang ) + '...'"
+                type="text"
+                #countryRef
+                (keyup)="searchGroup['countryList'] = $event.target?.['value'] || ''"
+                class="select-search"
+              />
+              <mat-option
+                *ngFor="let item of subHeaderService.countryList | search: 'countryName' : searchGroup['countryList']"
+                [value]="item.countryCode"
+              >{{ lang.isLocal ? item.countryName : item.countryEnName }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
+    </div>
+    <!--begin::Toolbar-->
+    <!-- <div class="d-flex align-items-center"> -->
+    <!-- <ng-container *ngIf="subheaderDisplayDaterangepicker">
+        <a
+          class="btn btn-light-primary btn-sm fw-bold mr-2 cursor-pointer"
+          id="kt_dashboard_daterangepicker"
+          data-toggle="tooltip"
+          title="Select dashboard daterange"
+          data-placement="left"
+        >
+          <span
+            class="opacity-60 fw-bold mr-2"
+            id="kt_dashboard_daterangepicker_title"
+            >Today</span
+          >
+          <span class="fw-bold" id="kt_dashboard_daterangepicker_date"
+            >Aug 16</span
+          >
+        </a>
+      </ng-container> -->
+    <!-- <ng-container *ngIf="!subheaderDisplayDaterangepicker">
+        <a
+          class="btn btn-light-primary fw-bolder btn-sm cursor-pointer"
+        >
+          Actions
+        </a>
+      </ng-container> -->
+    <!-- <div
+        class="dropdown dropdown-inline"
+        data-toggle="tooltip"
+        title="Quick actions"
+        placement="bottom-right"
+        ngbDropdown
+      >
+        <a
+          class="btn btn-icon cursor-pointer"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          ngbDropdownToggle
+        >
+          <svg-icon
+            [src]="'./assets/media/svg/icons/Files/File-plus.svg'"
+            class="svg-icon svg-icon-success svg-icon-2x"
+          ></span>
+        </a>
+        <div
+          class="dropdown-menu dropdown-menu-md dropdown-menu-right p-0 m-0"
+          ngbDropdownMenu
+        >
+          <app-dropdown-menu1></app-dropdown-menu1>
+        </div>
+      </div> -->
+    <!-- </div> -->
+  </div>
+</div>

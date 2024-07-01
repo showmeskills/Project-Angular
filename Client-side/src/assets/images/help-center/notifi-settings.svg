@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="98" height="98" viewBox="0 0 98 98">
+    <defs>
+        <linearGradient id="r5frdbpkfb" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fb6943"/>
+            <stop offset="1" stop-color="#ff845f"/>
+        </linearGradient>
+        <linearGradient id="3nhjhkmbbc" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#778190"/>
+            <stop offset="1" stop-color="#8f98a3"/>
+        </linearGradient>
+        <clipPath id="nysqy3tuta">
+            <path data-name="矩形 8552" transform="translate(1422 112)" style="fill:#fff;stroke:#707070" d="M0 0h98v98H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="蒙版组 2372" transform="rotate(90 816 -606)" style="clip-path:url(#nysqy3tuta)">
+        <g data-name="下载 (6)" transform="translate(1424 113)">
+            <path data-name="路径 13728" d="M13.359 52.637v-9.275l-5.5-5.836 11-19.052 7.8 1.845 8.032-4.638L37 8h22l2.3 7.681 8.032 4.638 7.805-1.845 11 19.052-5.5 5.836v9.275l5.5 5.837-11 19.052-7.8-1.845-8.037 4.638L59 88H37l-2.305-7.681-8.032-4.638-7.8 1.845-11-19.052 5.5-5.837zM32 48a16 16 0 1 1 16 16 16 16 0 0 1-16-16z" style="fill:url(#r5frdbpkfb);fill-rule:evenodd"/>
+            <path data-name="路径 13729" d="M48 76a28 28 0 1 1 28-28 28 28 0 0 1-28 28zM32 48a16 16 0 1 0 16-16 16 16 0 0 0-16 16z" style="fill:url(#3nhjhkmbbc);fill-rule:evenodd"/>
+            <path data-name="路径 13730" d="m85 12 4 4 4-4-4-4zM71 85l3 3 3-3-3-3zM2 46h3v-3H2z" style="fill:#e6e8ea"/>
+            <circle data-name="椭圆 505" cx="5" cy="5" r="5" transform="translate(43 43)" style="fill:#e6e8ea"/>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,83 @@
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 4px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle {
+  margin-left: 5px;
+}
+
+@mixin status($bg, $color) {
+  display: inline-block;
+  min-width: 70px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  border-radius: 6px;
+  background-color: $bg;
+  color: $color;
+  font-size: 14px;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+
+.complete {
+  @include status(#e8fff3, #50cd89);
+}
+
+.fail {
+  @include status(#fff5f8, #f1416c);
+}
+
+.in-progress {
+  @include status(#fff8dd, #ffc700);
+}
+
+.submitted {
+  @include status(#f1faff, #009ef7);
+}
+
+.cancel {
+  @include status(#f5f8fa, #7e8299);
+}
+
+.red {
+  color: #f1416c;
+}
+
+.count {
+  background-color: #f5f8fa;
+}
+
+form-row {
+  margin-right: 40px;
+}
+
+.jumpRoute {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: #009ef7;
+  }
+}

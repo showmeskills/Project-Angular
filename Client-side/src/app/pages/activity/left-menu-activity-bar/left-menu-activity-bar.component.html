@@ -1,0 +1,34 @@
+<div class="activity-body">
+  <ng-container *ngIf="!activitiesLoading; else skeletonLoading">
+    <div class="activity-grid">
+      <ng-container *ngFor="let item of activitiesFormatStyle | keyvalue: sortActivities; let index = index">
+        <div
+          [class]="item.value.style.className + ' activity-item onact96 mutual-opacity'"
+          [class.long]="item.value.longStyle"
+          [class.short]="!item.value.longStyle"
+          (click)="click(item.value.action)"
+        >
+          <div class="ac-label">
+            <span>{{ item.value.style.text }}</span>
+            <span [class]="item.value.style.secondClassName">{{ item.value.style.secondText }}</span>
+          </div>
+          <img [class]="item.value.style.imageClassName" [src]="item.value.style.image | preferWebp" alt="" />
+          <img
+            *ngIf="item.value.style.imageTwo"
+            [class]="item.value.style.imageTwoClassName"
+            [src]="item.value.style.imageTwo | preferWebp"
+            alt=""
+          />
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+  <ng-template #skeletonLoading>
+    <div class="activity-item skeleton-loading"></div>
+    <div class="activity-grid">
+      <div class="activity-item skeleton-loading"></div>
+      <div class="activity-item skeleton-loading"></div>
+    </div>
+    <div class="activity-item skeleton-loading"></div>
+  </ng-template>
+</div>

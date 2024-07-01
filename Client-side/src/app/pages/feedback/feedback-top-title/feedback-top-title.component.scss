@@ -1,0 +1,74 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.title {
+  color: #fff;
+  background: url(src/assets/images/feedback/bg1.png) center / cover no-repeat;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    @include polyfills.flex-gap(26px, 'column nowrap');
+    padding-top: 40px;
+    padding-bottom: 38px;
+
+    @media (max-width: 767px) {
+      @include polyfills.flex-gap-unset('column nowrap');
+      @include polyfills.flex-gap(20px, 'column nowrap');
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 50px;
+      font-weight: bold;
+      display: flex;
+      @include polyfills.flex-gap(5px, 'row nowrap');
+      align-items: center;
+
+      @media (max-width: 767px) {
+        font-size: 20px;
+      }
+
+      i {
+        font-weight: normal;
+        font-size: 90%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+      }
+    }
+
+    p {
+      opacity: 0.8;
+      font-size: 16px;
+      line-height: 1.5;
+
+      @media (max-width: 767px) {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.nav {
+  // background-color: #fafafa;
+  background-color: var(--bg-color-10);
+
+  .container {
+    height: 49px;
+    display: flex;
+    align-items: center;
+    // color: #707a8a;
+    color: var(--text-color-20);
+    @include polyfills.flex-gap(10px, 'row nowrap');
+    font-size: 14px;
+
+    span {
+      // color: #1e2329;
+      color: var(--text-color);
+    }
+  }
+}

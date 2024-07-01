@@ -1,0 +1,65 @@
+<modal-title [title]="'payment.transactionList.manualCancellation' | lang" (close)="modal.dismiss()"></modal-title>
+<div class="p-8" [formGroup]="formGroup">
+  <form-row
+    name="reason"
+    [label]="'payment.order.cancelReason' | lang"
+    [invalidFeedback]="{ required: 'form.arrayRequired' | lang }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="pt-2 lh-32 d-flex flex-wrap">
+        <ng-container *ngFor="let item of reasonList">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngIf="!item.noRender" (change)="onReasonChange()">
+            <input type="radio" name="reason" [value]="item.code" [formControl]="control" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+
+          <label
+            class="radio radio-lg radio-success mr-8 fz-16 d-flex"
+            *ngIf="item.code === 'Other'"
+            (change)="onReasonChange()"
+          >
+            <input type="radio" name="reason" [value]="item.code" [formControl]="control" />
+            <span class="mr-4"></span>
+            <form-row [showLabel]="false" [control]="formGroup.controls.remark">
+              <ng-template let-invalid="invalid" let-control="formControl">
+                <input
+                  (focus)="onOtherFocus(inp)"
+                  #inp
+                  input-trim
+                  class="form-control"
+                  [placeholder]="item.lang | lang"
+                  type="text"
+                  [formControl]="control"
+                  [class.is-invalid]="invalid"
+                />
+              </ng-template>
+            </form-row>
+          </label>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.order.uploadSnap' | lang" name="img">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <img-viewer [hidden]="!list?.length" class="mb-8" #viewer [(list)]="list"></img-viewer>
+
+      <upload
+        class="p-0"
+        type="TxReview"
+        [style.width.px]="150"
+        [style.height.px]="56"
+        [style.borderRadius.px]="4"
+        [desc]="''"
+        [showLimitText]="false"
+        (change)="onUpload($event, upload, viewer)"
+        #upload
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      ></upload>
+    </ng-template>
+  </form-row>
+
+  <div class="text-center fz-16 color-999 mt-8">{{ 'payment.transactionList.infoIsTrue' | lang }}</div>
+</div>
+<modal-footer (confirm)="submit()" (dismiss)="modal.dismiss()"></modal-footer>

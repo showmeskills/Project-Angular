@@ -1,0 +1,65 @@
+<div class="container">
+  <div class="top">
+    <div class="top-btn-list">
+      <ng-container *ngFor="let item of btnList">
+        <customize-button
+          [active]="item.activityCode === currentActivityCode"
+          [plain]="true"
+          type="primary"
+          radius="30px"
+          size="medium"
+          (click)="checkToLoad(item.activityCode)"
+          >{{ item.activityName }}
+        </customize-button>
+      </ng-container>
+    </div>
+  </div>
+  <div class="main-content" [appLoading]="loading && paginator.page == 1">
+    <div class="rank-box" *ngIf="maindata.length !== 0">
+      <div class="rank-grid list-head">
+        <div>{{ 'rank_a' | translate }}</div>
+        <div class="gamer_col">{{ 'gamer' | translate }}</div>
+        <div>{{ 'cor_sco_jop' | translate }}</div>
+        <div>{{ '1x2sco_jop' | translate }}</div>
+        <div>{{ 'b_s_ball_jop' | translate }}</div>
+        <div>{{ 'tol_poi_jop' | translate }}</div>
+      </div>
+      <div class="rank-grid list-self" *ngIf="selfdata">
+        <div>{{ selfdata.ranking }}</div>
+        <div class="gamer_col">
+          <img *ngIf="selfdata.userAvatar" class="avatar" [src]="selfdata.userAvatar | avatarDefault" />
+          {{ selfdata.userAccount.length > 0 ? selfdata.userAccount : ('invisible' | translate) }}
+        </div>
+        <div>{{ selfdata.correctScoreValue }}</div>
+        <div>{{ selfdata.winLossValue }}</div>
+        <div>{{ selfdata.overUnderValue }}</div>
+        <div>{{ selfdata.totalValue }}</div>
+      </div>
+      <div class="list-main">
+        <div class="rank-grid list-all" *ngFor="let item of maindata">
+          <div>{{ item.ranking }}</div>
+          <div class="gamer_col">
+            <img class="avatar" *ngIf="item.userAvatar" [src]="item.userAvatar | avatarDefault" />
+            {{ item.userAccount.length > 0 ? item.userAccount : ('invisible' | translate) }}
+          </div>
+          <div>{{ item.correctScoreValue }}</div>
+          <div>{{ item.winLossValue }}</div>
+          <div>{{ item.overUnderValue }}</div>
+          <div>{{ item.totalValue }}</div>
+        </div>
+        <!--分页-->
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [alwaysH5]="true"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+      </div>
+    </div>
+  </div>
+  <app-empty [text]="'u_s_no_jop' | translate" *ngIf="maindata.length === 0 && !loading"></app-empty>
+</div>

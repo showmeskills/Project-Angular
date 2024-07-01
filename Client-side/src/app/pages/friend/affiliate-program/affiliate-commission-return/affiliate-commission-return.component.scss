@@ -1,0 +1,28 @@
+::ng-deep {
+  app-commission-return {
+    .sub-theme-container {
+      margin-top: 0 !important;
+
+      @media (max-width: 767px) {
+        padding: 0 !important;
+      }
+    }
+  }
+
+  app-recommended-return {
+    .sub-theme-container {
+      @media (max-width: 767px) {
+        margin-top: 20px !important;
+        padding: 0 !important;
+      }
+    }
+  }
+}
+
+.icon-download-2 {
+  font-size: 22px;
+}
+
+.header-icon {
+  background-image: url(src/assets/images/friend/web-avator.svg);
+}

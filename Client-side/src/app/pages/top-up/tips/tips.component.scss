@@ -1,0 +1,200 @@
+div {
+  display: flex;
+  line-height: 1.43;
+}
+
+.container {
+  // margin-left: 127px;
+  flex-direction: column;
+  max-width: 340px !important;
+  min-width: calc(230px + 5vw);
+  // color: #707a8a;
+  color: var(--text-color-20);
+  font-size: 14px;
+
+  // @media (max-width: 1260px) {
+  //   margin-left: 0;
+  //   // padding-top: 8.5px;
+  //   width: 100%;
+  //   min-width: 0;
+  // }
+
+  ::ng-deep {
+    .empty {
+      align-items: flex-start;
+
+      @media (max-width: 767px) {
+        align-items: center;
+      }
+
+      .text {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  //hover
+  .hover-box {
+    height: 54.3px;
+    max-width: 269px;
+    display: block;
+    padding: 10px 14px;
+    color: #ffffff;
+    line-height: 1.5;
+    font-size: 12px;
+    position: absolute;
+    background-color: #707a8a;
+    border-radius: 4px;
+    left: -87px;
+    top: -69px;
+
+    .orange-link {
+      color: var(--primary-color-85);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    &:after {
+      content: '';
+      display: block;
+      width: 0px;
+      height: 0px;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid #707a8a;
+      position: absolute;
+      bottom: -7px;
+      left: 52%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .offset-bottom {
+    display: flex;
+    // align-items: center;
+    color: var(--primary-color);
+    font-size: 14px;
+    text-decoration: underline dotted;
+    padding-bottom: 26px;
+    cursor: pointer;
+    align-items: center;
+
+    .icon-speaker {
+      height: 14px;
+      width: 14px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      margin-right: 8px;
+      cursor: pointer;
+      background-image: url(src/assets/images/wallet/speaker.svg);
+      user-select: none;
+    }
+
+    // @media (max-width: 1260px) {
+    // font-size: 16px;
+    // }
+
+    .text-decoration {
+      text-decoration: underline;
+      cursor: pointer;
+      user-select: none;
+      @media (max-width: 1260px) {
+        order: -1;
+        padding-bottom: 52px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .search-i {
+    margin-top: 19px;
+    margin-bottom: 28px;
+    height: 32px;
+    width: 104px;
+    border-radius: 16px;
+    background-color: #eaecef;
+    align-items: center;
+    padding-left: 12px;
+    color: #1e2329;
+
+    &:hover .right-arrow {
+      background-image: url(src/assets/svg/arrow_gray.svg);
+    }
+
+    .right-arrow {
+      margin-left: 8px;
+      background-size: 100%;
+      height: 16px;
+      width: 18px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/svg/arrow_black.svg);
+
+      &.selected,
+      &:hover {
+        background-image: url(src/assets/svg/arrow_gray.svg);
+      }
+    }
+  }
+
+  span.offset-top {
+    @media (max-width: 767px) {
+      color: #1e2329;
+      font-size: 16px;
+    }
+  }
+
+  .offset-top {
+    padding-top: 22px;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      .icon-video {
+        background-image: url(src/assets/svg/play_gray_hover.svg);
+
+        &:host-context(.dark) & {
+          background-image: url(src/assets/svg/play_gray.svg);
+        }
+      }
+
+      .icon-file {
+        background-image: url(src/assets/svg/paper_gray_hover.svg);
+
+        &:host-context(.dark) & {
+          background-image: url(src/assets/svg/paper_gray.svg);
+        }
+      }
+    }
+
+    .icon-video,
+    .icon-file {
+      background-size: 100%;
+      background-repeat: no-repeat;
+      margin-right: 12px;
+    }
+
+    .icon-video {
+      height: 18px;
+      width: 18px;
+      background-image: url(src/assets/svg/play_gray.svg);
+    }
+
+    .icon-file {
+      height: 18px;
+      width: 16px;
+      flex-shrink: 0;
+      background-image: url(src/assets/svg/paper_gray.svg);
+    }
+  }
+
+  .text-decoration {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-decoration: underline;
+  }
+}
+
+.theme-color {
+  color: var(--primary-color);
+}

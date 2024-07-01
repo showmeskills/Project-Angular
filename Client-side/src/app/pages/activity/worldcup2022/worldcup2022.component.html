@@ -1,0 +1,114 @@
+<div class="page-container">
+  <div class="main-container activity-top">
+    <img class="top_bg" src="assets/images/activity/worldcup2022/top_bg.png" alt="" />
+    <div class="container unity-padding-web unity-padding-h5-24">
+      <div class="content">
+        <div class="tob_bg2">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/top_bg_2.png" alt="" />
+          <img class="tit" src="assets/images/activity/worldcup2022/tit.svg" alt="" />
+        </div>
+        <div class="cup">
+          <img src="assets/images/activity/worldcup2022/cup.png" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-container activity-main unity-padding-web unity-padding-h5-24">
+    <div class="container team-info">
+      <img class="tit2" src="assets/images/activity/worldcup2022/tit.svg" alt="" />
+      <!-- <div class="all-team">
+        <div class="c1"></div>
+        <div class="teams">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/ga.png" alt="">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/gb.png" alt="">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/gc.png" alt="">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/gd.png" alt="">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/ge.png" alt="">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/gf.png" alt="">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/gg.png" alt="">
+          <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/team/gh.png" alt="">
+        </div>
+        <div class="c1"></div>
+      </div> -->
+    </div>
+    <div class="container event-info">
+      <div class="main-tab">
+        <div class="mt1 onact96 mutual-opacity" [class.active]="mainTab === 0" (click)="mainTab = 0">
+          {{ 'wcup2022_final_text' | translate }} <img src="assets/images/activity/worldcup2022/worldcup.svg" alt="" />
+        </div>
+        <!-- <div class="mt2 onact96 mutual-opacity" [class.active]="mainTab === 1" (click)="mainTab = 1">
+          {{ isZH ? '1/4 决赛' : '1/4 Final' }} <img src="assets/images/activity/worldcup2022/4final.svg" alt=""></div> -->
+      </div>
+      <div class="main-con">
+        <!-- <div class="tabs">
+          <div class="tab onact96-not mutual-opacity" [class.active]="index[mainTab] === item.key"
+            *ngFor="let item of rankData | keyvalue" (click)="index[mainTab] = $any(item.key)">
+            {{ isZH ? '' : 'Group' }}
+            <em [style.padding-left]="isZH ? '0' : '5px'">{{ item.key }}</em>
+            {{ isZH ? '组' : '' }}
+          </div>
+        </div> -->
+        <!-- <div class="con final" [class.show]="mainTab === 0">
+          <ng-container>
+            <img *ngFor="let item of [1,2,3,4,5,6,7,8]"
+              src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/1_8/{{item}}.png" loading="lazy" alt="">
+          </ng-container>
+        </div> -->
+        <div class="con final" [class.show]="mainTab === 0">
+          <ng-container>
+            <img *ngFor="let item of final4" [src]="item" alt="" />
+          </ng-container>
+          <!-- <table>
+            <thead>
+              <th width="10%" class="nowrap">{{ isZH ? '排行' : 'RANKING' }}</th>
+              <th width="30%" class="nowrap">{{ isZH ? '球队' : 'TEAM' }}</th>
+              <th width="10%" class="nowrap">{{ isZH ? '场次' : 'Sessions' }}</th>
+              <th width="20%">{{ isZH ? '胜/平/负' : 'W/L/DRAW' }}</th>
+              <th width="20%">{{ isZH ? '进球/失球/净胜' : 'GS/GA/GD' }}</th>
+              <th width="10%" class="nowrap">{{ isZH ? '积分' : 'POINTS' }}</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of curRankData">
+                <td>
+                  <div>{{ item.rank }}</div>
+                </td>
+                <td>
+                  <div class="flag">
+                    <div><img [src]="'assets/images/activity/worldcup2022/flag/'+ item.id + '.png'" alt=""></div>
+                    <span>{{ isZH ? item.name : item.en_name }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div>{{ item.cc }}</div>
+                </td>
+                <td>
+                  <div>{{ item.wol }}</div>
+                </td>
+                <td>
+                  <div>{{ item.ball }}</div>
+                </td>
+                <td>
+                  <div>{{ item.sco }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table> -->
+        </div>
+      </div>
+    </div>
+    <div class="container tree" [routerLink]="obLink">
+      <img class="tree_h5" src="{{ 'wcup2022_tree_h5_1' | translate }}" alt="" />
+      <img class="tree_h5" src="{{ 'wcup2022_tree_h5_2' | translate }}" alt="" />
+      <img class="tree_web" src="{{ 'wcup2022_tree_web' | translate }}" alt="" />
+    </div>
+  </div>
+  <div
+    cdkDrag
+    [cdkDragBoundary]="'app-worldcup2022'"
+    class="bet_btn onact96-not mutual-opacity"
+    [routerLink]="obLink"
+    (click)="clickBet()"
+  >
+    <img src="assets/images/activity/worldcup2022{{ isZH ? '' : '/en' }}/bet_btn.png" alt="" />
+  </div>
+</div>

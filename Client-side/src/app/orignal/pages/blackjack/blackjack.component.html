@@ -1,0 +1,150 @@
+<div class="wrapper" [class.loading]="loading">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="blackjack"
+      [isFast]="true"
+      [(isFastBet)]="isFastBet"
+      [(isAnimation)]="isAnimation"
+      [(fairnessData)]="fairnessData"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+  <div class="blackjack_main">
+    <div class="stvmnp2 anim-end">
+      <div class="dealer" #dealer>
+        <img class="dealer-svg" src="assets/orignal/images/blackjack/poker_three.png" />
+      </div>
+      <div class="card_container">
+        <div class="cards-group-wrap">
+          <!-- 庄家牌 -->
+          <div class="cards-group" #leftCardsGroup [class.transTop]="playerCards.length >= 4">
+            <div
+              *ngFor="let item of bankerCards; let i = index"
+              class="c1qgmkpe card-wrap"
+              [style]="{
+                transform: ' translate(' + item.left + 'px, ' + item.top + 'px)',
+                marginTop: item.mtop + 'px',
+                marginLeft: item.mleft + 'px'
+              }"
+            >
+              <div class="c1t29bx7 card" [class.active]="item.active">
+                <div class="card-back"></div>
+                <div class="card-front">
+                  <div class="point" [class]="'card-back_' + item.color">{{ item.num }}</div>
+                  <img class="ssuit" [src]="'assets/orignal/images/hilo/' + item.color + '.svg'" />
+                  <img class="suit" [src]="'assets/orignal/images/hilo/' + item.color + '.svg'" />
+                  <div class=""></div>
+                </div>
+              </div>
+            </div>
+            <div class="value" *ngIf="bankerCards.length > 0">{{ bankerResult }}</div>
+            <!-- <div class="placehold" [class]="{ 'is-visible': playerCards.length == 0 }">
+              <div class="one"></div>
+              <div class="two"></div>
+              <div class="three"></div>
+            </div> -->
+          </div>
+        </div>
+        <div class="cards-group-wrap split-content" #rghitCardsGroup>
+          <!-- 闲家牌 -->
+          <div class="cards-group" *ngIf="bankerCards.length == 0"></div>
+          <ng-container *ngFor="let item of playerAllCards; let i = index">
+            <div class="cards-group clen-3">
+              <ng-container *ngIf="item.active">
+                <span class="arrow arrow-left">></span>
+                <span class="arrow arrow-right"><</span>
+              </ng-container>
+              <div
+                *ngFor="let jtem of item.crads; let i = index"
+                class="c1qgmkpe card-wrap"
+                [class.win]="item.wintype == 2"
+                [class.loss]="item.wintype == 1"
+                [class.tip]="item.wintype == 3"
+                [class.blue]="item.active"
+                [style]="{
+                  transform: ' translate(' + jtem.left + 'px, ' + jtem.top + 'px)',
+                  marginTop: jtem.mtop + 'px',
+                  marginLeft: jtem.mleft + 'px'
+                }"
+              >
+                <div class="c1t29bx7 card" [class.active]="jtem.active">
+                  <div class="card-back"></div>
+                  <div class="card-front">
+                    <div class="point" [class]="'card-back_' + jtem.color">{{ jtem.num }}</div>
+                    <img class="ssuit" [src]="'assets/orignal/images/hilo/' + jtem.color + '.svg'" />
+                    <img class="suit" [src]="'assets/orignal/images/hilo/' + jtem.color + '.svg'" />
+                    <div class=""></div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="value"
+                [class.win]="item.wintype == 2"
+                [class.loss]="item.wintype == 1"
+                [class.tip]="item.wintype == 3"
+                [class.blue]="item.active"
+              >
+                {{ playerResult[i] }}
+              </div>
+              <div
+                *ngIf="item.wintype"
+                class="capa"
+                [class.win]="item.wintype == 2"
+                [class.loss]="item.wintype == 1"
+                [class.tip]="item.wintype == 3"
+                [class.topcape]="playerAllCards.length > 1"
+              >
+                <ng-container [ngSwitch]="item.wintype">
+                  <span *ngSwitchCase="1">{{ 'loss_cape' | translate }}</span>
+                  <span *ngSwitchCase="2">{{ 'win_cape' | translate }}</span>
+                  <span *ngSwitchCase="3">{{ 'tea_cape' | translate }}</span>
+                </ng-container>
+                {{ winLossList[i] != 0 ? winLossList[i] : '' }}
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="blackjack_btns">
+      <div class="check_btns" *ngIf="!isButton.includes(0)">
+        <button class="hitBtn" (click)="onHitCard()" [class.active]="isButton.includes(2)">
+          <span>{{ 'hit' | translate }}</span>
+          <img src="assets/orignal/images/blackjack/hit.svg" alt="" />
+        </button>
+        <button class="standBtn" (click)="onStandCard()" [class.active]="isButton.includes(4)">
+          <span>{{ 'stand' | translate }}</span>
+          <img src="assets/orignal/images/blackjack/stand.svg" alt="" />
+        </button>
+        <button class="splitBtn" (click)="onSplitCard()" [class.active]="isButton.includes(1)">
+          <span>{{ 'split' | translate }}</span>
+          <img src="assets/orignal/images/blackjack/split.svg" alt="" />
+        </button>
+        <button class="doubleBtn" (click)="onDoubleCard()" [class.active]="isButton.includes(3)">
+          <span>{{ 'dou' | translate }}</span>
+          <img src="assets/orignal/images/blackjack/double.svg" alt="" />
+        </button>
+      </div>
+
+      <div class="insurance_btn" *ngIf="isButton.includes(0)">
+        <span class="insurance_btn_title">{{ 'if_insur' | translate }}</span>
+        <button (click)="onInsurance()">
+          <span>{{ 'acc_insur' | translate }}</span>
+        </button>
+        <button (click)="onNotInsurance()">
+          <span> {{ 'no_insur' | translate }} </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <orignal-bet
+    type="blackjack"
+    (toBet)="toBet($event)"
+    [(rate)]="rate"
+    [operate]="operate"
+    [isDice]="false"
+  ></orignal-bet>
+</div>

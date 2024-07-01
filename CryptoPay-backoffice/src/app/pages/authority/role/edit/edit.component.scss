@@ -1,0 +1,29 @@
+:host {
+  background: #fff;
+  border-radius: 6px;
+  display: block;
+
+  ::ng-deep {
+    .mat-accordion {
+      width: 100%;
+    }
+
+    .mat-expansion-panel-spacing {
+      margin: 0;
+    }
+  }
+}
+
+.form {
+  padding: 35px 30px 30px;
+}
+
+.form .checkbox {
+  flex: 0 0 30px;
+}
+
+.parent-checkbox.checkbox > span:after {
+  border-top-width: 0 !important;
+  border-bottom-width: 0 !important;
+  transform: rotate(90deg);
+}

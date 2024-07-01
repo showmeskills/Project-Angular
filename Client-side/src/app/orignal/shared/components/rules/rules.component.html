@@ -1,0 +1,81 @@
+<div class="wrapper">
+  <div class="title">
+    <div class="tabs">
+      <div
+        class="option onact96-not"
+        *ngFor="let item of list; let i = index"
+        (click)="changeTab(i)"
+        [class.active]="i == active"
+      >
+        {{ item }}
+      </div>
+    </div>
+    <i class="orignal-icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="content">
+    <ng-container *ngIf="active == 0; else limit">
+      <app-img-carousel
+        #swiper
+        [spaceBetween]="100"
+        [itemsData]="svgs"
+        (IndexChange)="slideChange($event)"
+        [slidesPerView]="1"
+      >
+        <ng-template #carouselItemTpl let-item let-i="index">
+          <div class="wrap">
+            <img
+              [src]="returnSrc(i, item.hasLanguageCode, item.isH5, item.isPng)"
+              alt=""
+              [class.h5]="isH5"
+              [class]="type + i + '_img'"
+            />
+          </div>
+        </ng-template>
+      </app-img-carousel>
+      <!--描述-->
+      <div>
+        <div class="des">
+          {{ svgs[tabIndex].des }}
+        </div>
+      </div>
+
+      <div *ngIf="!swiper?.isEnd; else prevPage" class="next-page onact96-not" (click)="swiper?.slideNext()">
+        {{ 'next_page' | translate }}
+      </div>
+      <ng-template #prevPage>
+        <div class="next-page onact96-not" (click)="close()">
+          {{ 'start_game' | translate }}
+        </div>
+      </ng-template>
+    </ng-container>
+    <ng-template #limit>
+      <div class="limit">
+        <!-- <mat-select [(value)]="selectedGrade" (selectionChange)="gradeChange($event)" disableOptionCentering="true"
+          panelClass="limit-select" class="limit-select">
+          <mat-option [value]="item.id" *ngFor="let item of gradeList">{{ item.grade }}
+          </mat-option>
+        </mat-select> -->
+        <app-scrollbar>
+          <div class="money">
+            <ul>
+              <li>{{ 'max_bets' | translate }}</li>
+              <li *ngFor="let item of limitList">
+                <img class="currency-icon" [src]="item?.icon" />
+                <span>{{ item.lotteryMaxAmount | currencyValue : item.currency }}</span>
+                <span>{{ item.currency }}</span>
+              </li>
+            </ul>
+            <ul>
+              <li>{{ 'max_prize' | translate }}</li>
+              <li *ngFor="let item of limitList">
+                <img class="currency-icon" [src]="item?.icon" />
+                <span>{{ item.lotteryMaxQuota | currencyValue : item.currency }}</span>
+                <span>{{ item.currency }}</span>
+              </li>
+            </ul>
+          </div>
+        </app-scrollbar>
+      </div>
+    </ng-template>
+  </div>
+</div>

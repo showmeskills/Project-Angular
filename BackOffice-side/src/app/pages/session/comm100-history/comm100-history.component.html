@@ -1,0 +1,193 @@
+<div class="card mt-5 d-flex flex-row flex-wrap py-8 px-8">
+  <form-row [label]="'session.comm100.uid' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control form-control-lg form-control-solid"
+        type="text"
+        [placeholder]="'session.comm100.uidTips' | lang"
+        [style.width.px]="280"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.key === 'Enter' && onLoadData(true)"
+      />
+    </ng-template>
+  </form-row>
+  <form-row [label]="'session.comm100.userName' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control form-control-lg form-control-solid"
+        type="text"
+        [placeholder]="'session.comm100.userNameTips' | lang"
+        [style.width.px]="280"
+        [(ngModel)]="data.userName"
+        (keyup)="$event.key === 'Enter' && onLoadData(true)"
+      />
+    </ng-template>
+  </form-row>
+  <form-row [label]="'session.comm100.playerIp' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control form-control-lg form-control-solid"
+        type="text"
+        [placeholder]="'session.comm100.playerIpTips' | lang"
+        [style.width.px]="280"
+        [(ngModel)]="data.playerIp"
+        (keyup)="$event.key === 'Enter' && onLoadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'session.history.date' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="text-center form-control"
+        type="text"
+        [placeholder]="'form.chooseTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="onLoadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'session.comm100.agent' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field [style.max-width.px]="200">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.agent"
+          [placeholder]="'session.comm100.agentTips' | lang"
+          (selectionChange)="onLoadData(true)"
+        >
+          @for (item of agents; track item) {
+            <mat-option [value]="item.value">
+              @if (item.value) {
+                {{ item.name }}
+              } @else {
+                {{ item.name | lang }}
+              }
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="onLoadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="mt-6 card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'session.comm100.tableTitle' | lang }}</div>
+
+    <button type="button" class="ml-4 btn btn-light-primary" (click)="exportComm100()">
+      <span class="vam">{{ 'common.export' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0 table-layout">
+      <thead>
+        <tr>
+          <th><span class="cell">UID</span></th>
+          <th>
+            <span class="cell">{{ 'session.comm100.userName' | lang }}</span>
+          </th>
+          <th [style.width.px]="160">
+            <span class="cell">{{ 'session.comm100.playerIp' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'session.comm100.agent' | lang }}</span>
+          </th>
+          <th [style.width.px]="170">
+            <span class="cell">{{ 'session.comm100.conversationTime' | lang }}</span>
+          </th>
+          <th [style.width.px]="360">
+            <span class="cell">{{ 'session.comm100.category' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'session.comm100.actions' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of comm100List; track item) {
+          <tr>
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.userName }}</span>
+            </td>
+            <td [style.width.px]="160">
+              <span class="cell">{{ item.playerIp }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.agent }}</span>
+            </td>
+            <td [style.width.px]="170">
+              <span class="cell start justify-content-start">{{ item.startTime | timeFormat }}</span>
+              <span class="cell end justify-content-start">{{ item.endTime | timeFormat }}</span>
+              <span class="cell duration justify-content-start">{{ item.duration }}</span>
+            </td>
+            <td [style.width.px]="360">
+              <span class="cell">{{ item.category }}</span>
+            </td>
+            <td>
+              <span class="cell text-primary">{{ 'session.comm100.messageDetails' | lang }}</span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    @if (comm100List.length) {
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="onLoadData(true)"
+            >
+              @for (size of pageSizes; track size) {
+                <mat-option [value]="size">{{ size }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        @if (paginator.total) {
+          <div>
+            <app-paginator
+              class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+              [paginator]="paginator"
+              (paginate)="onLoadData()"
+            ></app-paginator>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- 空显示 -->
+      <empty></empty>
+    }
+  </div>
+</div>

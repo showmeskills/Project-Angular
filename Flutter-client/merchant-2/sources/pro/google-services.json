@@ -1,0 +1,104 @@
+{
+  "project_info": {
+    "project_number": "443049792076",
+    "project_id": "gogaming-prod",
+    "storage_bucket": "gogaming-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443049792076:android:0bca086ffec6ef546c9ae9",
+        "android_client_info": {
+          "package_name": "com.gogaming.lt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443049792076-f49pj4lonj6m6bi3jvml0v564uock64f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gogaming.lt",
+            "certificate_hash": "f983dc902a15de696ff8193209849213b2e85922"
+          }
+        },
+        {
+          "client_id": "443049792076-an7703cr7nruouruob4sk7b19dt1uhb5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl3b4maul0692hppyxjS6J8hAFRLQhVkM"
+        },
+        {
+          "current_key": "AIzaSyAyBoWqCqTMQvOhDeDBh6hKCqiHt-7uV50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443049792076-an7703cr7nruouruob4sk7b19dt1uhb5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "443049792076-d6pvh9ankoo4i0v7uvin0hmmt4ohoa36.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gogaming.lt"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443049792076:android:37208a8d592efc4f6c9ae9",
+        "android_client_info": {
+          "package_name": "com.prod2.platform_ionic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443049792076-6r8k3800jfhnhl75td6oogh5lhanlj83.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prod2.platform_ionic",
+            "certificate_hash": "f983dc902a15de696ff8193209849213b2e85922"
+          }
+        },
+        {
+          "client_id": "443049792076-an7703cr7nruouruob4sk7b19dt1uhb5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl3b4maul0692hppyxjS6J8hAFRLQhVkM"
+        },
+        {
+          "current_key": "AIzaSyAyBoWqCqTMQvOhDeDBh6hKCqiHt-7uV50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443049792076-an7703cr7nruouruob4sk7b19dt1uhb5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "443049792076-d6pvh9ankoo4i0v7uvin0hmmt4ohoa36.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gogaming.lt"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

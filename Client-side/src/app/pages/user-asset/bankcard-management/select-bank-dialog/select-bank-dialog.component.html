@@ -1,0 +1,38 @@
+<div class="main-container" [appLoading]="isLoading">
+  <div class="header-row">
+    <span class="title">{{ 'sel_bank' | translate }}</span>
+    <i class="icon-close" (click)="close()"></i>
+  </div>
+  <div class="search-contanier" [class.focus]="$any(iSearch).isFocus">
+    <i class="search-icon"></i>
+    <input
+      #iSearch
+      class="search-input"
+      type="text"
+      placeholder="{{ 'search' | translate }}"
+      (focus)="onFocus(iSearch)"
+      [(ngModel)]="searchBank"
+      (input)="onSearchInput(iSearch)"
+    />
+    <i
+      class="close-icon onact96-not"
+      *ngIf="!!iSearch.value && $any(iSearch).isFocus"
+      (click)="handleClean(iSearch)"
+    ></i>
+  </div>
+  <div class="options-container">
+    <app-scrollbar [appLoading]="isLoading">
+      <ng-container *ngFor="let item of filter(bankCardData)">
+        <div class="select-row onact96" (click)="handleSelect(item)">
+          <img class="bank-icon" src="assets/images/bankicon/{{ item.bankCode }}.png" loading="lazy" />
+          <div class="infor">
+            <span class="span-1">{{ item.bankNameLocal }}</span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="filter(bankCardData).length === 0 && !isLoading">
+        <app-empty [text]="'search_unfind' | translate"></app-empty>
+      </ng-container>
+    </app-scrollbar>
+  </div>
+</div>

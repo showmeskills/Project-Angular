@@ -1,0 +1,172 @@
+<div class="container">
+  <!-- 标题 -->
+  <div class="header-row">
+    <span class="title">{{ 'add_wd_address' | translate }}</span>
+    <i class="icon-close mutual-opacity onact96-not" (click)="dialogRef.close()"></i>
+  </div>
+  <div class="contant-colunm">
+    <div class="options" cdkOverlayOrigin #middle="cdkOverlayOrigin">
+      <!--地址备注-->
+      <div class="input-column">
+        <app-customize-input
+          [label]="'add_remark' | translate"
+          [size]="'large'"
+          [error]="remark && !remarkValid ? ('enter_tip01' | translate) : false"
+          [(value)]="remark"
+          (onChange)="onRemarkChange()"
+          [max]="20"
+          [placeholder]="'enter_tip00' | translate"
+          [required]="true"
+        >
+        </app-customize-input>
+      </div>
+
+      <!--支付方式-->
+      <div class="input-column">
+        <app-customize-select
+          class="customize-select"
+          [defaultText]="'sen_de' | translate"
+          [showAsPlaceholder]="!selectedAddressType"
+          [label]="'pay_methods' | translate"
+          (onSelect)="handleSelectedAddressType()"
+          [width]="'100%'"
+          [(value)]="selectedAddressType"
+          [options]="addressType"
+          [fixedOptions]="true"
+        >
+        </app-customize-select>
+      </div>
+
+      <!--选择币种-->
+      <div class="input-column" *ngIf="selectedAddressType">
+        <app-customize-select
+          class="customize-select"
+          [defaultText]="'sel_coin' | translate"
+          [showAsPlaceholder]="!selectedCoinType"
+          [width]="'100%'"
+          [label]="'curr' | translate"
+          [textKey]="'currency'"
+          [valueKey]="'currency'"
+          [(value)]="selectedCoinType"
+          [options]="data.currencies"
+          [readonly]="true"
+          (onClickInput)="handleSelectCurrencyType()"
+          [disabled]="selectedAddressType === '_crypto' && isCommon"
+        >
+        </app-customize-select>
+        <ng-container [ngSwitch]="selectedAddressType">
+          <ng-container *ngSwitchCase="'_crypto'" [ngTemplateOutlet]="common_c"></ng-container>
+          <ng-container *ngSwitchDefault [ngTemplateOutlet]="whitelist_c"></ng-container>
+        </ng-container>
+      </div>
+
+      <!-- 选择网络 -->
+      <div class="input-column" *ngIf="selectedAddressType === '_crypto' && (selectedCoinType || isCommon)">
+        <app-customize-select
+          class="customize-select"
+          [width]="'100%'"
+          [label]="'trans_network' | translate"
+          [textKey]="'name'"
+          [valueKey]="'network'"
+          [(value)]="selectedNetwork"
+          [options]="allNetWorks"
+          [readonly]="true"
+          (onClickInput)="handleSelectedNetwork()"
+          [disabled]="netWorksLoading"
+          [inputTemplate]="networkInputTemplate"
+        >
+        </app-customize-select>
+        <ng-template #networkInputTemplate let-value="value">
+          <div class="c-input-text" [class.hold]="!selectedNetwork">
+            <ng-container *ngIf="selectedNetwork">
+              <span>{{ selectedNetwork }}</span>
+              <span>{{ allNetWorks | filterByKeyValue: 'network' : selectedNetwork : 'desc' }}</span>
+            </ng-container>
+            <ng-container *ngIf="!selectedNetwork">
+              <span>{{ 'choo_main00' | translate }}</span>
+            </ng-container>
+          </div>
+        </ng-template>
+        <ng-container [ngTemplateOutlet]="whitelist_c"></ng-container>
+      </div>
+
+      <!--地址-->
+      <div
+        class="input-column"
+        *ngIf="
+          (selectedAddressType === '_crypto' && (selectedCoinType || isCommon)) ||
+          (selectedAddressType && selectedAddressType !== '_crypto')
+        "
+      >
+        <app-customize-input
+          #addressIp
+          [label]="'wd_curr_add' | translate"
+          [size]="'large'"
+          [error]="
+            !address && addressIp.foc
+              ? ('enter_addr00' | translate)
+              : address && !addressValid.valid
+              ? (addressValid.text | translate)
+              : ''
+          "
+          [(value)]="address"
+          [scanQr]="true"
+          (keyup.enter)="submit()"
+          [placeholder]="'enter_wd_curr_ad' | translate"
+          (onChange)="onAddressChange()"
+        >
+        </app-customize-input>
+      </div>
+    </div>
+
+    <!-- 按钮 -->
+    <div class="btn-group" cdkOverlayOrigin #footer="cdkOverlayOrigin">
+      <customize-button size="medium" width="100%" (onClick)="dialogRef.close()">
+        {{ 'cancels' | translate }}
+      </customize-button>
+      <customize-button
+        type="primary"
+        width="100%"
+        size="medium"
+        [disabled]="!canSubmit()"
+        [loading]="isLoading"
+        (onClick)="submit()"
+      >
+        {{ 'save_btn' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="isH5() ? footer : middle"
+  [cdkConnectedOverlayPositions]="isH5() ? [positions[0]] : [positions[1]]"
+  [cdkConnectedOverlayOpen]="!!(addressExietTip$ | async)"
+>
+  <div class="error-msg-hover animate__animated animate__faster animate__fadeIn animate__fill_none">
+    {{ 'adds_has_tip00' | translate }}
+  </div>
+</ng-template>
+
+<ng-template #common_c>
+  <div class="check-box-row">
+    <mat-checkbox [disableRipple]="true" [(ngModel)]="isCommon" (change)="isCommonChange()">
+      {{ 'sel_coin_tip00' | translate }}
+    </mat-checkbox>
+    <span
+      class="icon-warning mutual-opacity onact96-not"
+      (click)="tooltip.toggle()"
+      #tooltip="matTooltip"
+      [matTooltip]="'sel_coin_tip01' | translate"
+      [matTooltipPosition]="isH5() ? 'left' : 'above'"
+      matTooltipClass="generally-tooltip"
+    ></span>
+  </div>
+</ng-template>
+
+<ng-template #whitelist_c>
+  <div class="check-box-row" *ngIf="data.whiteliststatus">
+    <mat-checkbox [disableRipple]="true" [(ngModel)]="isWhiteList">{{ 'add_wihite00' | translate }}</mat-checkbox>
+  </div>
+</ng-template>

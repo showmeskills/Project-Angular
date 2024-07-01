@@ -1,0 +1,25 @@
+<button
+  *ngIf="true"
+  class="customize-button {{ type }} {{ size }}"
+  [class.active]="active"
+  [class.disabled]="disabled"
+  [class.loading]="loading"
+  [class.plain]="plain"
+  [style.border-radius]="radius"
+  (click)="click($event)"
+>
+  <ng-container *ngIf="loading">
+    <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+  </ng-container>
+  <ng-container *ngIf="!loading">
+    <ng-container *ngIf="icon">
+      <ng-container *ngIf="icon.includes('.'); else iconTemp">
+        <img class="button-icon" [src]="icon" />
+      </ng-container>
+      <ng-template #iconTemp>
+        <i class="button-icon" [class]="icon"></i>
+      </ng-template>
+    </ng-container>
+    <ng-content></ng-content>
+  </ng-container>
+</button>

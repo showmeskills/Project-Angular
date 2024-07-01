@@ -1,0 +1,344 @@
+<ng-template #sortTpl let-lang="lang" let-field="field">
+  <span class="cursor-pointer" (click)="onSort(field)" *ngIf="data">
+    <span class="vam" [class.text-primary]="data.orderField === field">{{ lang | lang }}</span>
+    <span class="ml-2 vam d-inline-block">
+      <div
+        class="triangle-up vam"
+        *ngIf="data.orderField !== field || data.isAsc"
+        [class.active]="data.orderField === field && data.isAsc"
+      ></div>
+      <div
+        class="triangle-down vam"
+        *ngIf="data.orderField !== field || !data.isAsc"
+        [class.active]="data.orderField === field && !data.isAsc"
+      ></div>
+    </span>
+  </span>
+  <span class="vam" *ngIf="!data">{{ lang | lang }}</span>
+</ng-template>
+
+<div class="list-div">
+  <table class="table mb-0 table-layout" selectChildren>
+    <thead>
+      <tr>
+        <th class="w-10px pe-2">
+          <span class="cell">
+            <label class="checkbox">
+              <input type="checkbox" selectGroup />
+              <span></span>
+            </label>
+          </span>
+        </th>
+        <th><span class="cell">UID</span></th>
+        <th>
+          <span class="cell">{{ 'member.table.userName' | lang }}</span>
+        </th>
+        <th class="w-80">
+          <span class="cell">{{ 'member.table.fullName' | lang }}</span>
+        </th>
+        <th class="w-80">
+          <span class="cell">{{ 'member.table.birthday' | lang }}</span>
+        </th>
+        <!-- 邮箱 -->
+        <th>
+          <span class="cell">{{ 'auManage.sys.email' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.registerIP' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.lastLoginIP' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.totalDeposit' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.table.totalWithdraw' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">
+            <ng-container
+              *ngTemplateOutlet="sortTpl; context: { lang: 'member.table.regDate', field: 'RegisterTime' }"
+            ></ng-container>
+          </span>
+        </th>
+        <!-- 最近登录时间 -->
+        <th>
+          <span class="cell">
+            <ng-container
+              *ngTemplateOutlet="sortTpl; context: { lang: 'member.table.recently', field: 'LastLoginTime' }"
+            ></ng-container>
+          </span>
+        </th>
+        <!--            <th>-->
+        <!--              <span class="cell">{{ 'common.country' | lang }}</span>-->
+        <!--            </th>-->
+        <!-- MA推荐人ID -->
+        <th>
+          <span class="cell">{{ 'member.table.maReferrerId' | lang }}</span>
+        </th>
+        <!-- 用户余额 -->
+        <th>
+          <span class="cell">
+            <ng-container
+              *ngTemplateOutlet="sortTpl; context: { lang: 'member.table.balance', field: 'Balance' }"
+            ></ng-container>
+          </span>
+        </th>
+        <!-- 币种 -->
+        <th>
+          <span class="cell">{{ 'member.table.currency' | lang }}</span>
+        </th>
+        <!-- 是否联盟成员 -->
+        <!--            <th>-->
+        <!--              <span class="cell">{{ 'member.table.alliance' | lang }}</span>-->
+        <!--            </th>-->
+        <!-- 信用积分 -->
+        <th>
+          <span class="cell">{{ 'member.table.creditPoints' | lang }}</span>
+        </th>
+        <!-- 基础信息 -->
+        <!-- <th>
+          <span class="cell">{{ 'member.table.baseInfo' | lang }}</span>
+        </th> -->
+        <!-- VIP等级 -->
+        <th class="w-50">
+          <span class="cell">{{ 'common.vipLevel' | lang }}</span>
+        </th>
+        <!-- KYC状态 -->
+        <!--            <th>-->
+        <!--              <span class="cell">{{ 'member.table.kycStatus' | lang }}</span>-->
+        <!--            </th>-->
+        <!-- 活跃天数 -->
+        <th class="w-50">
+          <span class="cell">{{ 'member.table.activeDay' | lang }}</span>
+        </th>
+        <!-- 投注产品 -->
+        <th>
+          <span class="cell">{{ 'member.table.betContent' | lang }}</span>
+        </th>
+        <!-- 来源 -->
+        <!--            <th>-->
+        <!--              <span class="cell">{{ 'member.table.ly' | lang }}</span>-->
+        <!--            </th>-->
+        <!-- 风控等级 -->
+        <th class="w-50">
+          <span class="cell">{{ 'common.riskLevel' | lang }}</span>
+        </th>
+        <th style="width: 12%">
+          <span class="cell">{{ 'member.table.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="item['checked']" />
+              <span></span>
+            </label>
+          </span>
+        </td>
+        <td>
+          <span class="cell" (click)="!isSimple && openUID(item)">{{ item.uid }}</span>
+        </td>
+        <!-- 用户名 -->
+        <td>
+          <span class="cell">{{ item.name || '-' }}</span>
+        </td>
+        <!-- 姓名 -->
+        <td class="w-80">
+          <span class="cell">{{ item.fullName || '-' }}</span>
+        </td>
+        <!-- 生日 -->
+        <td class="w-80">
+          <span class="cell">{{ item.birthday || '-' }}</span>
+        </td>
+        <!-- 邮箱 -->
+        <td class="w-80">
+          <span class="cell">{{ item.email || '-' }}</span>
+        </td>
+        <!-- 注册IP registerIP -->
+        <td>
+          <span class="cell">{{ item.registerIP || '-' }}</span>
+        </td>
+        <!-- 最近登陆IP -->
+        <td>
+          <span class="cell">{{ item.lastLoginIP || '-' }}</span>
+        </td>
+        <!-- 总存款 -->
+        <td>
+          <span class="cell">{{ item.totalDeposit | currencyValue: 'USDT' }}</span>
+        </td>
+        <!-- 总提款 -->
+        <td>
+          <span class="cell">{{ item.totalWithdraw | currencyValue: 'USDT' }}</span>
+        </td>
+        <!-- 注册时间 -->
+        <td>
+          <span class="cell">{{ item.registerTime | timeFormat }}</span>
+        </td>
+        <!-- 最近登录时间 -->
+        <td>
+          <span class="cell">{{ item.lastLoginTime | timeFormat }}</span>
+        </td>
+        <!--            <td>-->
+        <!--              <span class="cell">{{ item.kycCountry || '-' }}</span>-->
+        <!--            </td>-->
+
+        <!-- 推荐人ID -->
+        <td>
+          <span class="cell">
+            <div class="text-container" [ngbPopover]="item.inviteCode" triggers="mouseenter:mouseleave">
+              {{ item.superiorUId ? item.superiorUId : item.inviteCode || '-' }}
+            </div>
+          </span>
+        </td>
+        <!-- 用户余额 -->
+        <td>
+          <span class="cell">{{ item.balance | currencyValue: 'USDT' }}</span>
+        </td>
+        <!-- 币种 -->
+        <td>
+          <span class="cell">
+            <ng-container *ngFor="let item of item.currencies">
+              <img [currencyIcon]="item" currencySize="18" class="mr-2" />
+            </ng-container>
+          </span>
+        </td>
+        <!-- 是否联盟成员 -->
+        <!--            <td>-->
+        <!--              <span class="cell">{{ item.isAlliance ? ('member.list.yes' | lang) : ('member.list.no' | lang) }}</span>-->
+        <!--            </td>-->
+        <!-- 信用积分 -->
+        <td>
+          <span class="cell">{{ (item.creditPoints | bigNumber).integerValue() || 0 | toFormatMoney }}</span>
+        </td>
+        <!-- 基础信息  2023/12/14 liz要求隐藏-->
+        <!-- <td> -->
+        <!-- <span class="cell"> -->
+        <!-- 驾驶证 *ngSwitchCase="'DRIVING_LICENSE'" -->
+        <!-- <svg-icon [svgStyle]="{ 'width.px': 30 }" [src]="'./assets/images/svg/member/car.svg'"></svg-icon> -->
+        <!-- 银行卡 *ngSwitchCase="'ID_CARD'" -->
+        <!-- <svg-icon [svgStyle]="{ 'width.px': 30 }" [src]="'./assets/images/svg/member/card.svg'"></svg-icon> -->
+        <!-- 护照 *ngSwitchCase="'PASSPORT'" -->
+        <!-- <svg-icon [svgStyle]="{ 'width.px': 30 }" [src]="'./assets/images/svg/member/passport.svg'"></svg-icon> -->
+        <!-- 银行卡 *ngSwitchCase="'ID_CARD'" -->
+        <!-- <svg-icon [svgStyle]="{ 'width.px': 30 }" [src]="'./assets/images/svg/member/card.svg'"></svg-icon> -->
+        <!-- </span> -->
+        <!-- </td> -->
+        <!-- VIP等级 -->
+        <td class="w-50">
+          <span class="cell">
+            {{ item.vipGrade | vipName }}
+          </span>
+        </td>
+        <!-- KYC状态 -->
+        <!--            <td>-->
+        <!--              <span class="cell">{{ item.kycGrade }}</span>-->
+        <!--            </td>-->
+        <!-- 活跃天数 -->
+        <td class="w-50">
+          <span class="cell">{{ item.activeDays | toFormatMoney }}</span>
+        </td>
+        <!-- 投注产品 -->
+        <td>
+          <span class="cell">
+            <!-- 体育&电竞  1,2-->
+            <svg-icon
+              *ngIf="isGameIcon([1, 2], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([1, 2], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/sportGame.svg'"
+            ></svg-icon>
+
+            <!--  彩票3-->
+            <svg-icon
+              *ngIf="isGameIcon([3], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([3], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/lottery.svg'"
+            ></svg-icon>
+            <!--  真人4-->
+            <svg-icon
+              *ngIf="isGameIcon([4], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([4], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/liveCasino.svg'"
+            ></svg-icon>
+            <!--  娱乐城5-->
+            <svg-icon
+              *ngIf="isGameIcon([5], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([5], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/entertainment.svg'"
+            ></svg-icon>
+            <!--  棋牌6-->
+            <svg-icon
+              *ngIf="isGameIcon([6], item.playedGameInfo)"
+              [ngbPopover]="showGameMaker([6], item.playedGameInfo)"
+              triggers="mouseenter:mouseleave"
+              [svgStyle]="{ 'width.px': 25 }"
+              [src]="'./assets/images/svg/member/chess.svg'"
+            ></svg-icon>
+          </span>
+        </td>
+        <!-- 来源 -->
+        <!--            <td>-->
+        <!--              <span class="cell">{{ item.source }}</span>-->
+        <!--            </td>-->
+        <!-- 相似用户 -->
+        <td class="w-50">
+          <span class="cell">
+            <div class="riskLevel" [class]="item.riskControl">
+              {{ item.riskControl || '-' }}
+            </div>
+          </span>
+        </td>
+        <!-- 状态 -->
+        <td class="d-flex flex-center">
+          <span class="cell" [ngSwitch]="item.status" (click)="!isSimple && openUID(item)">
+            <!-- 正常 -->
+            <div *ngSwitchCase="'Normal'" class="rounded status_normal cursor-pointer status">
+              {{ 'member.list.normal' | lang }} &gt;
+            </div>
+            <!-- 账户锁定 -->
+            <div *ngSwitchCase="'Freezing'" class="rounded status_lock cursor-pointer status">
+              {{ 'member.list.accountLock' | lang }}&gt;
+            </div>
+            <!-- 账户禁用 -->
+            <div *ngSwitchCase="'Disable'" class="rounded status_stop cursor-pointer status">
+              {{ 'member.list.accountDisabled' | lang }} &gt;
+            </div>
+            <!-- 部分禁用 -->
+            <div *ngSwitchCase="'DisablePart'" class="rounded status_stop cursor-pointer status">
+              {{ 'member.list.partiallyDisabled' | lang }}&gt;
+            </div>
+            <!-- 未激活 -->
+            <div *ngSwitchCase="'NotActive'" class="rounded status_noactive cursor-pointer status">
+              {{ 'member.list.inactivated' | lang }} &gt;
+            </div>
+            <!-- 账户删除 -->
+            <div *ngSwitchCase="'Deleted'" class="rounded status_stop cursor-pointer status">
+              {{ 'member.list.accountDeletion' | lang }} &gt;
+            </div>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 空显示 -->
+<div class="container-empty" *ngIf="!list.length && !isLoading">
+  <div>
+    <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+    <div class="txt">{{ 'common.emptyText' | lang }}</div>
+  </div>
+</div>

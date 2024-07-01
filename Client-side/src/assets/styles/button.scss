@@ -1,0 +1,45 @@
+@import "variable.scss";
+
+/* customize-button */
+@mixin customize-button(
+
+  /*主要色*/
+  $type-primary-color: mix($primary-color, #fff, 85%),
+  /*混合的日夜版颜色*/
+  $page-bg-color: $text-d,
+  $page-bg-color-dark: $page-d,
+  /*默认次要色*/
+  $type-default-color: $page3,
+  $type-default-color-dark: $page3-d,
+  $type-default-text-color: $text,
+  $type-default-text-color-dark: $text-d,
+  $type-default-border-color: $border,
+  $type-default-border-color-dark: $border-d,
+) {
+  customize-button {
+    --type-default-color: #{$type-default-color};
+    --type-default-color-80: #{mix($type-default-color, $page-bg-color, 65%)};
+    --type-default-text-color: #{$type-default-text-color};
+    --type-default-text-color-80: #{mix($type-default-text-color, $page-bg-color, 65%)};
+    --type-default-border-color: #{$type-default-border-color};
+    --type-default-border-color-80: #{mix($type-default-border-color, $page-bg-color, 65%)};
+    --type-primary-color: #{$type-primary-color};
+    --type-primary-color-10: #{mix($type-primary-color, $page-bg-color, 10%)};
+    --type-primary-color-80: #{mix($type-primary-color, $page-bg-color, 80%)};
+
+    &:not(.keep-color) {
+      .dark & {
+        --type-default-color: #{$type-default-color-dark};
+        --type-default-color-80: #{mix($type-default-color-dark, $page-bg-color-dark, 65%)};
+        --type-default-text-color: #{$type-default-text-color-dark};
+        --type-default-text-color-80: #{mix($type-default-text-color-dark, $page-bg-color-dark, 65%)};
+        --type-default-border-color: #{$type-default-border-color-dark};
+        --type-default-border-color-80: #{mix($type-default-border-color-dark, $page-bg-color-dark, 65%)};
+        --type-primary-color-10: #{mix($type-primary-color, $page-bg-color-dark, 10%)};
+        --type-primary-color-80: #{mix($type-primary-color, $page-bg-color-dark, 80%)};
+      }
+    }
+  }
+}
+
+@include customize-button();

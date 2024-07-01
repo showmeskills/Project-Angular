@@ -1,0 +1,17 @@
+@if (show()) {
+  <div
+    cdkDrag
+    cdkDragBoundary="body"
+    (cdkDragStarted)="dragging = true"
+    class="customer-service-btn mutual-opacity onact96"
+    (click)="dragging ? (dragging = false) : toService()"
+  >
+    <img src="assets/images/chat.png" />
+  </div>
+}
+
+@switch (customerServiceService.chatType) {
+  @case ('liveChat') {
+    <app-liveChat></app-liveChat>
+  }
+}

@@ -1,0 +1,43 @@
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: 4px;
+}
+
+.authority_title {
+  text-align: left;
+  line-height: 22px;
+}
+
+.authority {
+  position: relative;
+  line-height: 18px;
+
+  .line {
+    width: 7px;
+    height: 17px;
+    position: absolute;
+    top: 0;
+    left: 13px;
+    border-left: 1px solid #a1a5b7;
+    border-bottom: 1px solid #a1a5b7;
+  }
+
+  .list {
+    display: flex;
+    margin-left: 19px;
+    position: relative;
+    top: 4px;
+    padding-bottom: 7px;
+    flex-wrap: wrap;
+
+    .d-flex {
+      padding: 3px 10px;
+      white-space: nowrap;
+      background: #edf1f3;
+      margin-left: 5px;
+      border-radius: 6px;
+      color: #5e6278;
+    }
+  }
+}

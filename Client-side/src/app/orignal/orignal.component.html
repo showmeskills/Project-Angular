@@ -1,0 +1,24 @@
+<ng-container *ngIf="isReady">
+  <div class="orignal-container">
+    <app-scrollbar #scrollbar>
+      <div class="content">
+        <router-outlet></router-outlet>
+        <!-- 游戏描述 tab-->
+      </div>
+      <div class="main-container">
+        <app-game-info [gameInfo]="gameInfo"></app-game-info>
+      </div>
+    </app-scrollbar>
+  </div>
+
+  <div class="toast" *ngIf="isToastShow">
+    <div class="txt">{{ toastContent }}</div>
+  </div>
+</ng-container>
+<ng-container *ngIf="!isReady">
+  <div class="orignal-loading">
+    <p class="orignal-top skeleton-loading"></p>
+    <p class="orignal-main skeleton-loading"></p>
+    <p class="orignal-bottom skeleton-loading"></p>
+  </div>
+</ng-container>

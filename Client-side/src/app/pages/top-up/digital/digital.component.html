@@ -1,0 +1,289 @@
+<div class="container">
+  <!--指引-->
+  <ng-container *ngIf="isFirstViewPage">
+    <ng-container *ngIf="isShow">
+      <app-digital-guide (doClose)="closeGuide($event)"></app-digital-guide>
+    </ng-container>
+  </ng-container>
+  <!--part 1-->
+  <div class="row-container" [class.disable]="bonusLoading">
+    <div class="top-up-root">
+      <div class="h5-questions">
+        <div class="q-1 onact96" (click)="openAppeal()">
+          <span class="icon-speaker"></span>
+          <span class="txt-dotted">{{ 'dep_not_arrive' | translate }}</span>
+        </div>
+        <div class="q-2 onact96" (click)="openQuestion()">
+          <span>{{ 'faq' | translate }}</span>
+          <span class="icon-question"></span>
+        </div>
+      </div>
+      <app-select-deposit-bonus
+        [depositType]="'cryptoDeposit'"
+        (voucherPopup)="openDividendOptions()"
+        [voucherLoading]="bonusLoading"
+        [voucherList]="bonuslist"
+        [selectedVoucher]="seletedDividend()"
+        [currency]="selectedCurrency?.currency || 'USDT'"
+        [amount]="0"
+        (handleCallback)="bonusCallback($event)"
+      ></app-select-deposit-bonus>
+      <!--选择币种-->
+      <div class="select-input p-t" [class.disable]="bonusLoading">
+        <!-- <span class="laber">
+          {{ 'sel_coin' | translate }}
+        </span> -->
+
+        <div class="input-column">
+          <div class="top-option">
+            <span>{{ 'curr' | translate }}</span>
+          </div>
+          <div class="select onact96" (click)="handleSelectCurrency()">
+            <!--已选择-->
+            <ng-container *ngIf="selectedCurrency; else default">
+              <div class="selected-row">
+                <img class="icon" [src]="selectedCurrency.icon" />
+                <span>{{ selectedCurrency.currency }}</span>
+                <span class="value">{{ selectedCurrency.name }}</span>
+              </div>
+            </ng-container>
+            <!--初始：未选时-->
+            <ng-template #default>
+              <span>{{ 'sel_coin' | translate }}</span>
+            </ng-template>
+            <i class="drop-dowm" [class.clicked]="isOpen"></i>
+          </div>
+          <div class="icons-gourp" *ngIf="!selectedCurrency">
+            <ng-container *ngFor="let item of currencies.slice(0, 5)">
+              <div class="offset-right onact96" (click)="selectCurrency(item)">
+                <img class="icon" [src]="item.icon" />
+                <span>{{ item.currency }}</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <!--选择网络-->
+      <div class="select-input p-b-33" [class.disable]="bonusLoading" *ngIf="selectedCurrency != null">
+        <!-- <span class="laber">
+          {{ 'deposit_to' | translate }}
+        </span> -->
+        <div class="input-column input-column-h5 onact96" (click)="handleSelectNetWork()">
+          <span>{{ 'trans_network' | translate }}</span>
+          <div class="select">
+            <!--已选择-->
+            <ng-container *ngIf="selectedNetwork; else defaultNetwork">
+              <div class="selected-row">
+                <span>{{ selectedNetwork.networkInfo.network }}</span>
+                <span class="value">{{ selectedNetwork.networkInfo.desc }}</span>
+              </div>
+            </ng-container>
+            <!--初始：未选时-->
+            <ng-template #defaultNetwork>
+              <span>{{ 'sel_net' | translate }}</span>
+            </ng-template>
+            <i class="drop-dowm" [class.clicked]="isOpen"></i>
+          </div>
+        </div>
+      </div>
+      <!--输入 Hash Code-->
+      <!-- <div class="select-input" *ngIf="isCorrectNetwork && selectedNetwork">
+        <div class="input-column p-l">
+          <span>Hash Code</span>
+          <div class="input-group" [class.focus]="$any(iUHashCode).isFocus">
+            <input #iUHashCode [(ngModel)]="hashCode" placeholder="请输入Hash Code"/>
+          </div>
+        </div>
+      </div> -->
+      <ng-container *ngIf="selectedNetwork">
+        <div [appLoading]="!depositAddress"></div>
+        <div class="network-details" *ngIf="depositAddress">
+          <!--地址详情-->
+          <!-- <ng-container  *ngIf="isApply ; else toApply"> -->
+          <div class="network-infor-clounm">
+            <!--h5 显示二维码-->
+            <div class="h5-QRcode-container">
+              <div class="code">
+                <qr-code value="{{ depositAddress.address }}" size="181" errorCorrectionLevel="M"></qr-code>
+              </div>
+              <span class="txt">{{ 'scan_code' | translate }}</span>
+            </div>
+            <div class="clounm-root">
+              <span>{{ 'address' | translate }}</span>
+              <div class="contant-row">
+                <p class="min-w">{{ depositAddress.address }}</p>
+                <app-tool-tip [copyMode]="'icon'" [copyContent]="depositAddress.address"> </app-tool-tip>
+                <i class="link" (mouseenter)="mouseIn()" (mouseleave)="mouseOut()"></i>
+              </div>
+            </div>
+            <ng-container *ngIf="isQrcShow">
+              <div class="QRcode-container">
+                <div class="img-clounm">
+                  <span>{{ 'scan_code' | translate }}</span>
+                  <div class="code">
+                    <qr-code value="{{ depositAddress.address }}" size="181" errorCorrectionLevel="M"></qr-code>
+                  </div>
+                </div>
+                <div class="contants-clounm">
+                  <div class="dot-row none-bottom">
+                    <span class="dot"></span>
+                    <span>{{ 'add_receive' | translate: selectedCurrency?.currency }}</span>
+                  </div>
+                  <div class="dot-row none-bottom">
+                    <span class="dot"></span>
+                    <span class="max-width"
+                      >{{ 'again_choose' | translate }} <span class="red-text">{{ depositAddress.network }}</span></span
+                    >
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="row-root row-root-h5">
+              <div class="clounm-root offset-right">
+                <span>{{ 'exp_arr' | translate }}</span>
+                <div class="contant-row">
+                  <p>{{ depositAddress.expectedBlock }}{{ 'time_net' | translate }}</p>
+                </div>
+              </div>
+              <div class="clounm-root">
+                <span>{{ 'exp_un' | translate }}</span>
+                <div class="contant-row">
+                  <div>
+                    <p class="important">{{ depositAddress.expectedUnlockBlock }}</p>
+                    {{ 'time_net' | translate }}
+                  </div>
+                  <!-- <i class="icon-warning" (mouseenter)="handleWarning()" (mouseleave)="handleWarning()"></i> -->
+                </div>
+                <!-- <ng-container *ngIf="isWarning">
+                  <div class="warning-container">
+                    {{'wait_more'|translate}}
+                  </div>
+                </ng-container> -->
+              </div>
+            </div>
+            <div class="clounm-root">
+              <span>{{ 'min_num' | translate }}</span>
+              <div class="contant-row">
+                <p>{{ depositAddress.minDeposit }} {{ depositAddress.token }}</p>
+              </div>
+            </div>
+            <div class="dot-row">
+              <span class="dot"></span>
+              <span>{{ 'add_receive' | translate: selectedCurrency?.currency }}</span>
+            </div>
+            <div class="dot-row">
+              <span class="dot"></span>
+              <span class="max-w"
+                >{{ 'again_choose' | translate }} <span class="red-text">{{ depositAddress.network }}</span></span
+              >
+            </div>
+            <!--地址错误-->
+            <!-- <ng-container *ngIf="isError">
+              <div class="error-container">
+                <span class="title">正确填写地址和Memo才能充值到账</span>
+                <span class="notice">MEMO和地址同时使用才能充值BEP2-BTCB到xxxx</span>
+                <button class="submit-btn" (click)="closeErro()">好的</button>
+              </div>
+            </ng-container> -->
+          </div>
+          <!-- </ng-container> -->
+          <!--未申请-->
+          <!-- <ng-template #toApply>
+              <div class="apply-container">
+                <div class="title">您未申请过{{selectedData?.networks?.desc}}充值地址，请点击按钮获取充值地址。</div>
+                <button class="submit-btn" (click)="handleApply()">获取地址</button>
+              </div>
+          </ng-template> -->
+          <!-- <app-select-network-details [selectedData]="selectedNetwork"></app-select-network-details> -->
+        </div>
+      </ng-container>
+    </div>
+    <!--温馨提示-->
+    <div class="tips-root">
+      <!-- 数字货币充值 -->
+      <app-tips tag="DigitalCurrencyRecharge"></app-tips>
+    </div>
+    <!--近期充币记录 -->
+    <div class="history-container" [appLoading]="isLoading">
+      <div class="history-header">
+        <div class="start-row">
+          <span>{{ 'recent_coin' | translate }}</span>
+          <!-- <div class="small-nav">
+            <i class="icon-overview"></i>
+            <span class="labe"></span>
+            <i class="icon-menu"></i>
+          </div> -->
+        </div>
+        <div class="end-row onact96-not" (click)="openHistoryPage()">{{ 'view_all' | translate }}</div>
+      </div>
+      <!--list-->
+      <ng-container *ngIf="!isLoading">
+        <ng-container *ngIf="cryptoHistory.length > 0; else historyEmpty">
+          <div
+            class="ticket onact96"
+            [class.select]="item.isSelected"
+            *ngFor="let item of cryptoHistory"
+            (click)="isH5 ? openReceipt(item) : $event.stopPropagation()"
+          >
+            <div class="infor-clounm">
+              <div class="clounm-1">
+                <img class="icon" [src]="item.currency | currencyIcon" />
+                <span class="amount">{{ item.amount }}</span>
+                <span class="amount offset-right">{{ item.currency }}</span>
+                <div
+                  class="status-text"
+                  [class.success]="item.status == 'Success' || item.status == 'Created' || item.status == 'Passed'"
+                  [class.process]="item.status == 'Waiting' || item.status == 'Process' || item.status == 'Review'"
+                  [class.fail]="item.status == 'NotPassed' || item.status == 'Fail'"
+                  [class.cancel]="item.status == 'Canceled' || item.status == 'Timeout'"
+                >
+                  {{ item.statusName }}
+                </div>
+              </div>
+              <ul class="item-bottom" [class.no-txid]="!item.txid">
+                <li class="group">
+                  <span>{{ item.date | mdate }}</span>
+                </li>
+                <ng-container *ngIf="!isH5">
+                  <li class="group network-group">
+                    <span>{{ 'trans_network' | translate }}：</span>
+                    <p>
+                      <span>{{ item.network }}</span>
+                    </p>
+                  </li>
+                  <li class="group addresse-group">
+                    <span>{{ 'address' | translate }}：</span>
+                    <p>
+                      <span class="addresse">{{ item.address }}</span>
+                      <!-- <i class="icon-link"></i> -->
+                      <app-tool-tip [copyMode]="'icon'" [copyContent]="item.address"> </app-tool-tip>
+                    </p>
+                  </li>
+                  <li class="group txid-group">
+                    <ng-container *ngIf="item.txid">
+                      <span>{{ 'tx_ad' | translate }}：</span>
+                      <p>
+                        <span class="addresse">{{ getAddresseElipsis(item.txid) }}</span>
+                        <!-- <i class="icon-link"></i> -->
+                        <app-tool-tip [copyMode]="'icon'" [copyContent]="item.txid"> </app-tool-tip>
+                      </p>
+                    </ng-container>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+            <span class="arrow-right" *ngIf="isH5"></span>
+          </div>
+        </ng-container>
+        <!--  空页面  -->
+        <ng-template #historyEmpty>
+          <app-empty></app-empty>
+        </ng-template>
+      </ng-container>
+    </div>
+    <!-- 充值成功弹窗 -->
+    <!-- <ng-template #digitalSuccessPopup>
+      <app-digital-success-popup></app-digital-success-popup>
+    </ng-template> -->
+  </div>
+</div>

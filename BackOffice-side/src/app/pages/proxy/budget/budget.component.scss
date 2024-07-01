@@ -1,0 +1,21 @@
+form-row.empty {
+  padding: 0;
+  height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+.label.label-inline.label-lg {
+  width: 72px;
+}
+
+.border-bottom {
+  border-bottom: 1px solid rgba(#707070, 0.7);
+}
+
+.main-content {
+  form-row {
+    min-width: 270px;
+  }
+}

@@ -1,0 +1,104 @@
+<div class="container">
+  <div class="content-box">
+    <ng-container *ngIf="!isH5; else H5page">
+      <div class="search-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [(value)]="selectedTimeValue"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [label]="'scope' | translate"
+            [options]="timeOptions"
+          ></app-customize-select>
+          <div class="form-group-align">
+            <customize-button size="small" type="text" (onClick)="reset()" [plain]="true">
+              {{ 'reset' | translate }}
+            </customize-button>
+            <customize-button size="small" type="text" (onClick)="onSearch()" [plain]="true" [active]="true">
+              {{ 'filter' | translate }}
+            </customize-button>
+          </div>
+        </app-customize-form-group>
+      </div>
+
+      <div class="data-list" [appLoading]="loading">
+        <table *ngIf="dataList.length > 0">
+          <thead>
+            <th>{{ 'dates' | translate }}</th>
+            <th>{{ 'order' | translate }}</th>
+            <th>{{ 'act_name' | translate }}</th>
+            <th>{{ 'prizes' | translate }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of dataList; let i = index">
+              <td>{{ item.drawTime | mdate }}</td>
+              <td>{{ item?.orderId || '' }}</td>
+              <td class="allow-newline">{{ item?.activityName || '-' }}</td>
+              <td class="allow-newline">{{ item.prizeFullName || item.prizeShortName }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <app-empty *ngIf="dataList.length == 0 && !loading" [text]="'no_record' | translate"></app-empty>
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+      </div>
+    </ng-container>
+
+    <ng-template #H5page>
+      <div class="search-h5-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [width]="'40vw'"
+            [(value)]="selectedTimeValue"
+            [fixedHeight]="true"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [label]="'scope' | translate"
+            [options]="timeOptions"
+            (onSelect)="onSearch()"
+          >
+          </app-customize-select>
+        </app-customize-form-group>
+      </div>
+
+      <ul class="data-h5-list" *ngIf="dataList.length > 0" [appLoading]="loading">
+        <li class="item" *ngFor="let item of dataList; let i = index">
+          <div class="group first">
+            <span>{{ item.activityName || '-' }}</span>
+          </div>
+          <div class="group">
+            <span>{{ 'dates' | translate }}：</span>
+            <p>{{ item.drawTime | mdate }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'order' | translate }}：</span>
+            <p>{{ item?.orderId || '' }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'prizes' | translate }}：</span>
+            <p>{{ item.prizeFullName || item.prizeShortName }}</p>
+          </div>
+        </li>
+      </ul>
+
+      <app-empty *ngIf="dataList.length == 0 && !loading" [text]="'no_record' | translate"></app-empty>
+
+      <app-paginator
+        [(page)]="paginator.page"
+        [total]="paginator.total"
+        [pageSize]="paginator.pageSize"
+        [disabled]="loading"
+        [loading]="loading"
+        (onPageChange)="loadData()"
+      >
+      </app-paginator>
+    </ng-template>
+  </div>
+</div>

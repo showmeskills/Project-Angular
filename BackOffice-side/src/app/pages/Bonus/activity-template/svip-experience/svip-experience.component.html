@@ -1,0 +1,148 @@
+<div class="card card-body">
+  <div class="fz-20 mb-10">SVIP 体验卷</div>
+
+  <!-- 验证表单 -->
+  <form class="form w-100 mb-10" [formGroup]="formGroup" #form>
+    <!-- 多语系 -->
+    <lang-tab #langTab formArrayName="lang" [(value)]="selectLang" (languageChange)="updateLanguageForm()">
+      <ng-template let-i="i" let-current="current">
+        <!-- 活动标题 -->
+        <form-row
+          class="mb-8"
+          required
+          name="name"
+          label-width="200"
+          [label]="'活动标题（' + current?.name + '）'"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" />
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+  </form>
+
+  <div class="pl-8 pr-8">
+    <!-- 活动时间 -->
+    <form-row class="mb-10" label="活动时间" label-width="200">
+      <ng-template>
+        <div class="d-flex">
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeFrom"
+            placeholder="开始时间"
+            [style.width.px]="148"
+            [owlDateTime]="timeStart"
+            [owlDateTimeTrigger]="timeStart"
+            [(ngModel)]="time"
+          />
+          <owl-date-time class="fz-20" #timeStart></owl-date-time>
+
+          <div class="date-line lh-42"></div>
+
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeTo"
+            placeholder="结束时间"
+            [style.width.px]="148"
+            [owlDateTime]="timeEnd"
+            [owlDateTimeTrigger]="timeEnd"
+            [(ngModel)]="time"
+          />
+          <owl-date-time class="fz-20" #timeEnd></owl-date-time>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 用户地区 -->
+    <form-row class="mb-10" label="用户地区" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap">
+          <div class="d-flex flex-ac px-5 mr-10 h42" style="background: #f5f8fa; border-radius: 6px">
+            <i class="country countryIcon country-CN"></i>
+            <div class="px-2">CCP</div>
+            <svg-icon
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+            ></svg-icon>
+          </div>
+          <div class="d-flex flex-ac px-5 mr-10" style="background: #f5f8fa; border-radius: 6px">
+            <i class="country countryIcon country-CN"></i>
+            <div class="px-2">world</div>
+            <svg-icon
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+            ></svg-icon>
+          </div>
+          <div class="d-flex flex-ac px-5 mr-10" style="background: #f5f8fa; border-radius: 6px">
+            <i class="country countryIcon country-CN"></i>
+            <div class="px-2">No.1</div>
+            <svg-icon
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+            ></svg-icon>
+          </div>
+          <span class="btn btn-light-primary fz-16 d-flex flex-ac h42" (click)="openAddPopup('area')">
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            添加
+          </span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 领取资格 -->
+    <form-row class="mb-10" label="领取资格" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <div class="d-flex flex-ac mr-24">
+            存款
+            <input
+              class="form-control text-center mx-4"
+              [style.width.px]="80"
+              autocomplete="off"
+              type="text"
+              value="150"
+            />
+            USDT（等值）
+          </div>
+          <div class="d-flex flex-ac">
+            <span class="mr-4">KYC等级</span>
+            <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of kycLevalList">
+              <input type="radio" name="kyc" [value]="item.value" [(ngModel)]="kycLeval" />
+              <span class="mr-4"></span>{{ item.name }}
+            </label>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 福利设定 -->
+    <form-row class="mb-10" label="福利设定" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <div class="d-flex flex-ac mr-24">
+            SVIP
+            <form-wrap [style.width.px]="80" class="ml-4">
+              <input class="form-control" autocomplete="off" type="text" value="50" />
+              <span suffix class="color-aaa">天</span>
+            </form-wrap>
+          </div>
+          <div class="d-flex flex-ac mr-24">
+            有效期
+            <form-wrap [style.width.px]="80" class="ml-4">
+              <input class="form-control" autocomplete="off" type="text" value="50" />
+              <span suffix class="color-aaa">天</span>
+            </form-wrap>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="pt-14 flex-center d-flex">
+    <button type="button" class="c-btn c-btn-primary" (click)="onSubmit()">提交</button>
+  </div>
+</div>

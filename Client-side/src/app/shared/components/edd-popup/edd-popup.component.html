@@ -1,0 +1,101 @@
+<div class="popup-common standard-popup" [class.first-step]="step === 0" [class.second-step]="step === 1">
+  <ng-container [ngSwitch]="step">
+    <ng-container *ngSwitchCase="0">
+      <i class="close-btn icon-close-simple onact96-not" (click)="onNoClick()"></i>
+      <img class="header-img" lazy="loading" src="assets/images/face-verify/header-img.svg" />
+      <p class="header-title">{{ 'edd_a' | translate }}</p>
+      <p class="gray-color">{{ 'edd_b' | translate }}</p>
+      <p class="primary-color">{{ 'edd_c' | translate }}</p>
+      <customize-button width="100%" size="medium" type="primary" (onClick)="step = 1">
+        {{ 'start_now' | translate }}
+      </customize-button>
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <div class="title">
+        <p class="text">{{ 'edd_veri' | translate }}</p>
+        <i
+          class="icon-close-simple mutual-opacity gray-color onact96-not"
+          (click)="onClose()"
+          [class.disable]="loading"
+        ></i>
+      </div>
+      <app-customize-form-group [column]="true" marginBottom="12px">
+        <div class="form-item edd-item">
+          <app-customize-input
+            [label]="'month_salary' | translate"
+            [(value)]="eddDocs.monthlySalary"
+            minWidth="200px"
+            width="100%"
+            [type]="'number'"
+            [disabled]="loading"
+            (onChange)="onChangeSalary($event)"
+          ></app-customize-input>
+          <app-customize-select
+            width="100%"
+            minWidth="100px"
+            defaultText=""
+            [value]="eddDocs.currency"
+            valueKey="value"
+            textKey="key"
+            (valueChange)="onCurrencyChange($event)"
+            [options]="fiatCurrencies"
+            [disabled]="loading"
+          ></app-customize-select>
+        </div>
+        <div class="form-item">
+          <app-customize-select
+            [label]="'employment_status' | translate"
+            width="100%"
+            defaultText=""
+            [value]="eddDocs.employmentStatus.value"
+            (valueChange)="onEmploymentChange($event)"
+            [options]="eddDocs.employmentStatus.options"
+            textKey="value"
+            valueKey="key"
+            [disabled]="loading"
+          ></app-customize-select>
+        </div>
+        <div class="form-item" *ngIf="showOccupation">
+          <app-customize-input
+            [label]="'occupation' | translate"
+            type="text"
+            width="100%"
+            [(value)]="eddDocs.occupation"
+            [disabled]="loading"
+          ></app-customize-input>
+        </div>
+        <div class="form-item">
+          <app-customize-select
+            [label]="'wealth_source' | translate"
+            width="100%"
+            defaultText=""
+            [value]="eddDocs.sourceOfFunds.value"
+            (valueChange)="onSoourceChange($event)"
+            [options]="eddDocs.sourceOfFunds.options"
+            textKey="value"
+            valueKey="key"
+            [disabled]="loading"
+          ></app-customize-select>
+        </div>
+        <div class="edd-submit-btn">
+          <customize-button
+            size="large"
+            type="primary"
+            width="100%"
+            (onClick)="onSubmit()"
+            [loading]="loading"
+            [disabled]="loading || !canSubmitForm"
+          >
+            {{ 'continue' | translate }}
+          </customize-button>
+        </div>
+      </app-customize-form-group>
+      <div class="bottom-tips">
+        <img lazy="loading" src="assets/images/kyc/dun.svg" />
+        <p class="txt">
+          {{ 'secure_info' | translate }}
+        </p>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

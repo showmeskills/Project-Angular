@@ -1,0 +1,23 @@
+<div class="content-box">
+  <ng-container *ngIf="renderCarouselData().length > 0">
+    <div #carousel class="customize-carousel" (scroll)="onScroll($event)" [style.grid-auto-columns]="curClass.grid()">
+      <ng-container *ngFor="let item of renderCarouselData()">
+        <div class="carousel-item-container">
+          <div class="carousel-item" [class.disabled]="!item">
+            <a [href]="item?.customizedHref || ''" (click)="clickItem(item); $event.preventDefault()">
+              <div class="carousel-img">
+                <app-lazy-image [lazy]="item?.img || ''" [thumbWidth]="500" [radius]="8"></app-lazy-image>
+              </div>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="carousel-arrow-left" *ngIf="arrowLeft && !isH5" [class.show]="active" (click)="clickArrow(-1)">
+      <i class="icon-left-arrow"></i>
+    </div>
+    <div class="carousel-arrow-right" *ngIf="arrowRight && !isH5" [class.show]="active" (click)="clickArrow(1)">
+      <i class="icon-right-arrow"></i>
+    </div>
+  </ng-container>
+</div>

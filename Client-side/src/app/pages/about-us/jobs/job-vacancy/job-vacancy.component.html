@@ -1,0 +1,86 @@
+<div class="container job-vacancy">
+  <div class="job-wrap">
+    <div class="page-title">{{ 'nav_b' | translate }}</div>
+    <div class="job-select-form">
+      <app-customize-select
+        [defaultText]="selectJobTitle"
+        [width]="isH5 ? '164px' : '300px'"
+        [options]="jobCateList"
+        [valueKey]="'id'"
+        [(value)]="jobCate"
+        (valueChange)="onChangeJob()"
+      >
+      </app-customize-select>
+      <app-customize-select
+        [defaultText]="selectJobLocal"
+        [width]="isH5 ? '164px' : '300px'"
+        [options]="jobLocationList"
+        [valueKey]="'id'"
+        [(value)]="jobLocation"
+        (valueChange)="onChangeJob()"
+      >
+      </app-customize-select>
+      <div class="key-form">
+        <app-customize-input
+          [autocomplete]="false"
+          size="medium"
+          [leftIcon]="'icon-search'"
+          [placeholder]="'sear' | translate"
+          [max]="40"
+          type="text"
+          [(value)]="searchKeyWord"
+          width="100%"
+          (keyup.enter)="onSearch()"
+          (valueChange)="onValueChange($event)"
+        >
+        </app-customize-input>
+      </div>
+      <p class="clear mutual-opacity" (click)="clear()">{{ 'remo' | translate }}</p>
+    </div>
+    <!-- <div class="search-result">
+      <p class="line"></p>
+      <p class="line-txt">{{'find' | translate}} {{total}} {{'result' | translate}}</p>
+      <p class="line"></p>
+    </div> -->
+    <div class="search-content">
+      <div *ngFor="let cate of jobsList" [appLoading]="loading">
+        <ng-container
+          *ngTemplateOutlet="
+            jobCateTemplate;
+            context: {
+              jobTitle: cate.cate,
+              list: cate
+            }
+          "
+        ></ng-container>
+      </div>
+      <app-empty *ngIf="jobsList.length == 0 && !loading"></app-empty>
+    </div>
+    <div class="bottom-text" *ngIf="isH5 && cateId !== undefined">
+      <p class="text onact96-not" (click)="backPage('/about-us/jobs/vacancy')">{{ 'ck_all' | translate }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #jobCateTemplate let-jobTitle="jobTitle" let-list="list">
+  <div class="job-cate">
+    <div class="job-cate-top onact96" (click)="jumpToPage('detail', list.id, true)" *ngIf="cateId == undefined">
+      <img loading="lazy" [src]="list.url" />
+      {{ jobTitle }}
+    </div>
+    <p class="title-line">{{ jobTitle }}</p>
+    <div class="job-cate-list" *ngFor="let item of list.list">
+      <div class="job-cate-item">
+        <p class="job-title">{{ item.job }}</p>
+        <p class="job-location">{{ item.location }}</p>
+      </div>
+      <customize-button
+        miniWidth="60px"
+        type="primary"
+        size="small"
+        (onClick)="jumpToPage('applications', item.id, false)"
+        >{{ 'apply' | translate }}</customize-button
+      >
+    </div>
+  </div>
+</ng-template>

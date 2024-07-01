@@ -1,0 +1,117 @@
+<modal-title [title]="'member.detail.freeSpin.bonusDetails' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body py-6 px-12">
+  <div class="d-flex">
+    <!-- 奖品名称 -->
+    <form-row class="flex-1" [label]="'member.activity.prizeCommon.prizeName' | lang" label-width="120">
+      <ng-template>{{ data?.prizeName || '-' }}</ng-template>
+    </form-row>
+    <!-- UID -->
+    <form-row class="flex-1" [label]="'UID'" label-width="120">
+      <ng-template>{{ data?.uid || '-' }}</ng-template>
+    </form-row>
+  </div>
+
+  <div class="d-flex">
+    <!-- 奖品类型 -->
+    <form-row class="flex-1" [label]="'luckRoulette.drawRecord.prizeType' | lang" label-width="120">
+      <ng-template>{{
+        (data?.isNonSticky
+          ? 'member.activity.prizeCommon.configurationList.nonStickyBonus'
+          : 'member.activity.prizeCommon.configurationList.cashCoupon'
+        ) | lang
+      }}</ng-template>
+    </form-row>
+    <!-- 金额 -->
+    <form-row class="flex-1" [label]="'common.amount' | lang" label-width="120">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          {{ data?.bonusAmount | currencyValue: data?.currency }}
+          <img [currencyIcon]="data?.currency" currencySize="18" class="ml-2" />
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <!-- 现金券 -->
+  <ng-container *ngIf="!data?.isNonSticky; else NonSitckyTpl">
+    <!-- 状态 -->
+    <form-row [label]="'common.status' | lang" label-width="120">
+      <ng-template>
+        <app-label [type]="'primary'">{{ 'member.giveOut.received' | lang }}</app-label>
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- 非粘性奖金 -->
+  <ng-template #NonSitckyTpl>
+    <div class="d-flex">
+      <!-- 持续时间 -->
+      <form-row class="flex-1" [label]="'member.detail.nonsticky.duration' | lang" label-width="120">
+        <ng-template>
+          <ng-container *ngIf="data?.nonStickyBonus?.isActivated; else NoActivatedTpl">
+            <div class="lh-20">{{ data?.nonStickyBonus?.beginTime | timeFormat }}</div>
+            <div class="lh-20">{{ data?.nonStickyBonus?.endTime | timeFormat }}</div>
+          </ng-container>
+
+          <ng-template #NoActivatedTpl
+            >{{ data?.nonStickyBonus?.durationDays || '-' }}{{ 'common.day' | lang }}</ng-template
+          >
+        </ng-template>
+      </form-row>
+
+      <!-- 是否损失奖金 -->
+      <form-row class="flex-1" [label]="'member.detail.nonsticky.lbf' | lang" label-width="120">
+        <ng-template>
+          <div class="d-flex flex-ac" *ngIf="data?.nonStickyBonus?.lostAmount; else NoLostAmountTpl">
+            {{ 'common.yes' | lang }}，{{
+              data?.nonStickyBonus?.lostAmount | currencyValue: data?.nonStickyBonus?.currency
+            }}
+            <img [currencyIcon]="data?.nonStickyBonus?.currency" currencySize="18" class="ml-2" />
+          </div>
+
+          <ng-template #NoLostAmountTpl>{{ 'common.no' | lang }}</ng-template>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex">
+      <!-- 已投注进度 -->
+      <form-row class="flex-1" [label]="'member.detail.nonsticky.wp' | lang" label-width="120">
+        <ng-template> {{ data?.nonStickyBonus?.betProgress }}% </ng-template>
+      </form-row>
+
+      <!-- 奖金流水 -->
+      <form-row class="flex-1" [label]="'member.detail.nonsticky.bta' | lang" label-width="120">
+        <ng-template>
+          <div class="d-flex flex-ac">
+            {{ data?.nonStickyBonus?.currentBetTurnover | currencyValue: data?.nonStickyBonus?.currency }}
+            <img [currencyIcon]="data?.nonStickyBonus?.currency" currencySize="18" class="ml-2" />
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex">
+      <!-- 状态 -->
+      <form-row class="flex-1" [label]="'common.status' | lang" label-width="120">
+        <ng-template>{{ data?.nonStickyBonus?.statusDesc || '-' }}</ng-template>
+      </form-row>
+
+      <!-- 发放时间 -->
+      <form-row class="flex-1" [label]="'member.giveOut.IssuanceTime' | lang" label-width="120">
+        <ng-template>{{ data?.nonStickyBonus?.sendTime | timeFormat }}</ng-template>
+      </form-row>
+    </div>
+
+    <!-- 下注次数/投注要求次数 -->
+    <form-row [label]="'member.detail.nonsticky.nextCount' | lang" label-width="120" labelStyle="lineHeight:20px">
+      <ng-template>
+        {{ data?.nonStickyBonus?.betCount || '-' }}
+      </ng-template>
+    </form-row>
+  </ng-template>
+</div>
+
+<!-- 按钮组 -->
+<modal-footer (confirm)="modal.dismiss()" [dismissShow]="false"></modal-footer>

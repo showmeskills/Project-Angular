@@ -1,0 +1,539 @@
+<div class="page-container">
+  <app-header-title-bar [title]="headerName" (clickTitle)="back(fromPgae)"></app-header-title-bar>
+</div>
+<div class="main-container unity-padding-h5-24 unity-padding-web inner-page">
+  <ng-container [ngSwitch]="fromPgae">
+    <!--历史页面-->
+    <ng-container *ngSwitchCase="1">
+      <div class="reason-container container">
+        <div class="left">
+          <div class="search-bar">
+            <!-- <div class="title-h5">{{headerName}}</div> -->
+            <span>{{ 'why_receive_00' | translate }}</span>
+            <div class="select-box">
+              <div class="form-group">
+                <div
+                  class="option-row onact96"
+                  [class.active]="isSelected && isDigital"
+                  (click)="handleSelectReason(false)"
+                >
+                  <div class="option">
+                    {{ 'crypto' | translate }}
+                  </div>
+                  <span class="icon-fin"></span>
+                </div>
+                <div
+                  class="option-row onact96"
+                  [class.active]="isSelected && !isDigital"
+                  (click)="handleSelectReason(true)"
+                >
+                  <div class="option">
+                    {{ 'fiat' | translate }}
+                  </div>
+                  <span class="icon-fin"></span>
+                </div>
+                <div class="btn-row">
+                  <customize-button
+                    [width]="isH5 ? '100%' : 'unset'"
+                    size="large"
+                    *ngIf="isSelected"
+                    type="primary"
+                    class="submit-btn onact96-not"
+                    [disabled]="!canSubmit()"
+                    (onClick)="handleAppliciation('next')"
+                  >
+                    {{ 'apply_imm' | translate }}</customize-button
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="right mutual-opacity onact96" (click)="onRedirectFaq()">
+          <span class="txt-small-gray">
+            <span class="question-icon"></span>
+            {{ 'self_guide' | translate }}</span
+          >
+        </div>
+      </div>
+      <!--历史记录-->
+      <div class="history-container container" [appLoading]="loading">
+        <div class="header-txt">{{ 'self_recoverty' | translate }}</div>
+        <div class="history-container-list" *ngIf="historyList.length > 0; else isEmpty">
+          <div class="history-table" *ngIf="!isH5; else H5list">
+            <table>
+              <thead>
+                <th>{{ 'app_ids_00' | translate }}</th>
+                <th>{{ 'appli_time00' | translate }}</th>
+                <th>{{ 'pro_time' | translate }}</th>
+                <th>{{ 'pay_method' | translate }}</th>
+                <th>{{ 'app_amount' | translate }}</th>
+                <th>{{ 'status' | translate }}</th>
+                <th></th>
+              </thead>
+              <tbody *ngFor="let item of historyList">
+                <tr>
+                  <td>{{ item.appealId }}</td>
+                  <td>{{ item.appealTime | mdate : 'YYYY-MM-DD HH:mm' }}</td>
+                  <td>{{ item.processTime | mdate : 'YYYY-MM-DD HH:mm' }}</td>
+                  <td>{{ item.paymentMethod }}</td>
+                  <td>
+                    <img class="currency-img" [src]="item.currency | currencyIcon" />
+                    <p class="text">{{ item.amount }}</p>
+                  </td>
+                  <td>
+                    <div class="status-btn">{{ formatStatus(item.status) }}</div>
+                  </td>
+                  <td>
+                    <i
+                      class="icon-arrow-down onact96-not"
+                      [class.active]="item.isOpen"
+                      (click)="handleExpend(item)"
+                    ></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="7" *ngIf="item.isOpen">
+                    <div class="step-container">
+                      <div class="steper">
+                        <div class="clounm">
+                          <div class="contant-row">
+                            <div class="clounm-root">
+                              <div class="step-row">
+                                <span
+                                  class="circle"
+                                  [class.active]="
+                                    ['Pending', 'Finish', 'Supplement', 'Rejected', 'Cancel', 'Processing'].includes(
+                                      item.status
+                                    )
+                                  "
+                                  >1</span
+                                >
+                                <span
+                                  class="thread"
+                                  [class.active]="
+                                    ['Pending', 'Finish', 'Supplement', 'Rejected', 'Cancel', 'Processing'].includes(
+                                      item.status
+                                    )
+                                  "
+                                ></span>
+                              </div>
+                              <div class="txt-group step-1">
+                                <p class="title">{{ 'sub_app' | translate }}</p>
+                                <p class="txt">{{ item.appealTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+                              </div>
+                            </div>
+                            <div class="clounm-root">
+                              <div class="step-row">
+                                <span
+                                  class="circle"
+                                  [class.active]="
+                                    ['Pending', 'Finish', 'Supplement', 'Rejected', 'Cancel', 'Processing'].includes(
+                                      item.status
+                                    )
+                                  "
+                                  >2</span
+                                >
+                                <span
+                                  class="thread"
+                                  [class.active]="['Finish', 'Rejected', 'Cancel'].includes(item.status)"
+                                ></span>
+                              </div>
+                              <div class="txt-group step-2">
+                                <p class="title">{{ 'app_process' | translate }}</p>
+                              </div>
+                            </div>
+                            <div class="clounm-root offset-w">
+                              <div class="step-row">
+                                <span
+                                  class="circle"
+                                  [class.active]="['Finish', 'Rejected', 'Cancel'].includes(item.status)"
+                                  >3</span
+                                >
+                              </div>
+                              <div class="txt-group step-3">
+                                <p class="title">{{ 'app_complete' | translate }}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="notice-colunm"
+                        [class.margin-top-50]="['Finish', 'Rejected', 'Cancel', 'TimeOut'].includes(item.status)"
+                      >
+                        <ng-container
+                          *ngIf="!['Finish', 'Supplement', 'Rejected', 'Cancel', 'TimeOut'].includes(item.status)"
+                        >
+                          <span class="icon-timer"></span>
+                          <span class="txt"> {{ 'wait_patient' | translate }}</span>
+                        </ng-container>
+
+                        <ng-container *ngIf="item.status === 'Supplement'">
+                          <span class="icon-kefu-record"></span>
+                          <span class="txt"> {{ 'supp_doc001' | translate }}</span>
+                          <span class="btn onact96-not" (click)="handleSupplement(item.appealId)">{{
+                            'supp_doc' | translate
+                          }}</span>
+                        </ng-container>
+
+                        <ng-container *ngIf="item.status === 'Finish'">
+                          <span class="icon-book-record"></span>
+                          <span class="txt"> {{ 'supp_doc002' | translate }}</span>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ng-template #H5list>
+            <ng-container>
+              <ng-container *ngFor="let item of historyList">
+                <ng-container *ngTemplateOutlet="details; context: { item: item }"></ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-template>
+        </div>
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+        <ng-template #isEmpty>
+          <app-empty [text]="'no_records' | translate" *ngIf="!loading"> </app-empty>
+        </ng-template>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+      <!--申请页面-->
+      <div class="container page-1">
+        <!-- <div class="title-h5" *ngIf="isH5">充值未到账找回申请</div> -->
+        <div class="between offset-padding">
+          <span class="txt-small-gray" [class.offset-bottom]="isH5"> {{ 'fill_help' | translate }} </span>
+          <span class="txt-small-gray onact96" (click)="onRedirectFaq()">
+            <span class="question-icon"></span> {{ 'self_guide' | translate }}</span
+          >
+        </div>
+        <ng-container
+          *ngTemplateOutlet="
+            noticeCard;
+            context: {
+              content: ('note_return_info' | translate)
+            }
+          "
+        >
+        </ng-container>
+        <div class="form-group" [appLoading]="loading">
+          <div class="title">{{ 'curr' | translate }}</div>
+          <ng-container *ngTemplateOutlet="currencyDropDown"></ng-container>
+
+          <div class="title">{{ 'sel_net' | translate }}</div>
+          <ng-container *ngTemplateOutlet="netWorkPop"></ng-container>
+
+          <div class="title">{{ 'quan_rechar' | translate }}</div>
+          <div class="input-group">
+            <input
+              class="number"
+              #isAmount
+              type="text"
+              [(ngModel)]="amount"
+              placeholder="{{ 'fill_rechar_num' | translate }}"
+              (input)="onAmountInput(isAmount)"
+            />
+          </div>
+
+          <div class="title">TxID/TxHash</div>
+          <div class="input-group">
+            <input
+              class="address"
+              #isTxId
+              type="text"
+              [(ngModel)]="txId"
+              placeholder="{{ 'enter_texid' | translate }}"
+              (keyup.enter)="checkToSubmit()"
+            />
+            <span class="liner-footer"></span>
+          </div>
+          <ng-container *ngIf="!showNotice">
+            <ng-container
+              *ngTemplateOutlet="
+                noticeCard;
+                context: {
+                  content: ('sure_hash' | translate)
+                }
+              "
+            >
+            </ng-container>
+          </ng-container>
+          <customize-button
+            class="offset-with onact96-not"
+            [width]="isH5 ? '100%' : '32%'"
+            size="large"
+            type="primary"
+            [disabled]="!isCrrect()"
+            (onClick)="openOrderDialog()"
+          >
+            {{ 'submit' | translate }}
+          </customize-button>
+          <div class="txt-link-ornage onact96-not" (click)="openAllHistory()">
+            {{ 'view_recent_record' | translate }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="3">
+      <!-- <div class="h5-header" *ngIf="isH5">申请记录</div> -->
+
+      <ng-container *ngIf="singleCard; else showList">
+        <ng-container *ngTemplateOutlet="details; context: { item: singleData }"> </ng-container>
+      </ng-container>
+      <ng-template #showList>
+        <ng-container *ngIf="historyList.length > 0; else isEmpty">
+          <ng-container *ngFor="let item of historyList">
+            <ng-container *ngTemplateOutlet="details; context: { item: item }"></ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-template #isEmpty>
+          <app-empty [text]="'no_records' | translate" *ngIf="!loading"> </app-empty>
+        </ng-template>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</div>
+
+<!--提示:noticeCard-->
+<ng-template #noticeCard let-content="content">
+  <div class="notice-box">
+    <span class="icon-important"></span>
+    <span class="txt">{{ content }}</span>
+  </div>
+</ng-template>
+<!-- web申请单弹窗模板 -->
+<ng-template #orderTicket>
+  <!--popup-full-->
+  <div class="select-popup webFilterPopup animate__fill_none" [class.web]="!isH5">
+    <div class="web-container">
+      <span class="back-icon onact96-not" *ngIf="isH5" (click)="orderTicketPopup.close()"></span>
+      <div class="dialog-header">{{ 'confirm_detail' | translate }}</div>
+      <div class="details">
+        <div class="contant">
+          <span class="title">TxID/TxHash</span>
+          <span class="txid">{{ txId }}</span>
+        </div>
+        <div class="contant">
+          <span class="title">{{ 'curr' | translate }}</span>
+          <div class="txt-center">
+            <span> {{ seletedCurrencyItem.currency }}</span>
+            <img class="icon currency-style" [src]="seletedCurrencyItem.icon" />
+          </div>
+        </div>
+        <div class="contant">
+          <span class="title">{{ 'rechar_net' | translate }}</span>
+          <div class="networks">
+            <!-- <span>{{selectedNetwork?.networkInfo?.network}}</span> -->
+            <span>{{ selectedNetwork?.networkInfo?.desc }}</span>
+          </div>
+        </div>
+        <!-- <div class="contant" *ngIf="isH5">
+          <span class="title">{{'deposit_to'|translate}}</span>
+          <div class="networks">
+            <span class="txt">{{txId}}</span>
+          </div>
+        </div> -->
+        <div class="contant">
+          <span class="title">{{ 'quan_rechar' | translate }}</span>
+          <span class="center"
+            >{{ amount }} <img *ngIf="isH5" class="icon currency-style" [src]="seletedCurrencyItem.icon" />
+            <span *ngIf="!isH5" [style.margin-left.px]="5">{{ seletedCurrencyItem.currency }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="notice" [class.orange]="isH5">{{ 'sure_acc' | translate }}</div>
+      <div class="btn-group">
+        <customize-button
+          size="large"
+          class="onact96-not"
+          [minWidth]="isH5 ? '168px' : '181px'"
+          (onClick)="orderTicketPopup.close()"
+        >
+          {{ 'cancels' | translate }}</customize-button
+        >
+        <customize-button
+          size="large"
+          class="onact96-not"
+          type="primary"
+          [minWidth]="isH5 ? '168px' : '181px'"
+          (onClick)="submit()"
+        >
+          {{ 'confirm_button' | translate }}</customize-button
+        >
+      </div>
+      <div class="notice txt-small">
+        {{ 'process_info' | translate }}
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!--H5 申请记录详情-->
+<ng-template #details let-item="item">
+  <div class="details-card">
+    <div class="titket-container">
+      <div class="top-row">
+        <div class="status-row">
+          <div class="id-txt">{{ 'app_id' | translate }}{{ item.appealId }}</div>
+          <ng-container>
+            <div class="status-btn-group">
+              <div class="status-btn">{{ formatStatus(item.status) }}</div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="h5-detail-row">
+        <div class="row-item">
+          <span class="span-1">{{ 'appli_time00' | translate }}</span>
+          <span class="span-2">{{ item.appealTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+        </div>
+        <div class="row-item">
+          <span class="span-1">{{ 'pro_time' | translate }}</span>
+          <span class="span-2">{{ item.processTime | mdate : 'YYYY-MM-DD HH:mm' }}</span>
+        </div>
+        <div class="row-item">
+          <span class="span-1">{{ 'pay_method' | translate }}</span>
+          <span class="span-2">{{ item.paymentMethod }}</span>
+        </div>
+        <div class="row-item">
+          <span class="span-1">{{ 'app_amount' | translate }}</span>
+          <span class="span-2">{{ item.amount }} {{ item.currency }}</span>
+        </div>
+      </div>
+      <div class="row-item-block" *ngIf="item.isOpen">
+        <ng-container
+          *ngTemplateOutlet="
+            step;
+            context: {
+              item: item
+            }
+          "
+        ></ng-container>
+      </div>
+      <div class="icon-box">
+        <span class="h5-icon onact96-hot" [class.active]="item.isOpen" (click)="handleExpend(item)"></span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!--step-->
+<ng-template #step let-item="item">
+  <div class="step-container">
+    <div class="steper">
+      <div class="clounm">
+        <div class="contant-row">
+          <div class="clounm-root">
+            <div class="step-row">
+              <span
+                class="circle"
+                [class.active]="
+                  ['Pending', 'Finish', 'Supplement', 'Rejected', 'Cancel', 'Processing'].includes(item.status)
+                "
+                >1</span
+              >
+              <span
+                class="thread"
+                [class.active]="
+                  ['Pending', 'Finish', 'Supplement', 'Rejected', 'Cancel', 'Processing'].includes(item.status)
+                "
+              ></span>
+            </div>
+            <div class="txt-group step-1">
+              <p class="title">{{ 'sub_app' | translate }}</p>
+              <p class="txt">{{ item.appealTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+            </div>
+          </div>
+          <div class="clounm-root">
+            <div class="step-row">
+              <span
+                class="circle"
+                [class.active]="
+                  ['Pending', 'Finish', 'Supplement', 'Rejected', 'Cancel', 'Processing'].includes(item.status)
+                "
+                >2</span
+              >
+              <span class="thread" [class.active]="['Finish', 'Rejected', 'Cancel'].includes(item.status)"></span>
+            </div>
+            <div class="txt-group step-2">
+              <p class="title">{{ 'app_process' | translate }}</p>
+            </div>
+          </div>
+          <div class="clounm-root offset-w">
+            <div class="step-row">
+              <span class="circle" [class.active]="['Finish', 'Rejected', 'Cancel'].includes(item.status)">3</span>
+            </div>
+            <div class="txt-group step-3">
+              <p class="title">{{ 'app_complete' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notice-colunm" [class.margin-top-50]="['Finish', 'Rejected', 'Cancel'].includes(item.status)">
+      <ng-container *ngIf="!['Finish', 'Supplement', 'Rejected', 'Cancel'].includes(item.status)">
+        <span class="icon-timer"></span>
+        <span class="txt"> {{ 'wait_patient' | translate }}</span>
+      </ng-container>
+
+      <ng-container *ngIf="item.status === 'Supplement'">
+        <span class="icon-kefu-record"></span>
+        <span class="txt"> {{ 'supp_doc001' | translate }}</span>
+        <span class="btn onact96-not" (click)="handleSupplement(item.appealId)">{{ 'supp_doc' | translate }}</span>
+      </ng-container>
+
+      <ng-container *ngIf="item.status === 'Finish'">
+        <span class="icon-book-record"></span>
+        <span class="txt"> {{ 'supp_doc002' | translate }}</span>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<!--提示:币种下拉选单-->
+<ng-template #currencyDropDown>
+  <div class="select onact96" (click)="handleSelectCurrency()">
+    <!--已选择-->
+    <ng-container *ngIf="seletedCurrencyItem != null; else default">
+      <div class="selected-row">
+        <img class="icon" [src]="seletedCurrencyItem.icon" />
+        <span class="txt">{{ seletedCurrencyItem.currency }}</span>
+        <span class="value">{{ seletedCurrencyItem.name }}</span>
+      </div>
+    </ng-container>
+    <!--初始：未选时-->
+    <ng-template #default>
+      <span>{{ 'choose_depo' | translate }}</span>
+    </ng-template>
+    <i class="drop-dowm" [class.clicked]="isOpen"></i>
+  </div>
+</ng-template>
+
+<ng-template #netWorkPop>
+  <div class="select onact96" (click)="handleSelectNetWork()">
+    <!--已选择-->
+    <ng-container *ngIf="selectedNetwork != null; else default">
+      <div class="selected-row">
+        <span class="txt">{{ selectedNetwork.networkInfo.desc }}</span>
+      </div>
+    </ng-container>
+    <!--初始：未选时-->
+    <ng-template #default>
+      <span>{{ 'select_re_net' | translate }}</span>
+    </ng-template>
+    <i class="drop-dowm" [class.clicked]="isOpen"></i>
+  </div>
+</ng-template>

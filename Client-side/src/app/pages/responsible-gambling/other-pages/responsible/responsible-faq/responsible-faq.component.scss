@@ -1,0 +1,17 @@
+@import '../responsible-concept/responsible-concept.component.scss';
+
+.content-text {
+  .icon-fail {
+    font-size: 6px;
+    background-color: #cf304a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+
+    &::before {
+      color: #fff;
+    }
+  }
+}

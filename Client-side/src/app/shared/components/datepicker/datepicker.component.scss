@@ -1,0 +1,273 @@
+@mixin active {
+  &:not(.disabled) {
+    border-color: var(--btn-bg-color);
+  }
+}
+
+.datepicker-container {
+  width: 100%;
+  min-width: 140px;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px var(--default-border-color);
+  display: flex;
+  align-items: center;
+  color: var(--text-color-20);
+  background-color: var(--container-bg-color);
+  user-select: none;
+  position: relative;
+
+  &.none-background {
+    background-color: transparent !important;
+  }
+
+  &:focus-within {
+    @include active;
+  }
+
+  @media (any-hover: hover) {
+    &:hover {
+      @include active;
+    }
+  }
+
+  &.active {
+    @include active;
+  }
+
+  &.error {
+    border-color: var(--txt-err-color) !important;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  &.readonly {
+    cursor: pointer;
+
+    input {
+      cursor: pointer;
+    }
+  }
+
+  &.large {
+    font-size: 14px;
+    height: 48px;
+  }
+
+  &.medium {
+    font-size: 14px;
+    height: 40px;
+  }
+
+  &.small {
+    font-size: 12px;
+    height: 30px;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    flex: 1;
+    height: 100%;
+    padding: 8px 2px 8px 10px;
+    font-size: inherit;
+    width: 0;
+    background-color: transparent;
+    color: inherit;
+
+    &::-moz-placeholder {
+      opacity: 0.5;
+    }
+
+    &::-webkit-input-placeholder {
+      opacity: 0.5;
+    }
+
+    &:-ms-input-placeholder {
+      opacity: 0.5;
+    }
+
+    @media (max-width: 767px) {
+      font-size: 14px;
+    }
+  }
+
+  app-customize-input {
+    flex: 1;
+    padding: 0 10px;
+    min-width: 5em;
+    max-width: 20%;
+    ::ng-deep {
+      .input-box {
+        // border: none;
+        background: none;
+        border: 0;
+        padding: 0 !important;
+        .right-content {
+          display: none !important;
+        }
+      }
+      input {
+        text-align: center;
+      }
+    }
+    & + em {
+      font-weight: bold;
+    }
+  }
+
+  .datepicker-input-icos {
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    .icon-calendar {
+      font-size: 25px;
+      opacity: 0.8;
+    }
+  }
+
+  &.versatile-mode {
+    > input {
+      visibility: hidden;
+      opacity: 0;
+      z-index: -9999;
+      position: absolute;
+      pointer-events: none;
+    }
+    .datepicker-input-icos {
+      flex: 1;
+      justify-content: flex-end;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+}
+.err-text {
+  color: var(--txt-err-color);
+  font-size: 12px;
+  padding-top: 4px;
+}
+
+//因为 mat-calendar 是动态附加到文档末尾的，所以必须穿透到全局样式。
+::ng-deep {
+  .mat-datepicker-content {
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    margin: auto;
+    margin-top: 1px; // 防止阻挡 input 框的1px像素边框
+
+    // 夜间版
+    background-color: var(--container-bg-color) !important;
+    color: var(--text-color) !important;
+  }
+
+  .mat-datepicker-content-container {
+    height: auto !important;
+  }
+
+  .mat-calendar-table {
+    .mat-calendar-table-header th {
+      font-size: 11px;
+      font-weight: 400;
+    }
+  }
+
+  .mat-calendar-header {
+    padding: 2px 13px !important;
+    border-bottom: 1px solid var(--default-border-color);
+    margin-bottom: 12px;
+    .mat-calendar-arrow {
+      fill: var(--text-color);
+    }
+    .mat-calendar-previous-button,
+    .mat-calendar-next-button {
+      color: var(--text-color) !important;
+      --mdc-icon-button-state-layer-size: 40px;
+      width: var(--mdc-icon-button-state-layer-size);
+      height: var(--mdc-icon-button-state-layer-size);
+      padding: 8px;
+    }
+
+    .mat-calendar-controls {
+      .mdc-button__label {
+        color: var(--text-color);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+      }
+
+      .mat-mdc-icon-button:disabled {
+        color: var(--text-color);
+      }
+    }
+  }
+
+  .mat-calendar.customize {
+    height: auto !important;
+    padding: 10px;
+
+    .mat-calendar-body-label {
+      &:not(:last-of-type) {
+        visibility: hidden;
+      }
+
+      &:last-of-type {
+        display: none;
+      }
+    }
+
+    .mat-calendar-table-header-divider {
+      display: none;
+    }
+
+    .mat-calendar-table-header {
+      // color: rgba(0, 0, 0, 0.3);
+      color: var(--text-color);
+      opacity: 0.5;
+    }
+
+    .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
+      > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical),
+    .cdk-keyboard-focused
+      .mat-calendar-body-active
+      > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical),
+    .cdk-program-focused
+      .mat-calendar-body-active
+      > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+      // background-color: #f5f5f5;
+      background-color: var(--list-hover-bg-color);
+    }
+
+    .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+      border-color: transparent;
+      // background-color: #f5f5f5;
+      background-color: var(--list-hover-bg-color);
+    }
+
+    .mat-calendar-body-today.mat-calendar-body-selected {
+      box-shadow: none;
+    }
+
+    .mat-calendar-body-cell-content {
+      border-radius: 0;
+      border: none;
+      // 夜间版
+      color: var(--text-color) !important;
+    }
+
+    .mat-calendar-body-selected {
+      background-color: #e95731;
+      // 夜间版
+      color: #fff !important;
+    }
+
+    // 禁止选择今天之前的日期（日/夜通用）
+    .mat-calendar-body-disabled
+      > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+      color: var(--text-color-20);
+      opacity: 0.5;
+    }
+  }
+}

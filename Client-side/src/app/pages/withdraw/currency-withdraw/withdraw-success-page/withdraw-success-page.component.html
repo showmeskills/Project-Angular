@@ -1,0 +1,63 @@
+<div class="container" *ngIf="submitData">
+  <div class="guide">
+    <app-withdraw-guide
+      [orderSuccess]="true"
+      [transferType]="submitData.isNeedWalletAddress ? 'other' : 'currency'"
+    ></app-withdraw-guide>
+  </div>
+  <div class="contants">
+    <div class="left">
+      <div class="ticket-clounm">
+        <div class="ticket">
+          <div class="item-row">
+            <p class="title">{{ 'order' | translate }}</p>
+            <span class="value"> {{ submitData?.data?.orderId || '' }}</span>
+          </div>
+          <ng-container *ngIf="!submitData.isNeedWalletAddress; else ebPay">
+            <div class="item-row offset-t">
+              <p class="title">{{ 'amount' | translate }}</p>
+              <div class="value amount-value">
+                <!-- <img [src]="submitData.data.currency | currencyIcon"> -->
+                <span>{{ 't_t_acc00' | translate }} {{ submitData.data.amount }} {{ submitData.data.currency }}</span>
+                <span>({{ 'fee' | translate }} {{ submitData.data.fee }} {{ submitData.data.currency }})</span>
+              </div>
+            </div>
+            <div class="item-row offset-t">
+              <p class="title">{{ 'bank_card' | translate }}</p>
+              <span class="value">{{ submitData.data.bankName }}</span>
+            </div>
+            <div class="item-row offset-t">
+              <p class="title">{{ 'card_num' | translate }}</p>
+              <span class="value">{{ submitData.data.bankAccountNumber }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <customize-button class="submit-btn" type="primary" size="large" width="100%" (onClick)="submit()">
+        {{ 'confirm_button' | translate }}</customize-button
+      >
+    </div>
+    <div class="tip">
+      <app-crypto-withdraw-tips Tag="LegalWithdrawalLegal"></app-crypto-withdraw-tips>
+    </div>
+  </div>
+</div>
+
+<ng-template #ebPay>
+  <div class="item-row offset-t">
+    <p class="title">{{ 'withdraw_method' | translate }}</p>
+    <span class="value">{{ submitData.selectedWithdraw.name }}</span>
+  </div>
+  <div class="item-row offset-t">
+    <p class="title">{{ 'withdraw_address' | translate }}</p>
+    <span class="value">{{ submitData.walletaddress }}</span>
+  </div>
+  <div class="item-row offset-t">
+    <p class="title">{{ 'amount' | translate }}</p>
+    <div class="value amount-value">
+      <!-- <img [src]="submitData.data.currency | currencyIcon"> -->
+      <span>{{ 't_t_acc00' | translate }} {{ submitData.data.amount }} {{ submitData.data.currency }}</span>
+      <span>({{ 'fee' | translate }} {{ submitData.data.fee }} {{ submitData.data.currency }})</span>
+    </div>
+  </div>
+</ng-template>

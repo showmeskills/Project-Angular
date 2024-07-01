@@ -1,0 +1,188 @@
+<div class="bg-fff rounded p-8 d-flex flex-wrap" sticky>
+  <form-row [label]="'payment.channelConfig.channelName' | lang" class="mr-16" contentWidth="200">
+    <ng-template>
+      <mat-form-field class="w-200">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.channelId"
+          (selectionChange)="onChannelName(data.channelId)"
+          *search="let list of channelList; key: 'name'"
+        >
+          <input searchInput type="search" />
+          <mat-option *ngFor="let item of list | async" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.status' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="127">
+        <mat-select class="form-control" [(ngModel)]="data.isOpened" (selectionChange)="loadData(true)">
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="true">{{ 'payment.method.open' | lang }}</mat-option>
+          <mat-option [value]="false">{{ 'payment.currency.shutDown' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.channelConfig.supCurrencies' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="127">
+        <mat-select [(ngModel)]="data.currency" class="form-control" (selectionChange)="loadData(true)">
+          <mat-option [value]="item.code" *ngFor="let item of currencyList">{{ item.code || item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.channelConfig.countryOfService' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="127">
+        <mat-select [(ngModel)]="data.countries" class="form-control" (selectionChange)="loadData(true)">
+          <mat-option [value]="item.code" *ngFor="let item of countriesList">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.paymentMethod.paymentMethod' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="260">
+        <mat-select [(ngModel)]="data.methods" class="form-control" (openedChange)="!$event && loadData(true)" multiple>
+          <mat-option [value]="''" (click)="methodsAll()">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.code" *ngFor="let item of paymentMethods" (click)="methodsChange()">{{
+            item.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="d-flex flex-1 btn-wrap justify-content-end text-nowrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="pt-5">
+      <!--begin::Datatable-->
+      <table class="table table-layout-fixed mb-0">
+        <thead sticky>
+          <tr>
+            <th>
+              <span class="cell">{{ 'payment.channelConfig.channelName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.channelConfig.supCurrencies' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.channelConfig.subChannelsNum' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.paymentMethod.paymentMethod' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.channelConfig.sucRate' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.channelConfig.successfulTransactions' | lang }}</span>
+            </th>
+            <th [style.width.px]="150">
+              <span class="cell">{{ 'payment.channelConfig.mainteTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.status' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.details' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.channelId }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.currencyTypes }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.channelDetailCount | toFormatMoney }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.paymentMethodTypes }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ (item.matchSuccessCount / item.matchCount | percent : '.0-2') || '0%' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.matchSuccessCount | toFormatMoney }}</span>
+            </td>
+            <td>
+              <span class="cell lh-14">
+                <ng-container *ngIf="isShowTime(item)">
+                  {{ item.maintenanceStartTime || '-' }}
+                  <br />~<br />
+                  {{ item.maintenanceEndTime || '-' }}
+                </ng-container>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <app-label *ngIf="item.isEnable" width="58" type="success">{{
+                  'payment.method.open' | lang
+                }}</app-label>
+                <app-label *ngIf="!item.isEnable" width="58" type="danger">{{
+                  'payment.currency.shutDown' | lang
+                }}</app-label>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="edit" (click)="router.navigate(['/money/channelConfig', item.channelId])">{{
+                  'payment.method.edit' | lang
+                }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

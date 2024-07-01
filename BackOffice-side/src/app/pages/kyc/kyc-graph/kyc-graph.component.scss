@@ -1,0 +1,95 @@
+.chart-title-box {
+  line-height: 28px;
+  flex-direction: row;
+  padding: 0 12px;
+  border-radius: 8px;
+  background-color: #f5f8fa;
+  .left-box {
+    color: #181c32;
+  }
+  .right-box {
+    color: #181c32;
+    margin-left: auto;
+  }
+}
+.form-list-box {
+  flex: 1;
+  .form-list-nav {
+    width: 300px;
+    padding-right: 30px;
+    border-right: 2px solid #eee;
+  }
+  .form-list {
+    flex: 1;
+    padding-left: 30px;
+  }
+}
+.form-list-title {
+  .btn-box {
+    margin-left: auto;
+  }
+}
+.trapezoid {
+  &::ng-deep svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  &-left,
+  &-right {
+    white-space: nowrap;
+    align-self: stretch;
+    margin-top: 50px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+  }
+}
+
+.border-lr {
+  border-left: 1px solid #e4e6ef;
+  border-right: 1px solid #e4e6ef;
+}
+
+apx-chart {
+  ::ng-deep {
+    .apexcharts-legend {
+      flex-flow: column wrap;
+      align-items: center;
+
+      .apexcharts-legend-series {
+        width: 200px;
+        display: flex;
+      }
+
+      .apexcharts-legend-text {
+        flex: 1;
+        display: flex;
+      }
+
+      .apexcharts-legend-marker {
+        margin-right: 20px;
+      }
+    }
+
+    .apexcharts-tooltip {
+      .flag {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background: #e4e6ef;
+        border: 2px solid #fff;
+
+        &-1 {
+          background: #50cd89;
+        }
+      }
+    }
+
+    > div,
+    .apexcharts-canvas {
+      width: 100% !important;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+::ng-deep {
+  .lottery-edit-modal {
+    mat-dialog-container {
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .modal-body {
+      align-items: unset;
+    }
+    .label-title {
+      @extend .color-999 !optional;
+      flex: 0 0 110px;
+      line-height: 42px;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+    /* 火狐浏览器 */
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+    .lh-42 {
+      line-height: 42px;
+    }
+  }
+}

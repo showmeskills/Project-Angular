@@ -1,0 +1,253 @@
+:host {
+  .monitor {
+    width: 25%;
+    height: 68px;
+    position: relative;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &.active {
+      background: #eef6ff;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 34px;
+      border-right: 1px solid #e4e6ef;
+    }
+
+    &:nth-child(4n) {
+      &::after {
+        border: none;
+      }
+    }
+  }
+
+  .generalize {
+    width: 14.2222%;
+    min-width: 190px;
+    justify-content: center;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 54px;
+      border-right: 1px solid #e4e6ef;
+    }
+  }
+
+  .rank-box {
+    .form-icon-triangle {
+      transform: rotate(270deg);
+    }
+    .table {
+      tbody {
+        tr {
+          &:nth-child(1) {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #f6f5ff 100%);
+          }
+          &:nth-child(2) {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 0.01%, #f8fbff 100%);
+          }
+          &:nth-child(3) {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #f7fff8 100%);
+          }
+        }
+      }
+      th {
+        padding: 0;
+        .cell {
+          min-height: 45px;
+        }
+      }
+      td {
+        padding: 0;
+        border-top: none;
+        .cell {
+          min-height: 32px;
+          .country-image {
+            width: 20px;
+            height: 20px;
+          }
+        }
+        .game-name {
+          width: 120px;
+          position: relative;
+          .name {
+            text-align: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 120px;
+            line-height: 32px;
+            cursor: pointer;
+          }
+          .zoom {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            z-index: 999;
+            left: -7px;
+            top: -1px;
+            padding: 0px 10px;
+            white-space: nowrap;
+            min-width: 140px;
+            box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+          }
+          &:hover {
+            .zoom {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .generalizePay {
+    cursor: pointer;
+    word-break: keep-all;
+    padding: 5px 10px;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    color: #969bad;
+
+    &.active {
+      border: 1px solid #1890ff;
+      box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.016);
+      color: #009ef7;
+    }
+  }
+}
+
+.chart-wrap {
+  width: 100%;
+  flex: 1 1 100%;
+  overflow: hidden;
+}
+
+.triangle {
+  margin-left: 5px;
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 4px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+  &:active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+  &:active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.tab-currency {
+  display: flex;
+  height: 42px;
+  line-height: 42px;
+  margin: -20px -20px 10px;
+
+  &-item {
+    border: 1px solid transparent;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #9899ac;
+    flex: 1;
+
+    &.active {
+      color: #181c32;
+      border-bottom: 3px solid #009ef7;
+    }
+  }
+}
+
+.retain-table {
+  width: 100%;
+  thead {
+    tr {
+      th {
+        width: 6.4%;
+        // min-width: 72px;
+        height: 25px;
+        line-height: 25px;
+        font-weight: normal;
+        text-align: center;
+        color: #969bad;
+        border: 1px solid #e4e6ef;
+
+        &:first-child {
+          width: 11%;
+        }
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        height: 25px;
+        font-weight: normal;
+        line-height: 25px;
+        text-align: center;
+        border: 1px solid #e4e6ef;
+        color: #fff;
+
+        &:first-child {
+          color: #969bad;
+          background-color: #fff;
+          white-space: nowrap;
+        }
+
+        &:nth-child(2),
+        &:nth-child(3) {
+          color: #969bad;
+          background: #f5f8fa;
+        }
+      }
+    }
+  }
+}
+
+.game-rank-title {
+  .rank-title {
+    font-size: 14px;
+    color: #a1a5b7;
+    cursor: pointer;
+
+    &.active {
+      font-size: 20px;
+      color: #181c32;
+      font-weight: bolder;
+    }
+  }
+}

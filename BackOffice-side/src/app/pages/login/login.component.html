@@ -1,0 +1,96 @@
+<div id="login">
+  <div class="container">
+    <div class="heading">
+      <div class="logo"></div>
+      <div class="txt">GoGaming</div>
+    </div>
+    <div class="login-card pb-16">
+      <div class="tt">{{ 'common.login.title' | lang }}</div>
+      <div class="text-center flex-center" *ngIf="isOnline"><span version class="color-aaa"></span></div>
+      <div class="form-group">
+        <label>{{ 'common.login.account' | lang }}</label>
+        <div class="input-group" [ngClass]="{ error: usernameValidate }">
+          <input #iUName type="text" [(ngModel)]="username" (keyup)="$event.key === 'Enter' && onLogin(resetTpl)" />
+          <svg-icon
+            *ngIf="iUName.value"
+            src="./assets/images/svg/admin-close.svg"
+            class="svg-icon svg-icon-lg px-4 cursor-pointer"
+            (click)="clearInput('username')"
+          ></svg-icon>
+        </div>
+        <div class="error-msg" *ngIf="usernameValidate">
+          {{ 'common.pleaseEnter' | lang }}{{ 'common.login.account' | lang }}
+        </div>
+
+        <label>{{ 'common.login.password' | lang }}</label>
+        <div class="input-group" [ngClass]="{ error: passwordValidate }">
+          <input #iPwd type="password" [(ngModel)]="password" (keyup)="$event.key === 'Enter' && onLogin(resetTpl)" />
+          <svg-icon
+            *ngIf="iPwd.value"
+            [src]="'./assets/images/svg/admin-close.svg'"
+            class="svg-icon svg-icon-lg"
+            style="cursor: pointer; padding: 0 10px"
+            (click)="clearInput('password')"
+          ></svg-icon>
+          <svg-icon
+            *ngIf="!$any(iPwd).isShowPwd"
+            [src]="'./assets/images/svg/admin-eye-close.svg'"
+            class="svg-icon svg-icon-lg"
+            style="cursor: pointer; padding: 0 10px"
+            (click)="showPwd(iPwd)"
+          ></svg-icon>
+          <svg-icon
+            *ngIf="$any(iPwd).isShowPwd"
+            [src]="'./assets/images/svg/admin-eye-open.svg'"
+            class="svg-icon svg-icon-lg"
+            style="cursor: pointer; padding: 0 10px"
+            (click)="showPwd(iPwd)"
+          ></svg-icon>
+        </div>
+        <div class="error-msg" *ngIf="passwordValidate">
+          {{ 'common.pleaseEnter' | lang }}{{ 'common.login.password' | lang }}
+        </div>
+
+        <!-- 登录按钮 -->
+        <button class="login-submit" (click)="onLogin(resetTpl)">{{ 'common.login.loginText' | lang }}</button>
+      </div>
+
+      <div *ngIf="!isOnline" class="text-center d-block pt-8">
+        <span version class="color-aaa"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- splash screen -->
+  <div id="splash-screen" *ngIf="isLoading">
+    <svg class="splash-spinner" viewBox="0 0 50 50">
+      <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+    </svg>
+  </div>
+</div>
+
+<ng-template #resetTpl let-data let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'common.changePassword.title' | lang" (close)="c()"></modal-title>
+    <div class="modal-body">
+      <form-row [label]="'common.changePassword.newPass' | lang" [label-width]="lang.isLocal ? 90 : 146">
+        <ng-template>
+          <label form-wrap>
+            <input form-full type="password" autocomplete="off" [input-reveal]="reveal" [(ngModel)]="resetPassword" />
+            <reveal #reveal></reveal>
+          </label>
+        </ng-template>
+      </form-row>
+      <form-row [label]="'common.changePassword.confirmPass' | lang" [label-width]="lang.isLocal ? 90 : 146">
+        <ng-template>
+          <label form-wrap>
+            <input form-full type="password" autocomplete="off" [input-reveal]="reveal" [(ngModel)]="againPassword" />
+            <reveal #reveal></reveal>
+          </label>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <modal-footer (confirm)="resetConfirm(c, data.id, data.tenantId)" (dismiss)="c()"></modal-footer>
+  </div>
+</ng-template>

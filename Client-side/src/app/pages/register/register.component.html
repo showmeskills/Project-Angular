@@ -1,0 +1,228 @@
+<ng-container *ngIf="!submitType">
+  <div class="container">
+    <!-- 创建用户 -->
+    <div class="title">{{ !useThirdAuth ? ('create_user' | translate) : ('bound_phone' | translate) }}</div>
+    <!-- 使用用户名或手机注册 -->
+    <div class="description" *ngIf="!useThirdAuth">{{ 'register_username_or_phone' | translate }}</div>
+    <!-- 用户名 手机 -->
+    <ng-container *ngIf="!useThirdAuth">
+      <div #mainContainer appLifeObserve (lifeChange)="$event && checkSize(mainContainer, typeTabs)">
+        <div class="tabs" #typeTabs>
+          <div
+            class="tab"
+            [class.active]="selectedTabIndex === index"
+            *ngFor="let item of ['username_text', 'phone_tab', 'email']; let index = index"
+            (click)="onChangeTab(index)"
+          >
+            {{ item | translate }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!-- 用户名 -->
+    <div class="form-group" *ngIf="selectedTabIndex === 0">
+      <app-customize-input
+        [autocomplete]="false"
+        [label]="'username_text' | translate"
+        size="large"
+        #iUName
+        [error]="usernameError"
+        (onChange)="onUserNameInput(iUName)"
+        [disabled]="submitLoading"
+        [(value)]="userName"
+      >
+      </app-customize-input>
+      <!-- 错误浮框 -->
+      <div class="valid-pop-container" *ngIf="iUName.foc && !!userName && !userValida.success">
+        <div class="valid-pop">
+          <p>* {{ 'length_error' | translate }}<i [class]="userValida.length ? 'icon-correct' : 'icon-error'"></i></p>
+          <p>* {{ 'letter_error' | translate }}<i [class]="userValida.rule ? 'icon-correct' : 'icon-error'"></i></p>
+          <p>* {{ 'contain_error' | translate }}<i [class]="userValida.ruleTwo ? 'icon-correct' : 'icon-error'"></i></p>
+        </div>
+      </div>
+    </div>
+    <!-- 手机号 -->
+    <div class="form-group" *ngIf="selectedTabIndex === 1">
+      <div class="phone-box">
+        <label>{{ 'phone_text' | translate }}</label>
+        <div class="phone-container">
+          <div class="area-code onact96" [class.disabled]="submitLoading" (click)="handleSelectPhone()">
+            <div class="country-image">
+              <i class="country" class="{{ fogClassName }}"></i>
+            </div>
+            <p class="code">{{ currentPhoneZone }}</p>
+            <i class="icon-arrow-down"></i>
+          </div>
+          <div class="input-group">
+            <app-customize-input
+              #iPhone
+              size="large"
+              type="number"
+              [error]="phoneError"
+              (onChange)="onPhoneInput(iPhone)"
+              [disabled]="submitLoading"
+              [(value)]="phone"
+            >
+            </app-customize-input>
+          </div>
+        </div>
+        <!-- 输入框下面的错误信息 -->
+        <div class="error-msg" *ngIf="iPhone.error && !iPhone.foc">{{ 'phone_error_msg' | translate }}</div>
+      </div>
+    </div>
+    <!-- 邮箱 -->
+    <div class="form-group">
+      <app-customize-input
+        [autocomplete]="false"
+        [notice]="selectedTabIndex !== 2 ? '(' + ('optional' | translate) + ')' : ''"
+        [label]="'email' | translate"
+        size="large"
+        [error]="emailError"
+        (onChange)="onEmailInput()"
+        [disabled]="submitLoading"
+        [(value)]="email"
+      >
+      </app-customize-input>
+    </div>
+    <!-- 密码 -->
+    <div class="form-group" #pwdEle>
+      <app-customize-input
+        #iPwd
+        [autocomplete]="false"
+        [size]="'large'"
+        [type]="'password'"
+        [error]="passwordError"
+        [label]="'password_text' | translate"
+        (onChange)="onPasswordInput(iPwd)"
+        (keyup.enter)="checkToSubmit()"
+        [disabled]="submitLoading"
+        [(value)]="password"
+        (onFocus)="onAutoScroll(pwdEle, isShowRef)"
+      >
+        <i
+          right-content
+          [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+          class="onact96-not"
+          (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+        ></i>
+      </app-customize-input>
+      <!-- 错误浮框 -->
+      <div class="valid-pop-container" *ngIf="!!password && !passwordValida.success">
+        <div class="valid-pop">
+          <p>
+            * {{ 'pwd_length_error' | translate
+            }}<i [class]="passwordValida.length ? 'icon-correct' : 'icon-error'"></i>
+          </p>
+          <p>
+            * {{ 'pwd_digit_error' | translate }}<i [class]="passwordValida.rule ? 'icon-correct' : 'icon-error'"></i>
+          </p>
+          <p>
+            * {{ 'pwd_uppercase_letter_error' | translate
+            }}<i [class]="passwordValida.ruleTwo ? 'icon-correct' : 'icon-error'"></i>
+          </p>
+        </div>
+      </div>
+      <div class="pwd-strength-container" *ngIf="!!password || passwordValida.success">
+        <div class="pwd-strength">
+          <span [class.lv1]="$any(iPwd).strength >= 1"></span>
+          <span [class.lv2]="$any(iPwd).strength >= 2"></span>
+          <span [class.lv3]="$any(iPwd).strength >= 3"></span>
+          <span [class.lv4]="$any(iPwd).strength >= 4"></span>
+        </div>
+        <div class="strength-tip">
+          <ng-container [ngSwitch]="$any(iPwd).strength">
+            <ng-container *ngSwitchCase="1">{{ 'weak' | translate }}</ng-container>
+            <ng-container *ngSwitchCase="2">{{ 'medium' | translate }}</ng-container>
+            <ng-container *ngSwitchCase="3">{{ 'strong' | translate }}</ng-container>
+            <ng-container *ngSwitchCase="4">{{ 'extremely_strong' | translate }}</ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <!-- 推荐人 -->
+    <div class="form-group ref" *ngIf="isShowInvite">
+      <label class="onact96" (click)="showRef()"
+        >{{ 'referrer_id' | translate }}（{{ 'optional' | translate }}）<span
+          class="icon-arrow-down"
+          [class.up]="isShowRef"
+        ></span
+      ></label>
+      <div class="input-group referee-input" [class.hidden]="!isShowRef" #referrer>
+        <app-customize-input
+          [size]="'large'"
+          [type]="'text'"
+          [max]="8"
+          [error]="!!referee && !refValida.success ? ('referrer_msg_error' | translate) : false"
+          #iRef
+          (onChange)="onRefInput()"
+          (keyup.enter)="checkToSubmit()"
+          [readonly]="!isShowInvite"
+          [disabled]="submitLoading"
+          [(value)]="referee"
+          (onFocus)="onAutoScroll(referrer)"
+        >
+        </app-customize-input>
+      </div>
+    </div>
+    <!-- 服务条款 -->
+    <div class="agree">
+      <mat-checkbox [disableRipple]="true" [(ngModel)]="isAgree" [disabled]="submitLoading">
+        {{ 'agree' | translate }}
+      </mat-checkbox>
+      <a class="link onact96-not" (click)="jumpToAgree()">{{ 'terms' | translate }}</a>
+    </div>
+    <!-- 输入框下面的错误信息 -->
+    <div class="error-msg" *ngIf="!$any(isAgree).isFocus && !isAgree">
+      {{ 'error_msg' | translate }}
+    </div>
+    <!-- 提交按钮 -->
+    <customize-button
+      class="customize-submit-btn"
+      size="large"
+      type="primary"
+      (onClick)="submit()"
+      [disabled]="!canSubmit"
+      [loading]="submitLoading"
+    >
+      {{ 'register_button' | translate }}
+    </customize-button>
+
+    <div class="login-text" *ngIf="!useThirdAuth">
+      {{ 'registered_or_not' | translate
+      }}<span class="link onact96-not" (click)="jumpToLogin()">{{ 'login_button' | translate }}</span>
+    </div>
+    <div #scrollTo></div>
+
+    <app-third-auth *ngIf="!useThirdAuth" #thirdAuth></app-third-auth>
+  </div>
+</ng-container>
+
+<!-- 输入短信验证码组件 -->
+<ng-container *ngIf="submitType === 'PHONE'">
+  <app-general2faverify-dialog
+    [title]="'phone_verification' | translate"
+    [isUsedComponent]="true"
+    [otpTypeFromComponent]="otpType"
+    [user2fa]="user2fa"
+    (complete)="registerByMobile($event)"
+    [isLoading]="submitLoading"
+    verifyType="PHONE"
+  ></app-general2faverify-dialog>
+</ng-container>
+
+<!--输入邮箱验证码组件 -->
+<ng-container *ngIf="submitType === 'EMAIL'">
+  <app-general2faverify-dialog
+    [title]="'email_verify' | translate"
+    [isUsedComponent]="true"
+    [otpTypeFromComponent]="otpType"
+    [user2fa]="user2fa"
+    (complete)="registerByEmail($event)"
+    [isLoading]="submitLoading"
+    verifyType="EMAIL"
+  ></app-general2faverify-dialog>
+</ng-container>
+
+<ng-template #footerTemplate>
+  <div class="popup-footer mutual-opacity" (click)="onThirdPass()">{{ 'tutorial_skip' | translate }}</div>
+</ng-template>

@@ -1,0 +1,35 @@
+<ng-container *ngIf="item; else skeleton">
+  <a [href]="domain + '/' + url" (click)="onClickItem(); $event.preventDefault()">
+    <div
+      class="item-box onact96"
+      [class.inactivated]="loading || maintenance"
+      [class.mutual-opacity]="!hasMask && !hasHover"
+      [class.has-hover-move]="hasHover"
+      [class.has-mask]="hasMask"
+      (mouseenter)="hasMask && !loading && !maintenance && (hover = true)"
+      (mouseleave)="hasMask && (hover = false)"
+      [style.padding-top]="100 / ratio + '%'"
+    >
+      <div class="item-con">
+        <!-- loading的时候 -->
+        <div class="loading skeleton-loading" *ngIf="loading"></div>
+        <!-- 维护的时候 -->
+        <div class="maintenance" *ngIf="maintenance">{{ 'game_main' | translate }}</div>
+        <!-- 图片 -->
+        <app-lazy-image
+          [lazy]="isProvider ? item['dayLogo'] : item['webLogo']"
+          [defaultImg]="defaultImg()"
+        ></app-lazy-image>
+        <!-- 信息遮罩，鼠标悬停延迟0.3秒后出现 -->
+        <div class="mask-box" @delayShow *ngIf="hasMask && hover">
+          <div class="triangle"></div>
+          <span class="item-title" *ngIf="item['gameName']">{{ item['gameName'] }}</span>
+          <span class="item-desc" *ngIf="item['providerName']">{{ item['providerName'] }}</span>
+        </div>
+      </div>
+    </div></a
+  >
+</ng-container>
+<ng-template #skeleton>
+  <div class="item-box skeleton-loading" [style.padding-top]="100 / ratio + '%'"></div>
+</ng-template>

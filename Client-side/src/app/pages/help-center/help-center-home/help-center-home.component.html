@@ -1,0 +1,53 @@
+<!-- 头部返回导航 -->
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container help-center-header">
+    <span class="title">{{ 'help_center' | translate }}</span>
+    <img class="header-img" src="assets/images/help-center/help-center.svg" alt="" lazy="loading" />
+  </div>
+</div>
+
+<!-- 主体 -->
+<div class="main-container inner-page unity-padding-web unity-padding-h5-16 help-center-body">
+  <div class="container help-center-body-wrap">
+    <!-- 搜索 -->
+    <div class="help-search">
+      <p class="title">{{ 'search_question' | translate }}</p>
+      <app-search-bar type="All" minWidth="92px" size="large"></app-search-bar>
+    </div>
+    <!-- 自助服务 -->
+    <div class="self-service">
+      <p class="self-service-title">{{ 'self_service' | translate }}</p>
+      <ul class="self-service-list">
+        <li
+          class="self-service-item onact96"
+          *ngFor="let item of selfServiceList; let idx = index"
+          (click)="jumpTopage(idx)"
+        >
+          <img class="item-img" [src]="item.url" alt="" lazy="loading" />
+          <p class="item-title">{{ item.name | translate }}</p>
+        </li>
+      </ul>
+    </div>
+
+    <app-support-list></app-support-list>
+
+    <!-- 最新发布文章和最热门文章 -->
+    <div class="help-center-footer">
+      <div class="hot-release-article">
+        <p class="footer-title">{{ 'latest_arti' | translate }}</p>
+        <div class="release-detail onact96" *ngFor="let item of latestArtilceList" (click)="onToDetailPage(item)">
+          <span class="release-title">{{ item.title }}</span>
+          <span class="release-date">{{ item.releaseTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+        </div>
+      </div>
+      <div class="hot-article">
+        <p class="footer-title">{{ 'popular_arti' | translate }}</p>
+        <p class="release-detail onact96" *ngFor="let item of hotArticleList" (click)="onToDetailPage(item)">
+          <span class="release-title">
+            {{ item.title }}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

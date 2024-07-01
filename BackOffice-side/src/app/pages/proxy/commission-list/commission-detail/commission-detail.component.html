@@ -1,0 +1,318 @@
+<ng-template #tipContent>
+  <div class="tooltip-money">
+    <div class="d-flex flex-ac" *ngFor="let item of tipData">
+      <span class="flex-1">
+        <img class="rounded-circle vam" [currencyIcon]="item.currency" />
+        <span class="color-222 vam ml-2">{{ item.currency }}</span>
+      </span>
+      <span class="color-222 vam">{{ item.value | toFormatMoney }}</span>
+    </div>
+
+    <span class="d-block text-center" *ngIf="!tipData?.length">无</span>
+  </div>
+</ng-template>
+
+<div class="detail-title fw-bolder">{{ 'marketing.commissionList.commissionDetails' | lang }}</div>
+
+<table class="table table-content mb-0">
+  <thead>
+    <tr>
+      <th>
+        <span class="cell">{{ 'common.date' | lang }}</span>
+      </th>
+      <th><span class="cell">FTD</span></th>
+      <th>
+        <span class="cell">{{ 'marketing.commissionList.activeUser' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'marketing.commissionList.transactionAmount' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'marketing.commissionList.contribution' | lang }}</span>
+      </th>
+      <th>
+        <span class="cell">{{ 'marketing.commissionList.commissionPaid' | lang }}</span>
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let item of list">
+      <td>
+        <span class="cell">{{ item.localDaily }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.ftd }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.active }}</span>
+      </td>
+      <td>
+        <span
+          class="cell cursor-pointer"
+          tooltipClass="tooltip-money-wrap"
+          placement="bottom"
+          [ngbTooltip]="tipContent"
+          (mouseenter)="tipData = item.transactionCurrency"
+          >{{ item.transaction | toFormatMoney }}</span
+        >
+      </td>
+      <td>
+        <span class="cell">{{ item.contribution }}</span>
+      </td>
+      <td>
+        <span
+          class="cell cursor-pointer"
+          tooltipClass="tooltip-money-wrap"
+          placement="bottom"
+          [ngbTooltip]="tipContent"
+          (mouseenter)="tipData = item.commissionCurrency"
+          >{{ item.commission | toFormatMoney }}</span
+        >
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table table-count">
+  <tr>
+    <td>
+      <span class="cell">
+        <span class="fz-36 line-height-0">{{ 'common.total' | lang }}：</span>
+      </span>
+    </td>
+    <td>
+      <span class="cell">
+        <span class="text-left">
+          <div class="color-777 fz-12">FDT</div>
+          <div class="fz-20 mt-4">{{ data.ftdTotal | toFormatMoney }}</div>
+        </span>
+      </span>
+    </td>
+    <td>
+      <span class="cell">
+        <span class="text-left">
+          <div class="color-777 fz-12">{{ 'marketing.commissionList.activeUser' | lang }}</div>
+          <div class="fz-20 mt-4">{{ data.activeTotal | toFormatMoney }}</div>
+        </span>
+      </span>
+    </td>
+    <td>
+      <span class="cell">
+        <span
+          class="text-left"
+          [ngbTooltip]="tipContent"
+          tooltipClass="tooltip-money-wrap"
+          placement="bottom"
+          (mouseenter)="tipData = data.transactionTotalCurrency"
+        >
+          <div class="color-777 fz-12">{{ 'marketing.commissionList.transactionAmount' | lang }}</div>
+          <div class="fz-20 mt-4">
+            {{ data.transactionTotal | toFormatMoney }}
+          </div>
+        </span>
+      </span>
+    </td>
+    <td>
+      <span class="cell">
+        <span class="text-left">
+          <div class="color-777 fz-12">{{ 'marketing.list.model.contribution' | lang }}</div>
+          <div class="fz-20 mt-4">
+            {{ data.contributionTotal | toFormatMoney }}
+          </div>
+        </span>
+      </span>
+    </td>
+    <td>
+      <span class="cell">
+        <span
+          [ngbTooltip]="tipContent"
+          tooltipClass="tooltip-money-wrap"
+          placement="bottom"
+          class="text-left"
+          (mouseenter)="tipData = data.currencyAmount"
+        >
+          <div class="color-777 fz-12">{{ 'marketing.commissionList.commPaid' | lang }}</div>
+          <div class="fz-20 mt-4">{{ data.commissionTotal }}</div>
+        </span>
+      </span>
+    </td>
+  </tr>
+</table>
+
+<div class="line"></div>
+<div class="py-4 text-right" *ngIf="data.auditStatus">
+  <span class="fz-20 lh-28">{{ 'marketing.pendingList.model.approver' | lang }}：{{ data.auditName }}</span>
+  <span class="fz-20 lh-28 pass-time"
+    >{{ 'marketing.commissionList.processingTime' | lang }}：{{ data.auditTime | timeFormat }}</span
+  >
+</div>
+
+<div class="line deep"></div>
+<div class="d-flex pt-8 item-row-1 flex-wrap">
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">{{ 'marketing.commissionList.basicDividend' | lang }}</div>
+        <div class="fz-22">{{ data.baseCommission }}%</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/book.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress [percentage]="50" [strokeWidth]="13" [showText]="false" trackColor="#e9f5ff"></pp-progress>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">FTD{{ 'marketing.commissionList.task' | lang }}</div>
+        <div class="fz-22">{{ data.ftdTask }}%</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/write.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress
+        [percentage]="+data.ftdTask"
+        [strokeWidth]="13"
+        [showText]="false"
+        trackColor="#e9f5ff"
+      ></pp-progress>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">{{ 'marketing.commissionList.activeUserTasks' | lang }}</div>
+        <div class="fz-22">{{ data.activeTask }}%</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/time.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress
+        [percentage]="+data.activeTask"
+        [strokeWidth]="13"
+        [showText]="false"
+        trackColor="#e9f5ff"
+      ></pp-progress>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">{{ 'marketing.commissionList.contributionTask' | lang }}</div>
+        <div class="fz-22">{{ data.contributionTask }}%</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/doc.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress
+        [percentage]="+data.contributionTask"
+        [strokeWidth]="13"
+        [showText]="false"
+        trackColor="#e9f5ff"
+      ></pp-progress>
+    </div>
+  </div>
+</div>
+
+<div class="line"></div>
+<div class="d-flex pb-8 item-row-2 flex-wrap">
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">{{ 'marketing.commissionList.dividendTheMonth' | lang }}</div>
+        <div class="fz-22">{{ data.monthDividend }}</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/analysis.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress
+        [percentage]="+data.monthDividend"
+        [strokeWidth]="13"
+        [showText]="false"
+        trackColor="#e9f5ff"
+      ></pp-progress>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">{{ 'marketing.commissionList.commPaid' | lang }}</div>
+        <div class="fz-22">{{ data.sentCommission }}</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/pack.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress [percentage]="50" [strokeWidth]="13" [showText]="false" trackColor="#e9f5ff"></pp-progress>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">{{ 'marketing.commissionList.prepaidCommission' | lang }}</div>
+        <div class="fz-22">{{ data.prepaidCommission }}</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/money.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress [percentage]="50" [strokeWidth]="13" [showText]="false" trackColor="#e9f5ff"></pp-progress>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="d-flex">
+      <div class="flex-1 d-flex flex-column flex-bt">
+        <div class="fz-16 color-777">{{ 'marketing.commissionList.actualThisMonth' | lang }}</div>
+        <div class="fz-22">{{ data.actualCommission }}</div>
+      </div>
+      <div class="item-icon d-flex flex-center">
+        <svg-icon [src]="'./assets/images/svg/commission/card.svg'"></svg-icon>
+      </div>
+    </div>
+    <div class="mt-15">
+      <pp-progress
+        [percentage]="+data.actualCommission"
+        [strokeWidth]="13"
+        [showText]="false"
+        trackColor="#e9f5ff"
+      ></pp-progress>
+    </div>
+  </div>
+</div>
+
+<div class="line deep"></div>
+<div class="p-12">
+  <div class="fz-20 fw-bolder">{{ 'marketing.commissionList.keyIndicator' | lang }}</div>
+  <!-- 说明：日均活跃≥3，同时存流比≥5，同时贡献比≤10%可由系统自动审批否则由渠道经理人工审批，总经理复核。（负值自动审批） -->
+  <div class="mt-12">
+    {{ 'marketing.commissionList.note' | lang }}
+  </div>
+</div>
+
+<div class="modal-footer btn-wrap pt-20 pb-16" *ngIf="!data.auditStatus">
+  <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'common.cancel' | lang }}</button>
+  <button type="button" class="c-btn btn btn-primary" (click)="onSubmit()">{{ 'common.by' | lang }}</button>
+</div>
+
+<div class="modal-footer btn-wrap pt-20 pb-16" *ngIf="data.auditStatus">
+  <button type="button" class="c-btn btn btn-primary" (click)="onBack()">{{ 'common.back' | lang }}</button>
+</div>

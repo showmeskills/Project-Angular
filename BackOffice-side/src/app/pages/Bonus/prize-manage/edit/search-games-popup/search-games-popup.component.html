@@ -1,0 +1,129 @@
+<modal-title [title]="'member.activity.prizeCommon.searchGames' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body p-4">
+  <div class="d-flex flex-wrap p-4 pt-2">
+    <!-- 游戏厂商 -->
+    <form-row [label]="'game.provider.game_manu' | lang" class="mr-6">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.providerCatId" (selectionChange)="loadData(true)">
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of gameProviderList" [value]="item.providerCatId">{{
+              lang.isLocal ? item.providerName : item.providerCatId
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 游戏名称 -->
+    <form-row [label]="'game.provider.game_name' | lang">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.gameName"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+  <div class="flex-fill">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th style="width: 15%"><span class="cell"></span></th>
+          <!-- 名次 -->
+          <th style="width: 30%">
+            <span class="cell">{{ 'game.provider.game_name' | lang }}</span>
+          </th>
+          <!-- 类型 -->
+          <th>
+            <span class="cell">{{ 'common.type' | lang }}</span>
+          </th>
+          <!-- 厂商Id -->
+          <th>
+            <span class="cell">{{ 'game.provider.game_manu' | lang }}Id</span>
+          </th>
+          <!-- 厂商CatId -->
+          <th>
+            <span class="cell">{{ 'game.provider.game_manu' | lang }}CatId</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">
+              {{ item['checked'] }}
+              <label class="radio radio-lg mr-8 fz-14 color-222">
+                <input
+                  [value]="item.id"
+                  [ngModel]="item['checked']"
+                  (ngModelChange)="onSelectGame(item)"
+                  name="gameItem"
+                  type="radio"
+                /><span></span>
+              </label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item?.gameInfos[0]?.gameName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item?.category || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item?.providerId || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item?.providerCatId || '-' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between table-footer py-5 pl-2" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 按钮组 -->
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

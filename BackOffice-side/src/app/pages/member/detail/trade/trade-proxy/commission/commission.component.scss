@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 25px 20px 10px;
+  background: #fff;
+  border-radius: 6px;
+  flex: 1;
+}
+
+.table {
+  th,
+  td {
+    padding: 8px;
+  }
+}

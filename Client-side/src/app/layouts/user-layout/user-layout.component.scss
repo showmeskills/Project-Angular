@@ -1,0 +1,124 @@
+.page-container {
+  background-color: #fff;
+
+  &:host-context(.dark) & {
+    background-color: var(--container-bg-color);
+  }
+}
+
+.menus-box {
+  display: flex;
+  flex-direction: row;
+  height: 72px;
+  width: 100%;
+  overflow-y: hidden;
+  overflow-x: auto;
+  padding: 0 25px;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  @media (max-width: 767px) {
+    height: 58px;
+    padding: 0 8px;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #707a8a;
+    white-space: nowrap;
+    margin: 0 8px;
+    user-select: none;
+
+    &:host-context(.dark) & {
+      color: #b1bad3;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      color: #73787c;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      display: flex;
+
+      &:host-context(.dark) & {
+        color: #b1bad3;
+      }
+    }
+
+    @media (any-hover: hover) {
+      &:not(.active):hover {
+        opacity: 0.8 !important;
+      }
+    }
+
+    @media (any-hover: none) {
+      &:not(.active):active {
+        opacity: 0.8 !important;
+      }
+    }
+
+    &.active {
+      .icon {
+        color: var(--primary-color) !important;
+      }
+
+      .text {
+        color: #212833;
+        position: relative;
+
+        &:host-context(.dark) & {
+          color: #fff;
+        }
+
+        &::before {
+          position: absolute;
+          content: '';
+          height: 2px;
+          background-color: var(--primary-color);
+          top: 100%;
+          left: 0;
+          right: 0;
+          margin-top: 4px;
+        }
+      }
+    }
+
+    &.disabled {
+      pointer-events: none;
+      animation: none;
+      opacity: 0.5 !important;
+
+      .icon {
+        color: inherit;
+      }
+
+      .text {
+        color: inherit;
+
+        &::before {
+          content: none;
+        }
+      }
+    }
+  }
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 1050px) {
+    width: fit-content;
+  }
+}

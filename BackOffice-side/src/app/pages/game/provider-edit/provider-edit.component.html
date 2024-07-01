@@ -1,0 +1,606 @@
+<div class="provider-edit-wrap bg-fff rounded-3 p-12">
+  <div class="fz-20 mb-8">
+    {{ isEdit ? ('game.provider.edit' | lang) : ('game.provider.now_adds' | lang) }}{{ 'game.men' | lang }}
+  </div>
+
+  <ng-container [formGroup]="formGroup">
+    <!-- BaseID -->
+    <form-row name="baseId" label="BaseID" label-width="220px" required>
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <mat-form-field [style.width.px]="280" *ngIf="!isEdit">
+          <mat-select class="form-control" [class.is-invalid]="invalid" [formControl]="control">
+            <mat-option [value]="item" *ngFor="let item of providerBaseList">{{ item }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <ng-container *ngIf="isEdit">{{ control.value }}</ng-container>
+      </ng-template>
+    </form-row>
+
+    <!-- 厂商简称 -->
+    <form-row name="aliasName" [label]="'game.provider.manufacturer_brief' | lang" label-width="220px" required>
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input
+          *ngIf="ls.isGB"
+          type="text"
+          class="form-control"
+          autocomplete="off"
+          [style.width.px]="280"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          maxlength="30"
+        />
+        <ng-container *ngIf="!ls.isGB">{{ control.value }}</ng-container>
+      </ng-template>
+    </form-row>
+
+    <!-- 成立时间 -->
+    <form-row name="foundedYear" [label]="'game.provider.established' | lang" label-width="220px" required>
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input
+          type="text"
+          class="form-control"
+          autocomplete="off"
+          [style.width.px]="280"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          [attrDisabled]="!ls.isGB"
+          input-trim
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- Proxy状态 -->
+    <!--  <form-row name="isProxy" [label]="'Proxy' + ('common.status' | lang)" label-width="220px">-->
+    <!--    <ng-template let-control="formControl">-->
+    <!--      <label class="switch switch-success" [attrDisabled]="!ls.isGB">-->
+    <!--        <input type="checkbox" [formControl]="control" />-->
+    <!--        <span></span>-->
+    <!--      </label>-->
+    <!--    </ng-template>-->
+    <!--  </form-row>-->
+
+    <div>
+      <div
+        class="border-1 p-8 pt-0 mt-5 mb-2 rounded"
+        [formGroup]="item"
+        *ngFor="let item of formGroup.controls.product.controls; index as i"
+      >
+        <!-- 产品配置 -->
+        <div class="w-100 d-flex my-4 py-4 flex-ac fz-16 color-999">
+          <!-- 厂商游戏分类 -->
+          <label class="mr-0 mb-0 label-title">{{ 'game.provider.providerConfig' | lang }}：</label>
+          <span class="mr-5">{{ item.value.category | gameCategoryLang }}</span>
+          <label class="switch switch-success mr-10">
+            <input type="checkbox" formControlName="isEnable" [attrDisabled]="!ls.isGB" />
+            <span></span>
+          </label>
+          <!-- 场馆费 -->
+          <span class="mx-5">{{ 'game.provider.venue_fee' | lang }}</span>
+          <div>
+            <form-wrap *ngIf="ls.isGB">
+              <input [style.width.px]="100" formControlName="venueFee" input-percentage type="text" />
+              <span>%</span>
+            </form-wrap>
+            <span *ngIf="!ls.isGB">{{ item.value.venueFee || 0 }}%</span>
+          </div>
+
+          <!-- 厂商ID -->
+          <span class="mx-5">{{ 'game.provider.providerId' | lang }}: {{ item.value.providerId }}</span>
+        </div>
+
+        <lang-tab
+          class="w-100 mb-4"
+          formArrayName="lang"
+          [value]="selectLang[i]"
+          (valueChange)="onLangValueChange($event, i)"
+          (languageChange)="updateLanguageForm($event, item)"
+          [edit]="ls.isGB"
+        >
+          <ng-template let-currentLang="current" let-control="formControl">
+            <div class="pb-8" [formGroup]="control">
+              <!-- 名称 -->
+              <form-row
+                name="providerName"
+                [label]="'game.provider.name' | lang"
+                label-width="200px"
+                required
+                [invalidFeedback]="{ required: ('game.provider.enter_man' | lang) + '（' + currentLang.name + '）' }"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <input
+                    *ngIf="ls.isGB"
+                    type="text"
+                    class="form-control"
+                    autocomplete="off"
+                    [formControl]="control"
+                    [class.is-invalid]="invalid"
+                  />
+                  <ng-container *ngIf="!ls.isGB">{{ control.value }}</ng-container>
+                </ng-template>
+              </form-row>
+
+              <!-- 简介 -->
+              <form-row
+                name="providerDesc"
+                [label]="'game.provider.Introduction' | lang"
+                label-width="200px"
+                required
+                [invalidFeedback]="{
+                  required: ('game.provider.enter_m_brief' | lang) + '（' + currentLang.name + '）'
+                }"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <textarea
+                    *ngIf="ls.isGB"
+                    type="text"
+                    class="form-control"
+                    autocomplete="off"
+                    rows="7"
+                    [formControl]="control"
+                    [class.is-invalid]="invalid"
+                  ></textarea>
+                  <div class="lh-28 py-3 text-break" *ngIf="!ls.isGB">{{ control.value }}</div>
+                </ng-template>
+              </form-row>
+            </div>
+          </ng-template>
+        </lang-tab>
+
+        <!-- 游戏清单 -->
+        <ng-template #gameLabelTpl>
+          {{ 'game.provider.game_lists' | lang }} (GameCode)
+          <svg-icon
+            [ngbPopover]="'game.detail.sp_gc' | lang"
+            triggers="mouseenter:mouseleave"
+            class="svg-icon svg-icon-sm ml-2"
+            [src]="'./assets/images/svg/sigh.svg'"
+          ></svg-icon>
+        </ng-template>
+        <form-row name="gameList" label-width="220px" [label]="gameLabelTpl">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <textarea
+              *ngIf="ls.isGB"
+              type="text"
+              class="form-control"
+              autocomplete="off"
+              [formControl]="control"
+              rows="7"
+              [class.is-invalid]="invalid"
+            ></textarea>
+            <div class="lh-28 py-3 text-break" *ngIf="!ls.isGB">{{ control.value }}</div>
+          </ng-template>
+        </form-row>
+
+        <!-- 支持免费选择 -->
+        <ng-template #gameFreeSpinTpl>
+          {{ 'game.provider.gmae_free_spins' | lang }}
+          <svg-icon
+            [ngbPopover]="'game.detail.sp_gc' | lang"
+            triggers="mouseenter:mouseleave"
+            class="svg-icon svg-icon-sm ml-2"
+            [src]="'./assets/images/svg/sigh.svg'"
+          ></svg-icon>
+        </ng-template>
+        <form-row name="freeSpinGameList" label-width="220px" [label]="gameFreeSpinTpl">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <textarea
+              *ngIf="ls.isGB"
+              type="text"
+              class="form-control"
+              autocomplete="off"
+              [formControl]="control"
+              rows="7"
+              [class.is-invalid]="invalid"
+            ></textarea>
+            <div class="lh-28 py-3 text-break" *ngIf="!ls.isGB">{{ control.value }}</div>
+          </ng-template>
+        </form-row>
+
+        <!-- LOGO -->
+        <form-row label="LOGO" label-width="220px" required>
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <ng-container *ngFor="let key of ['web', 'app']">
+                <div class="form-upload-title fz-16" style="line-height: 130px; min-width: 32px">
+                  <span *ngIf="key === 'web'">{{ lang.isLocal ? '日间' : 'Daytime' }}</span>
+                  <span *ngIf="key === 'app'">{{ lang.isLocal ? '夜间' : 'Nighttime' }}</span>
+                </div>
+
+                <div class="ml-8 mr-16">
+                  <form-row
+                    [name]="key + 'Logo'"
+                    [showLabel]="false"
+                    [invalidFeedback]="{ required: ('game.provider.up_p' | lang) + ' Logo' }"
+                  >
+                    <ng-template let-invalid="invalid" let-control="formControl">
+                      <upload
+                        [disabledInput]="!ls.isGB"
+                        [style.width.px]="150"
+                        type="GameProvider"
+                        desc="300 X 300"
+                        [formControl]="control"
+                        [class.is-invalid]="invalid"
+                        [showLimitText]="false"
+                      ></upload>
+                    </ng-template>
+                  </form-row>
+                </div>
+              </ng-container>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 支持商户 -->
+        <form-row
+          name="tenantIds"
+          label-width="220px"
+          [label]="'game.provider.support_maker' | lang"
+          required
+          [invalidFeedback]="{ arrayRequired: 'game.provider.sup_maker' | lang }"
+        >
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <div class="d-flex flex-wrap lh-38">
+              <label
+                class="checkbox checkbox-lg fz-16 mr-13"
+                *ngFor="let item of subHeaderService.merchantListAll; let i = index"
+              >
+                <input
+                  type="checkbox"
+                  [checkboxArrayControl]="control"
+                  [checkboxArrayValue]="+item.value"
+                  [attrDisabled]="!ls.isGB"
+                />
+                <span class="mr-2"></span>{{ item.name }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 显示于首页 -->
+        <form-row
+          *ngIf="item.controls.category.getRawValue() === 'SportsBook'"
+          name="showHomeTenant"
+          label-width="220px"
+          [label]="'game.provider.showHomeM' | lang"
+        >
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <div class="d-flex flex-wrap lh-38">
+              <label
+                class="checkbox checkbox-lg fz-16 mr-13"
+                *ngFor="let item of subHeaderService.merchantListAll; let i = index"
+              >
+                <input
+                  type="checkbox"
+                  [checkboxArrayControl]="control"
+                  [checkboxArrayValue]="+item.value"
+                  [attrDisabled]="!ls.isGB"
+                />
+                <span class="mr-2"></span>{{ item.name }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 游客模式 -->
+        <form-row name="guestMode" label-width="220px" [label]="'game.provider.guestMode' | lang">
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <div class="d-flex flex-wrap lh-38">
+              <label
+                class="checkbox checkbox-lg fz-16 mr-13"
+                *ngFor="let item of subHeaderService.merchantListAll; let i = index"
+              >
+                <input
+                  type="checkbox"
+                  [checkboxArrayControl]="control"
+                  [checkboxArrayValue]="+item.value"
+                  [attrDisabled]="!ls.isGB"
+                />
+                <span class="mr-2"></span>{{ item.name }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 显示顺序 -->
+        <form-row name="sort" [label]="'game.provider.order' | lang" label-width="220px">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input
+              *ngIf="ls.isGB"
+              type="text"
+              class="form-control"
+              autocomplete="off"
+              [style.width.px]="170"
+              [class.is-invalid]="invalid"
+              [formControl]="control"
+              input-number
+            />
+            <ng-container *ngIf="!ls.isGB">{{ control.value || 0 }}</ng-container>
+          </ng-template>
+        </form-row>
+
+        <!-- 进入页面、二级页面 -->
+        <form-row name="secondaryPage" [label]="'game.provider.entryPage' | lang" label-width="220px">
+          <ng-template let-control="formControl">
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-22 fz-16" [class.radio-disabled]="!ls.isGB">
+                <input
+                  type="radio"
+                  [name]="'entryPageMethod_' + i"
+                  [value]="true"
+                  [formControl]="control"
+                  [attrDisabled]="!ls.isGB"
+                />
+                <span class="mr-4"></span>{{ 'game.provider.providerListPage' | lang }}
+              </label>
+
+              <label class="radio radio-lg radio-success fz-16" [class.radio-disabled]="!ls.isGB">
+                <input
+                  type="radio"
+                  [name]="'entryPageMethod_' + i"
+                  [value]="false"
+                  [formControl]="control"
+                  [attrDisabled]="!ls.isGB"
+                />
+                <span class="mr-4"></span>{{ 'game.provider.providerGamePage' | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 国家区域 -->
+        <form-row name="countryCode" [label]="'game.provider.countryLimit' | lang" label-width="220">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <div class="d-flex flex-ac flex-wrap" style="gap: 8px">
+              <label class="radio radio-lg fz-16 mr-8" *ngIf="ls.isGB">
+                <input
+                  type="radio"
+                  [name]="'country_' + i"
+                  [checked]="!control.value?.length"
+                  (change)="control.setValue([])"
+                />
+                <span class="mr-4"></span>{{ 'common.unlimited' | lang }}
+              </label>
+              <div class="fz-16 mr-8" *ngIf="!ls.isGB && !control.value?.length">{{ 'common.unlimited' | lang }}</div>
+
+              <div
+                class="d-flex flex-ac px-5 h42 rounded"
+                style="background: #f5f8fa"
+                *ngFor="let item of getSelectCountryList(control.value); index as i"
+              >
+                <i [iconCountry]="item.countryEnName"></i>
+                <div class="px-2">{{ lang.isLocal ? item.countryName : item.countryEnName }}</div>
+                <svg-icon
+                  *ngIf="ls.isGB"
+                  [src]="'./assets/images/svg/bar-close.svg'"
+                  class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+                  (click)="onCountryRemove(control, i)"
+                >
+                </svg-icon>
+              </div>
+
+              <span
+                *ngIf="ls.isGB"
+                class="btn btn-light-primary fz-16 d-flex flex-ac py-2 h42"
+                (click)="openAddPopupCountry(control)"
+              >
+                <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+                <!-- 添加 -->
+                {{ 'member.activity.sencliCommon.add' | lang }}
+              </span>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 支持币种 -->
+        <form-row name="currencyRatio" [label]="'payment.transactionList.supportedCurrencies' | lang" label-width="220">
+          <ng-template let-control="formControl">
+            <!-- 管理币种 -->
+            <span *ngIf="ls.isGB" class="btn btn-light-primary fz-16 h42" (click)="openCurrencyDialog(control)">
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl vam"></svg-icon>
+              <span class="vam">{{ 'common.mg' | lang }}{{ 'common.currency' | lang }}</span>
+            </span>
+
+            <div *ngFor="let item of control.value; index as i" class="d-flex flex-ac flex-wrap py-2">
+              <img [currencyIcon]="item.currency" currencySize="24" class="mr-4" />
+              <span [style.min-width.px]="32">{{ item.currency }}</span>
+              <input
+                input-float
+                class="form-control mx-2"
+                [value]="item.ratio"
+                (input)="item.ratio = $event.target['value']"
+                [style.width.px]="180"
+                type="text"
+                *ngIf="ls.isGB"
+              />
+              <span class="color-999 mr-2">{{
+                'game.provider.currencyRatio' | lang: { origin: 1, ratio: item.ratio }
+              }}</span>
+
+              <svg-icon
+                *ngIf="ls.isGB"
+                class="vam btn-icon ml-2 cursor-pointer"
+                (click)="delete(control, i)"
+                [src]="'./assets/images/svg/close-normal.svg'"
+              ></svg-icon>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <!-- 打开方式 -->
+        <div formGroupName="gameOpenMethod" class="d-flex my-4">
+          <div class="left">
+            <label class="label-title mt-3" [style.width.px]="220">{{ 'game.linkTarget' | lang }}：</label>
+          </div>
+          <div class="right">
+            <!-- H5打开方式 -->
+            <div class="open-way d-flex flex-ac flex-wrap">
+              <div class="open-ways d-flex">
+                <!-- H5的打开方式 -->
+                <div class="way-item d-flex mr-10">
+                  <label class="main-title">H5</label>
+                  <div class="opt">
+                    <div class="opt-item d-flex">
+                      <span class="main-title">{{ 'game.android' | lang }}:</span>
+                      <mat-form-field>
+                        <mat-select class="form-control" formControlName="h5Android">
+                          <mat-option [value]="'Iframe'">{{ 'game.openIframe' | lang }}</mat-option>
+                          <mat-option [value]="'NewWindow'">{{ 'game.openNewWindow' | lang }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <!-- IOS -->
+                    <div class="opt-item d-flex">
+                      <span class="main-title ml-10 sub-title">IOS:</span>
+                      <mat-form-field>
+                        <mat-select class="form-control" formControlName="h5Ios">
+                          <mat-option [value]="'Iframe'">{{ 'game.openIframe' | lang }}</mat-option>
+                          <mat-option [value]="'NewWindow'">{{ 'game.openNewWindow' | lang }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Ionic打开方式 -->
+            <div class="open-way mt-5 d-flex flex-ac flex-wrap">
+              <div class="open-ways d-flex">
+                <!-- H5的打开方式 -->
+                <div class="way-item d-flex mr-10">
+                  <label class="main-title">Ionic</label>
+                  <div class="opt">
+                    <div class="opt-item d-flex">
+                      <span class="main-title">{{ 'game.android' | lang }}:</span>
+                      <mat-form-field>
+                        <mat-select class="form-control" formControlName="ionicAndroid">
+                          <mat-option [value]="'Iframe'">{{ 'game.openIframe' | lang }}</mat-option>
+                          <mat-option [value]="'NewWindow'">{{ 'game.openNewWindow' | lang }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <!-- IOS -->
+                    <div class="opt-item d-flex">
+                      <span class="main-title ml-10 sub-title">IOS:</span>
+                      <mat-form-field>
+                        <mat-select class="form-control" formControlName="ionicIos">
+                          <mat-option [value]="'Iframe'">{{ 'game.openIframe' | lang }}</mat-option>
+                          <mat-option [value]="'NewWindow'">{{ 'game.openNewWindow' | lang }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- web打开方式 -->
+            <div class="open-way mt-5 d-flex flex-ac flex-wrap">
+              <div class="open-ways d-flex">
+                <!-- H5的打开方式 -->
+                <div class="way-item d-flex mr-10">
+                  <label class="main-title">Web</label>
+                  <div class="opt">
+                    <div class="opt-item d-flex">
+                      <span class="main-title">Windows:</span>
+                      <mat-form-field>
+                        <mat-select class="form-control" formControlName="webWindow">
+                          <mat-option [value]="'Iframe'">{{ 'game.openIframe' | lang }}</mat-option>
+                          <mat-option [value]="'NewWindow'">{{ 'game.openNewWindow' | lang }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <!-- IOS -->
+                    <div class="opt-item d-flex">
+                      <span class="main-title ml-10 sub-title">Mac:</span>
+                      <mat-form-field>
+                        <mat-select class="form-control" formControlName="webMac">
+                          <mat-option [value]="'Iframe'">{{ 'game.openIframe' | lang }}</mat-option>
+                          <mat-option [value]="'NewWindow'">{{ 'game.openNewWindow' | lang }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 是否支持 非粘性和抵用金单独排除游戏 -->
+        <form-row name="excludable" [label]="'game.provider.isExcludeGames' | lang" label-width="240">
+          <ng-template let-control="formControl">
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-10 fz-16" [class.radio-disabled]="!ls.isGB">
+                <input
+                  type="radio"
+                  [name]="'excludableMethod_' + i"
+                  [value]="true"
+                  [formControl]="control"
+                  [attrDisabled]="!ls.isGB"
+                />
+                <span class="mr-4"></span>{{ 'game.provider.support' | lang }}
+              </label>
+
+              <label class="radio radio-lg radio-success fz-16" [class.radio-disabled]="!ls.isGB">
+                <input
+                  type="radio"
+                  [name]="'excludableMethod_' + i"
+                  [value]="false"
+                  [formControl]="control"
+                  [attrDisabled]="!ls.isGB"
+                />
+                <span class="mr-4"></span>{{ 'game.provider.supportNot' | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+      </div>
+    </div>
+
+    <!-- 状态 -->
+    <form-row
+      required
+      name="status"
+      label-width="220px"
+      [label]="'game.detail.statu' | lang"
+      [invalidFeedback]="{ required: 'game.provider.choose_sta' | lang }"
+    >
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="d-flex flex-wrap">
+          <ng-container *ngFor="let item of providerService.statusListText">
+            <label
+              class="radio radio-lg fz-16 mr-10"
+              [class.radio-disabled]="!ls.isGB"
+              [class]="'radio-' + item.type"
+              *ngIf="item.value !== 'None'"
+            >
+              <input
+                type="radio"
+                name="status"
+                [value]="item.value"
+                [formControl]="control"
+                [attrDisabled]="!ls.isGB"
+              />
+              <span class="mr-3"></span>{{ item.text }}
+            </label>
+          </ng-container>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 按钮组 -->
+    <div class="btn-wrap pt-14 flex-center d-flex" *ngIf="ls.isGB">
+      <button type="button" class="c-btn c-btn-default ml-0" (click)="goBack()">
+        {{ 'common.back' | lang }}
+      </button>
+      <button type="button" class="c-btn c-btn-primary" (click)="onSubmit()">
+        {{ 'game.provider.confirm' | lang }}
+      </button>
+    </div>
+    <!-- 查看权限按钮组 -->
+    <div class="btn-wrap pt-14 flex-center d-flex" *ngIf="!ls.isGB">
+      <button type="button" class="c-btn c-btn-primary" (click)="goBack()">
+        {{ 'game.provider.confirm' | lang }}
+      </button>
+    </div>
+  </ng-container>
+</div>

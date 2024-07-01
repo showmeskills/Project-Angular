@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <div class="modal-title fz-16">{{ data.title }}</div>
+
+  <div class="c-btn-close" (click)="dialogRef.close()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<div class="modal-body">
+  <upload
+    style="width: 100%"
+    field="fullUrl"
+    desc=""
+    [type]="data.uploadType"
+    [mark]="data.type"
+    [limit]="data.limit"
+    [accept]="data.accept"
+    [(ngModel)]="value"
+  ></upload>
+</div>
+
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-light" [mat-modal-close] style="color: #373a49">
+    {{ 'common.cancel' | lang }}
+  </button>
+  <button type="button" class="c-btn btn btn-primary" (click)="onConfirm()">{{ 'common.Insert' | lang }}</button>
+</div>

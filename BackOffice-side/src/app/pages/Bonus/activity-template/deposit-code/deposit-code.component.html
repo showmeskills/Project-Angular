@@ -1,0 +1,250 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 活动名称 -->
+    <form-row [label]="'luckRoulette.eventName' | lang" class="mr-16" [contentWidth]="280">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.activityName"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+    <!-- 活动时间 -->
+    <form-row [label]="'member.activity.sencliCommon.activityTime' | lang" class="mr-16" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.activity.sencliCommon.selectAcitivityTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+    <!-- 重置和确认-->
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac justify-content-between">
+    <!-- 活动列表 -->
+    <div class="fz-20">{{ 'luckRoulette.eventList' | lang }}</div>
+    <!-- 新增活动 -->
+    <div>
+      <ng-container>
+        <button
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+          (click)="onAdd()"
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'member.activity.sencliCommon.addEvent' | lang }}</span>
+        </button>
+        <button
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+          (click)="onExport()"
+        >
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <!-- 导出 -->
+          <span class="vam">{{ 'game.provider.export' | lang }}</span>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 活动券码 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencli14.bonusCode' | lang }}</span>
+          </th>
+          <!-- 活动名称 -->
+          <th style="width: 20%">
+            <span class="cell">{{ 'member.activity.sencliCommon.eventName' | lang }}</span>
+          </th>
+          <!-- 活动时间 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencliCommon.activityTime' | lang }}</span>
+          </th>
+          <!-- 领取次数 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencli2.receiveTimes' | lang }}</span>
+          </th>
+          <!-- 领取人数 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencli2.recipientsNumber' | lang }}</span>
+          </th>
+          <!-- 活动状态 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.actStatus' | lang }}</span>
+          </th>
+          <!-- 操作 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.actAction' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <!-- 活动券码 -->
+          <th>
+            <span class="cell">{{ item.tmpCode }}</span>
+          </th>
+          <td>
+            <span class="cell">{{ item.activityName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <ng-container *ngIf="item.tmpStartTime || item.tmpEndTime; else emptyTpl">
+                {{ +item.tmpStartTime | timeUTCFormat }} ~ {{ +item.tmpEndTime | timeUTCFormat }}
+              </ng-container>
+
+              <ng-template #emptyTpl>-</ng-template>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.tmpSendNum | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.tmpSendUidNum | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.configState">
+              <!-- 待开始 0 -->
+              <app-label *ngSwitchCase="0" type="default">
+                {{ 'member.activity.sencli6.toBeStarted' | lang }}
+              </app-label>
+              <!-- 进行中 1 -->
+              <app-label *ngSwitchCase="1" type="primary">
+                {{ 'member.activity.sencli6.processing' | lang }}
+              </app-label>
+              <!-- 已过期 2 -->
+              <app-label *ngSwitchCase="2" type="danger">
+                {{ 'member.coupon.expired' | lang }}
+              </app-label>
+              <!-- 启动审核中 -1 -->
+              <app-label *ngSwitchCase="-1" type="info">
+                {{ 'member.activity.sencliCommon.startingReview' | lang }}
+              </app-label>
+              <!-- 停止审核中 -2 -->
+              <app-label *ngSwitchCase="-2" type="yellow">
+                {{ 'member.activity.sencliCommon.stopReviewing' | lang }}
+              </app-label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <!-- 编辑 -->
+              <div class="px-3 primary operation-btn" *ngIf="[0, 2].includes(item.configState)" (click)="onAdd(item)">
+                {{ 'luckRoulette.edit' | lang }}
+              </div>
+
+              <!-- 查看 -->
+              <div
+                class="px-3 primary operation-btn"
+                *ngIf="[-1, -2, 1].includes(item.configState)"
+                (click)="onView(item)"
+              >
+                {{ 'member.activity.sencliCommon.view' | lang }}
+              </div>
+
+              <!-- 开启 -->
+              <div
+                class="px-3 primary operation-btn"
+                *ngIf="[0].includes(item.configState)"
+                (click)="onOpenWarningPopup(warningTpl, item, 'luckRoulette.ifStart')"
+              >
+                {{ 'luckRoulette.open' | lang }}
+              </div>
+
+              <!-- 停止 -->
+              <div
+                class="px-3 primary operation-btn"
+                *ngIf="[1].includes(item.configState)"
+                (click)="onOpenWarningPopup(warningTpl, item, 'luckRoulette.ifEnd')"
+              >
+                {{ 'member.activity.sencliCommon.stop' | lang }}
+              </div>
+
+              <!-- 领取名单 -->
+              <div
+                class="px-3 primary operation-btn"
+                (click)="
+                  router.navigate(
+                    ['/bonus/activity-manage/' + ActivityTypeEnum[curType] + '/receive-list', item.tmpId],
+                    {
+                      queryParams: { tenantId: subHeaderService.merchantCurrentId }
+                    }
+                  )
+                "
+              >
+                {{ 'member.coupon.receiveList' | lang }}
+              </div>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-data let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'member.activity.sencli6.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ data.msg | lang }}</p>
+    </div>
+    <modal-footer (confirm)="c(true); onStatus(data.item)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

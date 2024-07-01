@@ -1,0 +1,24 @@
+<!-- 展示悬浮 -->
+<ng-container *ngIf="conversionEnable()?.enable; else default">
+  <app-tool-tip>
+    <div origin class="mutual-opacity conversion-currency">
+      <p class="text-14">
+        {{ amount | currencyValue : currency || 'USDT' | conversionCurrency : currency || 'USDT' }}
+      </p>
+      <img class="ml-6" [src]="currency || 'USDT' | currencyIcon" lazy="loading" alt="" />
+    </div>
+    <div tooltip class="tool-tip">
+      <p class="tip-text">
+        {{ amount | currencyValue : currency || 'USDT' }}
+      </p>
+      <img class="tip-img" [src]="currency || 'USDT' | currencyIcon" lazy="loading" alt="" />
+    </div>
+  </app-tool-tip>
+</ng-container>
+<!-- 不展示悬浮 -->
+<ng-template #default>
+  <p class="text-14">
+    {{ amount | currencyValue : currency || 'USDT' }}
+  </p>
+  <img class="ml-6" [src]="currency || 'USDT' | currencyIcon" lazy="loading" alt="" />
+</ng-template>

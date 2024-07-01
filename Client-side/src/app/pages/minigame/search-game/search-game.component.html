@@ -1,0 +1,145 @@
+<!-- web搜索 -->
+<div class="content-box" *ngIf="!isH5">
+  <div class="search mutual-opacity" cdkOverlayOrigin #trigger #origin="cdkOverlayOrigin" (click)="toggle()">
+    <!-- 静态示意框（用户实际操作是下方searchMain里的搜索框） -->
+    <app-customize-input
+      width="100%"
+      [fixedHeight]="true"
+      [readonly]="true"
+      [placeholder]="'sear_g' | translate"
+      [leftIcon]="'icon-search'"
+      [(value)]="searchValue"
+    ></app-customize-input>
+  </div>
+  <!-- 跟随弹出层 -->
+  <ng-template
+    cdkConnectedOverlay
+    (backdropClick)="toggle()"
+    [cdkConnectedOverlayWidth]="triggerRect?.width"
+    [cdkConnectedOverlayPositions]="positions"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayOrigin]="origin"
+  >
+    <ng-container *ngTemplateOutlet="searchMain"></ng-container>
+  </ng-template>
+</div>
+
+<!-- h5搜索，是被popupService弹出本组件，形成的弹窗，重新定制页面 -->
+<ng-container *ngIf="isH5">
+  <div class="h5-search">
+    <div class="page-title">
+      <span class="wrap">
+        <i class="icon-search"></i><span>{{ 'search' | translate }}</span>
+      </span>
+      <i class="close-btn icon-close-simple mutual-opacity onact96-not" (click)="close()"></i>
+    </div>
+    <ng-container *ngTemplateOutlet="searchMain"></ng-container>
+  </div>
+</ng-container>
+
+<!-- 搜索主体 -->
+<ng-template #searchMain>
+  <div class="content-box">
+    <!-- 搜索框 -->
+    <div class="search search-dark" appLifeObserve (lifeInit)="searchDom = $event" (lifeDestroy)="searchDom = null">
+      <app-customize-input
+        width="100%"
+        [autoFocus]="true"
+        [fixedHeight]="true"
+        [placeholder]="'sear_g' | translate"
+        [leftIcon]="'icon-search'"
+        [onChangeDebounceTime]="0"
+        (onChange)="onSearch()"
+        [(value)]="searchValue"
+        [trim]="false"
+      >
+      </app-customize-input>
+    </div>
+
+    <div class="result-box">
+      <app-scrollbar>
+        <div class="result-main">
+          <!-- 不符合搜索条件 -->
+          <div class="tip-text" *ngIf="searchValue.length < 1">{{ 'least_three' | translate }}</div>
+          <!-- 无结果 -->
+          <div
+            class="tip-text"
+            *ngIf="
+              searchValue.length >= limit &&
+              (searchResult?.gameInfo?.length ?? 0) < 1 &&
+              (searchResult?.labelInfo?.length ?? 0) < 1 &&
+              !loading
+            "
+          >
+            {{ 'no_found' | translate }}
+          </div>
+          <!-- 搜索历史 -->
+          <div class="search-history" *ngIf="searchValue.length < limit && searchHistory.length > 0">
+            <div class="title">{{ 'rec_sear' | translate }}</div>
+            <ng-container *ngFor="let item of searchHistory; let i = index">
+              <p
+                class="onact96"
+                *ngIf="searchValue.length === 0 || item.toUpperCase().includes(searchValue.toUpperCase())"
+                (click)="searchValue = item; onSearch()"
+              >
+                <span class="wrap"
+                  ><i class="icon-history"></i><span>{{ item }}</span></span
+                >
+                <i
+                  class="del-btn icon-close-simple mutual-opacity"
+                  (click)="$event.stopPropagation(); updateSearchHistory(undefined, i)"
+                ></i>
+              </p>
+            </ng-container>
+          </div>
+          <!-- 搜索结果 -->
+          <app-swiper-unit
+            class="result-games"
+            *ngIf="
+              searchValue.length >= limit &&
+              (loading || (searchResult?.gameInfo?.length ?? 0 > 0) || (searchResult?.labelInfo?.length ?? 0 > 0))
+            "
+            [loading]="loading"
+            [hideCarouselOnNoData]="true"
+            (clickItem)="clickGameItem($event)"
+            (afterClickItem)="close()"
+            [data]="searchResult?.gameInfo || []"
+            [title]="'sear_res' | translate"
+            [titleIcon]="'assets/images/game/search-i.svg'"
+          >
+            <div name="under-header">
+              <div class="content-label" #contentLabel *ngIf="searchResult?.labelInfo?.length ?? 0 > 0">
+                <ng-container *ngFor="let item of searchResult?.labelInfo">
+                  <div class="label-item" (click)="clickLabel(item)">
+                    <span
+                      [routerLink]="['/', appService.languageCode, 'casino', 'category', item.labelId]"
+                      (click)="toggle()"
+                      class="label-text"
+                    >
+                      <a
+                        [href]="domain + '/' + appService.languageCode + '/casino/category' + item.labelId"
+                        (click)="$event.preventDefault()"
+                      >
+                        {{ item.labelName }}
+                      </a>
+                    </span>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </app-swiper-unit>
+        </div>
+
+        <!-- 附加推荐栏 -->
+        <app-swiper-unit
+          class="attach-recommend"
+          (clickItem)="clickGameItem($event)"
+          [data]="gameList?.gameLists"
+          [title]="gameList?.labelName"
+          [titleIcon]="gameList?.icon"
+        ></app-swiper-unit>
+      </app-scrollbar>
+    </div>
+  </div>
+</ng-template>

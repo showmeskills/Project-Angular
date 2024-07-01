@@ -1,0 +1,11 @@
+framework module gt4_flutter_plugin {
+  umbrella header "gt4_flutter_plugin-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module gt4_flutter_plugin.Swift {
+  header "gt4_flutter_plugin-Swift.h"
+  requires objc
+}

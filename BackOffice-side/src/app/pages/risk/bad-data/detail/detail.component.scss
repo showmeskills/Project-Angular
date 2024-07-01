@@ -1,0 +1,18 @@
+.info-box {
+  width: 100%;
+  border: 1px solid #eff2f5;
+  border-radius: 4px;
+  .box-items {
+    border-bottom: 1px solid #eff2f5;
+    .item {
+      border-right: 1px solid #eff2f5;
+      word-break: break-all;
+      &:last-child {
+        border-right: none;
+      }
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}

@@ -1,0 +1,71 @@
+<modal-title [title]="'payment.bank.bankConfiguration' | lang" (close)="modal.dismiss()" [isAdd]="true"></modal-title>
+
+<div class="px-12 py-8" [formGroup]="formGroup">
+  <form-row
+    [label]="'payment.bank.bankLoaclName' | lang"
+    label-width="174"
+    contentWidth="230"
+    name="name"
+    [invalidFeedback]="{ required: 'payment.bank.enterLoaclBankName' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        [class.disabled]="isEdit"
+        [readonly]="isEdit"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+        class="form-control rounded-0 w-100"
+        type="text"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row
+    [label]="'payment.bank.enusBankName' | lang"
+    label-width="174"
+    contentWidth="230"
+    name="nameEN"
+    [invalidFeedback]="{ required: 'payment.bank.enterEnusBankName' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input [formControl]="control" [class.is-invalid]="invalid" class="form-control rounded-0 w-100" type="text" />
+    </ng-template>
+  </form-row>
+
+  <form-row
+    [label]="'payment.bank.bankCode' | lang"
+    label-width="174"
+    contentWidth="230"
+    name="code"
+    [invalidFeedback]="{ required: 'payment.bank.enterBankCode' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        [class.disabled]="isEdit"
+        [readonly]="isEdit"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+        class="form-control rounded-0 w-100"
+        type="text"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row
+    [label]="'payment.bank.currencyType' | lang"
+    label-width="174"
+    contentWidth="230"
+    name="type"
+    [invalidFeedback]="{ required: 'payment.bank.selectCurrencyType' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <mat-form-field class="w-100">
+        <mat-select class="form-control rounded-0" [formControl]="control" [class.is-invalid]="invalid" multiple>
+          <mat-option [value]="item.code" *ngFor="let item of currencyList">{{ item.code }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+</div>
+
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

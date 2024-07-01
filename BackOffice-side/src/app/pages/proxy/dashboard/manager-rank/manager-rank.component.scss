@@ -1,0 +1,31 @@
+:host {
+  background: #fff;
+  border-radius: 6px;
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1;
+
+  .rank-wrap {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .rank-bd {
+    max-height: 380px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(#a1a5b7, 0.2);
+      border-radius: 8px;
+    }
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+  }
+
+  .rank-item {
+    height: 62px;
+    border-top: 1px dashed #e4e6ef;
+  }
+}

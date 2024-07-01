@@ -1,0 +1,198 @@
+<div class="page-container">
+  <app-feedback-top-title [title]="'sen_cm' | translate">
+    <customize-button size="large" type="text" [active]="true" (onClick)="goRecord()" icon="icon-arrow-right-simple">
+      {{ 'feed_reco' | translate }}</customize-button
+    >
+  </app-feedback-top-title>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-16">
+    <div class="container" [class.disabled]="submitLoading" [appLoading]="initLoading">
+      <div class="content-box" *ngIf="!initLoading">
+        <div class="form-item feedback-type">
+          <div class="label">
+            <span>{{ 'sen_da' | translate }}<em>*</em></span>
+            <app-tool-tip [direction]="['right', 'down', 'up', 'left']">
+              <i origin class="icon-warning mutual-opacity"></i>
+              <ul tooltip class="feedback-type-tooltip">
+                <li *ngFor="let item of feedbackTypeTooltip">
+                  <span>{{ item.tit }}</span>
+                  <em>{{ item.con }}</em>
+                </li>
+              </ul>
+            </app-tool-tip>
+          </div>
+          <div class="form-content" [class.disabled]="upLoading">
+            <div
+              class="mutual-opacity onact96-not"
+              *ngFor="let item of optionList.feedbackTypeOptionList"
+              [class.active]="feedbackType === item.code"
+              (click)="selectFeedbackType(item.code)"
+            >
+              {{ item.description }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-item product-type">
+          <div class="label">{{ 'sen_db' | translate }}<em>*</em></div>
+          <app-customize-select
+            [class.error]="formErrors['productType']"
+            [fixedHeight]="true"
+            [width]="'100%'"
+            [(value)]="productType"
+            [textKey]="'description'"
+            [valueKey]="'code'"
+            [showAsPlaceholder]="!productType"
+            [defaultText]="'sen_de' | translate"
+            [options]="
+              optionList.feedbackTypeOptionList | filterByKeyValue : 'code' : feedbackType : 'productOptionList'
+            "
+            (onSelect)="onChange('productType')"
+          >
+          </app-customize-select>
+          <div class="error-tip" *ngIf="formErrors['productType']">{{ 'sen_de' | translate }}</div>
+        </div>
+
+        <div class="form-item client-type">
+          <div class="label">{{ 'sen_df' | translate }}<em>*</em></div>
+          <div class="form-content">
+            <div *ngFor="let item of optionList.clientTypeOptionList">
+              <mat-checkbox
+                [disableRipple]="true"
+                [checked]="clientType.includes(item.code)"
+                (change)="selectClientType(item.code, 'clientType')"
+              >
+                {{ item.description }}
+              </mat-checkbox>
+            </div>
+          </div>
+          <div class="error-tip" *ngIf="formErrors['clientType']">{{ 'sen_de' | translate }}</div>
+        </div>
+
+        <div
+          class="form-item multiple device-input"
+          *ngIf="clientType.includes('iOS') || clientType.includes('Android')"
+        >
+          <div class="h5-full">
+            <div class="label">Device</div>
+            <app-customize-input
+              [fixedHeight]="true"
+              [width]="'100%'"
+              [max]="20"
+              [(value)]="device"
+              [placeholder]="'sen_dg' | translate"
+            >
+            </app-customize-input>
+          </div>
+          <div class="h5-full">
+            <div class="label">Version</div>
+            <app-customize-input
+              [fixedHeight]="true"
+              [width]="'100%'"
+              [max]="20"
+              [(value)]="version"
+              [placeholder]="'sen_dh' | translate"
+            >
+            </app-customize-input>
+          </div>
+        </div>
+
+        <div class="form-item limit-width w70 url-input" *ngIf="clientType.includes('Website')">
+          <div class="label">{{ 'sen_di' | translate }}</div>
+          <app-customize-input
+            [fixedHeight]="true"
+            [max]="100"
+            [width]="'100%'"
+            [(value)]="url"
+            [placeholder]="'sen_dj' | translate"
+          >
+          </app-customize-input>
+        </div>
+
+        <!-- *ngIf="feedbackType === 'Localization'"  -->
+        <div class="form-item limit-width w50 language-code">
+          <div class="label">{{ 'sen_do' | translate }}<em>*</em></div>
+          <app-customize-select
+            [class.error]="formErrors['languageCode']"
+            [fixedHeight]="true"
+            [width]="'100%'"
+            [(value)]="languageCode"
+            [textKey]="'name'"
+            [valueKey]="'code'"
+            [showAsPlaceholder]="!languageCode"
+            [defaultText]="'sen_de' | translate"
+            (onSelect)="onChange('languageCode')"
+            [options]="allLangData"
+          >
+          </app-customize-select>
+          <div class="error-tip" *ngIf="formErrors['languageCode']">{{ 'sen_de' | translate }}</div>
+        </div>
+
+        <div class="form-item limit-width w70 title-input">
+          <div class="label">{{ 'sen_dp' | translate }}<em>*</em></div>
+          <app-customize-input
+            [error]="formErrors['title'] ? ('sen_dr' | translate) : ''"
+            [fixedHeight]="true"
+            [max]="50"
+            [width]="'100%'"
+            [(value)]="title"
+            (onChange)="onChange('title')"
+          >
+          </app-customize-input>
+        </div>
+
+        <div class="form-item detail-input">
+          <div class="label">{{ 'sen_ds' | translate }}<em>*</em></div>
+          <app-customize-textarea
+            [class.error]="formErrors['detail']"
+            [width]="'100%'"
+            [(value)]="detail"
+            (onChange)="onChange('detail')"
+          >
+          </app-customize-textarea>
+          <div class="error-tip" *ngIf="formErrors['detail']">
+            {{ detail.length > 1000 ? ('sen_dt' | translate) : ('sen_dr' | translate) }}
+          </div>
+        </div>
+
+        <div class="form-item attachment">
+          <div class="label">
+            {{ 'sen_du' | translate }} <span class="label-desc">（{{ 'sen_dv' | translate }}）</span>
+          </div>
+          <div class="form-content" [appLoading]="upLoading" *ngIf="files.length < 5">
+            <ng-container *ngIf="!upLoading">
+              <p>
+                <em>{{ 'sen_dw' | translate }}</em
+                >{{ 'sen_dx' | translate }}
+              </p>
+              <span>{{ 'sen_dy' | translate }}</span>
+              <input type="file" (change)="selectFile($event)" />
+            </ng-container>
+          </div>
+          <div class="file-list">
+            <div *ngFor="let item of files; let i = index">
+              <span class="mutual-opacity onact96-not" (click)="feedbackService.openPreview(urlList[i])">{{
+                item.name
+              }}</span>
+              <i class="icon-correct"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-item submit-item">
+          <div class="label">{{ 'sen_dz' | translate }}<em>*</em></div>
+          <div class="form-content">
+            <customize-button
+              type="primary"
+              size="large"
+              [disabled]="!canSubmit"
+              [loading]="submitLoading"
+              (onClick)="submit()"
+            >
+              {{ 'submit' | translate }}</customize-button
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

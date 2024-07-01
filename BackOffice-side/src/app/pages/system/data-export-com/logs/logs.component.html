@@ -1,0 +1,110 @@
+<div class="card py-8 px-12 flex-row flex-wrap">
+  <!-- 日期范围 -->
+  <form-row [label]="'system.export.dateRange' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="text-center form-control"
+        type="text"
+        [placeholder]="'form.chooseTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <!-- 操作人 -->
+  <form-row [label]="'risk.operator' | lang" class="mr-8">
+    <ng-template>
+      <input [(ngModel)]="data.userName" class="form-control" type="text" />
+    </ng-template>
+  </form-row>
+
+  <!-- 含测试用户 -->
+  <!--  <form-row [label]="'system.export.includeTestAccount' | lang" class="mr-8">-->
+  <!--    <ng-template>-->
+  <!--      <mat-form-field [style.width.px]="80">-->
+  <!--        <mat-select class="form-control" [(ngModel)]="data.hasTest" (selectionChange)="loadData(true)">-->
+  <!--          <mat-option [value]="true">{{ 'common.yes' | lang }}</mat-option>-->
+  <!--          <mat-option [value]="false">{{ 'common.no' | lang }}</mat-option>-->
+  <!--        </mat-select>-->
+  <!--      </mat-form-field>-->
+  <!--    </ng-template>-->
+  <!--  </form-row>-->
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="mt-6 card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'system.export.market' | lang }}</div>
+
+    <button type="button" class="ml-6 btn btn-light-primary" (click)="onExport()">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+      <span class="vam">{{ 'common.export' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0" *ngIf="list.length">
+      <thead>
+        <tr>
+          <th *ngFor="let key of tableTitle">
+            <span class="cell">{{ key }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td *ngFor="let key of tableTitle">
+            <span class="cell">{{ item[key] }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

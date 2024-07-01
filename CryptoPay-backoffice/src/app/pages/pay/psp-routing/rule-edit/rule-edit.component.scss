@@ -1,0 +1,65 @@
+:host {
+  .multi-select::ng-deep {
+    .mat-mdc-select-arrow-wrapper {
+      height: 20px;
+    }
+
+    .mat-mdc-select-value {
+      line-height: 1.2;
+    }
+  }
+}
+
+.guide-line {
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: -50px;
+    top: -4px;
+    width: 1px;
+    height: 30px;
+    background: #e5e5e5;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: -50px;
+    top: 26px;
+    width: 40px;
+    height: 1px;
+    background: #e5e5e5;
+  }
+}
+
+.seconds-section {
+  form-row {
+    flex: 1;
+
+    &::ng-deep {
+      .label-text {
+        line-height: 1;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        word-break: break-word;
+      }
+    }
+  }
+}
+
+.action-has-disable {
+  .form-control.disabled,
+  .form-control:disabled,
+  .form-control[disabled],
+  .mat-mdc-select-disabled,
+  .mat-form-field-disabled {
+    cursor: no-drop;
+  }
+}
+
+.currency-select::ng-deep .mat-mdc-select-value {
+  text-align: right;
+  padding-right: 6px;
+}

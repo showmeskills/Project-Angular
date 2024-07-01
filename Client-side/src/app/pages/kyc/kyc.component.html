@@ -1,0 +1,127 @@
+<div class="page-container kyc-container">
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container main-header">
+      <div class="ac-header">
+        <div class="h-1">
+          <em>{{ 'personal_ver' | translate }}</em>
+          <!--hover 提示-->
+          <app-tool-tip>
+            <i origin class="secrity-icon mutual-opacity"></i>
+            <div tooltip class="tooltip-info">
+              <div class="tooltip-info-text">{{ 'info_protected' | translate }}</div>
+            </div>
+          </app-tool-tip>
+        </div>
+        <div class="h-2">
+          <i class="animation-icon-loading-dot" *ngIf="headerTipsLoading || loading"><i></i><i></i><i></i></i>
+          <ng-container *ngIf="!headerTipsLoading && !loading">
+            <div class="s-1 onact96 mutual-opacity" (click)="openNotice()" (clickOutside)="isShow = false">
+              <span></span>
+              {{ 'curren_per' | translate }}
+            </div>
+            <div class="user-Infor-container" [class.small]="!noticeContants?.kycType" *ngIf="isShow">
+              <ng-container *ngIf="noticeContants?.kycType?.length; else defaultInfor">
+                <ng-container *ngTemplateOutlet="noticeBox; context: { item: noticeContants }"></ng-container>
+              </ng-container>
+              <!--新用户权限显示-->
+              <ng-template #defaultInfor>
+                <div class="default-infor">
+                  <span class="safety-icon"></span>
+                  <span class="span-1">{{ 'no_pass' | translate }}</span>
+                  <span class="span-2">{{ 'acc_ser' | translate }}</span>
+                </div>
+              </ng-template>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="main-container unity-padding-web unity-padding-h5-16 min-height"
+    [class.inner-page]="isH5"
+    [appLoading]="loading"
+  >
+    <div class="container card-container" *ngIf="!isH5">
+      <ng-container *ngIf="!loading">
+        <ng-container *ngFor="let card of kycCardsConfig; trackBy: ticketTrackMethd">
+          <app-kyc-ticket
+            [cardConfig]="card"
+            [isAsia]="isAsia"
+            [midProcessDetailForEu]="midProcessDetailForEu"
+            [requestDocumentsInfor]="requestDocumentsInfor"
+            [kycStatus]="kycStatus"
+          ></app-kyc-ticket>
+        </ng-container>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="isH5">
+      <app-kyc-h5
+        *ngIf="noticeContants"
+        [noticeContants]="noticeContants"
+        [pagesConfig]="kycCardsConfig"
+        [isAsia]="isAsia"
+        [midProcessDetailForEu]="midProcessDetailForEu"
+        [requestDocumentsInfor]="requestDocumentsInfor"
+        [kycStatus]="kycStatus"
+      ></app-kyc-h5>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #noticeBox let-item="item">
+  <span class="title">{{ 'curr_be' | translate }}</span>
+  <div class="colunm-box">
+    <span class="txt-bold">{{ 'cur_limit' | translate }}-</span>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'buy_crypto' | translate }}</span>
+      </div>
+      <!--后端无法修改，暂时写时成 无限制-->
+      <span class="txt">{{ 'no_limit' | translate }}</span>
+      <!-- <span class="txt">{{item.fiatToVirtualLimit == "-1" ?  '无限制' : item.fiatToVirtualLimit + ' USDT/日'}}</span> -->
+    </div>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'deposit' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.fiatDepositLimit == '-1' ? ('no_limit' | translate) : item.fiatDepositLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'withdrawl' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.fiatWithdrawLimit == '-1' ? ('no_limit' | translate) : item.fiatWithdrawLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+  </div>
+  <div class="colunm-box">
+    <span>{{ 'crypto_limits' | translate }}-</span>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'deposit' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.virtualDepositLimit == '-1' ? ('no_limit' | translate) : item.virtualDepositLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'withdrawl' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.virtualWithdrawLimit == '-1'
+          ? ('no_limit' | translate)
+          : item.virtualWithdrawLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+  </div>
+</ng-template>

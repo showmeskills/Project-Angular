@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  width: 606px;
+}
+
+.batch-upload {
+  &-footer {
+    &:after {
+      top: 0;
+      bottom: auto;
+    }
+  }
+
+  &-content {
+    padding: 36px 30px 30px;
+  }
+
+  &-fail {
+    margin: 25px 0;
+    padding: 0 30px;
+
+    &-title {
+      font-size: 16px;
+      color: #969bad;
+    }
+
+    &-content {
+      margin-top: 16px;
+      color: #f1416c;
+      background: #fafcfd;
+      border-radius: 4px;
+      line-height: 30px;
+      padding-left: 10px;
+      min-height: 120px;
+      max-height: 290px;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #e9edf1;
+      }
+    }
+  }
+}

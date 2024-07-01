@@ -1,0 +1,117 @@
+<div class="container">
+  <div class="con-tit"><i class="icon-cunkuan"></i>关闭账户</div>
+  <div class="content-box">
+    <p class="text-20">如果您决定停止使用我们的服务，您可以选择关闭您的账户。</p>
+    <p class="text-20">如果您面临博彩问题带来的风险，或认为您目前已有博彩问题，请访问自我禁止页面。</p>
+    <p class="text-20">
+      一旦您选择关闭账户，您可以提取账户中的剩余资金。然而，您将无法再进行存款或是使用我们任何产品。如果在此期间内您希望重开账户，我们需要您回答一些额外的安全问题以确保账户安全。
+    </p>
+    <p class="text-20">为了完成账户关闭程序，请选择账户关闭的期限以及关闭的主要原因。</p>
+  </div>
+  <div class="content-box">
+    <p class="title">关闭期限</p>
+    <div class="select-time">
+      <ng-container *ngFor="let item of selectTime; let idx = index">
+        <customize-button
+          type="text"
+          size="small"
+          [plain]="true"
+          [active]="idx === activeIdx"
+          minWidth="80px"
+          (onClick)="onSelectTime(idx)"
+        >
+          {{ item.name }}
+        </customize-button>
+      </ng-container>
+      <p class="customize-time mutual-opacity onact96-not" (click)="openTimeSelectorDialog()">直至</p>
+    </div>
+    <div class="select-reason">
+      <app-customize-select
+        [width]="isH5 ? '100%' : '388px'"
+        [defaultText]="'请选择'"
+        label="请选择主要关闭的原因*"
+        [options]="selectReason"
+        [valueKey]="'value'"
+        [textKey]="'name'"
+        [(value)]="selectedReason"
+      >
+      </app-customize-select>
+    </div>
+    <ng-container *ngIf="!isFirstStep">
+      <div class="password">
+        <app-customize-input
+          #iPwd
+          [label]="'password_text' | translate"
+          type="password"
+          [autocomplete]="false"
+          size="medium"
+          width="100%"
+          (valueChange)="onValueChange($event)"
+        >
+          <i
+            class="onact96-not"
+            right-content
+            [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+            (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+          ></i>
+        </app-customize-input>
+      </div>
+    </ng-container>
+    <div class="submit">
+      <ng-container *ngIf="!isFirstStep">
+        <customize-button
+          [minWidth]="isH5 ? 'unset' : '140px'"
+          [width]="isH5 ? '100%' : 'unset'"
+          type="default"
+          size="medium"
+          (onClick)="onCancel()"
+        >
+          取消
+        </customize-button>
+        <customize-button
+          [disabled]="!canSubmit()"
+          [minWidth]="isH5 ? 'unset' : '140px'"
+          [width]="isH5 ? '100%' : 'unset'"
+          type="primary"
+          size="medium"
+          (onClick)="onContinue()"
+        >
+          继续
+        </customize-button>
+      </ng-container>
+      <ng-container *ngIf="isFirstStep">
+        <customize-button
+          [minWidth]="isH5 ? '100%' : '140px'"
+          type="primary"
+          size="medium"
+          (onClick)="this.isFirstStep = !this.isFirstStep"
+        >
+          继续
+        </customize-button>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #timeSelectorDialog>
+  <div class="time-selector-container">
+    <div class="time-selector-header">
+      <p class="title">直至</p>
+      <i class="icon-close-simple onact96-not" (click)="closeDialog.close()"></i>
+    </div>
+    <p class="title-16">请选择直至期限</p>
+    <div class="date-picker">
+      <label class="label-text">关闭时间</label>
+      <app-datepicker
+        size="medium"
+        [(dateValue)]="customizedTime"
+        placeholder="YYYY-MM-DD"
+        (dateValueChange)="onDateValueChange()"
+      >
+      </app-datepicker>
+    </div>
+    <div class="dialog-sumbit">
+      <customize-button size="medium" type="primary" width="100%" (onClick)="saveDialog()"> 保存 </customize-button>
+    </div>
+  </div>
+</ng-template>

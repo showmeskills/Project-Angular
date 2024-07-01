@@ -1,0 +1,124 @@
+<div class="card hd">
+  <div class="card-header">
+    <div class="d-flex flex-ac space-between">
+      <div class="d-flex">
+        <div class="flex1">
+          <div class="col-12 d-flex flex-ac">
+            <div class="title">{{ 'authority.resourceCode' | lang }}:</div>
+            <input
+              [(ngModel)]="code"
+              class="form-control form-control-lg form-control-solid group-name"
+              type="text"
+              (keyup)="$event.keyCode === 13 && onSearch()"
+            />
+          </div>
+        </div>
+
+        <div class="flex1">
+          <div class="col-12 d-flex flex-ac ml-6">
+            <div class="title">{{ 'authority.resourceName' | lang }}:</div>
+            <input
+              [(ngModel)]="name"
+              class="form-control form-control-lg form-control-solid group-name"
+              type="text"
+              (keyup)="$event.keyCode === 13 && onSearch()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-wrap py-2">
+        <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="onSearch()">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-ac flex-between">
+      <div class="title">{{ 'authority.resourceList' | lang }}</div>
+      <div>
+        <button type="button" class="ml-6 btn btn-light-primary" (click)="onExport()">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+          <span class="vam">{{ 'common.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-10">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th class="w-10px pe-2">
+              <label class="checkbox">
+                <input type="checkbox" [(ngModel)]="isCheckedAll" (change)="onCheckAll()" />
+                <span></span>
+              </label>
+            </th>
+            <th>{{ 'authority.resourceCode' | lang }}</th>
+            <th>{{ 'authority.resourceName' | lang }}</th>
+            <th>
+              <span class="cursor-pointer" (click)="onSort()">
+                <span>{{ 'authority.resourceType' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div id="triangle-up" [class.active]="order === '0'"></div>
+                  <div id="triangle-down" [class.active]="order === '1'"></div>
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <label class="checkbox">
+                <input type="checkbox" [(ngModel)]="item.checked" (change)="onItemCheck()" [checked]="item.checked" />
+                <span></span>
+              </label>
+            </td>
+            <td>{{ item.code }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.type }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+            [isLoading]="isLoading"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

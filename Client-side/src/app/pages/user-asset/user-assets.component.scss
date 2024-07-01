@@ -1,0 +1,15 @@
+.page-container {
+  .main-container {
+    padding-left: 3vw;
+    padding-right: 3vw;
+
+    @media (max-width: 767px) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .content-box {
+      min-height: 500px;
+    }
+  }
+}

@@ -1,0 +1,44 @@
+<!-- <app-friend-header *ngIf="isH5" [goRouter]="true"></app-friend-header> -->
+<div class="page-container">
+  <div class="main-container theme-background">
+    <div class="header-body" [class.affiliate]="whichRouter === 'affiliate'">
+      <ng-container *ngIf="!contentLoading">
+        <p class="top-title">
+          <ng-container *ngIf="whichRouter === 'friend'">
+            {{ 'recom_role' | translate }}
+          </ng-container>
+          <ng-container *ngIf="whichRouter === 'affiliate'">
+            {{ 'agent_p' | translate }}
+          </ng-container>
+        </p>
+        <p class="date">2021-10-08</p>
+        <div class="img-box" *ngIf="isH5">
+          <img *ngIf="whichRouter === 'friend'" src="assets/images/friend/h5-header-bg.png" alt="" lazy="loading" />
+          <img
+            *ngIf="whichRouter === 'affiliate'"
+            src="assets/images/friend/h5-header-bg-affiliate.png"
+            alt=""
+            lazy="loading"
+          />
+        </div>
+      </ng-container>
+    </div>
+    <div class="container page-body inner-page min-height box-shadow" [appLoading]="contentLoading">
+      <!--规则-->
+      <ng-container *ngIf="whichRouter === 'friend' && !contentLoading">
+        <div class="content-details">
+          <div [innerHtml]="localeContent | toHtmlElement" class="role-locale" (click)="onClickLink($event)"></div>
+        </div>
+      </ng-container>
+      <!--规则-->
+      <ng-container *ngIf="whichRouter === 'affiliate' && !contentLoading">
+        <div [innerHtml]="localeContent | toHtmlElement" class="aff-role" (click)="onClickLink($event)"></div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<app-friend-footer
+  [redirect]="whichRouter === 'friend' ? 'referral/application/affiliate' : 'referral/partner'"
+  [title]="title"
+  [btnName]="btnName"
+></app-friend-footer>

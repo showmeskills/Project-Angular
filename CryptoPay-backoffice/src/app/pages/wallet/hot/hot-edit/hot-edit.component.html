@@ -1,0 +1,36 @@
+<div class="fz-20">{{ isAdd ? ('walle.add' | lang) : ('walle.edit' | lang) }}{{ 'walle.howWaLower' | lang }}</div>
+
+<div class="pl-12 py-16">
+  <form-row [label]="'walle.chooseMain' | lang">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div class="d-flex flex-wrap py-2 lh-32">
+        <label class="radio radio-lg radio-success mr-16 fz-16 primary-link">
+          <input type="radio" name="primaryLink" [checked]="true" />
+          <span class="mr-4"></span>{{ data.network }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'walle.open' | lang">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div class="cache-number-wrap">
+        <div class="d-flex flex-wrap flex-ac mr-14 py-1" *ngFor="let item of formArr">
+          <span class="cache-number-title">{{ item.get('coin').value }}</span>
+          <span class="d-inline-block" [style.min-width.px]="138">{{
+            item.get('balance').value | currencyValue : item.get('coin').value
+          }}</span>
+
+          <label class="checkbox checkbox-lg ml-6">
+            <input type="checkbox" [value]="true" [formControl]="item.get('status')" [attr.tabindex]="-1" />
+            <span class="mr-2"></span>{{ item.get('status').value ? ('walle.enable' | lang) : ('walle.unable' | lang) }}
+          </label>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+</div>
+
+<div class="footer-wrap">
+  <modal-footer class="p-12" dismissKey="back" (dismiss)="onBack()" (confirm)="onSubmit()"></modal-footer>
+</div>

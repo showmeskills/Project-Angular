@@ -1,0 +1,119 @@
+.category-menu {
+  background: #fff;
+  border-radius: 6px;
+  display: flex;
+  padding: 0 20px 0;
+  height: 62px;
+  align-items: center;
+  li {
+    list-style-type: none;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  .category-menu-ul {
+    display: flex;
+    position: relative;
+    align-self: flex-end;
+    li {
+      padding: 8px 15px 0;
+      height: 48px;
+      font-size: 16px;
+      color: #a1a5b7;
+      cursor: pointer;
+      position: relative;
+      .text-box {
+        border-bottom: 2px solid #fff;
+        height: 100%;
+      }
+      &.active {
+        color: #009ef7;
+        transition: all 0.3s linear;
+        .text-box {
+          border-bottom: 2px solid #009ef7;
+        }
+      }
+    }
+  }
+}
+.content {
+  margin-top: 30px;
+  padding: 29px 30px 38px;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px 0 rgba(82, 63, 105, 0.05);
+  background-color: #fff;
+  > .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #181c32;
+    }
+    .edit {
+      border-radius: 6px;
+      background-color: #f1faff;
+      min-width: 152px;
+      height: 34px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #009ef7;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0 6px;
+      img {
+        width: 16px;
+        height: 16px;
+        margin-right: 2px;
+      }
+    }
+  }
+  .method-menu {
+    width: 100%;
+
+    .top-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+
+      .des {
+        display: flex;
+        position: relative;
+        top: -4px;
+
+        .item {
+          display: flex;
+          align-items: center;
+          margin-right: 10px;
+
+          .name {
+            color: #969bad;
+            font-size: 16px;
+            white-space: nowrap;
+          }
+
+          input {
+            color: #373a49;
+            font-size: 16px;
+            border: none;
+            width: 140px;
+            outline: none;
+            height: 42px;
+            padding: 0 5px;
+          }
+        }
+      }
+    }
+  }
+  &.edit {
+    input {
+      background-color: #f5f8fa;
+    }
+  }
+}

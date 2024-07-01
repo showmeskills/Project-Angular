@@ -1,0 +1,14 @@
+<div class="input-container" [class.disabled]="disabled">
+  <div class="input-label" *ngIf="label">{{ label }}</div>
+  <div class="input-box" [style.width]="width">
+    <textarea
+      [ngModel]="value"
+      [maxlength]="max"
+      (ngModelChange)="change($event)"
+      [placeholder]="placeholder"
+      [readonly]="readonly"
+      rows="10"
+      #textarea
+    ></textarea>
+  </div>
+</div>

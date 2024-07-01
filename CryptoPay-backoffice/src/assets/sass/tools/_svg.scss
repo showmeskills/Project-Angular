@@ -1,0 +1,28 @@
+@import '../components/variables.bootstrap';
+
+/**
+  SVG hover的颜色
+ */
+@mixin svg-icon-hover($theme: $primary) {
+  &:hover {
+    cursor: pointer;
+
+    svg {
+      transition: all 0.2s ease-in;
+      color: $theme !important;
+      fill: $theme !important;
+    }
+  }
+}
+
+/**
+  SVG vertical-align middle
+ */
+@mixin svg-vam() {
+  &::ng-deep {
+    svg {
+      vertical-align: middle;
+      @content;
+    }
+  }
+}

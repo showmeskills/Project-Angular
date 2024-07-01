@@ -1,0 +1,235 @@
+<div class="page-container header-bgc">
+  <div class="main-container unity-padding-web">
+    <div class="container job-header unity-padding-h5-16">
+      <div class="header-left">
+        <p class="left-one">{{ 'jo' | translate }}</p>
+        <p class="left-two">{{ 'join_us' | translate }}</p>
+        <div class="m-t10">
+          <customize-button
+            type="primary"
+            size="small"
+            minWidth="137px"
+            (onClick)="jumpToPage('about-us/jobs/vacancy')"
+          >
+            {{ 'jobs' | translate }}
+            <i class="icon-arrow-right-simple"></i>
+          </customize-button>
+        </div>
+      </div>
+      <div class="header-right">
+        <img src="assets/images/about-us/business-deal-rafiki.svg" loading="lazy" alt="" />
+      </div>
+    </div>
+  </div>
+  <div class="job-container">
+    <ng-container
+      *ngTemplateOutlet="
+        sectionTemplate;
+        context: {
+          title: ('our_be' | translate),
+          text: ('sen_aa' | translate),
+          optionTemplate: seciontOneTemplate
+        }
+      "
+    ></ng-container>
+  </div>
+  <div class="main-container mid-banner">
+    <div class="mid-banner-wrap container unity-padding-web unity-padding-h5-24">
+      <div class="text">
+        <p class="t-one">10+</p>
+        <p class="t-two mt-32">{{ 'nation' | translate }}</p>
+      </div>
+      <div class="text">
+        <p class="t-one">400+</p>
+        <p class="t-two mt-32">{{ 'employee' | translate }}</p>
+      </div>
+      <div class="text">
+        <p class="t-one">20+</p>
+        <p class="t-two mt-32">{{ 'placement' | translate }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="job-container">
+    <ng-container
+      *ngTemplateOutlet="
+        sectionTemplate;
+        context: {
+          title: ('sen_ab' | translate),
+          text: ('sen_ac' | translate),
+          optionTemplate: sectionTwoTemplate,
+          width: isH5 ? 170 : 276
+        }
+      "
+    ></ng-container>
+  </div>
+  <div class="job-swiper job-container">
+    <div class="main-container unity-padding-web unity-padding-h5-16">
+      <div class="container swiper-col">
+        <p class="section-title sec-width" *ngIf="!isH5">
+          <span class="text">{{ 'join' | translate }}</span>
+        </p>
+        <app-img-carousel *ngIf="!isH5" [config]="swiperOptions" [itemsData]="swiperList">
+          <ng-template #carouselItemTpl let-item>
+            <div class="section-swiper">
+              <div class="swiper-content">
+                <div class="img-box">
+                  <img [src]="item?.url" loading="lazy" alt="" />
+                </div>
+                <div class="left-text">
+                  <p class="text-top">{{ item?.title }}</p>
+                  <p class="text-info">{{ item?.content }}</p>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </app-img-carousel>
+      </div>
+      <ng-container *ngTemplateOutlet="h5SectionFiveTemplate"></ng-container>
+    </div>
+  </div>
+  <div class="job-container">
+    <ng-container
+      *ngTemplateOutlet="
+        sectionTemplate;
+        context: {
+          title: ('sen_ad' | translate),
+          text: ('sen_ae' | translate),
+          optionTemplate: sectionThreeTemplate,
+          width: isH5 ? 168 : 276
+        }
+      "
+    ></ng-container>
+  </div>
+  <div class="job-container">
+    <ng-container
+      *ngTemplateOutlet="
+        sectionTemplate;
+        context: {
+          title: ('sen_af' | translate),
+          text: ('sen_ag' | translate),
+          optionTemplate: sectionFourTemplate,
+          width: isH5 ? 112 : 184
+        }
+      "
+    ></ng-container>
+  </div>
+  <div class="main-container footer">
+    <div class="footer-wrap container unity-padding-web unity-padding-h5-16">
+      <p class="footer-text">{{ 'sen_ah' | translate }}</p>
+      <div class="m-t16">
+        <customize-button type="primary" size="small" minWidth="137px" (onClick)="jumpToPage('about-us/jobs/vacancy')">
+          {{ 'jobs' | translate }}
+          <i class="icon-arrow-right-simple"></i>
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #sectionTemplate let-title="title" let-text="text" let-optionTemplate="optionTemplate">
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container section">
+      <div class="section-title">
+        <span class="text">{{ title }}</span>
+      </div>
+      <p class="section-text">{{ text }}</p>
+      <ng-container *ngTemplateOutlet="optionTemplate"></ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #seciontOneTemplate>
+  <div class="one-template">
+    <div class="template-left">
+      <div class="left-one">
+        <div class="img-box" *ngIf="!isH5">
+          <img loading="lazy" alt="" src="assets/images/about-us/curious-cuate.png" />
+        </div>
+        <div class="left-one-l">
+          <p class="l-top-title mt-28">{{ 'sen_ai' | translate }}</p>
+          <p class="l-top-text mt-7">{{ 'sen_aj' | translate }}</p>
+        </div>
+        <div class="img-box" *ngIf="isH5">
+          <img loading="lazy" alt="" src="assets/images/about-us/curious-cuate.png" />
+        </div>
+      </div>
+      <div class="left-two mt-32">
+        <div class="left-two-l">
+          <p class="l-top-title">{{ 'sen_ak' | translate }}</p>
+          <p class="l-top-text">{{ 'sen_al' | translate }}</p>
+        </div>
+        <div class="right-t-img">
+          <img loading="lazy" src="assets/images/about-us/target.png" alt="" />
+        </div>
+      </div>
+    </div>
+    <div class="template-right">
+      <div class="left-two left-t-mt-32">
+        <div class="left-two-l">
+          <p class="l-top-title">{{ 'sen_am' | translate }}</p>
+          <p class="l-top-text">{{ 'sen_an' | translate }}</p>
+        </div>
+        <div class="right-t-img">
+          <img loading="lazy" alt="" src="assets/images/about-us/value.png" />
+        </div>
+      </div>
+      <div class="left-two mt-32">
+        <div class="left-two-l">
+          <p class="l-top-title">{{ 'sen_ao' | translate }}</p>
+          <p class="l-top-text">{{ 'sen_ap' | translate }}</p>
+        </div>
+        <div class="right-t-img">
+          <img loading="lazy" alt="" src="assets/images/about-us/future.png" />
+        </div>
+      </div>
+      <div class="left-two mt-32">
+        <div class="left-two-l">
+          <p class="l-top-title">{{ 'sen_aq' | translate }}</p>
+          <p class="l-top-text">{{ 'sen_ar' | translate }}</p>
+        </div>
+        <div class="right-t-img">
+          <img loading="lazy" alt="" src="assets/images/about-us/mission.png" />
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #sectionTwoTemplate>
+  <div class="section-two">
+    <div class="list-item pointer onact96" *ngFor="let item of teamList" (click)="jumpToPage(item.path)">
+      <img class="item-img" [src]="item.url" loading="lazy" alt="" />
+      <p class="item-text ml-46">{{ item.name }}</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #sectionThreeTemplate>
+  <div class="section-three container">
+    <div class="list-item" *ngFor="let item of selectedList">
+      <img class="item-img" [src]="item.url" loading="lazy" alt="" />
+      <p class="item-text" *ngFor="let text of item.list">
+        {{ text }}
+      </p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #sectionFourTemplate>
+  <div class="section-four">
+    <p class="process" [class]="'process-' + idx" *ngFor="let item of processList; let idx = index">{{ item }}</p>
+  </div>
+</ng-template>
+
+<ng-template #h5SectionFiveTemplate>
+  <div class="container section-five" *ngIf="isH5">
+    <div class="section-title">
+      <span class="text">{{ 'join' | translate }}</span>
+    </div>
+    <div class="join-list" *ngFor="let item of swiperList">
+      <img [src]="item.url" loading="lazy" alt="" />
+      <p class="title">{{ item.title }}</p>
+      <p class="text">{{ item.content }}</p>
+    </div>
+  </div>
+</ng-template>

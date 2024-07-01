@@ -1,0 +1,168 @@
+<div class="container">
+  <div class="search-bar">
+    <div class="options">
+      <div class="search-column-container">
+        <div class="search-column">
+          <div class="search-title">{{ 'origi_curr00' | translate }}</div>
+          <div class="input-container onact96" (click)="showAssetsOptions()">
+            <input type="text" [(ngModel)]="selectedOriginalCoin" disabled />
+            <div class="grey-down-arraw" *ngIf="!originalCoinMenu"></div>
+            <div class="up-arraw" *ngIf="originalCoinMenu"></div>
+          </div>
+          <div class="options" *ngIf="originalCoinMenu">
+            <ul class="form-control">
+              <ng-container *ngFor="let item of originalCoinOptions">
+                <li class="onact96-not" [class.active]="item.active" (click)="originalCoinClick(item)">
+                  {{ item.name }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-column-container">
+        <div class="search-column">
+          <div class="search-title">{{ 'exch_curr00' | translate }}</div>
+          <div class="input-container">
+            <input type="text" [(ngModel)]="selectedCoinType" disabled />
+            <div class="grey-down-arraw" *ngIf="!coinTypeMenu"></div>
+            <div class="up-arraw" *ngIf="coinTypeMenu"></div>
+          </div>
+        </div>
+      </div>
+      <div class="search-column-container">
+        <div class="search-column">
+          <div class="search-title">{{ 'scope' | translate }}</div>
+          <div class="input-container onact96" (click)="showTimeOptions()">
+            <input type="text" [(ngModel)]="selectedTime" disabled />
+            <div class="grey-down-arraw" *ngIf="!openTimeMenu"></div>
+            <div class="up-arraw" *ngIf="openTimeMenu"></div>
+          </div>
+          <div class="options" *ngIf="openTimeMenu">
+            <ul class="form-control">
+              <ng-container *ngFor="let item of timeOptions">
+                <li class="onact96-not" [class.active]="item.active" (click)="timeClick(item)">
+                  {{ item.name }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-btn-group">
+        <div class="btn reset-btn">{{ 'reset' | translate }}</div>
+        <div class="btn filterr-btn">{{ 'filter' | translate }}</div>
+      </div>
+      <!-- 筛选icon H5显示 -->
+      <div class="mobile-filter onact96" (click)="handleFilter()">
+        <div class="filter-icon"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- web -->
+  <table *ngIf="exchangeData.length > 0 && !isH5">
+    <thead>
+      <th>{{ 'dates' | translate }}</th>
+      <th>{{ 'order' | translate }}</th>
+      <th>{{ 'origi_curr00' | translate }}</th>
+      <th>{{ 'number' | translate }}</th>
+      <th>{{ 'exch_curr00' | translate }}</th>
+      <th>{{ 'num_transa00' | translate }}</th>
+      <th>{{ 'stat' | translate }}</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of exchangeData">
+        <td>{{ item.date | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+        <td [attr.data-label]="'all' | translate">{{ item.orderNum }}</td>
+        <td>{{ item.original }}</td>
+        <td>
+          <p class="text">
+            {{ item.amount | currencyValue : item.currency }}
+          </p>
+          <img class="currency-img" [src]="item.currency | currencyIcon" />
+        </td>
+        <td>{{ item.coin }}</td>
+        <td>
+          <p class="text">
+            {{ item.successAmount | currencyValue : item.currency }}
+          </p>
+          <img class="currency-img" [src]="item.currency | currencyIcon" />
+        </td>
+        <td>{{ item.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- H5 -->
+  <ul class="container-H5" *ngIf="exchangeData.length > 0 && isH5">
+    <li class="item" *ngFor="let item of exchangeData">
+      <div class="group first">
+        <span>{{ 'exch00' | translate }}</span>
+        <p class="onact96-not" [ngClass]="[getStatusTemplate(item.status)?.calss]" (click)="openh5Detail(item)">
+          {{ getStatusTemplate(item.status)?.text }}
+          <i class="icon-arrow-right-simple"></i>
+        </p>
+      </div>
+      <div class="group">
+        <span>{{ 'dates' | translate }}：</span>
+        <p>{{ item.date | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+      </div>
+      <div class="group">
+        <span>{{ 'number' | translate }}：</span>
+        <p>
+          {{ item.amount }}
+          <img [src]="item.currency | currencyIcon" />
+        </p>
+      </div>
+      <div class="group">
+        <span>{{ 'exch00' | translate }}</span>
+        <p>
+          <span>{{ 'from' | translate }}</span
+          >&nbsp;{{ item.original }}&nbsp;<span>{{ 'to' | translate }}</span
+          >&nbsp;{{ item.coin }}
+        </p>
+      </div>
+      <div class="group">
+        <span>{{ 'num_transa00' | translate }}：</span>
+        <p>{{ item.successAmount }}</p>
+      </div>
+      <div class="group">
+        <span>{{ 'order' | translate }}：</span>
+        <p>{{ item.orderNum }}</p>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- h5详情弹窗模板 -->
+<ng-template #detailData>
+  <div class="h5-detail-popup" *ngIf="selectedItem">
+    <div class="title">
+      <span>{{ 'redem_deta00' | translate }}</span>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="detailDataPopup.close()"></i>
+    </div>
+    <ul class="info-box">
+      <li class="group">
+        <span>{{ 'dates' | translate }}</span>
+        <p>{{ selectedItem.date | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'order' | translate }}</span>
+        <p>{{ selectedItem.orderNum }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'origi_curr00' | translate }}&{{ 'number' | translate }}</span>
+        <p>{{ selectedItem.amount }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'exch_curr00' | translate }}&{{ 'number' | translate }}</span>
+        <p>{{ selectedItem.successAmount }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'stat' | translate }}</span>
+        <p>{{ getStatusTemplate(selectedItem.status)?.text }}</p>
+      </li>
+    </ul>
+  </div>
+</ng-template>

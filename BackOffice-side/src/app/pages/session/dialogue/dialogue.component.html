@@ -1,0 +1,66 @@
+<div class="dialogue-list bg-fff rounded-3 d-flex flex-column h-100">
+  <div class="py-10 mx-6 fz-20 d-flex flex-wrap lh-34 dashed-bottom">
+    <div class="flex-1">{{ 'common.current' | lang }}</div>
+    <button
+      *ngIf="subHeaderService.merchantCurrentId"
+      class="btn btn-light-primary fz-16 px-5 py-2 mr-18"
+      (click)="massMsg()"
+    >
+      {{ 'session.newChat' | lang }}
+    </button>
+  </div>
+
+  <!-- 会话列表 -->
+  <div class="ml-6 pr-4 mr-2 flex-1 min-w-0 custom-scroll-y">
+    <div
+      (click)="sessionService.curSession = item"
+      class="dialogue-item cursor-pointer mx-4 dashed-bottom"
+      *ngFor="let item of sessionService.sessionList"
+      [class.active]="sessionService.curSession?.uid === item.uid"
+    >
+      <div class="d-flex flex-ac">
+        <!-- avatar -->
+        <img class="dialogue-avatar" [src]="item.avatar" alt="" width="20" height="20" />
+        <!--        <svg-icon [src]="'./assets/images/svg/platform/mac-web.svg'" class="fz-0 svg-icon svg-icon-20"></svg-icon>-->
+
+        <!-- UID -->
+        <div class="ml-4">{{ item.uid }}</div>
+
+        <!-- 用户名 -->
+        <div class="dialogue-txt flex-1 min-w-0 px-4">{{ item.name }}</div>
+
+        <!-- 时间 -->
+        <div class="dialogue-time">{{ item.messageBody?.createTime | timeFormat: 'HH:mm:ss' : '-' }}</div>
+      </div>
+
+      <!-- 最近消息 -->
+      <div class="dialogue-last pt-4 fz-12 lh-14 d-flex">
+        <div class="dialogue-last-msg">{{ item.messageBody?.content || '' | filterLatestMsg }}</div>
+        <div class="dialogue-unread-count" *ngIf="item.unreadCount">
+          {{ Math.min(item.unreadCount, 99) }}{{ item.unreadCount > 99 ? '+' : '' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="h-100 w-100 d-flex flex-center" *ngIf="!sessionService.sessionList.length">
+      <empty [show]="true"></empty>
+    </div>
+  </div>
+
+  <!-- 底部内容:目前占位 -->
+  <div class="pt-8"></div>
+</div>
+
+<ng-container *ngIf="sessionService.curSession">
+  <dialogue-im></dialogue-im>
+
+  <!-- 信息框 -->
+  <im-info></im-info>
+</ng-container>
+
+<!-- 请选择一个会话 -->
+<ng-container *ngIf="!sessionService.curSession">
+  <div class="h-100 w-100 d-flex flex-center bg-fff rounded-3 ml-4">
+    <empty [show]="true" [text]="'session.firstChooseMember' | lang" [style.height.px]="180"></empty>
+  </div>
+</ng-container>

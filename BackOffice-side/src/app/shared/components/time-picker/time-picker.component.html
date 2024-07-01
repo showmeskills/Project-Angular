@@ -1,0 +1,32 @@
+<ng-template
+  cdkConnectedOverlay
+  cdkConnectedOverlayLockPosition
+  cdkConnectedOverlayHasBackdrop
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isOpen"
+  (backdropClick)="close()"
+  (detach)="close()"
+>
+  <div class="picker-plane">
+    <div class="picker">
+      <ng-container *ngFor="let time of timeList; let timerIndex = index">
+        <div class="picker-wrap" #target (scroll)="scroll($event)">
+          <ul class="picker-list">
+            <li
+              (click)="onItemClick(target, i, val, timerIndex)"
+              *ngFor="let val of time; let i = index"
+              [class.active]="timeValue[timerIndex] !== undefined && val === +timeValue[timerIndex]!"
+            >
+              {{ val.toString().padStart(2, '0') }}
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </div>
+    <div class="picker-footer">
+      <span class="picker-footer-btn" (click)="close()">{{ 'common.cancel' | lang }}</span>
+      <span class="picker-footer-btn primary" (click)="onConfirm()">{{ 'common.confirm' | lang }}</span>
+    </div>
+  </div>
+</ng-template>

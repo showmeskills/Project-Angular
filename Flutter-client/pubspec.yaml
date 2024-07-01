@@ -1,0 +1,255 @@
+name: gogaming_app
+description: A new gogaming Flutter project.
+
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# 版本号格式如 3.当前时间.x+2+当前时间
+# 如果存在同一天构建多个版本情况时可修改 x
+version: 3.20240527.1+320240527
+
+environment:
+  sdk: ">=3.0.3 <4.0.0"
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter 
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.18.0
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  gogaming_app_base_project:
+    path: gogaming_app_base_project
+  base_framework:
+    path: gogaming_app_base_project/base_framework
+
+  device_info_plus: ^8.0.0
+  encrypt: ^5.0.1
+  pointycastle: ^3.6.2
+  flutter_svg: ^1.1.5
+  scrollable_positioned_list: ^0.3.5
+  otp_text_field:
+    path: gogaming_app_base_project/plugins/otp_text_field
+  qr_flutter: 4.0.0
+  image_picker: ^0.8.4+1
+  gt4_flutter_plugin:
+    path: gogaming_app_base_project/plugins/gt4_flutter_plugin
+  #  gt3_flutter_plugin: 0.0.8
+  big_dart:
+    path: gogaming_app_base_project/plugins/big_dart
+  minio:
+    path: gogaming_app_base_project/plugins/minio
+  http: ^0.13.5
+  card_swiper: ^2.0.4
+  auto_size_text: ^3.0.0
+  cached_network_image: ^3.3.1
+  file: ^6.1.0
+  flutter_smart_dialog: 4.8.2
+  focus_detector: ^2.0.1
+  octo_image: ^2.0.0
+  fl_chart: ^0.55.2
+  url_launcher: ^6.0.8
+  extended_text: ^13.0.0
+  #  permission_handler: ^10.2.0
+  path_provider: ^2.0.4
+  #  percent_indicator: 4.0.0
+  r_upgrade:
+    path: gogaming_app_base_project/plugins/r_upgrade-master
+  flutter_html: ^3.0.0-alpha.6
+  configurable_expansion_tile_null_safety: 3.3.0
+  flutter_countdown_timer: ^4.1.0
+  expandable: ^5.0.1
+  flutter_layout_grid: ^2.0.1
+  extra_hittest_area: ^0.1.0
+  connectivity_plus: ^3.0.2
+  flick_video_player: ^0.5.0
+  video_player: ^2.4.10
+  video_compress: ^3.1.2
+  image_gallery_saver: ^1.7.1
+  share_plus: ^6.3.0
+  android_id: ^0.1.3+1
+  flame: ^1.6.0
+  flame_audio: 2.0.2
+  widget_mask: ^1.0.0+0
+  visibility_detector: ^0.2.2
+  flutter_line_sdk: 2.3.5
+  file_picker: ^5.2.5
+  path: ^1.8.2
+  google_sign_in: ^5.4.4
+  lzstring: ^2.0.0+2
+  package_info_plus: ^3.0.3
+  local_auth: 2.1.6
+  device_apps: ^2.2.0
+  tab_indicator_styler: ^2.0.0
+  scan: ^1.6.0
+  flutter_switch: ^0.3.2
+  system_settings: ^2.1.0
+  qr_code_scanner: ^1.0.1
+  photo_view: ^0.14.0
+  flutter_pdfview: ^1.3.1
+  phone_number: ^2.1.0
+  fpjs_pro_plugin: ^1.3.0
+  iovation_flutter:
+    path: gogaming_app_base_project/plugins/iovation_flutter
+  launch_queue:
+    path: gogaming_app_base_project/plugins/launch_queue
+  zendesk_messaging: 2.7.4
+  webview_flutter_android: 
+    path: gogaming_app_base_project/plugins/webview_flutter_android
+  firebase_analytics: ^10.7.4
+  firebase_core: ^2.24.2
+  flutter_branch_sdk: ^7.0.2
+  crypto: ^3.0.3
+  drift: ^2.16.0
+  sqlite3_flutter_libs: ^0.5.20
+  sqlite3: ^2.4.0
+
+  # shorebird 手动更新插件
+  shorebird_code_push: ^1.1.3
+  web_socket_channel: ^2.4.4
+  flutter_list_view:
+    path: gogaming_app_base_project/plugins/flutter_list_view
+  flutter_cached_pdfview:
+    path: gogaming_app_base_project/plugins/flutter_cached_pdfview
+  
+  keyboard_utils_fork: ^1.0.1
+  media_asset_utils: 
+    git: 
+      url: https://github.com/lucky1213/media_assets_utils.git
+
+  workmanager: ^0.5.2
+  flutter_local_notifications: 17.0.0
+
+dependency_overrides:
+  local_auth_android: 1.0.21
+  #fix YM2021-3354 keyboard auto hidden
+  webview_flutter_android: 
+    path: gogaming_app_base_project/plugins/webview_flutter_android
+  webview_flutter_wkwebview: 3.6.0
+
+scripts:
+  # 同时运行获取图片资源、添加 router、获取翻译文件
+  rebuild: sh scripts/rebuild.sh
+  # 获取翻译文件
+  translate: sh scripts/get_translate.sh
+  # 导出没有添加到控制台的翻译文件，导出为 xlsx 格式
+  # 默认 type 为 8（前端系统）
+  export: python scripts/export_translate.py
+  # 同时运行获取图片资源、添加 router
+  restart: sh scripts/get_translate.sh; sh scripts/rebuild.sh
+
+dev_dependencies:
+  assets_gen: 1.3.0
+  build_runner: ^2.4.8
+  flutter_launcher_icons: ^0.12.0
+  flutter_native_splash: ^2.2.18
+  drift_dev: ^2.16.0
+  # 新版本 image 固定了偶数裁剪，奇数尺寸下裁剪报错，直接固定了版本
+  image: 4.0.15
+  # sentry_dart_plugin: ^1.3.0
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/images/login_register/
+    - assets/images/main_tabbar/
+    - assets/images/appbar/
+    - assets/images/common/
+    - assets/images/country/
+    - assets/images/home/
+    - assets/images/preferences/
+    - assets/images/game/
+    - assets/images/main_menu/
+    - assets/images/icon/
+    - assets/images/currency/
+    - assets/images/register/
+    - assets/images/account/
+    - assets/images/kyc/
+    - assets/images/bank_logo/
+    - assets/images/lottery/
+    - assets/images/deposit/
+    - assets/images/bonus/
+    - assets/images/coupon/
+    - assets/images/vip/
+    - assets/images/splash/
+    - assets/images/appeal/
+    - assets/images/oauth/
+    - assets/images/advanced_certification/
+    - assets/audio/
+    - assets/html/
+    - assets/images/game_config/
+    - assets/images/tournament/
+    - assets/images/im/
+    - assets/images/theme/
+    - shorebird.yaml
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: DINPro
+      fonts:
+        - asset: assets/fonts/DINPro_regular.ttf
+          weight: 400
+        - asset: assets/fonts/DINPro_medium.ttf
+          weight: 500
+        - asset: assets/fonts/DINPro_bold.ttf
+          weight: 700
+
+# sentry:
+#   upload_debug_symbols: true
+#   upload_source_maps: false
+#   upload_sources: false
+#   project: flutter
+#   org: sentry
+#   auth_token: f0d563d2ce364a33a26b693a09a538e5a9cc470f68194eb091ddb4fcdec60f36
+#   url: http://119.91.19.47:9000/
+#   wait_for_processing: true
+#   log_level: warn # possible values: trace, debug, info, warn, error
+#   release: #{Build.BuildNumber}#

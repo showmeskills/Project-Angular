@@ -1,0 +1,84 @@
+<div class="wrapper" [class.loading]="loading">
+  <div class="wrapper-top">
+    <orignal-bar type="slide" [isFast]="false" [(fairnessData)]="fairnessData" [(isHotkey)]="isHotkey"> </orignal-bar>
+  </div>
+  <div class="mian">
+    <div class="game-content svelte-1wvo54z" style="min-height: 478px" #monitorDiv>
+      <!-- <div class="gradient-overlay svelte-1kij38k"></div> -->
+      <div class="others-wrap svelte-1kij38k">
+        <div class="numbers">
+          <ng-container *ngFor="let item of results">
+            <div class="item" [ngStyle]="{ 'background-color': getItemBackgroundColor(item) }">{{ item }} X</div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="wrap svelte-1kij38k">
+        <div class="wrap svelte-1ovq9jb">
+          <div class="center-wrap svelte-om7jij">
+            <div
+              class="centered-infinite-width svelte-om7jij"
+              style="height: 200px"
+              [ngStyle]="{ width: slideWidth + 'px' }"
+            >
+              <div class="infinite-width-wrap svelte-om7jij" style="height: 200px" #slideTransform>
+                <div
+                  *ngFor="let item of slideList; let i = index"
+                  class="roll svelte-1aanvks with-font-color"
+                  [ngStyle]="{ width: item.itemWidth }"
+                >
+                  <img
+                    src="assets/orignal/images/slide/hexagon.svg"
+                    alt="hexagon"
+                    class="hexagon svelte-1aanvks"
+                    style="z-index: 2"
+                  />
+                  <span class="multiplier svelte-1aanvks"
+                    ><span
+                      class="weight-normal line-height-default align-left size-default text-size-default variant-subtle numeric with-icon-space svelte-1myjzud"
+                      style=""
+                      >{{ item.rote }}×</span
+                    ></span
+                  >
+                  <div
+                    class="payout svelte-1aanvks"
+                    [ngStyle]="{ 'background-color': getItemBackgroundColor(item.rote) }"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <img
+            alt="pointer"
+            class="pointer svelte-1ovq9jb"
+            src="assets/orignal/images/slide/pointer.svg"
+            style="transform: translate(-50%, calc(100% + 20.6992px))"
+          />
+        </div>
+      </div>
+      <div class="others-wrap svelte-1kij38k">
+        <div class="wrap svelte-2ima4n">
+          <div class="svelte-test">
+            <span class="time" *ngIf="showState == 1">{{ currentCountDown }}&nbsp;&nbsp;</span>
+            <span class="label" *ngIf="showState == 1">{{ 'place_bets' | translate }}</span>
+
+            <span class="label" *ngIf="showState == 2">{{ 'stop_betting' | translate }}</span>
+            <span class="label" *ngIf="showState == 3">{{ 'obtain_result' | translate }}</span>
+            <span class="label" *ngIf="showState == 4">{{ 'next_round' | translate }}</span>
+          </div>
+          <div class="progress-bar svelte-2ima4n" [style.width]="progressWidth"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <orignal-bet
+    type="slide"
+    [isDice]="false"
+    [(rate)]="rate"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [operate]="operate"
+    [isRealHistory]="true"
+  >
+  </orignal-bet>
+</div>

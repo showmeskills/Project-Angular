@@ -1,0 +1,262 @@
+<div class="d-flex flex-ac bg-fff p-12">
+  <div class="flex-wrap d-flex">
+    <!-- BaseID -->
+    <form-row class="mr-12" label="BaseID">
+      <ng-template>
+        <input
+          [(ngModel)]="data.baseID"
+          class="form-control"
+          type="text"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 厂商简称 -->
+    <form-row class="mr-12" [label]="'game.provider.manufacturer_brief' | lang">
+      <ng-template>
+        <input
+          [(ngModel)]="data.abbreviation"
+          id="search-id"
+          class="form-control"
+          type="text"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 供应商ID -->
+    <form-row class="mr-12" [label]="'game.provider.providerId' | lang">
+      <ng-template>
+        <input
+          [(ngModel)]="data.providerCatId"
+          class="form-control"
+          type="text"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 供应商简称 -->
+    <form-row class="mr-12" [label]="'game.provider.providerSName' | lang">
+      <ng-template>
+        <input
+          [(ngModel)]="data.providerName"
+          class="form-control"
+          type="text"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="btn-wrap d-flex flex-ac">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="reset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="px-12 pt-12 d-flex flex-wrap">
+    <div class="fz-20 flex-1">{{ 'game.provider.manufacturer_list' | lang }}</div>
+    <div>
+      <!--      <button type="button" class="btn btn-light-primary py-2" (click)="add()">-->
+      <!--        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon"></svg-icon>-->
+      <!--        <span>{{ 'game.manage.add' | lang }}</span>-->
+      <!--      </button>-->
+      <button type="button" class="btn btn-light-primary py-2" (click)="export()">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon vam"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <!-- 数据表格 -->
+    <table class="table mb-0" [selectChildren]="true">
+      <thead>
+        <tr>
+          <th class="w-10px">
+            <span class="cell">
+              <label class="checkbox checkbox-lg pl-4">
+                <input type="checkbox" selectGroup />
+                <span></span>
+              </label>
+            </span>
+          </th>
+          <th>
+            <span class="cell">BaseID</span>
+          </th>
+          <!--          <th>-->
+          <!--            <span class="cell">{{ 'game.provider.manufacturer_brief' | lang }}</span>-->
+          <!--          </th>-->
+          <!--          <th>-->
+          <!--            <span class="cell">{{ 'game.provider.merchant' | lang }}</span>-->
+          <!--          </th>-->
+          <th>
+            <span class="cell">{{ 'game.provider.manufacturer_brief' | lang }}</span>
+          </th>
+          <!--          <th>-->
+          <!--            <span class="cell">{{ 'game.provider.order' | lang }}</span>-->
+          <!--          </th>-->
+          <th>
+            <span class="cell">{{ 'game.provider.amount' | lang }}</span>
+          </th>
+          <!-- Proxy状态 -->
+          <!-- 暂时隐藏JIRA：https://gbd730.atlassian.net/browse/WU2021-12151 -->
+          <!--          <th>-->
+          <!--            <span class="cell">Proxy{{ 'common.status' | lang }}</span>-->
+          <!--          </th>-->
+          <!-- 类型 -->
+          <th style="width: 20%">
+            <span class="cell">{{ 'content.info.stu' | lang }}</span>
+          </th>
+          <th style="width: 10%">
+            <span class="cell">{{ 'game.provider.action' | lang }}</span>
+          </th>
+          <!-- 展开 -->
+          <th [style.width.px]="70">
+            <span class="cell">{{ 'common.expand' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of list">
+          <tr>
+            <td>
+              <span class="cell">
+                <label class="checkbox checkbox-lg pl-4">
+                  <input type="checkbox" select [(ngModel)]="item['checked']" />
+                  <span></span>
+                </label>
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ item.baseId }}</span>
+            </td>
+            <!--            <td>-->
+            <!--              <span class="cell">NaN</span>-->
+            <!--            </td>-->
+            <!--            <td>-->
+            <!--              <span class="cell">{{ subHeaderService.getMerchantName(item.tenantId) || '-' }}</span>-->
+            <!--            </td>-->
+            <td>
+              <span class="cell">{{ item.abbreviation }}</span>
+            </td>
+            <!--            <td>-->
+            <!--              <span class="cell">NaN</span>-->
+            <!--            </td>-->
+            <td>
+              <span class="cell">{{ item.gameCount }}</span>
+            </td>
+            <!-- Proxy状态 -->
+            <!-- 暂时隐藏JIRA：https://gbd730.atlassian.net/browse/WU2021-12151 -->
+            <!--            <td>-->
+            <!--              <span class="cell">-->
+            <!--                <label class="switch switch-success" [attrDisabled]="!ls.isGB">-->
+            <!--                  <input-->
+            <!--                    type="checkbox"-->
+            <!--                    (change)="onProxyState(item)"-->
+            <!--                    [(ngModel)]="item.isProxy"-->
+            <!--                  />-->
+            <!--                  <span></span>-->
+            <!--                </label>-->
+            <!--              </span>-->
+            <!--            </td>-->
+            <!-- 类型 -->
+            <td>
+              <span class="cell">
+                <app-label [type]="item.statusLabel?.type || 'default'">{{ item.statusLabel?.text }}</app-label>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <button type="button" class="btn btn-light" (click)="edit(item.baseId)">
+                  {{ 'game.provider.edit' | lang }}
+                </button>
+              </span>
+            </td>
+            <!-- 展开 -->
+            <td>
+              <span class="cell">
+                <svg-icon
+                  (click)="item['expand'] = !item['expand']"
+                  *ngIf="!item['expand']"
+                  class="text-primary cursor-pointer user-select-none"
+                  [src]="'./assets/images/svg/arrowL.svg'"
+                ></svg-icon>
+                <svg-icon
+                  (click)="item['expand'] = !item['expand']"
+                  *ngIf="!!item['expand']"
+                  class="text-primary cursor-pointer user-select-none rote"
+                  [src]="'./assets/images/svg/arrowB.svg'"
+                ></svg-icon>
+              </span>
+            </td>
+          </tr>
+
+          <!-- 展开页 -->
+          <ng-container *ngIf="item['expand']">
+            <tr class="info-row table-info-row" *ngFor="let product of item.details">
+              <td><span class="cell"></span></td>
+              <td>
+                <span class="cell">{{ product.providerCatId }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ product.providerName }}</span>
+              </td>
+              <td><span class="cell"></span></td>
+              <td>
+                <span class="cell">{{ product.categoryName }}</span>
+              </td>
+              <td>
+                <span class="cell" [style.color]="product.isEnable ? 'green' : 'red'">{{
+                  (product.isEnable ? 'common.enable' : 'common.disable') | lang
+                }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ product.venueFee * 100 || 0 }}%</span>
+              </td>
+              <td><span class="cell"></span></td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <div class="d-flex flex-between pt-20">
+      <!-- 左边每页总数选择 -->
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(false)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- 右边分页选择 -->
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

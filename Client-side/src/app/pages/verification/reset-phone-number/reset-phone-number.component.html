@@ -1,0 +1,174 @@
+<div class="page-container">
+  <app-header-title-bar [title]="'modify_change' | translate" [clickForRouterBack]="true"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <mat-horizontal-stepper
+        linear
+        labelPosition="bottom"
+        [disableRipple]="isRipple"
+        matStepperIcon="edit"
+        #stepper
+        class="line-selected-{{ stepper.selectedIndex }}"
+      >
+        <!--step1  ：身份验证-->
+        <mat-step label="{{ 'identification' | translate }}">
+          <div class="form-clonum">
+            <div class="header">
+              {{ 'safe_info' | translate }}
+            </div>
+            <!--验证表单-->
+            <div class="form-group">
+              <app-customize-input
+                [type]="'password'"
+                [size]="'large'"
+                [label]="'password_text' | translate"
+                #iPwd
+                [error]="$any(iPwd).notValid ? ('enter_pwd' | translate) : ''"
+                (onChange)="onPasswordInput(iPwd)"
+                [(value)]="password"
+              >
+                <i
+                  class="onact96-not"
+                  right-content
+                  [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+                  (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+                ></i>
+              </app-customize-input>
+            </div>
+            <div class="verify-container">
+              <!--otp验证-->
+              <app-verify-code
+                [otpType]="otpType"
+                [phone]="phone"
+                [inputLabel]="'p_code' | translate"
+                [authStatus]="authStatus"
+                [tips]="
+                  ('enter_phone' | translate) +
+                  (userAccountInfor?.areaCode || '') +
+                  ' ' +
+                  (userAccountInfor?.mobile || '') +
+                  ('ver_code' | translate)
+                "
+                (onChangeAuthStatus)="onfirstSendAuthcode($event)"
+                (verfityInputSuccess)="onOtpCode($event)"
+              >
+              </app-verify-code>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg" *ngIf="!!showErrorText">
+                {{ showErrorText }}
+              </div>
+            </div>
+            <div class="form-group" *ngIf="isBindGoogleValid">
+              <!--谷歌验证码-->
+              <app-customize-input
+                [type]="'number'"
+                [size]="'large'"
+                [label]="'google_code' | translate"
+                #iGoogleCaptcha
+                [error]="!!googleCaptcha && !$any(iGoogleCaptcha).isValid"
+                (onChange)="onPasswordInput(iGoogleCaptcha)"
+                [(value)]="googleCaptcha"
+              >
+              </app-customize-input>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg">
+                {{ 'enter_google_code' | translate }}
+              </div>
+            </div>
+            <customize-button
+              class="next-btn"
+              width="100%"
+              type="primary"
+              size="large"
+              [disabled]="!canSubmit1()"
+              [loading]="isLoading"
+              (onClick)="goForward(stepper)"
+            >
+              {{ 'next' | translate }}
+            </customize-button>
+          </div>
+        </mat-step>
+        <!--step2  ：修改手机号-->
+        <mat-step label="{{ 'change_p' | translate }}">
+          <div class="form-clonum">
+            <div class="header">
+              {{ 'enter_pw' | translate }}
+            </div>
+            <div class="form-group">
+              <label>{{ 'new_p' | translate }}</label>
+              <!--手机区号选择-->
+              <div class="phone-container">
+                <div class="area-code disabled">
+                  <div class="country-image">
+                    <i class="country" class="{{ fogClassName }}"></i>
+                  </div>
+                  <p class="code">{{ currentPhoneZone }}</p>
+                  <i class="icon-arrow-down"></i>
+                </div>
+                <!--手机号输入框-->
+                <div class="input-group">
+                  <app-customize-input
+                    [size]="'large'"
+                    #iPhone
+                    [type]="'number'"
+                    [error]="!!phone && !$any(iPhone).isValid"
+                    [(value)]="phone"
+                    (onChange)="onPhoneInput(iPhone)"
+                  >
+                  </app-customize-input>
+                </div>
+              </div>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg" *ngIf="!!iPhone.value && !$any(iPhone).isFocus && !$any(iPhone).isValid">
+                {{ 'phone_error_msg' | translate }}
+              </div>
+            </div>
+            <div class="form-group">
+              <app-verify-code
+                [otpType]="otpType"
+                [phone]="phone"
+                [inputLabel]="'p_code' | translate"
+                [authStatus]="authStatus"
+                (onChangeAuthStatus)="onfirstSendAuthcode($event)"
+                (verfityInputSuccess)="onOtpCode($event)"
+                (keyup.enter)="checkToSubmit(stepper)"
+              >
+              </app-verify-code>
+            </div>
+            <customize-button
+              class="next-btn"
+              width="100%"
+              type="primary"
+              size="large"
+              [disabled]="!canSubmit2()"
+              [loading]="isLoading"
+              (onClick)="goForward(stepper)"
+            >
+              {{ 'next' | translate }}
+            </customize-button>
+          </div>
+        </mat-step>
+        <!-- step3  ：修改成功-->
+        <mat-step label="{{ 'change_success_msg' | translate }}">
+          <div class="form-clonum">
+            <app-success-verification
+              [header]="'p_change_success' | translate"
+              [successText]="'change_p_success' | translate"
+            >
+            </app-success-verification>
+            <customize-button class="back-btn" width="100%" type="primary" size="large" (onClick)="handleback()">
+              {{ 'return' | translate }}
+            </customize-button>
+          </div>
+        </mat-step>
+        <!--步骤条显示-->
+        <ng-template matStepperIcon="number" let-index="index">
+          <mat-icon>{{ index === 0 ? '1' : index === 1 ? '2' : '3' }}</mat-icon>
+        </ng-template>
+        <ng-template matStepperIcon="edit" let-index="index">
+          <mat-icon>{{ index === 0 ? '1' : index === 1 ? '2' : '3' }}</mat-icon>
+        </ng-template>
+      </mat-horizontal-stepper>
+    </div>
+  </div>
+</div>

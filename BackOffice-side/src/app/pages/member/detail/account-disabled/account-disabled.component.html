@@ -1,0 +1,206 @@
+<modal-title
+  [title]="((isAllow ? 'member.overview.offBan' : 'member.overview.disable') | lang) + ('common.confirm' | lang)"
+  (close)="modal.dismiss()"
+></modal-title>
+
+<div class="px-10 py-12 fz-16 lh-22 user-disabled-content">
+  <div class="mb-4" *ngIf="!isAllow">
+    {{ 'common.select' | lang }}{{ 'member.overview.offBan' | lang }}{{ 'member.overview.disableTips' | lang }}
+  </div>
+
+  <!-- 登录禁用 -->
+  <div class="lh-30 mt-2">
+    <label class="fz-16 color-222 fw-500">
+      {{ 'common.login.loginText' | lang }}
+      <span class="ml-4"></span>
+    </label>
+    <form-row
+      class="px-0 py-0"
+      [label]="'member.overview.disableRange' | lang"
+      label-width="140"
+      labelStyle="fontSize:14px"
+    >
+      <ng-template>
+        <div class="lh-30 pt-3">
+          <label class="checkbox checkbox-lg mr-8">
+            <input type="checkbox" [(ngModel)]="enable" />
+            <span class="mr-4"></span>{{ 'common.all' | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+    <!-- 时间组件 -->
+    <time-compoent *ngIf="enable" [timeMode]="loginTime"></time-compoent>
+  </div>
+
+  <!-- 风控级别 -->
+  <div class="lh-30 mt-2">
+    <label class="fz-16 color-222 fw-500">
+      {{ 'member.overview.riskLevel' | lang }}
+      <span class="ml-4"></span>
+    </label>
+    <form-row
+      class="px-0 py-0"
+      [label]="'member.overview.amendLevel' | lang"
+      label-width="140"
+      labelStyle="fontSize:14px"
+    >
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <label class="radio radio-lg mr-8" *ngFor="let item of renderForbidKeys()">
+            <input type="radio" name="riskLevel" [value]="item" [(ngModel)]="riskLevel" />
+            <span class="mr-4"></span>{{ item }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <ng-container *ngIf="renderForidActivityCodes()">
+      <ng-container *ngFor="let item of renderForidActivityCodes() | keyvalue">
+        <form-row
+          *ngIf="item.key === riskLevel"
+          class="py-0"
+          label-width="140px"
+          labelStyle="fontSize:14px"
+          [label]="'risk.level.riskConfigTitle' | lang"
+        >
+          <ng-template>
+            <div class="d-flex flex-wrap pt-3 lh-20" *ngIf="item.value.length">
+              <label class="checkbox checkbox-lg mr-8 my-1" *ngFor="let value of item.value">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="value.isBlocked"
+                  (change)="onChange(item.key, value.activityCode, value.isBlocked)"
+                />
+                <span class="mr-4"></span>
+                {{ value.displayName || '' }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- 游戏交易 -->
+  <div class="lh-30 mt-2">
+    <!-- 禁用范围 -->
+    <label class="mr-8 fz-16 color-222">
+      {{ 'member.overview.gameTransaction' | lang }}
+      <span class="ml-4"></span>
+    </label>
+
+    <form-row class="p-0" [label]="'member.overview.disableRange' | lang" label-width="140" labelStyle="fontSize:14px">
+      <ng-template>
+        <div class="pt-3" *ngIf="providerList.length > 0">
+          <!-- 全部 -->
+          <label class="checkbox checkbox-lg lh-30 fz-14" [class.checkbox-indeterminate]="isIndeterminate(allchecked)">
+            <input type="checkbox" [(ngModel)]="allchecked['checked']" (change)="checkItem(allchecked)" />
+            <span class="mr-4"></span>{{ 'common.all' | lang }}
+          </label>
+          <!-- 游戏厂商 -->
+          <form-row
+            *ngFor="let items of providerList"
+            class="py-0"
+            label-width="111px"
+            labelStyle="fontSize:14px"
+            [label]="lang.isLocal ? items['description'] : items['code']"
+          >
+            <ng-template>
+              <div class="d-flex flex-wrap pt-3 lh-20">
+                <label class="checkbox checkbox-lg mr-8 my-1" [class.checkbox-indeterminate]="isIndeterminate(items)">
+                  <input type="checkbox" [(ngModel)]="items['checked']" (change)="checkItem(items)" />
+                  <span class="mr-4"></span>{{ 'common.all' | lang }}
+                </label>
+                <label class="checkbox checkbox-lg mr-8 my-1" *ngFor="let item of items.providers">
+                  <input type="checkbox" [(ngModel)]="item['checked']" />
+                  <span class="mr-4"></span>{{ lang.isLocal ? item.name : item.providerCatId }}
+                </label>
+              </div>
+            </ng-template>
+          </form-row>
+        </div>
+      </ng-template>
+    </form-row>
+    <!-- 时间组件 -->
+    <time-compoent *ngIf="providerListSelcted" [timeMode]="gameTime"></time-compoent>
+  </div>
+
+  <!-- 支付方式禁用 -->
+  <div class="lh-30 mt-2">
+    <div selectChildren>
+      <label class="mr-8 fz-16 color-222">
+        {{ 'member.overview.paymentMethod' | lang }}
+        <span class="ml-4"></span>
+      </label>
+      <form-row
+        class="px-0 py-0"
+        [label]="'member.overview.disableRange' | lang"
+        label-width="140"
+        labelStyle="fontSize:14px"
+      >
+        <ng-template>
+          <div class="lh-30 pt-3">
+            <label class="checkbox checkbox-lg mr-8">
+              <input type="checkbox" selectGroup />
+              <span class="mr-4"></span>{{ 'common.all' | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+      <form-row
+        class="px-0 py-0"
+        [label]="'member.overview.deposit' | lang"
+        label-width="140"
+        labelStyle="fontSize:14px;height:30px"
+      >
+        <ng-template>
+          <div class="d-flex flex-ac flex-wrap">
+            <label class="checkbox checkbox-lg mr-8" *ngFor="let prod of depositList">
+              <input type="checkbox" [(ngModel)]="prod.checkd" />
+              <span class="mr-4"></span>{{ prod.lang | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+      <!-- 提款 -->
+      <form-row
+        class="px-0 py-0"
+        [label]="'member.overview.withdrawal' | lang"
+        label-width="140"
+        labelStyle="fontSize:14px"
+      >
+        <ng-template>
+          <div class="d-flex flex-ac">
+            <label class="checkbox checkbox-lg mr-8" *ngFor="let prod of withdrawalList">
+              <input type="checkbox" [(ngModel)]="prod.checkd" [disabled]="isAllow" />
+              <span class="mr-4"></span>{{ prod.lang | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+    <!-- 时间组件 -->
+    <time-compoent *ngIf="payListSelcted" [timeMode]="payTime"></time-compoent>
+    <!-- 文件上传 -->
+    <form-row [label]="'member.overview.fileUpload' | lang" label-width="140" labelStyle="fontSize:14px">
+      <ng-template>
+        <upload [style.width.px]="120" [style.height.px]="42" [padding]="'10px'" [(ngModel)]="image">
+          <ng-template default>
+            <img [src]="'./assets/images/svg/upload.svg'" style="width: 18px; height: 22px" />
+            <span class="ml-6" [style.color]="'#009EF7'">{{ 'member.overview.clickUpload' | lang }}</span>
+          </ng-template>
+        </upload>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <!-- 禁用备注 -->
+  <form-row class="mt-6" [label]="'risk.remark' | lang" label-width="140" required>
+    <ng-template>
+      <input class="form-control w-100" type="text" [(ngModel)]="disabledRemark" />
+    </ng-template>
+  </form-row>
+</div>
+
+<modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>

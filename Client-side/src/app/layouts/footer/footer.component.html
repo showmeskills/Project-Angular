@@ -1,0 +1,104 @@
+<div *ngIf="!simple" class="page-container footer unity-padding-web unity-padding-h5-12">
+  <div class="main-container">
+    <div class="container footer-menu">
+      <ng-container *ngIf="!isH5; else H5footer">
+        <div class="content-box footer-menu-box">
+          <ng-container *ngFor="let items of footerList">
+            <div *ngIf="items.type !== 'Community'">
+              <h3>{{ items.name }}</h3>
+              <ul>
+                <li *ngFor="let item of items.detail">
+                  <a
+                    class="onact96-a"
+                    *ngIf="getIsLink(item.url); else routerPage"
+                    [href]="item.url"
+                    [target]="item.isBlank ? '_blank' : '_self'"
+                    >{{ item.title }}</a
+                  >
+                  <ng-template #routerPage>
+                    <span class="onact96-not" (click)="jumpToPage(item.url, item.isBlank)">{{ item.title }}</span>
+                  </ng-template>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-template #H5footer>
+        <ul class="H5footer">
+          <li class="item" *ngFor="let items of footerList; let i = index">
+            <div class="item-top onact96" (click)="onSelected(i)" *ngIf="items.type !== 'Community'">
+              <p>{{ items.name }}</p>
+              <div class="flag">{{ i === h5SelectedIndex ? '-' : '+' }}</div>
+            </div>
+            <ng-container *ngIf="i === h5SelectedIndex">
+              <ul class="item-bottom">
+                <li *ngFor="let detail of items.detail">
+                  <a
+                    class="onact96-a"
+                    *ngIf="getIsLink(detail.url); else routerPage"
+                    [href]="detail.url"
+                    [target]="detail.isBlank ? '_blank' : '_self'"
+                    >{{ detail.title }}</a
+                  >
+                  <ng-template #routerPage>
+                    <span class="onact96-not" (click)="jumpToPage(detail.url, detail.isBlank)">{{ detail.title }}</span>
+                  </ng-template>
+                </li>
+              </ul>
+            </ng-container>
+          </li>
+        </ul>
+      </ng-template>
+      <div class="footer-right">
+        <div class="row">
+          <div class="community">
+            <p class="title">{{ 'community' | translate }}</p>
+            <ul class="icon">
+              <li *ngFor="let item of communityList.detail">
+                <a class="onact96-a" [href]="item.url" [target]="item.isBlank ? '_blank' : '_self'">
+                  <img src="{{ item.title }}" />
+                </a>
+              </li>
+            </ul>
+            <div class="language onact96" (click)="selectLang()">
+              <div class="language-left">
+                <i class="country countryIcon" [class]="countryClassName()"></i>
+                <span class="countryLangName">{{ selectedLang?.name }}</span>
+              </div>
+              <img class="arrow" src="assets/images/datepicker/arrow.png" />
+            </div>
+          </div>
+          <div class="license-box">
+            <!-- 牌照图片 -->
+            <div class="license" *ngFor="let license of licensePic">
+              <!-- 纯图片 -->
+              <a
+                class="onact96-a"
+                [href]="license.url"
+                [target]="license.isBlank ? '_blank' : '_self'"
+                *ngIf="license.licenseType == 'Picture'"
+              >
+                <img class="org" [src]="license.image | preferWebp : true" />
+              </a>
+              <!-- ifrmae方式 -->
+              <iframe [src]="license.resourceUrl" class="org" *ngIf="license.licenseType == 'Code'"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="game-18">
+          <i class="icon-18plus"></i>
+          <span>{{ 'g_c_b_a_p_r' | translate }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="container footer-sign">
+      <div class="content-box">
+        <p>
+          {{ disclaimer }}
+        </p>
+        <p>{{ 'copy_right' | translate }} {{ 'brand_name' | translate }} | All Rights Reserved.</p>
+      </div>
+    </div>
+  </div>
+</div>

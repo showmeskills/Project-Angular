@@ -1,0 +1,82 @@
+<div class="verify-container">
+  <ng-container [ngSwitch]="fromPgae">
+    <!--账户已验证-->
+    <ng-container *ngSwitchCase="1">
+      <div class="main-cloum-1">
+        <div class="correct-icon"></div>
+        <div class="text-header-1">
+          {{ 'acc_veri' | translate }}
+        </div>
+        <div class="normal-text-1">
+          {{ 'up_veri' | translate }}
+        </div>
+        <customize-button class="margin-t" size="medium" type="primary" width="80%" (onClick)="close()">
+          {{ 'good' | translate }}
+        </customize-button>
+      </div>
+    </ng-container>
+    <!--证件信息不符-->
+    <ng-container *ngSwitchCase="2">
+      <div class="main-cloum-2">
+        <div class="important-icon"></div>
+        <div class="text-header-2">
+          {{ 'info_not_match' | translate }}
+        </div>
+        <div class="notic-contant-2">
+          {{ 'contact_service' | translate }}
+        </div>
+        <customize-button class="margin-t" size="medium" type="primary" width="80%" (onClick)="close()">
+          {{ 'i_konw' | translate }}
+        </customize-button>
+      </div>
+    </ng-container>
+    <!--升级审核中-->
+    <ng-container *ngSwitchCase="3">
+      <div class="main-cloum-3">
+        <div class="sand-clock-icon"></div>
+        <div class="text-header-3">
+          {{ 'up_process' | translate }}
+        </div>
+        <div class="normal-text-3">
+          {{ 'expected_date' | translate }}
+        </div>
+        <div class="large-text-3">
+          <!-- 2021-07-13(UTC) -->
+          {{ time }}
+        </div>
+        <customize-button class="margin-t" size="medium" type="primary" width="80%" (onClick)="close()">
+          {{ 'sure' | translate }}
+        </customize-button>
+      </div>
+    </ng-container>
+    <!--基础验证成功-->
+    <ng-container *ngSwitchCase="4">
+      <div class="main-cloum-4">
+        <div class="correct-icon"></div>
+        <div class="text-header-4">
+          {{ 'acc_veri' | translate }}
+        </div>
+        <div class="normal-text-4 hight-color">
+          {{ 'up_inter' | translate }}
+        </div>
+        <customize-button class="margin-t" size="medium" type="primary" width="80%" (onClick)="openkyc()">
+          {{ 'sure' | translate }}
+        </customize-button>
+      </div>
+    </ng-container>
+    <!--手机号说明-->
+    <ng-container *ngSwitchCase="5">
+      <div class="main-cloum-5">
+        <div class="phone-num-header">
+          {{ 'phone_desc' | translate }}
+        </div>
+        <div class="notic-contant">
+          {{ 'bank_service' | translate }}
+        </div>
+        <customize-button class="margin-t" size="medium" type="primary" width="80%" (onClick)="close()">
+          {{ 'sure' | translate }}
+        </customize-button>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

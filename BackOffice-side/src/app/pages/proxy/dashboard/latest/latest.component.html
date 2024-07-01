@@ -1,0 +1,93 @@
+<header class="d-flex flex-between flex-ac">
+  <div class="fz-20 color-222">{{ 'game.proxy.firstDeposit' | lang }}</div>
+  <div class="btn btn-light-primary fz-14 px-7">{{ 'game.manage.look_det' | lang }}</div>
+</header>
+
+<div class="py-4">
+  <span
+    class="latest-btn"
+    *ngFor="let item of status"
+    [class.active]="item.value === current.status"
+    (click)="onChange('status', item.value)"
+    >{{ item.lang | lang }}</span
+  >
+</div>
+
+<div class="flex-fill mt-2">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th><span class="cell">UID</span></th>
+        <th>
+          <span class="cell">{{ 'game.proxy.onlineChannel' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.onlineName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'game.proxy.firstDepositAmount' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.time' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell" [ngSwitch]="item.onlineChannel">
+            <ng-container *ngSwitchCase="1">{{ 'game.proxy.affiliateProgram' | lang }}</ng-container>
+            <ng-container *ngSwitchCase="2">{{ 'game.proxy.referFriend' | lang }}</ng-container>
+            <ng-container *ngSwitchCase="3">{{ 'game.proxy.straightOff' | lang }}</ng-container>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.superiorId }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.usdtAmount | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.optTime | timeFormat }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-between flex-ac">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+      [isLoading]="isLoading"
+    ></app-paginator>
+  </div>
+</div>

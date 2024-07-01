@@ -1,0 +1,17 @@
+<div class="process-container">
+  <span class="title">{{ 'dep_fiat_curr' | translate }}</span>
+  <div class="img-group">
+    <div class="ticket" *ngFor="let item of ticketsConfig; let i = index">
+      <img class="img" [src]="item.img" loading="lazy" />
+      <p class="sub-title">{{ item.title | translate }}</p>
+      <p class="txt">{{ item.value | translate }}</p>
+    </div>
+  </div>
+  <div class="img-row">
+    <div class="contant-clounm">
+      <p class="header">{{ 'deposit_sepa' | translate }}</p>
+      <p class="txt">{{ 'euros_no_fee' | translate }}</p>
+    </div>
+    <div class="people-img"></div>
+  </div>
+</div>

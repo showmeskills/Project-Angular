@@ -1,0 +1,74 @@
+<div
+  class="statistics animate__zoomIn_light animate__animated animate__fast"
+  *ngIf="show"
+  cdkDrag
+  cdkDragRootElement="app-statistics-panel"
+  cdkDragBoundary="body"
+  #dragCom="cdkDrag"
+  [cdkDragFreeDragPosition]="currentDragPosition"
+  (cdkDragEnded)="updatePosition()"
+>
+  <div class="tit" cdkDragHandle>
+    <i class="icon-chart"></i>
+    <span>{{ 'real_statistics' | translate }}</span>
+    <i
+      class="icon-close-simple increase mutual-opacity onact96-not"
+      (click)="orignalService.statisticsPanelState$.next(false)"
+    ></i>
+  </div>
+
+  <div class="con">
+    <ng-container>
+      <div class="bet-cont">
+        <div class="total-view">
+          <div class="box">
+            <p>
+              <label>{{ 'winnorlose' | translate }}</label>
+              <span [class]="currentGameTotal.reward < 0 ? 'lose' : 'win'">
+                <em>{{ currentGameTotal.reward | currencyValue: currentCurrency }}</em>
+                <img class="currency-icon" [src]="currentCurrency | currencyIcon" />
+              </span>
+            </p>
+            <p>
+              <label>{{ 'total_amount' | translate }}</label>
+              <span>
+                <em>{{ currentGameTotal.amount | currencyValue: currentCurrency }}</em>
+                <img class="currency-icon" [src]="currentCurrency | currencyIcon" />
+              </span>
+            </p>
+          </div>
+          <div class="box">
+            <p>
+              <label>{{ 'win' | translate }}</label>
+              <em class="win">{{ currentGameTotal.win }}</em>
+            </p>
+            <p>
+              <label>{{ 'lose' | translate }}</label>
+              <em class="lost">{{ currentGameTotal.lose }}</em>
+            </p>
+          </div>
+        </div>
+
+        <div class="chart box">
+          <apx-chart
+            *ngIf="chartReday"
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [dataLabels]="chartOptions.dataLabels"
+            [stroke]="chartOptions.stroke"
+            [legend]="chartOptions.legend"
+            [xaxis]="chartOptions.xaxis"
+            [yaxis]="chartOptions.yaxis"
+            [fill]="chartOptions.fill"
+            [tooltip]="chartOptions.tooltip"
+            [grid]="chartOptions.grid"
+            [annotations]="chartOptions.annotations"
+            [markers]="chartOptions.markers"
+          ></apx-chart>
+        </div>
+      </div>
+
+      <!-- 竞赛板块 -->
+    </ng-container>
+  </div>
+</div>

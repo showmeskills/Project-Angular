@@ -1,0 +1,99 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.content-box {
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .select-time {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    @include polyfills.flex-gap(24px, 'row wrap');
+    margin-top: 20px;
+
+    .customize-time {
+      font-size: 14px;
+      color: var(--btn-bg-color);
+    }
+  }
+
+  .select-reason {
+    margin-top: 20px;
+  }
+
+  .password {
+    margin-top: 20px;
+    max-width: 388px;
+
+    @media (max-width: 767px) {
+      max-width: 100%;
+    }
+  }
+
+  .submit {
+    display: flex;
+    @include polyfills.flex-gap(20px, 'row nowrap');
+    margin-top: 20px;
+
+    @media (max-width: 767px) {
+      justify-content: center;
+    }
+  }
+}
+
+::ng-deep {
+  .time-selector-container {
+    padding: 20px;
+    width: 484px;
+    border-radius: 10px;
+
+    @media (max-width: 767px) {
+      width: 100vw;
+      border-radius: 30px 30px 0 0;
+    }
+
+    .time-selector-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        font-size: 24px;
+        color: var(--text-color);
+      }
+
+      .icon-close-simple {
+        font-size: 14px;
+      }
+    }
+
+    .title-16 {
+      margin-top: 20px;
+      font-size: 16px;
+      color: var(--text-color-20);
+    }
+
+    .date-picker {
+      margin-top: 50px;
+      display: flex;
+      flex-direction: column;
+
+      .label-text {
+        font-size: 14px;
+        color: var(--text-color-20);
+        margin-bottom: 6px;
+      }
+    }
+
+    .dialog-sumbit {
+      margin-top: 24px;
+    }
+  }
+
+  .options-container {
+    z-index: 7;
+  }
+}

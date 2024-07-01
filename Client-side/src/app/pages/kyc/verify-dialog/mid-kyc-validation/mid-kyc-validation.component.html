@@ -1,0 +1,149 @@
+<div class="mid-container" [style.display]="isShow ? 'flex' : 'none'">
+  <!--标题栏-->
+  <div class="mid-header-container">
+    <div class="dailog-header">{{ 'int_ver' | translate }}</div>
+    <div class="icon-close-simple onact96-not" (click)="close()" [class.disable]="submitLoading || otpLoading"></div>
+  </div>
+  <!--验证-->
+  <div class="dailog-container">
+    <!--地区选择-->
+    <div class="country-selecter-colunm">
+      <label class="form-header">{{ 'issue_c' | translate }}</label>
+      <!--选择国家 [disabled]="true"-->
+      <app-country-selecter
+        [isFromDialog]="true"
+        [isShowSearch]="true"
+        [fullCountry]="false"
+        [disabled]="fullNameLoading"
+      >
+      </app-country-selecter>
+      <!-- </div> -->
+    </div>
+    <!--验证表单-->
+    <div class="format-container">
+      <!-- 姓名输入框 -->
+      <div class="form-colunm">
+        <app-customize-input
+          [readonly]="true"
+          [disabled]="true"
+          [required]="true"
+          size="large"
+          [value]="userName"
+          [label]="'name' | translate"
+          [error]="!!userName && !userNameValid ? ('real_name' | translate) : ''"
+          (onChange)="onUserNameInput()"
+          notice="{{ 'fullname_notice' | translate }}"
+          [loading]="fullNameLoading"
+        >
+        </app-customize-input>
+      </div>
+      <!-- 身份证输入框 -->
+      <div class="form-colunm">
+        <app-customize-input
+          [required]="true"
+          size="large"
+          [(value)]="userId"
+          [label]="'id_num' | translate"
+          [error]="!!userId && !userIdValid ? ('id_err' | translate) : ''"
+          (onChange)="onUserIdInput()"
+        >
+        </app-customize-input>
+      </div>
+      <!-- 银行卡输入框 -->
+      <div class="form-colunm">
+        <app-customize-input
+          [required]="true"
+          size="large"
+          [(value)]="userBankCard"
+          [label]="'bank_number' | translate"
+          [error]="!!userBankCard && !bankCardVaild ? ('incorrect_card' | translate) : ''"
+          (onChange)="onBankCardInput()"
+          type="number"
+        >
+        </app-customize-input>
+      </div>
+      <!--展开更多-->
+      <ng-container *ngIf="bankCardVaild">
+        <!-- 手机号输入框 -->
+        <div class="form-colunm">
+          <app-customize-input
+            size="large"
+            [required]="true"
+            [(value)]="phoneNum"
+            [label]="'bank_phone' | translate"
+            [error]="!(phoneNum.length >= 6 && this.phoneNum.length <= 18)"
+            type="number"
+          >
+            <i right-content class="icon-warning onact96-not" (click)="openNotcie()"></i>
+          </app-customize-input>
+          <!-- 验证码输入框 -->
+          <div class="form-colunm">
+            <app-customize-input
+              [required]="true"
+              size="large"
+              width="100%"
+              [(value)]="authcode"
+              type="number"
+              [label]="'verification_code_text' | translate"
+              [error]="verifyCodeMsg"
+              (onChange)="onAuthcodeInput()"
+              [disabled]="submitLoading"
+              [loading]="otpLoading"
+            >
+              <!--获取验证码：第一次发送 && 未发送验证码-->
+              <!--重新获取： 发送验证码 && 倒计时结束-->
+              <div
+                class="onact96-not"
+                *ngIf="isFirstSendAuthcode && !isSendAuthcode"
+                right-content
+                class="authText"
+                [class.opt-disable]="!(phoneNum.length >= 6 && this.phoneNum.length <= 18) || otpLoading"
+                (click)="sendOtp()"
+              >
+                <ng-container *ngIf="!otpLoading">
+                  {{ authStatus !== 'timeout' ? ('get_verification_code_button' | translate) : ('resend' | translate) }}
+                </ng-container>
+              </div>
+              <!--倒计时： 发送验证码-->
+              <div class="sent" *ngIf="isSendAuthcode" right-content>
+                {{ 'vercode_send' | translate }}({{ timer }}S)
+              </div>
+            </app-customize-input>
+          </div>
+        </div>
+      </ng-container>
+      <div class="submit-container">
+        <!--提示 根据银联风控要求,同卡或同身份证一天只能验证4次。-->
+        <div class="notice-row">
+          <i class="icon-warning"></i>
+          <div class="notice-text">
+            {{ 'ver_limit' | translate }}
+          </div>
+        </div>
+        <!--按钮-->
+        <div class="btn-group">
+          <customize-button type="text" [plain]="true" width="100%" size="large" (onClick)="close()">
+            {{ 'think_again' | translate }}
+          </customize-button>
+          <customize-button
+            width="100%"
+            type="primary"
+            [loading]="submitLoading"
+            [disabled]="!canSubmit"
+            size="large"
+            (onClick)="handleContiuneClicked()"
+          >
+            {{ 'continue' | translate }}
+          </customize-button>
+        </div>
+      </div>
+    </div>
+    <!--页角提示 信息仅用于身份验证，**保证您的信息安全-->
+    <div class="footer-notice-container">
+      <i class="icon-kyc-protect"></i>
+      <div class="notice-text">
+        {{ 'secure_info' | translate }}
+      </div>
+    </div>
+  </div>
+</div>

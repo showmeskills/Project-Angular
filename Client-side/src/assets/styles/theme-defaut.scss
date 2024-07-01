@@ -1,0 +1,224 @@
+@import "variable.scss";
+@import "button.scss";
+
+.theme-default {
+
+  /*主要颜色*/
+  --primary-color: #{$primary-color};
+  /*主要颜色-实色 浅->深*/
+  --primary-color-10 :#{mix($primary-color,#fff,10%)};
+  --primary-color-30 :#{mix($primary-color,#fff,30%)};
+  --primary-color-40 :#{mix($primary-color,#fff,40%)};
+  --primary-color-50 :#{mix($primary-color,#fff,50%)};
+  --primary-color-60 :#{mix($primary-color,#fff,60%)};
+  --primary-color-70 :#{mix($primary-color,#fff,70%)};
+  --primary-color-80 :#{mix($primary-color,#fff,80%)};
+  --primary-color-85 :#{mix($primary-color,#fff,85%)};
+  --primary-color-90 :#{mix($primary-color,#fff,90%)};
+  /*主要颜色-透明色 浅->深*/
+  --primary-color-opacity-03 :#{rgba($primary-color,0.03)};
+  --primary-color-opacity-10 :#{rgba($primary-color,0.1)};
+  --primary-color-opacity-30 :#{rgba($primary-color,0.3)};
+  --primary-color-opacity-40 :#{rgba($primary-color,0.4)};
+  --primary-color-opacity-50 :#{rgba($primary-color,0.5)};
+  --primary-color-opacity-60 :#{rgba($primary-color,0.6)};
+  --primary-color-opacity-70 :#{rgba($primary-color,0.7)};
+  --primary-color-opacity-80 :#{rgba($primary-color,0.8)};
+  --primary-color-opacity-85 :#{rgba($primary-color,0.85)};
+  --primary-color-opacity-90 :#{rgba($primary-color,0.9)};
+
+  /*次要颜色*/
+  --secondary-color: #{$secondary-color};
+  /*次要颜色-实色 浅->深*/
+  --secondary-color-10 :#{mix($secondary-color,#fff,10%)};
+  --secondary-color-30 :#{mix($secondary-color,#fff,30%)};
+  --secondary-color-40 :#{mix($secondary-color,#fff,40%)};
+  --secondary-color-50 :#{mix($secondary-color,#fff,50%)};
+  --secondary-color-60 :#{mix($secondary-color,#fff,60%)};
+  --secondary-color-70 :#{mix($secondary-color,#fff,70%)};
+  --secondary-color-80 :#{mix($secondary-color,#fff,80%)};
+  --secondary-color-85 :#{mix($secondary-color,#fff,85%)};
+  --secondary-color-90 :#{mix($secondary-color,#fff,90%)};
+  --secondary-color-dark-70 :#{mix($secondary-color,#000,70%)};
+
+  /*次要颜色-透明色 浅->深*/
+  --secondary-color-opacity-10 :#{rgba($secondary-color,0.1)};
+  --secondary-color-opacity-30 :#{rgba($secondary-color,0.3)};
+  --secondary-color-opacity-40 :#{rgba($secondary-color,0.4)};
+  --secondary-color-opacity-50 :#{rgba($secondary-color,0.5)};
+  --secondary-color-opacity-60 :#{rgba($secondary-color,0.6)};
+  --secondary-color-opacity-70 :#{rgba($secondary-color,0.7)};
+  --secondary-color-opacity-80 :#{rgba($secondary-color,0.8)};
+  --secondary-color-opacity-85 :#{rgba($secondary-color,0.85)};
+  --secondary-color-opacity-90 :#{rgba($secondary-color,0.9)};
+
+  /*左侧导航相关*/
+  --left-side-bg-color: #{$border};
+  --left-nav-bg-color: #fff;
+  --left-nav-bg-color-rail: #{$border};
+  --left-nav-main-text-color: #{$text2};
+  --left-nav-main-icon-color: #{$text2};
+  --left-nav-main-icon-active-color: var(--primary-color-85);
+  --left-nav-main-active-color: var(--primary-color-85);
+  --left-nav-item-color: #474d57;
+  --left-nav-item-color-active: #474d57;
+  --left-nav-item-color-bright: var(--secondary-color);
+  --left-nav-item-icon-color: var(--text-color-20);
+  --left-nav-item-icon-color-active: var(--text-color-20);
+  --left-nav-item-color-rail: #{$text2};
+  --left-nav-item-color-active-rail:#{$text2};
+  --left-nav-top-item-color-active-rail:#{$text2};
+  --left-nav-item-color-toplevel: var(--text-color);
+  --left-nav-item-bg-active: #fffaf9;
+  --left-nav-item-bg-hover: #fffaf9;
+  --left-nav-item-bg-active-secondary: var(--primary-color-85);
+  --left-nav-item-bg-active-rail: #fff;
+  --left-nav-top-item-bg-active-rail: #fff;
+  --left-nav-item-bg-hover-rail: #fff;
+  --left-nav-border-color: #{$border};
+  --left-nav-border-color-rail: #b7bdc6;
+  --left-nav-tooltip-color: var(--tooltip-text-color);
+  --left-nav-tooltip-bg-color: var(--tooltip-bg-color);
+  --left-nav-close-trigger-color: #{$text2};
+  --left-nav-close-trigger-bg-color: #{$border};
+  --left-nav-close-trigger-bg-color-active: #{mix($border, #fff, 70%)};
+  --left-nav-close-trigger-color-h5: var(--text-color);
+  --left-nav-close-trigger-color-h5-active: var(--text-color-20);
+  --left-nav-badge-color: #fff;
+  --left-nav-badge-bg: var(--secondary-color);
+  --left-nav-star-icon-color: var(--text-color-20);
+  --left-nav-star-icon-color-active: var(--secondary-color);
+  --left-nav-options-bg: #fff;
+  --left-nav-options-color: var(--text-color);
+  --left-nav-options-bg-active: #fffaf9;
+  /*--------------------------*/
+
+  /*卡片滚动器相关*/
+  --game-unit-bg: #b8bdc6;
+  --game-unit-mask-color: #fff;
+  --game-unit-mask-bg: var(--secondary-color-opacity-90);
+  --swiper-unit-arrow-color: #{$text2};
+  --swiper-unit-arrow-border: #cdd1d8;
+  --swiper-unit-arrow-bg: transparent;
+  --swiper-unit-arrow-color-active: var(--swiper-unit-arrow-color);
+  --swiper-unit-arrow-border-active: var(--swiper-unit-arrow-border);
+  --swiper-unit-arrow-bg-active: var(--swiper-unit-arrow-bg);
+
+  --sport-rate-color: #fff;
+  --sport-rate-bg:#{rgba($text2, .8)};
+  --sport-rate-color-increment: #ff8081;
+  --sport-rate-bg-increment:#{rgba($text2, .8)};
+  --sport-rate-color-decrement: #1cb7ea;
+  --sport-rate-bg-decrement:#{rgba($text2, .8)};
+  /*--------------------------*/
+
+  --btn-bg-color: var(--primary-color-90);
+  --input-err-color: #cf304a;
+  --input-border-color: #d5d8dc;
+  --default-border-color: #{$border};
+
+  --text-color: #{$text};
+  --text-color-10: #20252f;
+  --text-color-20: #{$text2};
+  --text-color-20-lighten: #{mix($text2,#fff,60%)};
+  --text-color-30: #000;
+
+  --header-bar-bg: #fff;
+  --main-page-bg: #{$page};
+  --page-bg-color: #fff;
+  --container-bg-color: #{$page2};
+  --list-hover-bg-color: #fafafa;
+  --bg-color-10: #{$page3};
+  --bg-color-20: #f2f2f2;
+  --currency-wallet-bg: #f2f2f2;
+
+  --link-color: var(--secondary-color);
+  --txt-err-color: #cf304a;
+
+  // 提示框
+  --tooltip-bg-color: #717a8a;
+  --tooltip-text-color: #fff;
+  --tooltip-light-bg-color: #fff;
+  --tooltip-light-text-color: #{$text};
+
+  --theme-switch-bg: #{$page3};
+  --theme-switch-bg-checked: rgba(0, 0, 0, .8);
+  --theme-switch-color: #b7bdc6;
+  --theme-switch-color-checked: #d5dceb;
+
+  --text-white-at-night: #fff;
+
+  --label-bg: #ededed;
+  /* hot logo/日间*/
+  --hot-logo-txt:#f04e23;
+
+  --h5-menu-height: 64px;
+  --h5-footer-padding-bottom: calc(var(--h5-menu-height) + 39px);
+  --h5-open-app-link: calc(var(--h5-menu-height) + 18px);
+  &.dark {
+
+    /*左侧导航相关*/
+    --left-side-bg-color: #{$page2-d};
+    --left-nav-bg-color: #{$page2-d};
+    --left-nav-bg-color-rail: #{$page2-d};
+    --left-nav-main-text-color: #fff;
+    --left-nav-main-icon-color: #fff;
+    --left-nav-main-icon-active-color: #fff;
+    --left-nav-main-active-color: #fff;
+    --left-nav-item-color: #fff;
+    --left-nav-item-color-active: #fff;
+    --left-nav-item-color-rail: #{$text2-d};
+    --left-nav-item-color-active-rail:#{$text2-d};
+    --left-nav-top-item-color-active-rail:#{$text2-d};
+    --left-nav-item-bg-active: #{$border-d};
+    --left-nav-item-bg-hover: #{$border-d};
+    --left-nav-item-bg-active-rail: #{$border-d};
+    --left-nav-top-item-bg-active-rail: #{$border-d};
+    --left-nav-item-bg-hover-rail: #{$border-d};
+    --left-nav-border-color: #{$border-d};
+    --left-nav-close-trigger-color: #{$text2-d};
+    --left-nav-close-trigger-bg-color: #{$border-d};
+    --left-nav-close-trigger-bg-color-active: #{mix($border-d, #fff, 90%)};
+    --left-nav-options-bg: #{$border-d};
+    --left-nav-options-bg-active: rgba(0, 0, 0, 0.08);
+    /*--------------------------*/
+
+    /*卡片滚动器相关*/
+    --game-unit-bg: #{$border-d};
+    --swiper-unit-arrow-color: #{$text2-d};
+    --swiper-unit-arrow-border: #{$border-d};
+    /*--------------------------*/
+
+    --header-bar-bg: #{$page-d};
+    --main-page-bg: #{$page-d};
+    --page-bg-color: #{$page-d};
+    --container-bg-color: #{$page2-d};
+    --list-hover-bg-color: #{$border-d};
+
+    --bg-color-10: #{$page3-d};
+    --bg-color-20: #{$page2-d};
+    --currency-wallet-bg:#{$page2-d};
+
+    --text-color: #{$text-d};
+    --text-color-10: #{$text-d};
+    --text-color-20: #{$text2-d};
+    --text-color-20-lighten: #{mix($text2-d,#fff,60%)};
+    --text-color-30: #{$text-d};
+
+    //分割线、边框、悬停、切换、按钮背景
+    --default-border-color: #{$border-d};
+    --input-border-color: #{$border-d};
+
+    // 提示框
+    --tooltip-bg-color: #fff;
+    --tooltip-text-color: #{$text};
+    --tooltip-light-bg-color: #{$page-d};
+    --tooltip-light-text-color: #{$text-d};
+
+    --text-white-at-night: #{$text-d};
+
+    --label-bg: #{$border-d};
+    /* hot logo/夜間*/
+    --hot-logo-txt:rgba(255, 255, 255, 1);
+  }
+}

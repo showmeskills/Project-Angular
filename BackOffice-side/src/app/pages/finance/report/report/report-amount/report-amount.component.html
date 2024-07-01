@@ -1,0 +1,70 @@
+<div class="d-flex flex-column" flip #flip="flip" (flipChange)="onFlipChange($event)">
+  <div flipFace class="color-fff pl-8 d-flex flex-column justify-content-center bg-primary rounded-10 min-w-0">
+    <div class="fz-18">{{ title }}</div>
+    <div class="pt-5">
+      <div>
+        <span class="fw-bolder">USDT</span>
+        <span class="fz-30 ml-2">{{ data?.activeFlowAmount || 0 | currencyValue: 'USDT' }}</span>
+      </div>
+      <div class="mt-4">{{ 'finance.graphType.flow' | lang }}</div>
+    </div>
+
+    <div class="pt-5">
+      <div>
+        <span class="fw-bolder">USDT</span>
+        <span class="fz-30 ml-2">{{ data?.payoutAmount | currencyValue: 'USDT' }}</span>
+      </div>
+      <div class="mt-4">
+        {{ isTransactionHistory ? ('game.provider.merchantsWL' | lang) : ('game.provider.totalWinUser' | lang) }}
+      </div>
+    </div>
+
+    <div class="pt-5 d-flex">
+      <div>{{ 'game.provider.returnRate' | lang }}</div>
+      <div>
+        <span class="fz-30 ml-2">{{ data?.returnRate || 0 }}%</span>
+      </div>
+    </div>
+
+    <div class="pt-5 d-flex">
+      <div>{{ 'game.provider.activeCount' | lang }}</div>
+      <div>
+        <span class="fz-30 ml-2">{{ data?.activeCount || 0 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div flipBack class="bg-fff rounded-10 flex-1 min-w-0 custom-scroll-y">
+    <div class="pt-5 px-3 d-flex flex-wrap" *ngIf="currencyList.length; else noCurrency">
+      <div class="mx-3 bg-f3 py-3 rounded mb-5 stat-amount" *ngFor="let key of currencyList">
+        <div class="px-6 fz-12">
+          <div class="d-flex">
+            <img [currencyIcon]="key" currencySize="18" />
+            <span class="ml-3">{{ key }}</span>
+          </div>
+          <div>
+            <span>{{ 'game.detail.win' | lang }}</span>
+            <span>{{ data?.currency?.[key] | currencyValue: key }}</span>
+          </div>
+          <div class="color-999">
+            <span>{{ 'game.detail.rollover' | lang }}</span>
+            <span>{{ data?.activeFlowCurrency?.[key] | currencyValue: key }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 占位 -->
+      <div class="mx-3 stat-amount" style="min-width: 40%"></div>
+    </div>
+
+    <!-- 空显示 -->
+    <ng-template #noCurrency>
+      <div class="container-empty" [style.height.px]="300">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

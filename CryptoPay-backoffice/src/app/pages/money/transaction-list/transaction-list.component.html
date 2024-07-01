@@ -1,0 +1,433 @@
+<div class="bg-fff rounded-2 p-8 d-flex flex-wrap" sticky>
+  <!-- 订单号 -->
+  <form-row [label]="'payment.subChannel.orderNumber' | lang" class="mr-16">
+    <ng-template>
+      <input
+        [(ngModel)]="data.order"
+        [style.width.px]="200"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+        class="form-control"
+        type="text"
+        input-trim="input"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 用户ID -->
+  <form-row [label]="'payment.merchantFunding.userID' | lang" class="mr-16">
+    <ng-template>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="data.userId"
+        [style.width.px]="120"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 商户名称 -->
+  <form-row *ngIf="ls.isGB" [label]="'payment.transactionList.merchant' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="160">
+        <mat-select class="form-control" [(ngModel)]="data.merchantCode" (selectionChange)="onMerchant($event)">
+          <mat-option *ngFor="let item of merchantsList" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 子渠道 -->
+  <form-row *ngIf="ls.isGB" [label]="'payment.subChannel.subchannel' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.channel"
+          (selectionChange)="loadData(true)"
+          *search="let list of channelList; key: 'name'"
+        >
+          <input searchInput type="text" />
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of list | async" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 支付方式 -->
+  <form-row [label]="'payment.paymentMethod.paymentMethod' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="160">
+        <mat-select class="form-control" [(ngModel)]="data.paymentMethod" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of paymentMethodList" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种 -->
+  <form-row [label]="'payment.currency.currency' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="150">
+        <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of currenciesList" [value]="item.code">{{ item.code || item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种类型 -->
+  <form-row [label]="'payment.currency.currencyType' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="120">
+        <mat-select class="form-control" [(ngModel)]="data.currencyCategory" (selectionChange)="loadData(true)">
+          <mat-option [value]="'Unknown'">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="'Currency'">{{ 'payment.currency.fiatCurrency' | lang }}</mat-option>
+          <mat-option [value]="'Coin'">{{ 'payment.currency.digitalCurrency' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 类型 -->
+  <form-row [label]="'common.type' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="lang.isLocal ? '120' : '140'">
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of categoryList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 调账类型 -->
+  <form-row *ngIf="data.category === 'Adjustment'" [label]="'payment.transactionList.reason' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="data.adjustmentType" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of adjustmentList" [value]="item.code">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 状态 -->
+  <form-row [label]="'common.status' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="lang.isLocal ? '120' : '160'">
+        <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="onState()">
+          <mat-option *ngFor="let item of orderStatusList" [value]="item.code">
+            {{ item.name || ('common.unknown' | lang) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 日期 -->
+  <form-row [label]="'payment.transactionList.date' | lang" class="mr-16">
+    <ng-template>
+      <div class="d-flex">
+        <input
+          [style.width.px]="196"
+          class="form-control text-center"
+          type="text"
+          placeholder=""
+          selectMode="date-range"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-ac justify-content-between">
+      <div class="fz-20 fw-bolder">{{ 'payment.transactionList.transactionList' | lang }}</div>
+      <div>
+        <button
+          *ngIf="ls.isGB"
+          type="button"
+          class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2"
+          (click)="onRepairVirtualStatus()"
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'payment.transactionList.repairOrderStatus' | lang }}</span>
+        </button>
+
+        <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2" (click)="onReplenishment()">
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'payment.transactionList.digitalMake' | lang }}</span>
+        </button>
+
+        <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2" (click)="onFunds()">
+          <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'payment.subChannel.fundingAdjustment' | lang }}</span>
+        </button>
+
+        <!-- 上传核对 -->
+        <!--        <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2" disabled>-->
+        <!--          <svg-icon [src]="'./assets/images/svg/admin-import-1.svg'" class="svg-icon svg-icon-xl"></svg-icon>-->
+        <!--          <span class="vam">{{ 'payment.subChannel.uploadCheck' | lang }}</span>-->
+        <!--        </button>-->
+
+        <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2" (click)="onExport(true)">
+          <svg-icon [src]="'./assets/images/svg/admin-export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'payment.subChannel.exportAll' | lang }}</span>
+        </button>
+
+        <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4 mb-2" (click)="onExport()">
+          <svg-icon [src]="'./assets/images/svg/admin-export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'payment.subChannel.exportCurrent' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <!--begin::Datatable-->
+      <table class="table mb-0" selectChildren>
+        <thead sticky>
+          <tr>
+            <!-- 商户名称 -->
+            <th>
+              <span class="cell">{{ 'payment.transactionList.merchantEName' | lang }}</span>
+            </th>
+            <!-- 子渠道名称 -->
+            <th *ngIf="ls.isGB">
+              <span class="cell">{{ 'payment.transactionList.subChannel' | lang }}</span>
+            </th>
+            <!-- 类型 -->
+            <th>
+              <span class="cell">{{ 'common.type' | lang }}</span>
+            </th>
+            <!-- 申请时间 -->
+            <th>
+              <span class="cell">{{ 'payment.transactionList.applicationPeriod' | lang }}</span>
+            </th>
+            <!-- 处理时间 -->
+            <th>
+              <span class="cell">{{ 'payment.transactionList.processTime' | lang }}</span>
+            </th>
+            <!-- 渠道订单号 -->
+            <!--            <th *ngIf="ls.isGB">-->
+            <!--              <span class="cell">{{ 'payment.transactionList.channelOrderNumber' | lang }}</span>-->
+            <!--            </th>-->
+            <!-- 平台订单号 -->
+            <th>
+              <span class="cell">{{ 'payment.transactionList.orderNumber' | lang }}</span>
+            </th>
+            <!-- 用户ID -->
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <!-- 支付方式 -->
+            <th>
+              <span class="cell">{{ 'payment.paymentMethod.paymentMethod' | lang }}</span>
+            </th>
+            <!-- 币种 -->
+            <th>
+              <span class="cell">{{ 'payment.currency.currency' | lang }}</span>
+            </th>
+            <!-- 金额 -->
+            <th>
+              <span class="cell">{{ 'payment.subChannel.amount' | lang }}</span>
+            </th>
+            <!-- 渠道手续费 -->
+            <th *ngIf="ls.isGB">
+              <span class="cell">{{ 'payment.transactionList.channelFee' | lang }}</span>
+            </th>
+            <!-- 渠道余额 -->
+            <th *ngIf="ls.isGB">
+              <span class="cell">{{ 'payment.transactionList.channelBalance' | lang }}</span>
+            </th>
+            <!-- 商户手续费/手续费 -->
+            <th>
+              <span class="cell">{{ 'payment.transactionList' | lang : (ls.isGB ? 'merchantFee' : 'fee') }}</span>
+            </th>
+            <!-- 商户余额 -->
+            <th>
+              <span class="cell">{{ 'payment.transactionList.merchantBalance' | lang }}</span>
+            </th>
+            <!-- 类型 -->
+            <th>
+              <!-- 待分配可以排序状态 -->
+              <span
+                *ngIf="data.status === 'Allocating'"
+                class="cursor-pointer d-flex flex-center"
+                (click)="list.length && switchSort()"
+              >
+                <span>{{ 'common.status' | lang }}</span>
+                <span class="triangle">
+                  <div class="triangle-up" [class.active]="stateSort === 'asc'"></div>
+                  <div class="triangle-down" [class.active]="stateSort === 'desc'"></div>
+                </span>
+              </span>
+
+              <span class="cell" *ngIf="data.status !== 'Allocating'">{{ 'common.status' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody *ngIf="filterList?.length">
+          <tr *ngFor="let item of filterList">
+            <!-- 商户名称 -->
+            <td>
+              <span class="cell">{{ item.merchantName || '-' }}</span>
+            </td>
+            <!-- 子渠道名称 -->
+            <td *ngIf="ls.isGB">
+              <span class="cell">{{ item.merchantChannelName ? item.merchantChannelName : '--' }}</span>
+            </td>
+            <!-- 类型 -->
+            <td>
+              <span class="cell">
+                <ng-container *ngFor="let type of categoryList">
+                  <ng-container *ngIf="type.value === item.paymentCategory">{{ type.lang | lang }}</ng-container>
+                </ng-container>
+              </span>
+            </td>
+            <!-- 申请时间 -->
+            <td>
+              <span class="cell">{{ item.applicationTime | timeFormat }}</span>
+            </td>
+            <!-- 处理时间 -->
+            <td>
+              <span class="cell">{{ item.completeTime | timeFormat }}</span>
+            </td>
+            <!-- 渠道订单号 -->
+            <!--            <td *ngIf="ls.isGB">-->
+            <!--              <span class="cell">{{ item.channelOrderId || '-' }}</span>-->
+            <!--            </td>-->
+            <!-- 平台订单号 -->
+            <td>
+              <span class="cell">{{ item.orderId || '-' }}</span>
+            </td>
+            <!-- UID -->
+            <td>
+              <span class="cell">{{ item.merchantUserAccount }}</span>
+            </td>
+            <!-- 支付方式 -->
+            <td>
+              <span class="cell">{{ item.paymentMethod }}</span>
+            </td>
+            <!-- 币种 -->
+            <td>
+              <span class="cell">
+                <img class="mr-2" [currencyIcon]="item.currency" alt="" />
+                {{ item.currency }}
+              </span>
+            </td>
+            <!-- 金额 -->
+            <td>
+              <span class="cell">{{ item.orderAmount | currencyValue : item.currency }}</span>
+            </td>
+            <!-- 渠道手续费 -->
+            <td *ngIf="ls.isGB">
+              <span class="cell">{{ item.channelFee | currencyValue : item.currency }}</span>
+            </td>
+            <!-- 渠道余额 -->
+            <td *ngIf="ls.isGB">
+              <span class="cell">{{ item.accountBalance | currencyValue : item.currency }}</span>
+            </td>
+            <!-- 商户手续费 -->
+            <td>
+              <span class="cell">{{ item.merchantFee | currencyValue : item.currency }}</span>
+            </td>
+            <!-- 商户余额 -->
+            <td>
+              <span class="cell">{{ item.merchantBalance | currencyValue : item.currency }}</span>
+            </td>
+            <!-- 状态 -->
+            <td>
+              <span class="cell">
+                <state-label class="cursor-pointer" (click)="toTransRecord(item)" [data]="item"></state-label>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 统计 -->
+      <div class="count-wrap" *ngIf="list.length">
+        <!-- 总计存款 -->
+        <span class="count-item">
+          <span class="vam">
+            {{ 'payment.transactionList.totalDeposit' | lang }}:
+            {{ depositList | exchangeReduceTotal : 'receiveAmount' : 'currency' | currencyValue : 'USDT' }}
+          </span>
+          <img currencyIcon="USDT" alt="" />
+        </span>
+        <!-- 总计提款 -->
+        <span class="count-item">
+          <span class="vam">
+            {{ 'payment.transactionList.withdrawaTotal' | lang }}:
+            {{ withdrawList | exchangeReduceTotal : 'orderAmount' : 'currency' | currencyValue : 'USDT' }}
+          </span>
+          <img currencyIcon="USDT" alt="" />
+        </span>
+        <!-- 渠道手续费 -->
+        <span class="count-item" *ngIf="ls.isGB">
+          <span class="vam">
+            {{ 'payment.transactionList.channelFee' | lang }}:
+            {{ list | exchangeReduceTotal : 'channelFee' : 'currency' | currencyValue : 'USDT' }}
+          </span>
+          <img currencyIcon="USDT" alt="" />
+        </span>
+        <!-- 商户手续费 -->
+        <span class="count-item">
+          <span class="vam">
+            {{ 'payment.transactionList' | lang : (ls.isGB ? 'merchantFee' : 'fee') }}:
+            {{ list | exchangeReduceTotal : 'merchantFee' : 'currency' | currencyValue : 'USDT' }}
+          </span>
+          <img currencyIcon="USDT" alt="" />
+        </span>
+      </div>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

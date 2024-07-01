@@ -1,0 +1,123 @@
+<div class="flex-col">
+  <div class="section-one main-container unity-padding-web unity-padding-h5-16">
+    <div class="s-box container">
+      <div class="one-top">
+        <p class="one-text">{{ 'abount_us' | translate }}</p>
+        <p class="two-text">{{ 'sen_a' | translate }}</p>
+      </div>
+      <div class="providers">
+        <div class="main main-box">
+          <p class="txt">{{ 'top_team' | translate }}</p>
+          <div class="provider">
+            <img class="Log-pic" [src]="'about_us_link_a' | translate" />
+            <div class="pro">
+              <p class="club-txt">{{ 'swansea' | translate }}</p>
+              <p class="time-txt">{{ 'season1' | translate }}</p>
+            </div>
+          </div>
+        </div>
+        <!-- 意甲国际米兰 -->
+        <div class="box">
+          <div class="provider">
+            <img class="Log-pic" [src]="'about_us_link_b' | translate" />
+            <div class="pro">
+              <p class="club-txt">{{ 'milan' | translate }}</p>
+              <p class="time-txt">{{ 'season2' | translate }}</p>
+            </div>
+          </div>
+        </div>
+        <!-- 英超阿斯顿维拉 -->
+        <div class="box">
+          <div class="provider">
+            <img class="Log-pic" [src]="'about_us_link_c' | translate" />
+            <div class="pro">
+              <p class="club-txt">{{ 'villa' | translate }}</p>
+              <p class="time-txt">{{ 'seaon3' | translate }}</p>
+            </div>
+          </div>
+        </div>
+        <!-- 虚线 -->
+        <div class="line"></div>
+        <!-- 顶级电竞俱乐部赞助商 -->
+        <div class="main gaming-box">
+          <p class="txt">{{ 'top_esports' | translate }}</p>
+          <div class="provider">
+            <img class="Log-pic" [src]="'about_us_link_d' | translate" />
+            <div class="pro">
+              <p class="club-txt">{{ 'fnatic' | translate }}</p>
+              <p class="time-txt">{{ 'season4' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="one-bottom">
+        <div class="bottom-text">
+          <p class="f-text">{{ 'sen_b' | translate }}</p>
+          <p class="s-text">{{ 'sen_c' | translate }}</p>
+        </div>
+        <div class="bottom-text">
+          <p class="f-text">{{ 'user_value' | translate }}</p>
+          <p class="s-text">{{ 'sen_d' | translate }}</p>
+        </div>
+        <div class="bottom-text">
+          <p class="f-text">{{ 'game_value' | translate }}</p>
+          <p class="s-text">{{ 'sen_e' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-two unity-padding-h5-16">
+    <p class="t-f-text">{{ 'sen_f' | translate }}</p>
+    <div class="t-s-text">
+      <p>{{ 'sen_g' | translate }}</p>
+      <p>{{ 'sen_h' | translate }}</p>
+      <p>{{ 'sen_i' | translate }}</p>
+    </div>
+  </div>
+  <div class="section-three main-container unity-padding-web unity-padding-h5-16">
+    <div class="th-box container">
+      <div class="th-f-text">
+        <p class="text-value">{{ 'sen_j' | translate }}</p>
+        <p class="text-info">{{ 'sen_k' | translate }}</p>
+      </div>
+      <img class="th-img" src="assets/images/about-us/about-us-dollar.png" />
+    </div>
+  </div>
+  <div class="section-four main-container unity-padding-web unity-padding-h5-16">
+    <div class="f-box container">
+      <div class="f-f-text">
+        <p class="text-value">{{ 'sen_l' | translate }}</p>
+        <div class="text-info">
+          <p>{{ 'sen_m' | translate }}</p>
+          <p>{{ 'sen_n' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-five main-container unity-padding-web unity-padding-h5-16">
+    <div class="box container">
+      <div class="left">
+        <p class="f-f-text">{{ 'sen_o' | translate }}</p>
+        <p class="f-t-text">{{ 'sen_p' | translate }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="section-six main-container unity-padding-web unity-padding-h5-16">
+    <div class="box container">
+      <p class="s-t-text">{{ 'sen_q' | translate }}</p>
+      <p class="s-st-text pointer onact96-not" (click)="jumpToPage('about-us/work')">{{ 'job_oppor' | translate }}</p>
+      <p class="s-th-text">{{ 'sen_r' | translate }}</p>
+    </div>
+  </div>
+  <div class="section-footer main-container unity-padding-web">
+    <div class="footer-box container">
+      <div class="footer-item" *ngFor="let item of footerList">
+        <img [src]="item.url" />
+        <div class="item-text">
+          <p class="i-t-text">{{ item.text }}</p>
+          <p class="i-t-web">{{ item.web }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

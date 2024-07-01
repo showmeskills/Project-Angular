@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" viewBox="0 0 66 66">
+    <g data-name="组 8298">
+        <g data-name="组 8294">
+            <g data-name="椭圆 499" style="stroke:#707070;stroke-dasharray:1 5;fill:none">
+                <circle cx="33" cy="33" r="33" style="stroke:none"/>
+                <circle cx="33" cy="33" r="32.5" style="fill:none"/>
+            </g>
+        </g>
+        <g data-name="组 8299">
+            <path data-name="矩形 8600" style="fill:rgba(255,255,255,.01)" d="M0 0h48v48H0z" transform="translate(9 9)"/>
+            <path data-name="路径 13837" d="M48 0H0v48h48z" style="fill:rgba(255,255,255,.01)" transform="translate(9 9)"/>
+            <path data-name="路径 13838" d="M40 4H8a2 2 0 0 0-2 2v36a2 2 0 0 0 2 2h32a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" style="stroke-linejoin:round;stroke-width:2px;stroke:#aeb4bc;fill:none" transform="translate(9 9)"/>
+            <path data-name="路径 13839" d="M35 10H13v9h22z" style="stroke-linejoin:round;stroke-width:2px;stroke:#aeb4bc;fill:none" transform="translate(9 9)"/>
+            <path data-name="路径 13840" d="m12 28 7 7" style="stroke:#f06440;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none" transform="translate(9 9)"/>
+            <path data-name="路径 13841" d="m19 28-7 7" style="stroke:#f06440;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none" transform="translate(9 9)"/>
+            <path data-name="路径 13842" d="M28 35h8" style="stroke:#f06440;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none" transform="translate(9 9)"/>
+            <path data-name="路径 13843" d="M28 29h8" style="stroke:#f06440;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none" transform="translate(9 9)"/>
+        </g>
+    </g>
+</svg>

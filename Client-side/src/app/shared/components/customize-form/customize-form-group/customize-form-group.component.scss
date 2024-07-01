@@ -1,0 +1,60 @@
+/*
+*使用这个组件时候，应手动再设置周围的边距
+*@Input('marginBottom') marginBottom!: string;
+*@Input('marginTop') marginTop!: string;
+*@Input('marginLeft') marginLeft!: string;
+*@Input('marginRight') marginRight!: string;
+*/
+
+.form-group-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: -8px;
+
+  ::ng-deep {
+    > * {
+      margin: 8px;
+    }
+  }
+
+  &.column {
+    flex-direction: column;
+    margin: 0;
+
+    ::ng-deep {
+      > * {
+        margin: 0;
+
+        & + * {
+          margin-top: 16px;
+
+          @media (max-width: 767px) {
+            margin-top: 25px;
+          }
+        }
+      }
+    }
+  }
+
+  ::ng-deep {
+    .form-group-align {
+      align-self: flex-end;
+      height: 40px;
+      display: flex;
+      align-items: center;
+
+      > * + * {
+        margin-left: 16px;
+      }
+
+      &.margin-left-auto {
+        margin-left: auto;
+      }
+
+      &.margin-right-auto {
+        margin-right: auto;
+      }
+    }
+  }
+}

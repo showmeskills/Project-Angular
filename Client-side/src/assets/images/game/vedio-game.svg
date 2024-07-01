@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+    <defs>
+        <style>
+            .cls-1{fill:#ccc61f}
+        </style>
+    </defs>
+    <g id="Group_5796" data-name="Group 5796" transform="translate(-2421 -1782)">
+        <g id="Group_5523" data-name="Group 5523" transform="translate(2307 1129)">
+            <path id="Subtraction_4" data-name="Subtraction 4" class="cls-1" d="M54 60H6a6.007 6.007 0 0 1-6-6V6a6.007 6.007 0 0 1 6-6h48a6.007 6.007 0 0 1 6 6v48a6.007 6.007 0 0 1-6 6zM5 3a2 2 0 0 0-2 2v50a2 2 0 0 0 2 2h50a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" transform="translate(114 653)"/>
+        </g>
+        <g id="Group_5986" data-name="Group 5986" transform="translate(636.063 1513.982)">
+            <path id="Subtraction_9" data-name="Subtraction 9" class="cls-1" d="M15.084 31.7a15.969 15.969 0 0 1-11.449-4.81 16.559 16.559 0 0 1 0-23.185 16.041 16.041 0 0 1 24.08 1.344l.673.851-11.561 9.4 11.561 9.4-.673.851A16.035 16.035 0 0 1 15.084 31.7zm0-30.6A13.785 13.785 0 0 0 5.2 5.254a14.36 14.36 0 0 0 0 20.1 13.834 13.834 0 0 0 20.083-.334L13.34 15.3l11.945-9.712A13.816 13.816 0 0 0 15.084 1.1z" transform="translate(1796.873 282.716)"/>
+            <circle id="Ellipse_465" data-name="Ellipse 465" class="cls-1" cx="2.55" cy="2.55" r="2.55" transform="translate(1805.8 287.816)"/>
+            <circle id="Ellipse_462" data-name="Ellipse 462" class="cls-1" cx="2" cy="2" r="2" transform="translate(1817 296)"/>
+            <circle id="Ellipse_463" data-name="Ellipse 463" class="cls-1" cx="2" cy="2" r="2" transform="translate(1823 296)"/>
+            <circle id="Ellipse_480" data-name="Ellipse 480" class="cls-1" cx="2" cy="2" r="2" transform="translate(1829 296)"/>
+        </g>
+    </g>
+</svg>

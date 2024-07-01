@@ -1,0 +1,58 @@
+<modal-title [title]="title | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="px-8 py-12">
+  <form-row label="UID" contentWidth="180">
+    <ng-template>
+      <input [(ngModel)]="uid" class="form-control" type="text" (keyup)="$event.key === 'Enter' && loadData(true)" />
+    </ng-template>
+  </form-row>
+
+  <table class="table mb-0" selectChildren>
+    <thead>
+      <tr>
+        <th style="width: 100px">
+          <span class="cell">
+            <label class="checkbox checkbox-lg mr-8">
+              <input type="checkbox" selectGroup />
+              <span class="mr-4"></span>
+            </label>
+          </span>
+        </th>
+        <th><span class="cell">UID</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">
+            <label class="checkbox checkbox-lg mr-8">
+              <input type="checkbox" [(ngModel)]="item['checked']" />
+              <span class="mr-4"></span>
+            </label>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.superId }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer">
+    <div></div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>
+
+<modal-footer (confirm)="submit()" (dismiss)="modal.dismiss()"></modal-footer>

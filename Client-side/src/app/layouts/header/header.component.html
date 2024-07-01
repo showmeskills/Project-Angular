@@ -1,0 +1,30 @@
+<div class="page-container" [style.margin-left]="layoutContentMarginLeft">
+  <div class="main-container">
+    <div class="container">
+      <div class="content-box header">
+        <!-- logo -->
+        <div class="header-left">
+          <app-logo
+            [onlineSize]="['auto', '44']"
+            [onlineSizeH5]="['auto', '36']"
+            [sitSize]="['48', '44']"
+            [sitSizeH5]="['38', '36']"
+            [clickable]="true"
+            [redefinedH5]="showH5Logo"
+          ></app-logo>
+        </div>
+
+        <!-- 钱包 -->
+        <app-currency-wallet *ngIf="!simple"></app-currency-wallet>
+
+        <!-- 顶部菜单 -->
+        <div class="header-right topBar-container">
+          <app-h5-top-menu *ngIf="isH5; else webTopBar" [vipLoading]="vipLoading"></app-h5-top-menu>
+          <ng-template #webTopBar>
+            <app-top-bar [vipLoading]="vipLoading"></app-top-bar>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

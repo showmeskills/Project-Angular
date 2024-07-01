@@ -1,0 +1,318 @@
+<script src="game-configuration.component.ts"></script>
+<main class="main">
+  <div class="name">
+    {{ isAdd ? ('game.provider.edit' | lang) : ('game.provider.now_adds' | lang) }}{{ 'game.game' | lang }}
+  </div>
+
+  <ng-container *ngIf="config">
+    <form class="form" [formGroup]="formGroup" #form>
+      <!-- 游戏厂商 -->
+      <div class="w-100 d-flex py-2 pt-6">
+        <label class="mr-0 mb-0 label-title"
+          >{{ 'game.detail.game_maker' | lang }} <span class="text-danger">*</span>：</label
+        >
+        <div class="w-100" *ngIf="isAdd">
+          <mat-form-field class="w-100">
+            <mat-select
+              class="form-control"
+              formControlName="vendor"
+              [class.is-invalid]="validator.isControlInvalid('vendor')"
+              (selectionChange)="onProviderChange($event)"
+              (openedChange)="onOpenSelect($event, 'providerList', providerKW)"
+            >
+              <input
+                [placeholder]="'game.sear' | lang"
+                matInput
+                type="text"
+                #providerKW
+                (keyup)="onSearch('providerList', $event.target?.['value'])"
+                class="select-search"
+              />
+              <mat-option *ngFor="let item of getProviderList" [value]="item.id">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="is-invalid"></div>
+          <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'vendor')">
+            {{ 'game.provider.choose_maker' | lang }}
+          </div>
+        </div>
+
+        <div class="form-control form-control-show" *ngIf="isEdit">
+          {{ providerName }}
+        </div>
+      </div>
+
+      <!-- 游戏ID -->
+      <div class="w-100 d-flex py-2" *ngIf="formGroup.value['vendor']">
+        <label class="mr-0 mb-0 label-title"
+          >{{ 'game.provider.game_id' | lang }} <span class="text-danger">*</span>：</label
+        >
+        <div class="w-100" *ngIf="isAdd">
+          <mat-form-field class="w-100">
+            <mat-select
+              class="form-control"
+              formControlName="id"
+              disableOptionCentering
+              [class.is-invalid]="validator.isControlInvalid('id')"
+              (openedChange)="onOpenSelect($event, 'gameCodeList', gameCodeKW)"
+            >
+              <input
+                [placeholder]="'game.sear' | lang"
+                matInput
+                type="text"
+                #gameCodeKW
+                (keyup)="onSearch('gameCodeList', $event.target?.['value'])"
+                class="select-search"
+              />
+              <mat-option *ngFor="let item of getGameCodeList" [value]="item">{{ item }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="is-invalid"></div>
+          <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'vendor')">
+            {{ 'game.select_id' | lang }}
+          </div>
+        </div>
+
+        <div class="form-control form-control-show" *ngIf="isEdit">
+          {{ formGroup.value['id'] }}
+        </div>
+      </div>
+
+      <!-- tab -->
+      <lang-tab [(value)]="selectLang" formArrayName="lang" #langTab (languageChange)="updateLanguageForm()">
+        <ng-template let-i="i" let-current="current">
+          <form-row
+            name="gameName"
+            [label]="('game.provider.game_name' | lang) + '（' + current?.name + '）'"
+            label-width="220"
+            [invalidFeedback]="{
+              required: ('game.provider.enter_game_name' | lang) + '（' + current?.name + '）'
+            }"
+            [group]="langArrayForm.controls[i]"
+          >
+            <ng-template let-invalid="invalid">
+              <input
+                [class.is-invalid]="invalid"
+                class="form-control"
+                [formControl]="langArrayForm.controls[i]['controls']['gameName']"
+                type="text"
+              />
+            </ng-template>
+          </form-row>
+
+          <form-row
+            name="gameDesc"
+            [label]="('game.provider.game_bri' | lang) + '（' + current?.name + '）'"
+            label-width="220"
+            [invalidFeedback]="{
+              required: ('game.provider.enter_name_bri' | lang) + '（' + current?.name + '）'
+            }"
+            [group]="langArrayForm.controls[i]"
+          >
+            <ng-template let-invalid="invalid">
+              <textarea
+                type="text"
+                class="form-control"
+                autocomplete="off"
+                rows="7"
+                [class.is-invalid]="invalid"
+                [formControl]="langArrayForm.controls[i]['controls']['gameDesc']"
+              ></textarea>
+            </ng-template>
+          </form-row>
+
+          <form-row [label]="('game.provider.main_game' | lang) + '（' + current?.name + '）'" label-width="220">
+            <ng-template>
+              <div class="d-flex flex-wrap">
+                <div class="d-flex mr-20 mb-8" *ngFor="let key of ['Web', 'App']">
+                  <div class="fz-16 vam" style="line-height: 200px; min-width: 32px">
+                    {{ key }}
+                  </div>
+
+                  <div class="flex-1 ml-2">
+                    <upload
+                      type="Games"
+                      [style.width.px]="180"
+                      [style.height.px]="200"
+                      [formControl]="langArrayForm.controls[i]['controls'][key.toLowerCase() + 'Logo']"
+                      [class.is-invalid]="
+                        validator.isControlInvalid(key.toLowerCase() + 'Logo', langArrayForm.controls[i])
+                      "
+                      [showLimitText]="false"
+                    ></upload>
+
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="
+                        validator.controlHasError('required', key.toLowerCase() + 'Logo', langArrayForm.controls[i])
+                      "
+                    >
+                      {{ 'game.provider.up_p' | lang }} {{ key }} Logo
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </form-row>
+        </ng-template>
+      </lang-tab>
+
+      <!-- 游戏标签 -->
+      <div class="w-100 d-flex py-2 mt-12">
+        <label class="mr-0 mb-0 label-title"
+          >{{ 'game.provider.game_label' | lang }} <span class="text-danger">*</span>：</label
+        >
+        <div class="flex-1">
+          <div class="d-flex flex-wrap" style="line-height: 38px">
+            <ng-container formArrayName="label">
+              <label
+                class="checkbox checkbox-lg mr-12"
+                *ngFor="let item of formGroup.controls['label']['controls']; let i = index"
+              >
+                <input type="checkbox" [formControlName]="i" />
+                <span></span>{{ gameLabelList[i].description }}
+              </label>
+            </ng-container>
+          </div>
+
+          <div class="is-invalid"></div>
+          <div
+            class="invalid-feedback"
+            style="margin-top: -6px"
+            *ngIf="validator.controlHasError('arrayRequired', 'label')"
+          >
+            {{ 'game.provider.check_game_one' | lang }}
+          </div>
+        </div>
+      </div>
+
+      <!-- 庄家优势 -->
+      <!-- <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title">庄家优势 <span class="text-danger">*</span>：</label>
+        <div class="w-100">
+          <label class="form-control d-flex" [class.is-invalid]="validator.isControlInvalid('advantage')">
+            <input
+              style="caret-color: inherit"
+              class="flex-1 advantage"
+              type="text"
+              autocomplete="off"
+              formControlName="advantage"
+              input-percentage
+            />
+            <span class="vam" style="line-height: 28px">%</span>
+          </label>
+
+          <div class="invalid-feedback" *ngIf="validator.controlHasError('numberRequired', 'advantage')">
+            请输入庄家优势 (0.01~100)百分比
+          </div>
+        </div>
+      </div> -->
+
+      <!-- 显示顺序 -->
+      <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'game.provider.order' | lang }}：</label>
+        <div class="flex-1">
+          <input
+            type="text"
+            class="form-control w-100"
+            autocomplete="off"
+            [class.is-invalid]="validator.isControlInvalid('sort')"
+            formControlName="sort"
+            oninput="this.value=this.value.replace(/\D/g,'')"
+          />
+
+          <!--          <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'sort')">sort is required</div>-->
+        </div>
+      </div>
+
+      <!-- 状态 -->
+      <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'common.status' | lang }} <span class="text-danger">*</span>：</label>
+        <div class="flex-1">
+          <div class="d-flex flex-wrap h-100">
+            <label class="radio radio-lg" *ngFor="let item of gameStatusList">
+              <input type="radio" [value]="item.code" formControlName="state" />
+              <span></span>
+              {{ item.code }}
+            </label>
+          </div>
+
+          <div class="is-invalid"></div>
+          <div class="invalid-feedback" style="margin-top: -6px" *ngIf="validator.controlHasError('required', 'state')">
+            {{ 'game.provider.choose_statu' | lang }}
+          </div>
+        </div>
+      </div>
+
+      <!-- 参与反水 -->
+      <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title"
+          >{{ 'game.join_return' | lang }} <span class="text-danger">*</span>：</label
+        >
+        <label class="switch switch-success">
+          <input type="checkbox" formControlName="backwater" />
+          <span></span>
+          {{ formGroup.get('backwater')?.value ? ('game.open' | lang) : ('game.off' | lang) }}
+        </label>
+      </div>
+
+      <!-- 首页推荐 -->
+      <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'game.home_re' | lang }} <span class="text-danger">*</span>：</label>
+        <label class="switch switch-success">
+          <input type="checkbox" formControlName="recommend" />
+          <span></span>
+          {{ formGroup.get('recommend')?.value ? ('game.open' | lang) : ('game.off' | lang) }}
+        </label>
+      </div>
+      <!-- 热门推荐 -->
+      <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title"
+          >{{ 'game.hotRecommend' | lang }} <span class="text-danger">*</span>：</label
+        >
+        <label class="switch switch-success">
+          <input type="checkbox" formControlName="hotRecommend" />
+          <span></span>
+          {{ formGroup.get('hotRecommend')?.value ? ('game.open' | lang) : ('game.off' | lang) }}
+        </label>
+      </div>
+      <!-- 试玩模式 -->
+      <div class="w-100 d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'game.try_mode' | lang }} <span class="text-danger">*</span>：</label>
+        <label class="switch switch-success">
+          <input type="checkbox" formControlName="isTry" />
+          <span></span>
+          {{ formGroup.get('isTry')?.value ? ('game.open' | lang) : ('game.off' | lang) }}
+        </label>
+      </div>
+
+      <!-- 庄家优势 -->
+      <form-row
+        [label]="'game.banker_a' | lang"
+        label-width="220"
+        name="advantage"
+        required
+        [invalidFeedback]="{ numberRequired: 'game.banker_adv' | lang }"
+      >
+        <ng-template let-invalid="invalid">
+          <form-wrap [style.width.px]="120" [invalid]="invalid">
+            <input formControlName="advantage" type="text" class="form-control" autocomplete="off" input-percentage />
+            <span suffix class="color-aaa fz-14">%</span>
+          </form-wrap>
+        </ng-template>
+      </form-row>
+
+      <!-- 按钮组 -->
+      <div class="btn-wrap pt-12 flex-center d-flex">
+        <button type="button" class="c-btn c-btn-default ml-0" (click)="router.navigate(['/game/list'])">
+          {{ 'common.back' | lang }}
+        </button>
+        <button type="button" class="c-btn c-btn-primary" (click)="onSubmit(langTab)">
+          {{ 'game.provider.confirm' | lang }}
+        </button>
+      </div>
+    </form>
+  </ng-container>
+</main>

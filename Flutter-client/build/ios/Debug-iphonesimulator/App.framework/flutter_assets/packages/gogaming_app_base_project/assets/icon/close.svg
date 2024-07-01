@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>close</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="close" transform="translate(0.600100, 0.600100)" fill="#B7BABF" fill-rule="nonzero">
+            <path d="M10.8,0 C11.9045695,7.78148667e-16 12.8,0.8954305 12.8,2 L12.8,10.8 C12.8,11.9045695 11.9045695,12.8 10.8,12.8 L2,12.8 C0.8954305,12.8 1.11632554e-15,11.9045695 0,10.8 L0,2 C-1.3527075e-16,0.8954305 0.8954305,2.02906125e-16 2,0 L10.8,0 Z M8.9551,3.1997 L6.3997,5.75513 L3.84428,3.1997 L3.1997,3.84428 L5.75513,6.3997 L3.1997,8.9551 L3.84428,9.5997 L6.3997,7.04428 L8.9551,9.5997 L9.5997,8.9551 L7.04428,6.3997 L9.5997,3.84428 L8.9551,3.1997 Z" id="形状结合"></path>
+        </g>
+    </g>
+</svg>

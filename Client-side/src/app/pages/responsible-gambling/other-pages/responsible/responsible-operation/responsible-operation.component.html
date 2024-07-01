@@ -1,0 +1,34 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container operation-container">
+    <p class="text-16-14">{{ 'respon_da' | translate }}</p>
+    <p class="text-16-14 m-top-20">{{ 'respon_db' | translate }}</p>
+    <div class="content">
+      <ng-container *ngFor="let item of contextArr">
+        <div class="title m-top-50">
+          <img class="title-img" [src]="item.iconImg" lazy="loading" alt="" />
+          <span>{{ item.title }}</span>
+        </div>
+        <div class="context" *ngFor="let text of item.text">
+          <p>{{ text }}</p>
+        </div>
+      </ng-container>
+    </div>
+    <p class="text-16 m-top-50">
+      {{ 'respon_eu' | translate }}
+    </p>
+    <p class="text-16 m-top-20">{{ 'respon_ev' | translate }}</p>
+    <p class="text-16 m-top-20">{{ 'respon_ew' | translate }}</p>
+    <p class="text-16 m-top-50">{{ 'respon_ex' | translate }}</p>
+    <p class="text-16 m-top-20">{{ 'respon_ey' | translate }}</p>
+    <p class="text-16">
+      {{ 'respon_ez' | translate }}
+      <span class="mutual-opacity link-text">{{ 'respon_fa' | translate }}</span>
+    </p>
+    <div class="bottom">
+      <span class="bottom-text">
+        <span class="text-16">{{ 'next_p' | translate }}</span>
+        <span class="mutual-opacity link-text onact96-not" (click)="commingSoon()">{{ 'next_a' | translate }}</span>
+      </span>
+    </div>
+  </div>
+</div>

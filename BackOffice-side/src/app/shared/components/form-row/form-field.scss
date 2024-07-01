@@ -1,0 +1,33 @@
+/*********************************************************
+* 仿写一个bootstrap的样式 -> 他样式有强制样式不利于host进行设置 **
+**********************************************************/
+.form-field {
+  font-size: 16px;
+  height: 42px;
+  background-color: #f3f6f9;
+  border: 1px solid #f3f6f9;
+  border-radius: 6px;
+  width: 100%;
+  padding: 6px 10px;
+  font-weight: 400;
+  line-height: 1;
+  color: #3f4254;
+  background-clip: padding-box;
+  box-shadow: none;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:focus {
+    border-color: #f3f6f9;
+    background-color: #f3f6f9;
+  }
+}
+
+.was-validated .form-field:invalid,
+.form-field.is-invalid {
+  border-color: #f64e60;
+}
+
+.was-validated .form-field:valid,
+.form-field.is-valid {
+  border-color: #50cd89;
+}

@@ -1,0 +1,39 @@
+<form-row
+  class="flex-1 py-0"
+  [label]="label || ruleItem.lang"
+  [name]="ruleItem.field"
+  [group]="formGroup"
+  [label-width]="labelWidth"
+  [style]="formStyle"
+  [showLabel]="showLabel"
+>
+  <ng-template
+    let-$implicit
+    let-invalid="invalid"
+    let-valid="valid"
+    let-formControl="formControl"
+    let-formGroup="formGroup"
+    let-disabled="disabled"
+    let-enabled="enabled"
+  >
+    <ng-container
+      *ngIf="templateRef"
+      [ngTemplateOutlet]="templateRef"
+      [ngTemplateOutletContext]="{
+        $implicit,
+        invalid,
+        valid,
+        formControl,
+        formGroup,
+        disabled,
+        enabled,
+      }"
+    ></ng-container>
+  </ng-template>
+</form-row>
+
+<div class="w52 pl-4">
+  <button *ngIf="showDelete" class="btn-cube w-42 h-42" type="button" (click)="onConditionDelRule()">
+    <svg-icon [src]="'./assets/images/svg/admin-del.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+  </button>
+</div>

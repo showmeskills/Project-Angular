@@ -1,0 +1,84 @@
+<div class="container">
+  <div class="con-tit"><i class="icon-cunkuan"></i>存款限制</div>
+  <div class="content-box">
+    <p class="text-20">此功能可帮助您控制存款限额。您可以设置每24小时、每7天和每30天的存款限额。</p>
+    <p class="text-20">
+      您可以随时减少存款限额，但存款限额的提高需要24小时的生效时间。我们的客服人员将可爲您提供更多信息，但无法更改您设定的存款限额。
+    </p>
+  </div>
+  <div class="content-box">
+    <div class="title">您当前的存款限额为</div>
+    <ng-container *ngIf="!editMode">
+      <div class="limit-content">
+        <div class="limit-data">
+          <div class="limit-item" *ngFor="let item of limitData">
+            <span>{{ item.name }}</span>
+            <div>
+              {{ item.value | currencyValue : 'BTC' }}
+              <img [src]="item.currency | currencyIcon" />
+            </div>
+          </div>
+        </div>
+        <customize-button type="primary" [minWidth]="isH5 ? '100%' : '140px'" (onClick)="editMode = true"
+          >更改
+        </customize-button>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="editMode">
+      <div class="edit-content">
+        <app-customize-form-group [column]="true">
+          <app-customize-input
+            size="large"
+            label="24小时"
+            type="number"
+            placeholder="无限制"
+            [(value)]="limit24h"
+            [valueRightIcon]="'USDT' | currencyIcon"
+          ></app-customize-input>
+          <app-customize-input
+            size="large"
+            label="7天"
+            type="number"
+            placeholder="无限制"
+            [(value)]="limit7day"
+            [valueRightIcon]="'USDT' | currencyIcon"
+          ></app-customize-input>
+          <app-customize-input
+            size="large"
+            label="30天"
+            type="number"
+            placeholder="无限制"
+            [(value)]="limit30day"
+            [valueRightIcon]="'USDT' | currencyIcon"
+          ></app-customize-input>
+          <app-customize-input
+            size="large"
+            #iPassword
+            label="密码"
+            type="password"
+            [(value)]="password"
+            [required]="true"
+          >
+            <i
+              class="onact96-not"
+              right-content
+              [class]="iPassword.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+              (click)="iPassword.type = iPassword.type === 'password' ? 'text' : 'password'"
+            ></i>
+          </app-customize-input>
+        </app-customize-form-group>
+      </div>
+      <div class="btns">
+        <customize-button width="100%" (onClick)="editMode = false">取消</customize-button>
+        <customize-button
+          width="100%"
+          type="primary"
+          [disabled]="!((limit24h || limit7day || limit30day) && password)"
+          (onClick)="submit()"
+        >
+          提交
+        </customize-button>
+      </div>
+    </ng-container>
+  </div>
+</div>

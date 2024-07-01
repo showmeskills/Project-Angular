@@ -1,0 +1,76 @@
+<app-friend-header *ngIf="isH5" [goRouter]="true"></app-friend-header>
+<div class="rank-container">
+  <div class="rank-header">
+    <i class="icon-close-simple mutual-opacity onact96-not" *ngIf="!isH5" (click)="close()"></i>
+    <div class="header-text">
+      <p class="text-30">{{ 'rank_e' | translate }}</p>
+      <p class="text-14-gray h5-width">{{ 'rank_f' | translate }}</p>
+    </div>
+  </div>
+  <div class="rank-list-container">
+    <div class="rank-list">
+      <div class="list-top">
+        <ng-container *ngFor="let item of topBtnList; let i = index">
+          <customize-button
+            class="onact96-btn"
+            [type]="i === isActiveBtnIdx ? 'default' : 'text'"
+            size="medium-small"
+            minWidth="100px"
+            (onClick)="getDefaultData(i)"
+            [disabled]="loading"
+            [loading]="i === isActiveBtnIdx && loading"
+          >
+            <span [class.font-active]="i === isActiveBtnIdx">{{ item }}</span>
+          </customize-button>
+        </ng-container>
+      </div>
+      <div class="list-container" [appLoading]="loading">
+        <ng-container *ngIf="rankList.length > 0">
+          <ng-container *ngIf="!isH5">
+            <app-scrollbar>
+              <ng-container *ngTemplateOutlet="renderListTmp"></ng-container>
+            </app-scrollbar>
+          </ng-container>
+          <ng-container *ngIf="isH5">
+            <ng-container *ngTemplateOutlet="renderListTmp"></ng-container>
+          </ng-container>
+        </ng-container>
+        <app-empty
+          class="clearfix"
+          *ngIf="rankList.length === 0 && !loading"
+          [icon]="'assets/images/friend/empty.png'"
+          [text]="'no_data' | translate"
+        ></app-empty>
+      </div>
+      <!-- <app-paginator [disabled]="loading" [loading]="loading" [(page)]="paginator.page" [total]="paginator.total"
+        [pageSize]="paginator.pageSize" (onPageChange)="getDefaultData(isActiveBtnIdx,false)">
+      </app-paginator> -->
+    </div>
+  </div>
+</div>
+
+<ng-template #renderListTmp>
+  <div class="list-item" *ngFor="let item of rankList; let idx = index">
+    <div class="badge-uid">
+      <ng-container *ngIf="item?.top <= 3">
+        <img
+          class="usdt-img"
+          [src]="'assets/images/friend/top-recommender/top-' + item?.top + '.svg'"
+          alt=""
+          lazy="loading"
+        />
+      </ng-container>
+      <ng-container *ngIf="item?.top >= 4">
+        <p class="text-14 width-16">{{ item?.top }}</p>
+      </ng-container>
+      <p class="text-14 m-left-50">
+        <img class="img-size-icon avatar" [src]="item.avatar | avatarDefault" alt="" lazy="loading" />
+        {{ item.name }}
+      </p>
+    </div>
+    <div class="usdt">
+      <span class="text-14">+{{ item?.commission | currencyValue : 'USDT' }}</span>
+      <img class="usdt-img" [src]="'USDT' | currencyIcon" alt="" lazy="loading" />
+    </div>
+  </div>
+</ng-template>

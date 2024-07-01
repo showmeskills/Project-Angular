@@ -1,0 +1,171 @@
+<div class="sub-theme-container">
+  <div class="sub-theme-header">
+    <div class="sub-theme-left">
+      <i class="header-icon"></i>
+      <span class="header-title">{{ 'recom_retu00' | translate }}</span>
+      <app-tool-tip [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }">
+        <i origin class="icon-warning mutual-opacity"></i>
+        <div tooltip class="tooltip-info">
+          <div class="tooltip-info-text">{{ 'sent_a' | translate }}</div>
+        </div>
+      </app-tool-tip>
+    </div>
+    <i class="right-icon mutual-opacity onact96-not" (click)="openLineChartDialog()"></i>
+  </div>
+  <!-- 推荐返还导航 -->
+  <div class="gray-bgc-nav">
+    <ng-container *ngIf="!mainLoading">
+      <ng-container *ngFor="let item of recommendedReturnNavItem; let i = index">
+        <div>
+          <customize-button
+            class="nav-btn"
+            [disabled]="loading"
+            minWidth="100px"
+            [loading]="isActiveRecomReturnIndex == i && loading"
+            [type]="isActiveRecomReturnIndex == i ? 'default' : 'text'"
+            size="medium"
+            (click)="onSelectRecomReturnItem(i)"
+          >
+            <span [class.active]="isActiveRecomReturnIndex == i">
+              {{ item.value | translate }}{{ i == 0 ? '' : ('retu' | translate) }}
+            </span>
+          </customize-button>
+        </div>
+      </ng-container>
+    </ng-container>
+    <i class="animation-icon-loading-dot" *ngIf="mainLoading"><i></i><i></i><i></i></i>
+  </div>
+  <!-- 推荐返还文字 -->
+  <div class="commission-services-txt">
+    <ng-container *ngIf="!mainLoading">
+      <span class="text" *ngIf="applyLen === 0">{{ 'sent_th' | translate }}</span>
+      <ng-container *ngIf="applyLen > 0">
+        <div class="request-bind">
+          <p class="title">{{ 'user' | translate }} ID{{ apply?.applyId || '' }} {{ 'sent_h' | translate }}</p>
+          <div class="btn-group">
+            <customize-button size="medium" width="100%" [disabled]="applyLoading" (onClick)="submitApply(false)">
+              {{ 'reject' | translate }}
+            </customize-button>
+            <customize-button
+              size="medium"
+              type="primary"
+              [loading]="applyLoading"
+              [disabled]="applyLoading"
+              width="100%"
+              (onClick)="submitApply(true)"
+            >
+              {{ 'agree_a' | translate }}</customize-button
+            >
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <i class="animation-icon-loading-dot" *ngIf="mainLoading"><i></i><i></i><i></i></i>
+  </div>
+
+  <app-table-component
+    [tableHeader]="tableHead"
+    [tableBodyTmp]="tableBodyTmp"
+    [h5DataTemp]="h5DataTemp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [infoTips]="infoTips"
+    [isShowInfo]="true"
+    [dataLen]="recommendedReturnList.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+  ></app-table-component>
+</div>
+
+<!-- toolTip 模块 -->
+<ng-template #toolTipTemplate let-item="item">
+  <app-tool-tip class="inline-block-ml" [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }">
+    <i origin class="icon-warning mutual-opacity"></i>
+    <div tooltip class="tooltip-info">
+      <p class="cdk-tooltip-info-title">{{ 'detail' | translate }}</p>
+      <div class="cdk-tooltip-info-list">
+        <div *ngFor="let game of item.currencyAmount" class="cdk-tooltip-info-group">
+          <p class="tooltip-info-text">{{ game.key | translate }}</p>
+          <div>
+            <p class="tooltip-info-text" *ngFor="let value of game.value">
+              {{ value.amount | currencyValue : value.currency }} {{ value.currency }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-tool-tip>
+</ng-template>
+
+<!-- 表格模版 -->
+<ng-template #tableBodyTmp>
+  <tr *ngFor="let item of recommendedReturnList">
+    <td>{{ item.uId }}</td>
+    <td>{{ item.betDate }}</td>
+    <td>
+      <span class="text">{{ item.activeFlow | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+    </td>
+    <td>{{ item.commissionRate * 1000 }}‰</td>
+    <td>
+      <span class="text">{{ item.usdtCurrency | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+      <ng-container
+        *ngTemplateOutlet="
+          toolTipTemplate;
+          context: {
+            item: item
+          }
+        "
+      >
+      </ng-container>
+    </td>
+    <td [class.active]="item.status == 0">{{ item.status == 0 ? ('no_p' | translate) : ('p_ed' | translate) }}</td>
+  </tr>
+</ng-template>
+<!-- h5数据 -->
+<ng-template #h5DataTemp>
+  <div class="h5-agent-table-data" *ngFor="let item of recommendedReturnList">
+    <div class="first-line">
+      <span class="text">{{ 'invit_id00' | translate }}：{{ item.uId }}</span>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'aff_c_jyrq' | translate }}</p>
+      <p class="group-text">{{ item.betDate }}</p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'tran_flow00' | translate }}</p>
+      <p class="group-text">
+        {{ item.activeFlow | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'return_ratio' | translate }}</p>
+      <p class="group-text">{{ item.commissionRate * 1000 }}‰</p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'ref_amo00' | translate }}</p>
+      <div class="group-text">
+        {{ item.usdtCurrency | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTemplate;
+            context: {
+              item: item
+            }
+          "
+        >
+        </ng-container>
+      </div>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'acc_sta00' | translate }}</p>
+      <p class="group-text" [class.active]="item.status == 0">
+        {{ item.status == 0 ? ('no_p' | translate) : ('p_ed' | translate) }}
+      </p>
+    </div>
+  </div>
+</ng-template>

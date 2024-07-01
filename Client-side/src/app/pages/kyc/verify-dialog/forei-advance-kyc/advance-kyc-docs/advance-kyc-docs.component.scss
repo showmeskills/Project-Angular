@@ -1,0 +1,69 @@
+.icon-toast-success {
+  color: #02c075;
+  font-size: 20px;
+  // margin-right: 5px;
+  margin: 6px 6px 6px 0;
+}
+
+.pending {
+  color: var(--primary-color) !important;
+}
+.success {
+  color: #02c076;
+}
+.decent {
+  color: rgba(207, 48, 74, 1);
+}
+
+.sow-btn {
+  display: flex;
+  align-items: center;
+}
+
+.poa-id-title {
+  white-space: nowrap;
+  font-size: 15px;
+  color: var(--text-color-20);
+  margin: 6px 0;
+}
+
+.sow-docs {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+.sow-docs-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.uplod-click {
+  display: flex;
+  align-items: center;
+  margin: 6px 0 6px 6px;
+  .upload-btn {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    margin-left: 6px;
+    border: solid 1px var(--default-border-color);
+    background: var(--bg-color-10);
+  }
+
+  .icon-exit {
+    transform: rotate(270deg);
+    margin: 0 6px;
+    color: var(--primary-color);
+  }
+}
+
+.sow-details {
+  display: flex;
+  flex-direction: column;
+  .pic-name {
+    line-height: 1.48;
+    font-size: 14px;
+    color: var(--text-color-30);
+    margin-top: 6px;
+  }
+}

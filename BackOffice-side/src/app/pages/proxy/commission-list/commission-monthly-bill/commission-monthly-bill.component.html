@@ -1,0 +1,365 @@
+<div class="p-12">
+  <div class="provider-title pb-8 pt-2">
+    <img src="https://via.placeholder.com/50x50" alt="" />
+  </div>
+
+  <div class="mt-16">
+    <div class="fz-24 mb-10">{{ 'marketing.commissionList.bill.statement' | lang }}</div>
+
+    <div class="d-flex flex-wrap fz-16 column-gap-30px">
+      <div class="flex-1 mt-12">
+        <div class="d-flex">
+          <span class="text-nowrap bill-title">UID:</span>
+          <span>01000701</span>
+        </div>
+        <div class="d-flex mt-15">
+          <span class="text-nowrap bill-title">{{ 'marketing.commissionList.bill.referral' | lang }}:</span>
+          <span>123456</span>
+        </div>
+        <div class="d-flex mt-15">
+          <span class="text-nowrap bill-title">{{ 'marketing.commissionList.bill.referralAll' | lang }}:</span>
+          <div class="flex-1 min-w-0">
+            <div class="recommend">
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+              <span>ssss22341ss3457</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 净利润一览 -->
+      <div class="overview mt-12">
+        <div class="">
+          <div class="overview-title">{{ 'marketing.commissionList.bill.netProfitTitle' | lang }}</div>
+          <div class="overview-item" *ngFor="let item of netProfitList">
+            <div>{{ item.lang | lang }}</div>
+            <div>0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分红金额 -->
+  <div>
+    <div class="bill-table-title">{{ 'marketing.commissionList.bill.dividendAmount' | lang }}</div>
+    <table class="table bill-table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.hutchison' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.baseRatio' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.taskRatio' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.dividendAmount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.amountIssued' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.actualRelease' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of dividend">
+          <td><span class="cell">123,000</span></td>
+          <td><span class="cell">30%</span></td>
+          <td><span class="cell">5%</span></td>
+          <td><span class="cell">0</span></td>
+          <td><span class="cell">0</span></td>
+          <td><span class="cell">0</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <empty *ngIf="!dividend.length"></empty>
+  </div>
+
+  <!-- 佣金详情 -->
+  <div>
+    <div class="bill-table-title">{{ 'marketing.commissionList.commissionDetails' | lang }}</div>
+    <table class="table bill-table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'common.date' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.firstDeposit' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.activeUser' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.deposit' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.withdrawal' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.bonus' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.flow' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.adjustment' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.netProfit' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.bill.commissionPaid' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of commissionList">
+          <td><span class="cell">10月15日</span></td>
+          <td><span class="cell">2,1756</span></td>
+          <td><span class="cell">123</span></td>
+          <td>
+            <span class="cell">123<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">456<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">2,000<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">222,000<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">222,000<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">2,000<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+        </tr>
+      </tbody>
+      <!-- 总计 -->
+      <tfoot *ngIf="commissionList?.length">
+        <tr>
+          <td>
+            <span class="cell">{{ 'common.total' | lang }}</span>
+          </td>
+          <td>
+            <span class="cell">200222</span>
+          </td>
+          <td>
+            <span class="cell">123</span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+          <td>
+            <span class="cell">300<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!commissionList.length"></empty>
+
+    <div class="d-flex flex-between pt-4 table-footer">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="commissionPaginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadCommission(true)"
+          >
+            <mat-option *ngFor="let size of commissionPageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="commissionPaginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="commissionPaginator"
+          (paginate)="loadCommission()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+
+  <!-- 供应商状况一览、新用户首存一览 -->
+  <div class="d-flex flex-wrap column-gap-30px">
+    <!-- 供应商状况一览 -->
+    <div class="mt-12 flex-2">
+      <div class="bill-table-title">{{ 'marketing.commissionList.bill.providerOverview' | lang }}</div>
+      <table class="table bill-table bill-table-rowspan mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'marketing.commissionList.bill.provider' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'marketing.commissionList.bill.productName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'marketing.commissionList.bill.netWinOrLoss' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'marketing.commissionList.bill.shareRatio' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'marketing.commissionList.bill.shareAmount' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of commissionList; index as i" [class.solid]="!(i % 2)">
+            <td *ngIf="!(i % 2)" rowspan="2" class="vam"><span class="cell">GB</span></td>
+            <td><span class="cell">原创&彩票</span></td>
+            <td>
+              <span class="cell" [winColor]="value" *win="12867; let value; prev as prev">
+                {{ prev }}{{ (value | toFormatMoney) || '-' }}<img class="ml-2" currencyIcon="USDT" alt="" />
+              </span>
+            </td>
+            <td>
+              <span class="cell">8%</span>
+            </td>
+            <td>
+              <span class="cell">42,909<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+            </td>
+          </tr>
+        </tbody>
+        <!-- 总计 -->
+        <tfoot *ngIf="commissionList?.length">
+          <tr>
+            <td>
+              <span class="cell">{{ 'common.total' | lang }}</span>
+            </td>
+            <td colSpan="3">
+              <span class="cell" [winColor]="value" *win="1280167; let value; prev as prev">
+                {{ prev }}{{ (value | toFormatMoney) || '-' }}<img class="ml-2" currencyIcon="USDT" alt="" />
+              </span>
+            </td>
+            <td>
+              <span class="cell">20,392,093<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!commissionList.length"></empty>
+    </div>
+
+    <!-- 新用户首存一览 -->
+    <div class="mt-12 flex-1">
+      <div class="bill-table-title">{{ 'marketing.commissionList.bill.newUserFirstDeposit' | lang }}</div>
+      <table class="table bill-table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'marketing.commissionList.bill.depositTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'marketing.commissionList.bill.depositAmount' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of commissionList">
+            <td><span class="cell">2022-12-1</span></td>
+            <td><span class="cell">00001212</span></td>
+            <td>
+              <span class="cell">12,123,000<img class="ml-2" currencyIcon="USDT" alt="" /></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!commissionList.length"></empty>
+    </div>
+  </div>
+
+  <!-- 任务进度 -->
+  <div>
+    <div class="fz-20 py-6 mt-12">{{ 'marketing.commissionList.bill.taskProgress' | lang }}</div>
+    <div class="color-999 mt-8 ml-4">{{ 'marketing.commissionList.bill.commissionRate' | lang }}</div>
+    <div class="fz-20 mt-2 ml-4">30%</div>
+    <div class="task-progress-wrap">
+      <div class="task-progress">
+        <div class="task-progress__track">
+          <div class="task-progress__bar" [style.width.%]="30"></div>
+        </div>
+
+        <div class="task-progress__node-wrap">
+          <div class="task-progress__node">
+            <svg-icon [ngbTooltip]="taskTipTpl" [src]="'./assets/images/svg/task/task-finish.svg'"></svg-icon>
+            <div class="text-center fz-12 color-777 mt-3">30%</div>
+          </div>
+          <div class="task-progress__node">
+            <svg-icon [ngbTooltip]="taskTipTpl" [src]="'./assets/images/svg/task/task-finish.svg'"></svg-icon>
+            <div class="text-center fz-12 color-777 mt-3">30%</div>
+          </div>
+          <div class="task-progress__node" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+            <svg-icon [ngbTooltip]="taskTipTpl" [src]="'./assets/images/svg/task/task-close.svg'"></svg-icon>
+            <div class="text-center fz-12 color-777 mt-3">任务</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #taskTipTpl>
+      <div class="lh-20 p-4 text-left" [style.min-width.px]="180">
+        <div>任务名称：XXX</div>
+        <div>任务佣金比：XXX</div>
+        <div>xxx：XXX</div>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- 关键指标 -->
+  <div class="kpi">
+    <div class="fz-20 py-6 mt-12">{{ 'marketing.commissionList.bill.kpi' | lang }}</div>
+    <div class="pt-4">
+      {{ 'marketing.commissionList.bill.kpiDesc' | lang: { activeDay: 3, flowRatio: 5, contributionRatio: '10%' } }}
+    </div>
+  </div>
+</div>
+
+<modal-footer class="py-14" [confirmKey]="'pass'" (cancel)="onBack()" (confirm)="onSubmit()"></modal-footer>

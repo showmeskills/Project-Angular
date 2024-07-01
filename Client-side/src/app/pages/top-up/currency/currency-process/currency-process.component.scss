@@ -1,0 +1,133 @@
+div {
+  display: flex;
+}
+
+.process-container {
+  flex-direction: column;
+  justify-content: center;
+
+  .title {
+    font-size: 28px;
+    margin: 40px 0 120px 0;
+    font-weight: bold;
+    color: var(--text-color-30);
+  }
+
+  .img-group {
+    flex-direction: row;
+    justify-content: center;
+
+    > * + * {
+      margin-left: 25px;
+    }
+    @media (max-width: 920px) {
+      flex-direction: column;
+      > * + * {
+        margin-top: 120px;
+        margin-left: 0px;
+      }
+    }
+
+    .ticket {
+      flex: 1;
+      border-radius: 6px;
+      box-shadow: 0 1px 1px 0 rgba(234, 236, 239, 0.1);
+      border: solid 1px var(--default-border-color);
+      background-color: var(--container-bg-color);
+      position: relative;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 40px;
+
+      .sub-title {
+        color: var(--text-color-30);
+        font-size: 20px;
+        line-height: 1.2;
+        padding-bottom: 23px;
+        padding-top: 37px;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .img {
+        width: 150px;
+        height: 150px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top: -79px;
+      }
+
+      .txt {
+        font-size: 14px;
+        color: var(--text-color-20);
+        line-height: 1.43;
+        text-align: center;
+      }
+    }
+  }
+
+  .img-row {
+    flex-direction: row;
+    padding-top: 70px;
+    padding-bottom: 50px;
+    justify-content: space-around;
+
+    @media (max-width: 1000px) {
+      flex-direction: column;
+      align-items: center;
+
+      .txt,
+      .header {
+        max-width: none !important;
+      }
+    }
+
+    .contant-clounm {
+      flex-direction: column;
+
+      .header {
+        font-size: 28px;
+        line-height: 1.43;
+        max-width: 375px;
+        text-align: left;
+        color: var(--text-color-30);
+        padding-bottom: 29px;
+
+        @media (max-width: 767px) {
+          font-size: 18px;
+          padding-bottom: 42px;
+        }
+      }
+
+      .txt {
+        max-width: 370px;
+        text-align: left;
+        color: var(--text-color-20);
+        font-size: 16px;
+        line-height: 1.5;
+
+        @media (max-width: 767px) {
+          max-width: 337px;
+          margin-bottom: 20px;
+        }
+      }
+    }
+
+    .people-img {
+      width: 500px;
+      height: 260px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/wallet/eur_why_deposit.svg);
+
+      @media (max-width: 767px) {
+        width: 343px;
+        height: 177.7px;
+        background-size: 100%;
+      }
+
+      @media (max-width: 320px) {
+        width: 288px;
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+<!-- 默认投影不能写两次所以这里做成模板 -->
+<ng-template #slotTpl>
+  <ng-content></ng-content>
+</ng-template>
+
+<!-- 标签模板 -->
+<ng-template #slotLabelTpl let-slotTpl>
+  <span class="vam" [class.text-primary]="sortCurKey === sortKey">
+    <ng-container
+      *ngIf="isTemplate(slotTpl)"
+      [ngTemplateOutlet]="slotTpl"
+      [ngTemplateOutletContext]="{ $implicit: slotTpl }"
+    ></ng-container>
+    <ng-container *ngIf="!isTemplate(slotTpl)">{{ slotTpl }}</ng-container>
+  </span>
+</ng-template>
+
+<!-- 箭头模板 -->
+<ng-template #slotArrowTpl>
+  <span class="ml-2 vam d-inline-block">
+    <div
+      class="triangle-up vam"
+      *ngIf="sortCurKey !== sortKey || isAsc === true"
+      [class.active]="sortCurKey === sortKey && isAsc === true"
+    ></div>
+    <div
+      class="triangle-down vam"
+      *ngIf="sortCurKey !== sortKey || isAsc === false"
+      [class.active]="sortCurKey === sortKey && isAsc === false"
+    ></div>
+  </span>
+</ng-template>
+
+<span class="cursor-pointer" (click)="onSort(sortKey)" *ngIf="showSort">
+  <!-- 自定义外部传入显示，并回传数据 -->
+  <ng-container
+    *ngIf="templateRef"
+    [ngTemplateOutlet]="templateRef"
+    [ngTemplateOutletContext]="{
+      $implicit: sortCurKey,
+      sortType: sortCurKey !== sortKey || isAsc,
+      active: sortCurKey === sortKey,
+      isAsc: isAsc,
+      slotLabelTpl,
+      slotArrowTpl
+    }"
+  ></ng-container>
+
+  <!-- 默认显示 -->
+  <ng-container *ngIf="!templateRef">
+    <ng-container *ngTemplateOutlet="slotLabelTpl; context: { $implicit: labelTpl || slotTpl }"></ng-container>
+    <ng-container *ngTemplateOutlet="slotArrowTpl"></ng-container>
+  </ng-container>
+</span>
+
+<span class="vam" *ngIf="!showSort">
+  <ng-container *ngTemplateOutlet="slotLabelTpl; context: { $implicit: labelTpl || slotTpl }"></ng-container>
+</span>

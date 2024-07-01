@@ -1,0 +1,159 @@
+<div class="bg-fff rounded py-4 px-12 d-flex flex-wrap" sticky>
+  <!-- 商户 -->
+  <form-row [label]="'common.merchant' | lang" class="rounded-0 mr-14" [contentWidth]="140">
+    <ng-template>
+      <mat-form-field [style.width.px]="130">
+        <mat-select class="form-control" [(ngModel)]="data.merchantId" (selectionChange)="loadData(true)">
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of subHeaderService.merchantListAll" [value]="item.value">
+            {{ item.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 类别 API白名单、后台白名单 -->
+  <form-row [label]="'common.type' | lang" class="rounded-0 mr-14" [contentWidth]="140">
+    <ng-template>
+      <mat-form-field [style.width.px]="130">
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of typeList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- IP -->
+  <form-row label="IP" class="rounded-0 mr-14" [contentWidth]="140">
+    <ng-template>
+      <input
+        type="text"
+        class="form-control w-100"
+        [placeholder]="'form.inpTips' | lang : { label: 'IP' }"
+        [(ngModel)]="data.ip"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<!-- 表格 -->
+<div class="card px-12 py-10 mt-8">
+  <div class="d-flex flex-ac pb-4">
+    <div class="fz-20 fw-bolder text-nowrap mr-4 flex-1">{{ 'nav.merchantWhiteIP' | lang }}</div>
+
+    <div>
+      <!-- 新增IP -->
+      <button (click)="goAdd()" class="btn btn-light-primary px-6 fz-14 py-2 ml-4 mb-2" type="button">
+        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'common.add' | lang }}IP</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0">
+    <thead sticky>
+      <tr>
+        <!-- 商户 -->
+        <th>
+          <span class="cell">{{ 'common.merchant' | lang }}</span>
+        </th>
+        <!-- 类型 -->
+        <th>
+          <span class="cell">{{ 'common.type' | lang }}</span>
+        </th>
+        <!-- IP -->
+        <th>
+          <span class="cell">IP</span>
+        </th>
+        <!-- 时间 -->
+        <th>
+          <span class="cell">{{ 'common.time' | lang }}</span>
+        </th>
+        <!-- 备注 -->
+        <th>
+          <span class="cell">{{ 'common.remarks' | lang }}</span>
+        </th>
+        <!-- 操作人 -->
+        <th>
+          <span class="cell">{{ 'risk.operator' | lang }}</span>
+        </th>
+        <!-- 操作 -->
+        <th>
+          <span class="cell">{{ 'common.operate' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <!-- 商户 -->
+        <td>
+          <span class="cell">{{ item.merchantId | merchantName }}</span>
+        </td>
+        <!-- 类型 -->
+        <td>
+          <span class="cell">{{ getCategoryName(item.category) | lang : { $defaultValue: '-' } }}</span>
+        </td>
+        <!-- IP -->
+        <td>
+          <span class="cell">{{ item.ip }}</span>
+        </td>
+        <!-- 时间 -->
+        <td>
+          <span class="cell">{{ item.createTime | timeFormat }}</span>
+        </td>
+        <!-- 备注 -->
+        <td>
+          <span class="cell">{{ item.description || '-' }}</span>
+        </td>
+        <!-- 操作人 -->
+        <td>
+          <span class="cell">{{ item.createdUserName || '-' }}</span>
+        </td>
+        <!-- 操作 -->
+        <td>
+          <span class="cell">
+            <span class="btn text-nowrap btn-light-danger mx-4" (click)="onDel(item)">{{
+              'common.delete' | lang
+            }}</span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <div class="d-flex flex-between">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control rounded-0"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="appService.isContentLoadingSubject | async"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

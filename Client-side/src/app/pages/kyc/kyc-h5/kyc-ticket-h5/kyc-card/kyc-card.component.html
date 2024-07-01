@@ -1,0 +1,397 @@
+<div class="page-contant">
+  <div class="bold-label">
+    <span>{{ 'require' | translate }}</span>
+    <!--认证成功-->
+    <div *ngIf="singlecardConfig['status'] == 'S'" class="succ-status">
+      <span class="succ-btn"></span>
+      {{ 'cer' | translate }}
+    </div>
+    <!---- 审核中 -->
+    <div class="pending-time" *ngIf="time != null || singlecardConfig['status'] == 'P'">
+      <span class="watch-icon"></span>
+      {{ 'refunding' | translate }}
+    </div>
+    <!--验证失败-->
+    <app-tool-tip *ngIf="singlecardConfig['status'] === 'R'">
+      <div tooltip *ngIf="singlecardConfig['id'] === 1">
+        <ng-container *ngIf="!isAsia; else defaultMid">
+          {{ 'verify_faild_mid' | translate }}
+        </ng-container>
+        <ng-template #defaultMid>
+          {{ 'veri_info_fail' | translate }}
+        </ng-template>
+      </div>
+      <div tooltip *ngIf="singlecardConfig['id'] === 2">
+        <ng-container *ngIf="!isAsia; else defaultAvd">
+          {{ 'verify_faild_adv' | translate }}
+        </ng-container>
+        <ng-template #defaultAvd>
+          {{ 'hard_copy_info' | translate }}
+        </ng-template>
+      </div>
+      <div class="re-status mutual-opacity" origin>
+        <i class="icon-close-simple"></i>
+        <p class="re-status-txt">{{ 'veri_fail' | translate }}</p>
+      </div>
+    </app-tool-tip>
+  </div>
+  <ng-container *ngFor="let item of singlecardConfig['cardInfor']; let i = index">
+    <div
+      class="info-row"
+      [class.hide]="isAsia && i == 2"
+      [class.last-child]="i == singlecardConfig['cardInfor'].length - 1"
+    >
+      <span class="icon-{{ item.icon }}"></span>
+      <span class="info-text">{{ item.value | translate }}</span>
+    </div>
+  </ng-container>
+  <div class="bold-label">{{ 'feature_limit' | translate }}</div>
+  <!---- 认证权限内容 -->
+  <div class="infor-container">
+    <div class="info-column">
+      <div class="header-row">
+        <!-- <span ></span> -->
+        <span>{{ 'cur_limit' | translate }}</span>
+      </div>
+    </div>
+    <div class="info-column offset-right">
+      <div class="height">
+        <span [ngClass]="{ 'succ-btn': singlecardConfig['status'] == 'S' }"></span>
+        <span>{{ 'buy_crypto' | translate }}</span>
+      </div>
+      <div class="acinfor-row">
+        <span [ngClass]="{ gap: singlecardConfig['status'] == 'S' }"></span>
+        <!-- <span
+          class="acinfor-text">{{singlecardConfig['acInforConfig'].fiatToVirtualLimit == -1 ?  '无限制' : singlecardConfig['acInforConfig'].fiatToVirtualLimit+' USDT/日'}}
+        </span> -->
+        <!--后端无法修改，暂时写时成 无限制-->
+        <span class="acinfor-text">{{ 'no_limit' | translate }}</span>
+      </div>
+    </div>
+    <div class="info-column offset-right">
+      <div class="height">
+        <span [ngClass]="{ 'succ-btn': singlecardConfig['status'] == 'S' }"></span>
+        <span>{{ 'deposit' | translate }}</span>
+      </div>
+      <div class="acinfor-row">
+        <span [ngClass]="{ gap: singlecardConfig['status'] == 'S' }"></span>
+        <span class="acinfor-text"
+          >{{
+            singlecardConfig['acInforConfig'].fiatDepositLimit == -1
+              ? ('no_limit' | translate)
+              : singlecardConfig['acInforConfig'].fiatDepositLimit + ('usdt_d' | translate)
+          }}
+        </span>
+      </div>
+    </div>
+    <div class="info-column offset-right">
+      <div class="height">
+        <span [ngClass]="{ 'succ-btn': singlecardConfig['status'] == 'S' }"></span>
+        <span>{{ 'withdraw' | translate }}</span>
+      </div>
+      <div class="acinfor-row">
+        <span [ngClass]="{ gap: singlecardConfig['status'] == 'S' }"></span>
+        <span class="acinfor-text"
+          >{{
+            singlecardConfig['acInforConfig'].fiatWithdrawLimit == -1
+              ? ('no_limit' | translate)
+              : singlecardConfig['acInforConfig'].fiatWithdrawLimit + ('usdt_d' | translate)
+          }}
+        </span>
+      </div>
+    </div>
+    <div class="info-column add-top-border">
+      <div class="header-row">
+        <span>{{ 'crypto_limits' | translate }}</span>
+      </div>
+    </div>
+    <div class="info-column offset-right">
+      <div class="height">
+        <span [ngClass]="{ 'succ-btn': singlecardConfig['status'] == 'S' }"></span>
+        <span>{{ 'deposit' | translate }}</span>
+      </div>
+      <div class="acinfor-row">
+        <span [ngClass]="{ gap: singlecardConfig['status'] == 'S' }"></span>
+        <span class="acinfor-text"
+          >{{
+            singlecardConfig['acInforConfig'].virtualDepositLimit == -1
+              ? ('no_limit' | translate)
+              : singlecardConfig['acInforConfig'].virtualDepositLimit + ('usdt_d' | translate)
+          }}
+        </span>
+      </div>
+    </div>
+    <div class="info-column offset-right">
+      <div class="height">
+        <span [ngClass]="{ 'succ-btn': singlecardConfig['status'] == 'S' }"></span>
+        <span>{{ 'withdraw' | translate }}</span>
+      </div>
+      <div class="acinfor-row">
+        <span [ngClass]="{ gap: singlecardConfig['status'] == 'S' }"></span>
+        <span class="acinfor-text"
+          >{{
+            singlecardConfig['acInforConfig'].virtualWithdrawLimit == -1
+              ? ('no_limit' | translate)
+              : singlecardConfig['acInforConfig'].virtualWithdrawLimit + ('usdt_d' | translate)
+          }}
+        </span>
+      </div>
+    </div>
+    <ng-container *ngIf="!isAsia">
+      <ng-container
+        *ngIf="singlecardConfig.id === 1 && midProcessDetailForEu?.userInfo?.intermediateVerificationStatus"
+      >
+        <div class="info-column add-top-border">
+          <div class="header-row">
+            <span>{{ 'verification_infor' | translate }}</span>
+          </div>
+        </div>
+        <!--ID-->
+        <ng-container
+          *ngTemplateOutlet="
+            poaIdTmp;
+            context: {
+              type: 'ID',
+              intermediateVerificationStatus: midProcessDetailForEu?.userInfo?.intermediateVerificationStatus,
+              status: midProcessDetailForEu?.userInfo?.idVerificationStatus,
+              title: 'gov_id' | translate,
+              singlecardConfig: singlecardConfig
+            }
+          "
+        ></ng-container>
+        <!--POA-->
+        <ng-container
+          *ngTemplateOutlet="
+            poaIdTmp;
+            context: {
+              type: 'POA',
+              intermediateVerificationStatus: midProcessDetailForEu?.userInfo?.intermediateVerificationStatus,
+              status: midProcessDetailForEu?.userInfo?.poaVerificationStatus,
+              title: 'prof_ad' | translate,
+              singlecardConfig: singlecardConfig
+            }
+          "
+        ></ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="singlecardConfig.id === 2 && requestDocumentsInfor?.kycAdvanced">
+        <div class="info-column add-top-border">
+          <div class="header-row">
+            <span>{{ 'verification_infor' | translate }}</span>
+          </div>
+        </div>
+        <app-advance-kyc-docs [kycAdvanced]="requestDocumentsInfor?.kycAdvanced"></app-advance-kyc-docs>
+      </ng-container>
+
+      <!--补充文件-->
+      <ng-container *ngIf="showDocument">
+        <!--补充文件：kyc初级下显示-->
+        <ng-container *ngIf="id === 0 && currentSupplymentaryKycLevel?.includes('KycPrimary')">
+          <ng-container
+            *ngTemplateOutlet="
+              requestDocumentH5;
+              context: { item: requestDocumentsInfor, operationLevel: 'KycPrimary' }
+            "
+          >
+          </ng-container>
+        </ng-container>
+        <!--补充文件：kyc中级下显示-->
+        <ng-container *ngIf="id === 1 && currentSupplymentaryKycLevel?.includes('KycIntermediat')">
+          <ng-container
+            *ngTemplateOutlet="
+              requestDocumentH5;
+              context: { item: requestDocumentsInfor, operationLevel: 'KycIntermediat' }
+            "
+          >
+          </ng-container>
+        </ng-container>
+        <!--补充文件：kyc高级下显示-->
+        <ng-container *ngIf="id === 2 && currentSupplymentaryKycLevel?.includes('KycAdvanced')">
+          <ng-container
+            *ngTemplateOutlet="
+              requestDocumentH5;
+              context: { item: requestDocumentsInfor, operationLevel: 'KycAdvanced' }
+            "
+          >
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+  <!--认证-->
+  <div class="btn-container" [class.hide]="singlecardConfig['status'] == 'S' || singlecardConfig['status'] == 'P'">
+    <!--审核时间-->
+    <div class="info-row none-p">
+      <span class="icon-time"></span>
+      <span class="info-text">{{ timeNotice | translate }}</span>
+    </div>
+    <!---- 认证按钮 -->
+    <div class="margin-t">
+      <ng-container *ngIf="singlecardConfig['btnClass'] == 'invalid-btn' || singlecardConfig['btnClass'] == 'pass-btn'">
+        <p class="{{ singlecardConfig['btnClass'] }}">{{ singlecardConfig['buttonText'] | translate }}</p>
+      </ng-container>
+      <ng-container
+        *ngIf="singlecardConfig['btnClass'] !== 'invalid-btn' && singlecardConfig['btnClass'] !== 'pass-btn'"
+      >
+        <customize-button width="100%" size="large" type="primary" (onClick)="handleApprove(midProcessDetailForEu)">
+          {{ singlecardConfig['buttonText'] | translate }}</customize-button
+        >
+      </ng-container>
+    </div>
+    <!---- 安全提示 -->
+    <div class="notice-row">
+      <span class="safety-i"></span>
+      <div class="notice-text">
+        {{ 'secure_info' | translate }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #requestDocumentH5 let-item="item" let-operationLevel="operationLevel">
+  <ng-container
+    *ngIf="
+      item?.paymentMethod?.kycLevel === operationLevel ||
+      item?.idVerification?.kycLevel === operationLevel ||
+      item?.proofOfAddress?.kycLevel === operationLevel ||
+      item?.customize?.kycLevel === operationLevel ||
+      item?.sow?.kycLevel === operationLevel
+    "
+  >
+    <div class="info-column add-top-border">
+      <div class="header-row">
+        <span>{{ 'supp_document' | translate }}</span>
+      </div>
+    </div>
+    <div class="info-column offset-right">
+      <!--支付方式-->
+      <ng-container *ngIf="item?.paymentMethod && item?.paymentMethod?.kycLevel === operationLevel">
+        <ng-container *ngTemplateOutlet="requestDocumentItemH5; context: { item: item.paymentMethod }"> </ng-container>
+      </ng-container>
+      <!--ID-->
+      <ng-container *ngIf="item?.idVerification && item?.idVerification?.kycLevel === operationLevel">
+        <ng-container *ngTemplateOutlet="requestDocumentItemH5; context: { item: item.idVerification }"> </ng-container>
+      </ng-container>
+      <!--POA-->
+      <ng-container *ngIf="item?.proofOfAddress && item?.proofOfAddress?.kycLevel === operationLevel">
+        <ng-container *ngTemplateOutlet="requestDocumentItemH5; context: { item: item.proofOfAddress }"> </ng-container>
+      </ng-container>
+      <!--自定义-->
+      <ng-container *ngIf="item?.customize && item?.customize?.kycLevel === operationLevel">
+        <ng-container *ngTemplateOutlet="requestDocumentItemH5; context: { item: item.customize }"> </ng-container>
+      </ng-container>
+      <!-- sow -->
+      <ng-container *ngIf="item?.sow && item?.sow?.kycLevel === operationLevel">
+        <app-advance-kyc-docs [sow]="item.sow"></app-advance-kyc-docs>
+      </ng-container>
+    </div>
+  </ng-container>
+</ng-template>
+
+<!--后台发起补充文件栏位-->
+<ng-template #requestDocumentItemH5 let-item="item">
+  <div class="height">
+    <span [ngClass]="{ 'succ-btn': item.status == 'Finish' }"></span>
+    <span class="supply">
+      <!--支付方式-->
+      <ng-container *ngIf="item.type == 'PaymentMethod'">
+        {{ 'payment_method_vise' | translate }} {{ item?.document?.paymentName }}
+      </ng-container>
+      <ng-container *ngIf="item.type == 'ID'">
+        <!--ID证明 identity_document-->
+        {{ 'identity_document' | translate }}
+      </ng-container>
+      <ng-container *ngIf="item.type == 'POA'">
+        <!--proofOfAddress证明 proof_of_address_document-->
+        {{ 'proof_of_address_document' | translate }}
+      </ng-container>
+      <ng-container *ngIf="item.type == 'Customize'">
+        <!--自定义-->
+        {{ item.document.customizeName }}
+      </ng-container>
+    </span>
+    <!--非Rejected状态下显示-->
+    <ng-container *ngIf="item.status == 'Finish' || item.status == 'Pending' || item.status == 'Normal'">
+      <div
+        [class.status-success]="item.status == 'Finish'"
+        [class.pending]="item.status == 'Pending'"
+        [class.decline]="item.status == 'Normal'"
+      >
+        <ng-container *ngIf="item.status == 'Finish'"> ({{ 'app_approved' | translate }})</ng-container>
+        <ng-container *ngIf="item.status == 'Pending'"> ({{ 'pending_review' | translate }})</ng-container>
+        <ng-container *ngIf="item.status == 'Normal'">
+          <div class="upload-click">
+            <p class="decline">({{ 'click_upload' | translate }})</p>
+            <div class="upload-btn mutual-opacity onact96" (click)="handleAddDocument(item)">
+              <i class="icon-exit"></i>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <!--Rejected状态下显示-->
+    <ng-container *ngIf="item.status == 'Rejected'">
+      <div class="upload-click">
+        <p class="decline">({{ 'app_declined' | translate }})</p>
+        <div class="upload-btn mutual-opacity onact96" (click)="handleAddDocument(item)">
+          <i class="icon-exit"></i>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="acinfor-row">
+    <span [ngClass]="{ gap: item.status == 'Finish' }"></span>
+    <ng-container *ngIf="!!item?.document?.originalFileName; else defaultImg">
+      <span class="acinfor-text">{{ item?.document?.originalFileName }}</span>
+    </ng-container>
+    <ng-template #defaultImg>
+      <span class="acinfor-text"
+        >{{ item?.document?.originalFrontImageName }} {{ item?.document?.originalBackImageName }}</span
+      >
+    </ng-template>
+  </div>
+</ng-template>
+
+<!-- 中级 POA ID -->
+<ng-template
+  #poaIdTmp
+  let-type="type"
+  let-status="status"
+  let-title="title"
+  let-intermediateStatus="intermediateVerificationStatus"
+  let-singlecardConfig="singlecardConfig"
+>
+  <div class="info-column offset-right">
+    <div class="height">
+      <p [ngClass]="{ 'succ-btn': singlecardConfig['status'] === 'S' }"></p>
+      <p class="poa-id-title">{{ title }}:</p>
+      <div
+        class="poa-id-status"
+        [class.status-success]="status === 'S'"
+        [class.pending]="status === 'P'"
+        [class.decline]="status === null || status === 'R'"
+      >
+        <ng-container *ngIf="status === 'S'"> ({{ 'app_approved' | translate }})</ng-container>
+        <ng-container *ngIf="status === 'P'"> ({{ 'pending_review' | translate }})</ng-container>
+        <ng-container *ngIf="status === null || status === 'R'">
+          <ng-container *ngIf="intermediateStatus === 'P'; else default">
+            <p [class.pending]="intermediateStatus === 'P'">({{ 'pending_review' | translate }})</p>
+          </ng-container>
+          <ng-template #default>
+            <div class="upload-click" (click)="openVerify(status, intermediateStatus, midProcessDetailForEu)">
+              ({{ 'app_declined' | translate }})
+              <div class="upload-btn mutual-opacity onact96">
+                <i class="icon-exit"></i>
+              </div>
+            </div>
+          </ng-template>
+        </ng-container>
+      </div>
+    </div>
+    <div class="acinfor-row">
+      <span class="acinfor-text" *ngFor="let item of kycService.doucmentImg(type, midProcessDetailForEu)">
+        {{ item }}
+      </span>
+    </div>
+  </div>
+</ng-template>

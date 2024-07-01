@@ -1,0 +1,1241 @@
+<modal-title
+  [title]="('member.overview.authentication' | lang) + ('member.kyc.model.detail' | lang)"
+  (close)="modal.dismiss()"
+></modal-title>
+
+<!-- tbas -->
+<div mat-tab-nav-bar class="tab-wrapper px-2" *ngIf="tabs && tabs.length > 0" [tabPanel]="tabPanel">
+  <div
+    class="item"
+    mat-tab-link
+    *ngFor="let item of tabLisCom"
+    [disableRipple]="true"
+    [active]="item.value === currentTabValue"
+    [class.active]="item.value === currentTabValue"
+    (click)="changeTab(+item.value)"
+  >
+    <div class="tab-name" tabPanel>{{ item.lang | lang }}</div>
+  </div>
+</div>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+<div class="modal-body p-8 pb-0 custom-scroll-y" [style.max-height.px]="600" [appLoading]="isLoading">
+  <div class="px-8 box" [style.min-height.px]="200" [ngSwitch]="currentTabValue">
+    <!-- 基本信息（亚/欧） -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.BasisInfo">
+      <div class="py-4 d-flex box-items">
+        <!-- 欧洲 -->
+        <ng-container *ngIf="isEurope; else noNameEurope">
+          <!-- 名字 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.firstName' | lang }}：</div>
+            <div class="fz-16 pt-2">
+              <ng-container *ngIf="isInfoEditFlag; else firstNameEdit">
+                <input
+                  *ngIf="isInfoEditFlag; else firstNameEdit"
+                  class="form-control fz-16 lh-35"
+                  autocomplete="off"
+                  type="text"
+                  maxlength="10"
+                  [style.height.px]="35"
+                  [disabled]="!isKycPrimary"
+                  [(ngModel)]="editInfoData.firstName"
+                />
+                <div class="text-danger fz-14 pt-1" *ngIf="!isKycPrimary">
+                  *{{ 'member.kyc.model.nameUpdateTips' | lang }}
+                </div>
+              </ng-container>
+
+              <ng-template #firstNameEdit>
+                {{ infoData.firstName || '-' }}
+              </ng-template>
+            </div>
+          </div>
+          <!-- 姓氏 -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.lastName' | lang }}：</div>
+            <div class="fz-16 pt-2">
+              <ng-container *ngIf="isInfoEditFlag; else lastNameEdit">
+                <input
+                  class="form-control fz-16 lh-35"
+                  autocomplete="off"
+                  type="text"
+                  maxlength="10"
+                  [style.height.px]="35"
+                  [disabled]="!isKycPrimary"
+                  [(ngModel)]="editInfoData.lastName"
+                />
+                <div class="text-danger fz-14 pt-1" *ngIf="!isKycPrimary">
+                  *{{ 'member.kyc.model.nameUpdateTips' | lang }}
+                </div>
+              </ng-container>
+
+              <ng-template #lastNameEdit>
+                {{ infoData.lastName || '-' }}
+              </ng-template>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #noNameEurope>
+          <!-- 姓名 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'payment.transactionList.name' | lang }}：</div>
+            <div class="fz-16 pt-2">
+              <ng-container *ngIf="isInfoEditFlag; else fullNameEdit">
+                <input
+                  class="form-control fz-16 lh-35"
+                  autocomplete="off"
+                  type="text"
+                  maxlength="20"
+                  [style.height.px]="35"
+                  [disabled]="!isKycPrimary"
+                  [(ngModel)]="editInfoData.fullName"
+                />
+                <div class="text-danger fz-14 pt-1" *ngIf="!isKycPrimary">
+                  *{{ 'member.kyc.model.nameUpdateTips' | lang }}
+                </div>
+              </ng-container>
+
+              <ng-template #fullNameEdit>
+                {{ infoData.fullName || '-' }}
+              </ng-template>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="py-4 d-flex box-items">
+        <!-- 邮箱 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'auManage.sys.email' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            <input
+              *ngIf="isInfoEditFlag; else emailEdit"
+              class="form-control fz-16 lh-35"
+              autocomplete="off"
+              type="text"
+              maxlength="50"
+              [style.height.px]="35"
+              [disabled]="infoData.isEmailVerified"
+              [(ngModel)]="editInfoData.email"
+            />
+
+            <ng-template #emailEdit>
+              {{ infoData.email || '-' }}
+            </ng-template>
+          </div>
+        </div>
+        <!-- 出生日期 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.dateofBirth' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            <ng-container *ngIf="isInfoEditFlag; else birthEdit">
+              <input
+                class="form-control fz-16 lh-35"
+                type="text"
+                formatLabel="yyyy-MM-dd"
+                [style.height.px]="35"
+                [owlDateTime]="birthTime"
+                [owlDateTimeTrigger]="birthTime"
+                [(ngModel)]="editInfoData.birthday"
+              />
+              <owl-date-time class="fz-20" [showTimer]="false" #birthTime></owl-date-time>
+            </ng-container>
+
+            <ng-template #birthEdit>
+              {{ infoData.birthday | timeFormat: 'YYYY-MM-DD' }}
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="py-4 d-flex box-items">
+        <!-- 地址： -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.land' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            <input
+              *ngIf="isInfoEditFlag; else addressEdit"
+              class="form-control fz-16 lh-35"
+              [style.height.px]="35"
+              autocomplete="off"
+              type="text"
+              [(ngModel)]="editInfoData.address"
+            />
+
+            <ng-template #addressEdit>
+              {{ infoData.address || '-' }}
+            </ng-template>
+          </div>
+        </div>
+        <!-- 邮政编码： -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            <input
+              *ngIf="isInfoEditFlag; else postalCodeEdit"
+              class="form-control fz-16 lh-35"
+              [style.height.px]="35"
+              autocomplete="off"
+              type="text"
+              [(ngModel)]="editInfoData.zipCode"
+            />
+
+            <ng-template #postalCodeEdit>
+              {{ infoData.zipCode || '-' }}
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="py-4 d-flex box-items">
+        <!-- 国籍： -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.countryofCitizen' | lang }}</div>
+          <div class="fz-16 pt-2">
+            <mat-form-field class="w-100" *ngIf="isInfoEditFlag; else CitizenshipEdit">
+              <mat-select
+                class="form-control w-100"
+                [(ngModel)]="editInfoData.countryCode"
+                [style.height.px]="36"
+                (openedChange)="openSearchSelect($event, 'countryList', countryRef)"
+              >
+                <input
+                  [placeholder]="('common.search' | lang) + '...'"
+                  type="text"
+                  #countryRef
+                  (keyup)="searchGroup['countryList'] = $event.target?.['value'] || ''"
+                  class="select-search"
+                />
+                <mat-option
+                  *ngFor="let item of countryList | search: 'countryName' : searchGroup['countryList']"
+                  [value]="item.countryCode"
+                  >{{ lang.isLocal ? item.countryName : item.countryEnName }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+
+            <ng-template #CitizenshipEdit>
+              {{ getCountryName(infoData.countryCode, 'countryCode') }}
+            </ng-template>
+          </div>
+        </div>
+        <!-- 城市 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            <input
+              *ngIf="isInfoEditFlag; else cityEdit"
+              class="form-control fz-16 lh-35"
+              [style.height.px]="35"
+              autocomplete="off"
+              type="text"
+              [(ngModel)]="editInfoData.city"
+            />
+
+            <ng-template #cityEdit>
+              {{ infoData.city || '-' }}
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- 初级（亚/欧） -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.Basis">
+      <!-- 是否通过KYC初级验证 -->
+      <ng-container *ngIf="kycPriInfo?.primaryVerificationStatus === 'S'; else noBasis">
+        <div class="py-4 d-flex box-items">
+          <!-- 欧洲 -->
+          <ng-container *ngIf="isEurope; else noEurope">
+            <!-- 名字 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.firstName' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                <!-- 初级姓名按照后端与PM要求，统一取值最外层的用户最高级认证名字 -->
+                {{ userDetailsInfo?.kycInfo?.firstName || '-' }}
+              </div>
+            </div>
+            <!-- 姓氏 -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.lastName' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                {{ userDetailsInfo?.kycInfo?.lastName || '-' }}
+              </div>
+            </div>
+          </ng-container>
+          <!-- 亚洲 -->
+          <ng-template #noEurope>
+            <!-- 姓名 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'payment.transactionList.name' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                <!-- 初级姓名按照后端与PM要求，统一取值最外层的用户最高级认证名字 -->
+                {{ userDetailsInfo?.kycInfo?.actualName || '-' }}
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="py-4 d-flex box-items">
+          <!-- 邮箱 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'auManage.sys.email' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ userDetailsInfo?.email || '-' }}</div>
+          </div>
+          <!-- 出生日期 -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.dateofBirth' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ kycPriInfo?.birthDay || '-' }}</div>
+          </div>
+        </div>
+        <div class="py-4 d-flex box-items">
+          <!-- 地址： -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.land' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ userDetailsInfo?.address || '-' }}</div>
+          </div>
+          <!-- 邮政编码： -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ kycPriInfo?.zipCode || '-' }}</div>
+          </div>
+        </div>
+        <div class="py-4 d-flex box-items">
+          <!-- 国籍： -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.countryofCitizen' | lang }}</div>
+            <div class="fz-16 pt-2">
+              {{ getCountryName(kycPriInfo?.pojo?.countryCode, 'countryIso3') }}
+            </div>
+          </div>
+          <!-- 城市 -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ kycPriInfo?.city || '-' }}</div>
+          </div>
+        </div>
+        <div class="py-4 d-flex box-items">
+          <!-- 完成时间 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ kycPriInfo?.primaryVerificationTime | timeFormat }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #noBasis>
+        <!-- 空显示 -->
+        <empty *ngIf="!isLoading"></empty>
+      </ng-template>
+    </ng-container>
+
+    <!-- 中级 -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.Intermediate">
+      <!-- 有欧洲流程的商户 && 欧洲用户 -->
+      <ng-container *ngIf="isEuropeMerchant && isEurope; else NoEuropeMerchantUser">
+        <!-- 显示条件：欧洲 && 有中级验证记录 && 没有被降级的导致失败 -->
+        <ng-container
+          *ngIf="
+            isEurope && kycIntInfo?.userInfo?.intermediateVerificationStatus && kycIntInfo?.downgradeStatus === 0;
+            else NoData
+          "
+        >
+          <div class="py-4 d-flex box-items">
+            <!-- 证件签发国/地区 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                {{ getCountryName(kycIntInfo?.idcardProcessLog?.Country, 'countryIso3') }}
+              </div>
+            </div>
+            <!-- 选择发行文件 -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.selectRelease' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                {{
+                  lang.isLocal
+                    ? getIdText(kycIntInfo?.idcardProcessLog?.IdType)
+                    : kycIntInfo?.idcardProcessLog?.IdType || '-'
+                }}
+              </div>
+            </div>
+          </div>
+
+          <div class="py-4 box-items">
+            <!-- 发行文件照片 -->
+            <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+            <div class="d-flex">
+              <!-- 行驶证/护照/签证 -->
+              <div class="flex-1" *ngIf="kycIntInfo?.idcardProcessLog?.IdType !== 'ID_CARD'; else idCardEuropeImg">
+                <ng-container
+                  *ngTemplateOutlet="ImgPreviewTpl; context: { value: kycIntInfo?.idcardProcessLog?.FrontsideImage }"
+                ></ng-container>
+                <div
+                  class="w-100 text-center pt-2"
+                  [class]="getImgStatus(kycIntInfo?.userInfo?.idVerificationStatus)?.class"
+                >
+                  {{ getImgStatus(kycIntInfo?.userInfo?.idVerificationStatus)?.lang | lang }}
+                </div>
+              </div>
+              <!-- 身份证 -->
+              <ng-template #idCardEuropeImg>
+                <div class="item pr-4 flex-1">
+                  <ng-container
+                    *ngTemplateOutlet="ImgPreviewTpl; context: { value: kycIntInfo?.idcardProcessLog?.FrontsideImage }"
+                  ></ng-container>
+                  <div
+                    class="w-100 text-center pt-2"
+                    [class]="getImgStatus(kycIntInfo?.userInfo?.idVerificationStatus)?.class"
+                  >
+                    {{ getImgStatus(kycIntInfo?.userInfo?.idVerificationStatus)?.lang | lang }}
+                  </div>
+                </div>
+                <div class="item px-4 flex-1">
+                  <ng-container
+                    *ngTemplateOutlet="ImgPreviewTpl; context: { value: kycIntInfo?.idcardProcessLog?.BacksideImage }"
+                  ></ng-container>
+                  <div
+                    class="w-100 text-center pt-2"
+                    [class]="getImgStatus(kycIntInfo?.userInfo?.idVerificationStatus)?.class"
+                  >
+                    {{ getImgStatus(kycIntInfo?.userInfo?.idVerificationStatus)?.lang | lang }}
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 居住国家 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.countryOfResidence' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ getCountryName(kycIntInfo?.poaProcessLog?.country, 'countryIso3') }}</div>
+            </div>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 居住地址 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.address' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ kycIntInfo?.poaProcessLog?.address || '-' }}</div>
+            </div>
+            <!-- 邮政编码  -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ kycIntInfo?.userInfo?.zipCode || '-' }}</div>
+            </div>
+          </div>
+
+          <div class="py-4 box-items">
+            <!-- 居住证 -->
+            <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.residenceCertificate' | lang }}：</div>
+            <ng-container
+              *ngTemplateOutlet="ImgPreviewTpl; context: { value: kycIntInfo?.poaProcessLog?.networkImgeUrl }"
+            ></ng-container>
+            <div
+              class="w-100 text-center pt-2"
+              [class]="getImgStatus(kycIntInfo?.userInfo?.poaVerificationStatus)?.class"
+            >
+              {{ getImgStatus(kycIntInfo?.userInfo?.poaVerificationStatus)?.lang | lang }}
+            </div>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 完成时间 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ kycIntInfo?.userInfo?.intermediateVerificationTime | timeFormat }}</div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #NoData>
+          <!-- 空显示 -->
+          <empty *ngIf="!isLoading"></empty>
+        </ng-template>
+      </ng-container>
+
+      <!-- 其他商户的所有地区用户 + 有欧洲流程的商户的亚洲用户 -->
+      <ng-template #NoEuropeMerchantUser>
+        <!-- 显示条件：通过中级验证 -->
+        <ng-container *ngIf="kycIntInfo?.intermediateVerificationStatus === 'S'; else NoData">
+          <!-- 中国 -->
+          <ng-container *ngIf="userDetailsInfo?.kycInfo?.countryCode === 'CN'">
+            <div class="py-4 d-flex box-items">
+              <!-- 姓名 -->
+              <div class="item pr-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'payment.transactionList.name' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ kycIntInfo?.pojo?.name || '-' }}</div>
+              </div>
+            </div>
+
+            <div class="py-4 d-flex box-items">
+              <!-- 证件签发国/地区 -->
+              <div class="item pr-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ getCountryName(userDetailsInfo?.kycInfo?.countryName, 'countryIso3') }}</div>
+              </div>
+              <!-- 证件号 -->
+              <div class="item px-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.licenseNumber' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ kycIntInfo?.pojo?.idcard || '-' }}</div>
+              </div>
+            </div>
+
+            <div class="py-4 d-flex box-items">
+              <!-- 银行卡号 -->
+              <div class="item pr-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.bankCard' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ kycIntInfo?.pojo?.bankcard || '-' }}</div>
+              </div>
+              <!-- 手机号 -->
+              <div class="item px-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.phoneNumber' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ kycIntInfo?.pojo?.mobile || '-' }}</div>
+              </div>
+            </div>
+
+            <div class="py-4 d-flex box-items">
+              <!-- 完成时间 -->
+              <div class="item pr-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ kycIntInfo?.intermediateVerificationTime | timeFormat }}</div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- 中国以外的国家 -->
+          <ng-container *ngIf="userDetailsInfo?.kycInfo?.countryCode !== 'CN'">
+            <div class="py-4 d-flex box-items">
+              <!-- 证件签发国/地区 -->
+              <div class="item pr-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ getCountryName(userDetailsInfo?.kycInfo?.countryName, 'countryIso3') }}</div>
+              </div>
+              <!-- 选择发行文件 -->
+              <div class="item pr-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.selectRelease' | lang }}：</div>
+                <div class="fz-16 pt-2">
+                  {{ lang.isLocal ? getIdText(kycIntInfo?.pojo?.idType) : kycIntInfo?.pojo?.idType || '-' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="py-4 box-items">
+              <!-- 发行文件照片 -->
+              <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+              <div class="d-flex">
+                <!-- 行驶证/护照/签证 -->
+                <ng-container *ngIf="kycIntInfo?.pojo?.IdType !== 'ID_CARD'; else idCardImg">
+                  <div class="item pr-4 flex-1">
+                    <ng-container
+                      *ngTemplateOutlet="
+                        ImgPreviewTpl;
+                        context: { value: kycIntInfo?.pojo?.frontsideImage || kycIntInfo?.pojo?.backsideImage }
+                      "
+                    ></ng-container>
+                  </div>
+                </ng-container>
+                <!-- 身份证 -->
+                <ng-template #idCardImg>
+                  <div class="item pr-4 flex-1">
+                    <ng-container
+                      *ngTemplateOutlet="ImgPreviewTpl; context: { value: kycIntInfo?.pojo?.frontsideImage }"
+                    ></ng-container>
+                  </div>
+                  <div class="item px-4 flex-1">
+                    <ng-container
+                      *ngTemplateOutlet="ImgPreviewTpl; context: { value: kycIntInfo?.pojo?.backsideImage }"
+                    ></ng-container>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="py-4 d-flex box-items">
+              <!-- 完成时间 -->
+              <div class="item pr-4 flex-1">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+                <div class="fz-16 pt-2">{{ kycIntInfo?.intermediateVerificationTime | timeFormat }}</div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #NoData>
+          <!-- 空显示 -->
+          <empty *ngIf="!isLoading"></empty>
+        </ng-template>
+      </ng-template>
+    </ng-container>
+
+    <!-- 高级 -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.Advanced">
+      <!-- 有欧洲流程的商户 && 欧洲用户 -->
+      <ng-container *ngIf="isEuropeMerchant && isEurope; else NoEuropeMerchantUser">
+        <!-- 显示条件：欧洲 && 类型为高级 && 有高级验证记录 -->
+        <ng-container
+          *ngIf="isEurope && kycAdvInfo?.type === 'KycAdvanced' && kycAdvInfo?.status !== 'Normal'; else NoData"
+        >
+          <div class="py-4 d-flex box-items">
+            <!-- 财富来源 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'risk.docRequest.sourceOfWealth' | lang }}：</div>
+              <div class="fz-16 pt-2" style="word-break: break-all">
+                {{ kycAdvInfo?.form?.moneySources.join() || '-' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="py-4 box-items" *ngFor="let item of selectkycAdvImgList">
+            <div class="fz-14 color-aaa">{{ item.name | lang }}：</div>
+            <div class="d-flex flex-wrap">
+              <div
+                class="item pr-4 mt-4 flex-1"
+                [style.min-width.%]="25"
+                *ngFor="let value of kycAdvInfo?.form?.[item.key] || []"
+              >
+                <ng-container *ngTemplateOutlet="ImgPreviewTpl; context: { value: value }"></ng-container>
+              </div>
+            </div>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 审核状态 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+              <div class="fz-16 pt-2" [ngSwitch]="kycAdvInfo?.status">
+                <!-- 审核批通过 -->
+                <span class="text-success" *ngSwitchCase="KYCReviewTypeEnum.Finish">
+                  {{ 'budget.approved' | lang }}
+                </span>
+                <!-- 审批失败 -->
+                <span class="text-danger" *ngSwitchCase="KYCReviewTypeEnum.Rejected">
+                  {{ 'member.kyc.declined' | lang }}
+                </span>
+                <!-- 审批中 -->
+                <span class="text-yellow" *ngSwitchCase="KYCReviewTypeEnum.Pending">
+                  {{ 'member.kyc.underReview' | lang }}
+                </span>
+                <span *ngSwitchDefault>-</span>
+              </div>
+            </div>
+            <!-- 完成时间 -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ kycAdvInfo?.auditTime | timeFormat }}</div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- 空显示 -->
+        <ng-template #NoData>
+          <empty *ngIf="!isLoading"></empty>
+        </ng-template>
+      </ng-container>
+
+      <!-- 其他商户的所有地区用户 + 有欧洲流程的商户的亚洲用户 -->
+      <ng-template #NoEuropeMerchantUser>
+        <!-- 显示条件：通过高级验证 -->
+        <ng-container *ngIf="kycAdvInfo?.advancedVerificationStatus === 'S'; else NoData">
+          <div class="box-items py-4 d-flex">
+            <div class="item pr-4 flex-1">
+              <!-- 国家/地区： -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.countryAndregioc' | lang }}</div>
+              <div class="fz-16">{{ getCountryName(userDetailsInfo?.kycInfo?.countryName, 'countryIso3') }}</div>
+            </div>
+            <div class="item px-4 flex-1">
+              <!-- 居住地址 -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.address' | lang }}：</div>
+              <div class="fz-16">{{ kycAdvInfo?.pojo?.address || '-' }}</div>
+            </div>
+          </div>
+          <div class="box-items py-4 d-flex">
+            <!-- 邮政编码： -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+              <div class="fz-16">{{ kycAdvInfo?.zipCode || kycAdvInfo?.pojo?.postalCode || '-' }}</div>
+            </div>
+            <div class="item px-4 flex-1">
+              <!-- 城市： -->
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}</div>
+              <div class="fz-16">{{ kycAdvInfo?.city || kycAdvInfo?.pojo?.city || '-' }}</div>
+            </div>
+          </div>
+          <div class="box-items py-4">
+            <div class="item pr-4 flex-1">
+              <!-- 地址上传： -->
+              <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.addressupload' | lang }}</div>
+              <ng-container
+                *ngTemplateOutlet="ImgPreviewTpl; context: { value: kycAdvInfo?.pojo?.networkImgeUrl }"
+              ></ng-container>
+            </div>
+          </div>
+          <div class="box-items py-4 d-flex">
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+              <div class="fz-16">{{ kycAdvInfo?.advancedVerificationTime | timeFormat }}</div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- 空显示 -->
+        <ng-template #NoData>
+          <empty *ngIf="!isLoading"></empty>
+        </ng-template>
+      </ng-template>
+    </ng-container>
+
+    <!-- 发送文件请求（欧洲）-->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.RequestForDoc">
+      <!-- ID -->
+      <div class="box-items py-8 d-flex flex-ac justify-content-between">
+        <div class="fz-14 color-aaa">1. Request for Identity Document</div>
+        <svg-icon
+          class="svg-icon svg-icon-2x svg-icon-primary cursor-pointer"
+          src="./assets/images/svg/member/authenication-doc.svg"
+          (click)="sendFileRequest(4)"
+        ></svg-icon>
+      </div>
+      <!-- POA -->
+      <div class="box-items py-8 d-flex flex-ac justify-content-between">
+        <div class="fz-14 color-aaa">2. Request for Proof of Address</div>
+        <svg-icon
+          class="svg-icon svg-icon-2x svg-icon-primary cursor-pointer"
+          src="./assets/images/svg/member/authenication-doc.svg"
+          (click)="sendFileRequest(5)"
+        ></svg-icon>
+      </div>
+      <!-- 财富来源 -->
+      <div class="box-items py-8 d-flex flex-ac justify-content-between">
+        <div class="fz-14 color-aaa">3. Request for Source of Wealth</div>
+        <svg-icon
+          class="svg-icon svg-icon-2x svg-icon-primary cursor-pointer"
+          src="./assets/images/svg/member/authenication-doc.svg"
+          (click)="sendFileRequest(7)"
+        ></svg-icon>
+      </div>
+      <!-- 支付方式 -->
+      <div class="box-items py-8 d-flex flex-ac">
+        <div class="fz-14 color-aaa" style="white-space: nowrap">4. Request for PayMent Method</div>
+        <input
+          class="form-control mx-6"
+          type="text"
+          placeholder="Enter up to 50 characters"
+          [(ngModel)]="paymentName"
+        />
+        <svg-icon
+          class="svg-icon svg-icon-2x svg-icon-primary cursor-pointer"
+          src="./assets/images/svg/member/authenication-doc.svg"
+          (click)="sendFileRequest(6)"
+        ></svg-icon>
+      </div>
+      <!-- 自定义 -->
+      <div class="box-items py-8 d-flex flex-ac">
+        <div class="fz-14 color-aaa">5.</div>
+        <input
+          class="form-control ml-1 mr-6"
+          type="text"
+          placeholder="Enter up to 200 characters"
+          [(ngModel)]="customizeName"
+        />
+        <svg-icon
+          class="svg-icon svg-icon-2x svg-icon-primary cursor-pointer"
+          src="./assets/images/svg/member/authenication-doc.svg"
+          (click)="sendFileRequest(99)"
+        ></svg-icon>
+      </div>
+    </ng-container>
+
+    <!-- 上传指定文件（亚洲）） -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.UploadSpecified">
+      <ng-container *ngIf="fullAuditData">
+        <!-- 证件正反面 -->
+        <div class="py-4">
+          <div class="fz-14 color-aaa mb-4">{{ 'risk.documentFront' | lang }}：</div>
+          <div class="horizontal">
+            <div class="img-box mr-10">
+              <img nz-image [src]="fullAuditData?.form?.frontsideImage || ''" />
+            </div>
+            <div class="img-box">
+              <img nz-image [src]="fullAuditData?.form?.backsideImage || ''" />
+            </div>
+          </div>
+        </div>
+        <!-- 交易记录截图 -->
+        <!-- 横向滚动 -->
+        <div class="py-4">
+          <div class="fz-14 color-aaa mb-4">{{ 'risk.recordScreenshot' | lang }}：</div>
+          <div class="horizontal">
+            <div class="img-box mr-10" *ngFor="let item of fullAuditData?.form?.bankRecordImages || []">
+              <img nz-image [src]="item" />
+            </div>
+            <div class="img-box mr-10" *ngFor="let item of fullAuditData?.form?.cryptoCurrencyRecordImages">
+              <img nz-image [src]="item" />
+            </div>
+          </div>
+        </div>
+        <!-- 个人证明视频 -->
+        <div class="py-4">
+          <div class="fz-14 color-aaa mb-4">{{ 'risk.proofVideo' | lang }}：</div>
+          <div class="item-img-detail video-box-div">
+            <!-- autoplay -->
+            <video *ngIf="fullAuditData?.form?.videoUrl" class="video-body" controls>
+              <source [src]="fullAuditData?.form?.videoUrl" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+        <!-- 审核状态 -->
+        <div class="d-flex py-4 px-8 box" *ngIf="!(fullAuditData?.status === KYCReviewTypeEnum.Pending)">
+          <div class="flex-1">
+            <!-- 完成时间： -->
+            <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+            <div class="fz-16">{{ fullAuditData?.auditTime | timeFormat }}</div>
+          </div>
+          <div class="flex-1 border-left pl-4">
+            <!-- 审核状态： -->
+            <div class="color-999">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+            <div class="fz-16 text-success space" *ngIf="fullAuditData?.status === KYCReviewTypeEnum.Finish">
+              {{ 'member.kyc.authenticationSucceeded' | lang }}
+            </div>
+            <div class="fz-16 text-danger space" *ngIf="fullAuditData?.status === KYCReviewTypeEnum.Rejected">
+              {{ 'member.kyc.authenticationFailed' | lang }}
+            </div>
+          </div>
+          <div class="flex-1 border-left pl-4" *ngIf="fullAuditData?.status === KYCReviewTypeEnum.Rejected">
+            <!-- 拒绝原因 -->
+            <div class="color-999">{{ 'member.kyc.model.denialReason' | lang }}：</div>
+            <div class="d-flex">{{ fullAuditData?.remark }}</div>
+          </div>
+          <div class="flex-1 border-left pl-4">
+            <!-- 审核人： -->
+            <div class="color-999">{{ 'member.kyc.model.reviewer' | lang }}：</div>
+            <div class="fz-16">{{ fullAuditData?.auditUserName }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- 空显示 -->
+      <empty *ngIf="!fullAuditData" [style.height.px]="250"></empty>
+    </ng-container>
+
+    <!-- 风险评估问卷 EDD（欧洲） -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.Edd">
+      <ng-container *ngIf="europeEdd && europeEdd?.form; else noEDD">
+        <div class="py-4 d-flex box-items">
+          <!-- 月薪 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.monthlySalary' | lang }}：</div>
+            <div class="fz-16 pt-2">
+              {{ europeEdd?.form?.monthlySalary | toFormatMoney }} {{ europeEdd?.form?.currency }}
+            </div>
+          </div>
+          <!-- 雇佣状态 -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'risk.employmentStatus' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ europeEdd?.form?.employmentStatusDesc || '-' }}</div>
+          </div>
+        </div>
+
+        <div class="py-4 d-flex box-items">
+          <!-- 职业 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.occupation' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ europeEdd?.form?.occupation || '-' }}</div>
+          </div>
+          <!-- 资金来源 -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.sourcesFunds' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ europeEdd?.form?.sourceOfFundsDesc || '-' }}</div>
+          </div>
+        </div>
+
+        <div class="py-4 d-flex box-items">
+          <!-- 审核状态 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+            <div class="fz-16 pt-2" [ngSwitch]="europeEdd?.status">
+              <!-- 审核批通过 -->
+              <span class="text-success" *ngSwitchCase="KYCReviewTypeEnum.Finish">
+                {{ 'budget.approved' | lang }}
+              </span>
+              <!-- 审批失败 -->
+              <span class="text-danger" *ngSwitchCase="KYCReviewTypeEnum.Rejected">
+                {{ 'member.kyc.declined' | lang }}
+              </span>
+              <!-- 审批中 -->
+              <span class="text-yellow" *ngSwitchCase="KYCReviewTypeEnum.Pending">
+                {{ 'member.kyc.underReview' | lang }}
+              </span>
+              <span *ngSwitchDefault>-</span>
+            </div>
+          </div>
+          <!-- 完成时间 -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+            <div class="fz-16 pt-2">{{ europeEdd?.auditTime | timeFormat }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #noEDD>
+        <!-- 空显示 -->
+        <empty *ngIf="!isLoading"></empty>
+      </ng-template>
+    </ng-container>
+
+    <!-- 风控评估问卷（亚洲） -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.RiskControl">
+      <ng-container *ngIf="riskData">
+        <!-- 基础模版 -->
+        <!-- 第一行 -->
+        <div class="box-items py-4 d-flex">
+          <!-- 年收入 -->
+          <div class="item pr-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'risk.annualIncome' | lang }}：</div>
+            <div class="fz-16">{{ riskData?.form?.annualIncome | currencyValue: 'USDT' }}$</div>
+          </div>
+          <div class="item px-4 flex-1">
+            <!-- 雇佣状态 -->
+            <div class="fz-14 color-aaa">{{ 'risk.employmentStatus' | lang }}：</div>
+            <div class="fz-16">
+              {{ riskData?.form?.employStatus }}
+            </div>
+          </div>
+        </div>
+        <!-- 第二行 -->
+        <div class="box-items py-4 d-flex">
+          <div class="item pr-4 flex-1">
+            <!-- 雇主/公司名词 -->
+            <div class="fz-14 color-aaa">{{ 'risk.companyNoun' | lang }}：</div>
+            <div class="fz-16">{{ riskData?.form?.companyName }}</div>
+          </div>
+          <div class="item px-4 flex-1">
+            <!-- 雇主/公司地址 -->
+            <div class="fz-14 color-aaa">{{ 'risk.companyAddress' | lang }}：</div>
+            <div class="fz-16">{{ riskData?.form?.companyAddress }}</div>
+          </div>
+        </div>
+        <!-- 第三行 -->
+        <div class="box-items py-4 d-flex">
+          <div class="item pr-4 flex-1">
+            <!-- 估计总资产净值： -->
+            <div class="fz-14 color-aaa">{{ 'risk.netWorth' | lang }}：</div>
+            <div class="fz-16">{{ riskData?.form?.netAsset | currencyValue: 'USDT' }}$</div>
+          </div>
+          <!-- 总资产净值来源： -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'risk.sourceNetWorth' | lang }}：</div>
+            <div class="fz-16">{{ riskData?.form?.assetSource }}</div>
+          </div>
+        </div>
+
+        <div class="d-flex py-4">
+          <div class="flex-1">
+            <!-- 完成时间： -->
+            <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+            <div class="fz-16">{{ riskData.auditTime | timeFormat }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- 空显示 -->
+      <empty *ngIf="!riskData" [style.height.px]="250"></empty>
+    </ng-container>
+
+    <!-- 财富来源证明（亚洲） -->
+    <ng-container *ngSwitchCase="AutTabsTypeEnum.WealthTitle">
+      <ng-container *ngIf="wealthSourceData">
+        <!-- 基础模版 -->
+        <div class="box-items py-4 d-flex">
+          <div class="item pr-4 flex-1">
+            <!-- 新额度 -->
+            <div class="fz-14 color-aaa">{{ 'member.kyc.newQuota' | lang }}：</div>
+            <div class="fz-16 text-success">{{ wealthSourceData?.form?.depositLimit }}</div>
+          </div>
+          <!-- 资金来源： -->
+          <div class="item px-4 flex-1">
+            <div class="fz-14 color-aaa">{{ 'member.kyc.sourcesFunds' | lang }}：</div>
+            <div class="fz-16">
+              {{ wealthSourceData?.form?.moneySources ? wealthSourceData?.form.moneySources?.join(',') : '-' }}
+            </div>
+          </div>
+        </div>
+        <!-- 图片展示 -->
+        <ng-container>
+          <div class="py-4" *ngFor="let item of wsImgTypeList">
+            <div class="fz-14 color-aaa mb-4">{{ item?.name | lang }}：</div>
+            <div class="horizontal">
+              <div class="img-box mr-10" *ngFor="let value of wealthSourceData?.form?.[item.key]">
+                <img nz-image [src]="value" />
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <div class="d-flex py-4">
+          <div class="flex-1">
+            <!-- 完成时间： -->
+            <div class="color-999">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+            <div class="fz-16">{{ wealthSourceData?.auditTime | timeFormat }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- 空显示 -->
+      <empty *ngIf="!wealthSourceData" [style.height.px]="250"></empty>
+    </ng-container>
+  </div>
+
+  <!-- 中级 - ID和POA的提交记录 -->
+  <!-- 显示条件：欧洲流程商户 && 欧洲用户 -->
+  <ng-container
+    *ngIf="
+      currentTabValue === AutTabsTypeEnum.Intermediate &&
+      isEurope &&
+      isEuropeMerchant &&
+      (europeIntHistoryData.idVerification.length > 0 || europeIntHistoryData.proofOfAddress.length > 0)
+    "
+  >
+    <!-- 验证记录 -->
+    <div class="fz-16 lh-22 fw-bolder mt-10 text-primary">{{ 'member.kyc.verificationRecord' | lang }}：</div>
+    <!-- ID -->
+    <div class="px-8 box mt-5" *ngFor="let item of europeIntHistoryData.idVerification">
+      <div class="py-4 d-flex box-items">
+        <!-- 证件签发国/地区 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ getCountryName(item?.document?.country, 'countryCode') }}</div>
+        </div>
+        <!-- 选择发行文件 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.selectRelease' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            {{ lang.isLocal ? getIdText(item?.document?.idType) : item?.document?.idType || '-' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="py-4 box-items">
+        <!-- 发行文件照片 -->
+        <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+        <div class="d-flex">
+          <!-- 行驶证/护照/签证 -->
+          <ng-container *ngIf="item?.document?.idType !== 'ID_CARD'; else idCardEuropeImg">
+            <div class="item pr-4 flex-1">
+              <ng-container
+                *ngTemplateOutlet="ImgPreviewTpl; context: { value: item?.document?.frontImage }"
+              ></ng-container>
+            </div>
+          </ng-container>
+          <!-- 身份证 -->
+          <ng-template #idCardEuropeImg>
+            <div class="item pr-4 flex-1">
+              <ng-container
+                *ngTemplateOutlet="ImgPreviewTpl; context: { value: item?.document?.frontImage }"
+              ></ng-container>
+            </div>
+            <div class="item px-4 flex-1">
+              <ng-container
+                *ngTemplateOutlet="ImgPreviewTpl; context: { value: item?.document?.backImage }"
+              ></ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="py-4 d-flex box-items">
+        <!-- 完成时间 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ item?.completionTime | timeFormat }}</div>
+        </div>
+      </div>
+    </div>
+    <!-- POA -->
+    <div class="px-8 box mt-5" *ngFor="let item of europeIntHistoryData.proofOfAddress">
+      <div class="py-4 d-flex box-items">
+        <!-- 居住国家 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.countryOfResidence' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ getCountryName(item?.document?.country, 'countryCode') }}</div>
+        </div>
+      </div>
+
+      <div class="py-4 d-flex box-items">
+        <!-- 居住地址 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.address' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ item?.document?.address || '-' }}</div>
+        </div>
+        <!-- 邮政编码  -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ item?.document?.postalCode || '-' }}</div>
+        </div>
+      </div>
+
+      <div class="py-4 box-items">
+        <!-- 居住证 -->
+        <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.residenceCertificate' | lang }}：</div>
+        <div class="img-box">
+          <img nz-image [src]="item?.document?.screenshotProof" />
+        </div>
+      </div>
+
+      <div class="py-4 d-flex box-items">
+        <!-- 完成时间 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ item?.completionTime | timeFormat }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- 基本信息 - 按钮组 -->
+<div class="modal-footer btn-wrap" *ngIf="currentTabValue === AutTabsTypeEnum.BasisInfo">
+  <ng-container *ngIf="!isInfoEditFlag; else editConfirmTel">
+    <button type="button" class="c-btn btn btn-primary" [disabled]="false" (click)="openEdit()">
+      <svg-icon class="mr-2" [src]="'./assets/images/svg/pen.svg'"></svg-icon>
+      <span>{{ 'common.modify' | lang }}</span>
+    </button>
+  </ng-container>
+  <ng-template #editConfirmTel>
+    <button *ngIf="isInfoEditFlag" type="button" class="c-btn btn btn-light" (click)="isInfoEditFlag = false">
+      {{ 'common.cancel' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="editConfirm()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </ng-template>
+</div>
+
+<!-- 除基本信息外的 - 按钮组 -->
+<div class="modal-footer btn-wrap" *ngIf="currentTabValue !== AutTabsTypeEnum.BasisInfo">
+  <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">
+    {{ 'common.cancel' | lang }}
+  </button>
+
+  <!-- 中级 - 强制升级按钮 -->
+  <!-- 显示条件：欧洲流程的商户 && 欧洲用户 && 初级通过 && 中级无提交记录 -->
+  <button
+    *ngIf="
+      !isLoading &&
+      currentTabValue === AutTabsTypeEnum.Intermediate &&
+      isEurope &&
+      isEuropeMerchant &&
+      userKycLevel === 'KycPrimary' &&
+      !kycIntInfo?.userInfo?.intermediateVerificationStatus
+    "
+    type="button"
+    class="c-btn c-btn-primary"
+    (click)="sendEuropeIntUpgrade()"
+  >
+    {{ 'member.kyc.upgradeNow' | lang }}
+  </button>
+
+  <!-- 中级 - 降级按钮 -->
+  <!-- 显示条件：欧洲流程的商户 && 欧洲用户 && 当前KYC是中级认证 -->
+  <button
+    *ngIf="
+      !isLoading &&
+      isEurope &&
+      isEuropeMerchant &&
+      currentTabValue === AutTabsTypeEnum.Intermediate &&
+      userKycLevel === 'KycIntermediat'
+    "
+    type="button"
+    class="c-btn c-btn-primary"
+    (click)="downEuropeIntermediate()"
+  >
+    {{ 'member.kyc.model.downgrade' | lang }}
+  </button>
+
+  <!-- 高级 - 发送邀请按钮 -->
+  <!-- 显示条件：欧洲流程的商户 && 欧洲用户 && && 中级级通过 && 高级无提交记录 -->
+  <button
+    *ngIf="
+      !isLoading &&
+      isEurope &&
+      isEuropeMerchant &&
+      currentTabValue === AutTabsTypeEnum.Advanced &&
+      userKycLevel === 'KycIntermediat' &&
+      !kycAdvInfo?.type
+    "
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="sendEuropeAdcInvitation()"
+  >
+    {{ 'member.kyc.sendInvitation' | lang }}
+  </button>
+
+  <!-- 高级 - 降级按钮 -->
+  <!-- 显示条件：欧洲流程的商户 && 欧洲用户 && 当前KYC是高级认证 -->
+  <button
+    *ngIf="
+      !isLoading &&
+      isEurope &&
+      isEuropeMerchant &&
+      currentTabValue === AutTabsTypeEnum.Advanced &&
+      userKycLevel === 'KycAdvanced'
+    "
+    type="button"
+    class="c-btn c-btn-primary"
+    (click)="downEuropeAdvanced(warningTpl)"
+  >
+    {{ 'member.kyc.model.downgrade' | lang }}
+  </button>
+
+  <!-- 风险评估问卷 - 发起请求按钮 -->
+  <!-- 显示条件：欧洲流程的商户 && 欧洲用户 -->
+  <button
+    *ngIf="
+      !isLoading &&
+      isEurope &&
+      isEuropeMerchant &&
+      currentTabValue === AutTabsTypeEnum.Edd &&
+      (europeEdd?.type !== 'EDD' || (europeEdd && !europeEdd?.form))
+    "
+    class="c-btn c-btn-primary"
+    (click)="sendEuropeEdd()"
+  >
+    {{ 'member.kyc.InitiateVerification' | lang }}
+  </button>
+
+  <!-- 亚洲：风控问卷调查/财富来源证明 - 发起验证按钮 -->
+  <button
+    *ngIf="[AutTabsTypeEnum.RiskControl, AutTabsTypeEnum.WealthTitle].includes(currentTabValue) && isWsRaBtnFlag"
+    class="c-btn c-btn-primary"
+    (click)="WsRalaunch()"
+  >
+    {{ 'member.kyc.InitiateVerification' | lang }}
+  </button>
+</div>
+
+<!-- 预览图片模板 -->
+<ng-template #ImgPreviewTpl let-value="value">
+  <upload class="w-100" [style.height.px]="150" [readonly]="true" [value]="value"> </upload>
+</ng-template>
+
+<!-- 高级 - 降级提示弹窗 -->
+<!-- 显示条件：欧洲流程的商户 && 欧洲用户 -->
+<ng-template #warningTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'member.coupon.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'member.kyc.model.downgradeAdvancedMsg' | lang }}</p>
+      <div class="d-flex flex-ac flex-center">
+        <div class="fz-16 mr-4 color-aaa">{{ 'member.kyc.model.downgradeOption' | lang }}：</div>
+        <span
+          [class.btn-primary]="downAdvancedValue === 0"
+          class="btn text-nowrap px-6 mx-2 my-2 btn-default"
+          (click)="downAdvancedValue = 0"
+        >
+          {{ 'member.kyc.basis' | lang }}
+        </span>
+        <span
+          [class.btn-primary]="downAdvancedValue === 1"
+          class="btn text-nowrap px-6 mx-2 my-2 btn-default"
+          (click)="downAdvancedValue = 1"
+        >
+          {{ 'member.kyc.middle' | lang }}
+        </span>
+      </div>
+    </div>
+    <modal-footer (confirm)="c(true)" [confirmShow]="[0, 1].includes(downAdvancedValue)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

@@ -1,0 +1,51 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container block-container">
+    <div class="group m-top-20">
+      <p class="text-30 text-center">{{ 'resba' | translate }}</p>
+      <p class="text-14 m-top-20 text-center">{{ 'resbb' | translate }}</p>
+      <div class="level-two m-top-20">
+        <p>
+          <img src="assets/images/responsible-gambling/block/gamblock.png" lazy="loading" alt="" />
+        </p>
+        <p [class.m-top-20]="isH5">
+          <img src="assets/images/responsible-gambling/block/etfilter.png" lazy="loading" alt="" />
+        </p>
+      </div>
+      <p class="link-text m-top-20 text-center" *ngIf="!isH5">{{ 'resbc' | translate }}</p>
+      <div class="img-group m-top-20">
+        <p class="link-text text-center" *ngIf="isH5">{{ 'resbc' | translate }}</p>
+        <img src="assets/images/responsible-gambling/block/ios.svg" lazy="loading" alt="" />
+        <img src="assets/images/responsible-gambling/block/android.svg" lazy="loading" alt="" />
+        <img src="assets/images/responsible-gambling/block/window.svg" lazy="loading" alt="" />
+      </div>
+    </div>
+    <p class="cut-line m-top-30"></p>
+    <div class="group m-top-20">
+      <div class="group-two m-top-20">
+        <div>
+          <img src="assets/images/responsible-gambling/block/cybersitter.svg" lazy="loading" alt="" />
+          <p class="text-14 m-top-20 text-center maxWidth-16">{{ 'resbd' | translate }}</p>
+        </div>
+        <div [class.m-top-20]="isH5">
+          <img src="assets/images/responsible-gambling/block/netnany.svg" lazy="loading" alt="" />
+          <p class="text-14 m-top-20 text-center maxWidth-16">{{ 'resbe' | translate }}</p>
+        </div>
+      </div>
+      <p class="link-text m-top-20 text-center" *ngIf="!isH5">{{ 'resbc' | translate }}</p>
+      <div class="img-group m-top-20">
+        <p class="link-text text-center" *ngIf="isH5">{{ 'resbc' | translate }}</p>
+        <img src="assets/images/responsible-gambling/block/ios.svg" lazy="loading" alt="" />
+        <img src="assets/images/responsible-gambling/block/android.svg" lazy="loading" alt="" />
+        <img src="assets/images/responsible-gambling/block/window.svg" lazy="loading" alt="" />
+      </div>
+      <p class="text-14 m-top-20 text-center">{{ 'resbf' | translate }}</p>
+    </div>
+  </div>
+</div>
+
+<app-other-pages-footer
+  imgSrc="assets/images/responsible-gambling/support/computer.svg"
+  [textOne]="textFooter"
+  [textTwo]="textFooterTwo"
+>
+</app-other-pages-footer>

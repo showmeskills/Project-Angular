@@ -1,0 +1,114 @@
+<div class="wrapper" id="hilo-page">
+  <div class="wrapper-top">
+    <!-- 原创游戏顶部菜单 -->
+    <orignal-bar type="hilo" [(fairnessData)]="fairnessData" [(isHotkey)]="isHotkey" [isFast]="false"></orignal-bar>
+  </div>
+  <div class="content center">
+    <!--规则-->
+    <div class="rule center">
+      <div class="col">
+        <span class="card-1"></span>
+        <em>{{ 'a_lowest' | translate }}</em>
+      </div>
+      <div class="col">
+        <span class="card-2"></span>
+        <em>{{ 'k_highest' | translate }}</em>
+      </div>
+    </div>
+    <!--纸牌-->
+    <div class="inner-container" [class.lose]="isLose" #inner>
+      <ng-container *ngTemplateOutlet="cardContent; context: { list: list }"></ng-container>
+      <div class="btn-skip onact96-not" (click)="handleSkip()">
+        <div class="btn-contant">
+          <i class="orignal-icon-circle-fresh"></i>
+          {{ 'skip' | translate }}({{ nextNum }})
+        </div>
+        <span class="btn-bgm"></span>
+      </div>
+    </div>
+
+    <!--赔率细节 only in H5 cansubmit-->
+    <div class="detail center" [class.show]="isBetting">
+      <em>{{ 'coefifcient' | translate }}</em>
+      <span>{{ realBetRate }}X</span>
+    </div>
+
+    <div class="rule center rule-h5" *ngIf="!isBetting">
+      <div class="col">
+        <span class="card-1"></span>
+        <em>{{ 'a_lowest' | translate }}</em>
+      </div>
+      <div class="col">
+        <span class="card-2"></span>
+        <em>{{ 'k_highest' | translate }}</em>
+      </div>
+    </div>
+
+    <!--投注大小 only in H5-->
+    <div class="bet-size-moblie">
+      <app-bet-size (buyChange)="handleBuyTypeEvent($event)" [canBuy]="isBetting"></app-bet-size>
+    </div>
+  </div>
+  <!-- 原创游戏投注bar -->
+  <orignal-bet
+    type="hilo"
+    [isDice]="false"
+    (toBet)="toBet($event)"
+    [operate]="operate"
+    [rate]="rate"
+    (buyChangeEvent)="handleBuyTypeEvent($event)"
+    (toSubmit)="toSubmit($event)"
+  >
+  </orignal-bet>
+  <!-- 投注历史 -->
+
+  <div class="his" #cardBox>
+    <!--不需要翻牌和化牌动画效果-->
+    <ng-container *ngIf="selectedList.length == 0">
+      <!--default card：只显示logo-->
+      <img src="assets/orignal/images/hilo/hilo-logo.png" class="img-size" />
+    </ng-container>
+    <div *ngIf="selectedList.length > 0" #cardList [class.isLose]="isLose">
+      <div *ngFor="let item of selectedList; let i = index" class="center item-option">
+        <!--active card: 只显示花色牌面-->
+        <div class="icon-postion" *ngIf="i > 0">
+          <span *ngIf="item.info.compareFlag == 1" class="up-icon"></span>
+          <span *ngIf="item.info.compareFlag == 0" class="down-icon"></span>
+          <span *ngIf="item.info.compareFlag == 3" class="refresh-icon"></span>
+          <span *ngIf="item.info.compareFlag == 2" class="equal-icon"></span>
+        </div>
+        <!-- <img src="{{item.img}}" class="img-size" [class.shadow-cover]="item.status=='R'"> -->
+        <div
+          class="card-back card-back_small"
+          [class]="'card-back_' + item.info.color"
+          [class.shadow-cover]="item.info.compareFlag == 3"
+        >
+          <span>{{ item.info.num }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-center" *ngIf="showWin">
+    <span class="bgm"></span>
+    <div class="txt-contant">
+      {{ realBetRate }}X
+      <span class="t-s"
+        ><img class="currency-icon" [src]="currentCurrencyData.currency | currencyIcon" />{{ winToast }}</span
+      >
+    </div>
+  </div>
+</div>
+
+<!--poker container-->
+<ng-template #cardContent let-list="list">
+  <div id="poker-{{ i }}" class="card-linner" *ngFor="let item of list; let i = index">
+    <div class="card-linner-animation">
+      <img src="assets/orignal/images/hilo/hilo-logo.png" class="font" />
+      <!--方块card-back_diamonds 梅花card-back_clubs 红桃ard-back_hearts 黑桃card-back_spades-->
+      <div class="card-back" [class]="'card-back_' + item.info.color">
+        <span>{{ item.info.num }}</span>
+      </div>
+    </div>
+  </div>
+</ng-template>

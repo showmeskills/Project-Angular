@@ -1,0 +1,22 @@
+<ng-container *ngIf="isReady">
+  <router-outlet></router-outlet>
+
+  <!-- 版本号 -->
+  <div class="version" *ngIf="!isOnline">
+    <div>[F: {{ version }}], [B: {{ backendVersion }}]</div>
+  </div>
+
+  <app-customer-service></app-customer-service>
+
+  <!-- app下载提示 -->
+  <app-app-download-tips></app-app-download-tips>
+  <!-- 风控任务 需要移除-改成全局弹窗弹出  -->
+  <!-- <app-risk-tasks @fade *ngIf="riskService.showAuthTask$ | async"></app-risk-tasks> -->
+  <!-- 断网提示 -->
+  <div class="network-tip" @fade *ngIf="appService.networkTips$ | async">
+    <span>
+      {{ 'network_tip_t' | translate }}
+      <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+    </span>
+  </div>
+</ng-container>

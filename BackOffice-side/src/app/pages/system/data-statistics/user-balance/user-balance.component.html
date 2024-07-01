@@ -1,0 +1,215 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <form-row label="UID" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'common.currency' | lang" class="mr-10">
+      <ng-template>
+        <mat-form-field [style.width.px]="110">
+          <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.code" *ngFor="let item of currencyList">{{ item.code }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'game.overview.account' | lang" class="mr-8">
+      <ng-template>
+        <mat-form-field [style.width.px]="125">
+          <mat-select class="form-control" [(ngModel)]="data.walletType" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of walletList" [value]="item.category">{{ item.description }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="d-flex flex-ac">
+      <form-row [label]="'system.statistics.statisticTime' | lang" class="mr-4" [contentWidth]="264">
+        <ng-template>
+          <input
+            class="text-center form-control w-100"
+            type="text"
+            [placeholder]="'system.statistics.selectStatisticsTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="data.time"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+      <div class="btn btn-primary" (click)="reStatistics()">{{ 'system.statistics.recounting' | lang }}</div>
+    </div>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'system.statistics.userBalance' | lang }}</div>
+
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 导出 -->
+      <button
+        type="button"
+        class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        (click)="onExport()"
+      >
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- UID -->
+          <th>
+            <span class="cell">UID</span>
+          </th>
+          <!-- 钱包类型 -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_1' | lang }}</span>
+          </th>
+          <!-- 币种 -->
+          <th>
+            <span class="cell">{{ 'common.currency' | lang }}</span>
+          </th>
+          <!-- 余额 -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_2' | lang }}</span>
+          </th>
+          <!-- 余额(U) -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_2' | lang }}(U)</span>
+          </th>
+          <!-- 冻结金额 -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_3' | lang }}</span>
+          </th>
+          <!-- 冻结金额(U) -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_3' | lang }}(U)</span>
+          </th>
+          <!-- 当日转入金额 -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_4' | lang }}</span>
+          </th>
+          <!-- 当日转入金额(U) -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_4' | lang }}(U)</span>
+          </th>
+          <!-- 当日转出金额 -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_5' | lang }}</span>
+          </th>
+          <!-- 当日转出金额(U) -->
+          <th>
+            <span class="cell">{{ 'system.userBalance.th_5' | lang }}(U)</span>
+          </th>
+          <!-- 统计时间 -->
+          <th>
+            <span class="cell">{{ 'system.memberBonus.th_16' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.uid }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.walletType }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.balance | currencyValue: item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.balanceUsdt | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.freezeAmount | currencyValue: item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.freezeAmountUsdt | currencyValue: 'USDT' }}</span>
+          </td>
+          <!-- 当日转入金额 -->
+          <td>
+            <span class="cell">{{ item.intoAmount | currencyValue: item.currency }}</span>
+          </td>
+          <!--当日转入金额usdt  -->
+          <td>
+            <span class="cell">{{ item.intoAmountUsdt | currencyValue: 'USDT' }}</span>
+          </td>
+          <!-- 当日转出金额 -->
+          <td>
+            <span class="cell">{{ item.outAmount | currencyValue: item.currency }}</span>
+          </td>
+          <!--当日转出金额usdt  -->
+          <td>
+            <span class="cell">{{ item.outAmountUsdt | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.statDate | timeFormat: 'YYYY-MM-DD' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

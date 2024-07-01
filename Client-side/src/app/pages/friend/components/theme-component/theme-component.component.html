@@ -1,0 +1,149 @@
+<div class="page-container theme-background">
+  <div class="main-container unity-padding-web">
+    <div class="container">
+      <ng-container *ngIf="isShowHomePage">
+        <ng-container *ngIf="!isH5">
+          <div class="theme-container">
+            <ng-container *ngTemplateOutlet="themeTextTemp"></ng-container>
+            <div class="theme-right-form">
+              <div class="theme-right-top">
+                <p class="title">{{ 'friends_t' | translate }}</p>
+                <p class="text-primary-14 mutual-opacity onact96-not" (click)="openRecommendDialog()">
+                  {{ 'set' | translate }}
+                  <i class="icon-arrow-right-simple"></i>
+                </p>
+              </div>
+              <ng-container *ngTemplateOutlet="topFormTemp"></ng-container>
+              <div class="right-btn">
+                <customize-button type="primary" size="medium" width="80%" (onClick)="openSharedDialog(true)">
+                  {{ 'invi_f' | translate }}</customize-button
+                >
+                <customize-button
+                  type="default"
+                  class="qr-btn"
+                  size="medium"
+                  [icon]="'assets/images/friend/qr-code-light.svg'"
+                  (click)="openSharedDialog(false)"
+                >
+                </customize-button>
+              </div>
+            </div>
+          </div>
+          <div class="theme-body">
+            <ng-container *ngTemplateOutlet="themeBodyTmp"></ng-container>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="isH5">
+          <div class="h5-theme-container">
+            <div class="h5-header">
+              <p class="title onact96-not" (click)="onOpenH5Ward()">{{ textData.h5RightTitle }}</p>
+              <ng-container *ngTemplateOutlet="themeTextTemp"></ng-container>
+            </div>
+            <ng-container *ngIf="importByComponent === 'friend'">
+              <div class="top-list" [appLoading]="topOneLoading">
+                <ng-container *ngFor="let item of topOneList; let idx = index">
+                  <div class="top-list-item" [class.list-margin-top]="idx === 1">
+                    <div class="list-left">
+                      <img class="img-size-icon m-right-5" [src]="item.img" alt="" />
+                      <span class="text-gray-14">{{ item.leftTitle | translate }}</span>
+                    </div>
+                    <div class="list-right">
+                      <div class="list-right-group">
+                        <p class="first-line text-14">
+                          {{ item.reward | currencyValue : 'USDT' }} USDT
+                          <ng-container *ngIf="idx === 0">
+                            <i class="icon-arrow-right-simple" (click)="onOpenH5Ward()"></i>
+                          </ng-container>
+                          <ng-container *ngIf="idx === 1">
+                            <i
+                              class="icon-arrow-right-simple"
+                              [routerLink]="['/', appService.languageCode, 'referral', 'recommendRank']"
+                            ></i>
+                          </ng-container>
+                        </p>
+                        <ng-container *ngIf="idx === 1">
+                          <p class="text-gray-14">{{ 'ID:' + item.uId }}</p>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+            <div class="theme-right-form">
+              <div class="theme-right-top mutual-opacity onact96-not">
+                <span class="title m-right-5" (click)="onOpenAllRecDialog()">{{ textData.h5FormTitle }}</span>
+                <i class="icon-arrow-down-simple"></i>
+              </div>
+              <ng-container *ngTemplateOutlet="topFormTemp"></ng-container>
+              <div class="right-btn">
+                <customize-button type="primary" size="medium" width="80%" (onClick)="openSharedDialog(true)">
+                  {{ 'invi_f' | translate }}</customize-button
+                >
+                <customize-button
+                  class="qr-btn"
+                  type="default"
+                  size="medium"
+                  [icon]="'assets/images/friend/qr-code-light.svg'"
+                  (click)="openSharedDialog(false)"
+                >
+                </customize-button>
+              </div>
+            </div>
+            <div class="h5-bottom onact96-not" [routerLink]="['/', appService.languageCode, 'referral', 'recommendId']">
+              <span class="text-primary-16">{{ 'adv_rec' | translate }}</span>
+              <i class="icon-arrow-right-simple"></i>
+            </div>
+          </div>
+        </ng-container>
+        <app-friend-footer
+          [redirect]="textData.footerRedirect"
+          [title]="textData.footerHeadTitle"
+          [btnName]="textData.footerBtnName"
+        >
+        </app-friend-footer>
+      </ng-container>
+
+      <ng-container *ngIf="!isShowHomePage">
+        <app-friend-header *ngIf="isH5" [headerTitle]="textData.h5HeadTitle" [bgColor]="true" [goRouter]="false">
+        </app-friend-header>
+        <div class="h5-reward-page">
+          <ng-container *ngTemplateOutlet="themeBodyTmp"></ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #themeTextTemp>
+  <div class="theme-text">
+    <p class="theme-title">{{ textData.invite || '' }}</p>
+    <p class="theme-join-title">{{ textData.textBrand || '' }}</p>
+    <div class="theme-role-link mutual-opacity" (click)="onToRolePage()">
+      <span class="text-primary-16-14"> {{ 'invite_r' | translate }}</span>
+      <i class="icon-arrow-right-simple"></i>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #themeBodyTmp>
+  <app-data-overview [importByOhterComponent]="importByComponent"></app-data-overview>
+  <div class="main-nav-list">
+    <ng-container *ngFor="let item of mainNavList; let idx = index">
+      <customize-button
+        [width]="isH5 ? '100%' : 'unset'"
+        [type]="idx === isActiveBtnIdx && !isH5 ? 'primary' : 'text'"
+        [minWidth]="isH5 ? 'unset' : '110px'"
+        size="medium"
+        [radius]="isH5 ? '0px' : '16px'"
+        (onClick)="onSwitchSubTheme(idx)"
+      >
+        <span [class.active-nav]="idx === isActiveBtnIdx">{{ item.name }}</span>
+      </customize-button>
+    </ng-container>
+  </div>
+  <div class="h5-inner-page">
+    <ng-container *ngTemplateOutlet="subThemeTemp"></ng-container>
+  </div>
+</ng-template>

@@ -1,0 +1,12 @@
+flutter_icons:
+  android: true
+  adaptive_icon_background: "#C70700"
+  adaptive_icon_foreground: "merchant-2/icon/app-icon-foreground.png"
+  ios: true
+  image_path: "merchant-2/icon/app-icon.png"
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false

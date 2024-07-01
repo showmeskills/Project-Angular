@@ -1,0 +1,138 @@
+<div class="card d-flex flex-row flex-wrap py-8 px-12" theadAffix>
+  <form-row [label]="'common.status' | lang" class="mr-12">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of statusList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'common.date' | lang" class="mr-12">
+    <ng-template>
+      <input
+        class="text-center form-control"
+        [style.width.px]="286"
+        type="text"
+        [placeholder]="'common.timeTips' | lang"
+        selectMode="date-range"
+        rangeSeparator="-"
+        [owlDateTime]="picker"
+        [owlDateTimeTrigger]="picker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time class="fz-20" #picker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<!-- 内容模板 -->
+<ng-template #defaultContent let-data>
+  <div>{{ 'risk.orderNum' | lang }}: {{ data?.extraInfo?.orderId }}</div>
+  <div>
+    {{ 'risk.transactedAmount' | lang }}: {{ data?.extraInfo?.orderAmount | currencyValue : data?.extraInfo?.currency
+    }}<img [currencyIcon]="data?.extraInfo?.currency" currencySize="12" class="ml-2" />
+  </div>
+  <div>
+    {{ 'risk.receivedAmount' | lang }}:
+    {{
+      data?.auditStatus === ReviewStatus.Success
+        ? (data?.extraInfo.receiveAmount | currencyValue : data?.extraInfo?.currency)
+        : '-'
+    }}<img
+      *ngIf="data?.auditStatus === ReviewStatus.Success"
+      [currencyIcon]="data?.extraInfo?.currency"
+      currencySize="12"
+      class="ml-2"
+    />
+  </div>
+</ng-template>
+
+<!-- 实时监控 -->
+<div class="mt-8">
+  <div class="monitor-item order" *ngFor="let item of list">
+    <div>
+      <img class="mr-4" iconSrc="/assets/images/svg/order.svg" />
+      <span class="vam review-title">{{ 'risk.orderReview' | lang }}</span>
+    </div>
+
+    <!-- 类型 -->
+    <div>{{ !item.auditType ? '-' : (reviewService.getTypeLang(item.auditType) | lang) }}</div>
+
+    <!-- 内容 -->
+    <div [ngSwitch]="item.auditType" class="flex-2 d-flex flex-column justify-content-center lh-18">
+      <!-- 人工编辑 -->
+      <ng-container *ngSwitchCase="ReviewType.Edit">
+        <ng-container *ngTemplateOutlet="defaultContent; context: { $implicit: item }"></ng-container>
+      </ng-container>
+      <!-- 冲正撤单 -->
+      <ng-container *ngSwitchCase="ReviewType.Reversal">
+        <ng-container *ngTemplateOutlet="defaultContent; context: { $implicit: item }"></ng-container>
+        <!-- 部分冲正 -->
+        <!--        <div class="d-flex flex-wrap" *ngIf="item?.detail?.receiveAmount">-->
+        <!--          <span class="text-nowrap pr-2">{{ 'risk.reversePartOrder' | lang }}: </span>-->
+        <!--          <span class="pr-2">{{ item.detail?.orderNum }}</span>-->
+        <!--        </div>-->
+        <!-- 全部冲正 -->
+        <!--        <div class="d-flex flex-wrap">-->
+        <!--          <span class="text-nowrap pr-2">{{ 'risk.reverseOrder' | lang }}: </span>-->
+        <!--          <span class="pr-2">{{ item.extraInfo?.orderId }}</span>-->
+        <!--        </div>-->
+      </ng-container>
+      <!-- 手动上分 -->
+      <ng-container *ngSwitchCase="ReviewType.ManualDeposit">
+        <ng-container *ngTemplateOutlet="defaultContent; context: { $implicit: item }"></ng-container>
+      </ng-container>
+    </div>
+
+    <!-- 提交人 -->
+    <div>{{ item.createdUserName || '-' }}</div>
+
+    <!-- 提交审核时间 -->
+    <div>{{ item.createdTime | timeFormat }}</div>
+
+    <!-- 状态 -->
+    <div class="last cursor-pointer">
+      <ng-container *ngFor="let s of statusList">
+        <ng-container *ngIf="s.value === item.auditStatus">
+          <app-label [type]="s.theme" (click)="onOpenAuditPopup(item)">{{ s.lang | lang }}</app-label>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- 空显示 -->
+<empty class="bg-fff rounded" *ngIf="!list.length && !isLoading"></empty>
+
+<div class="d-flex flex-between pt-4 flex-ac">
+  <div>
+    <mat-form-field [style.width.px]="78">
+      <mat-select
+        class="form-control"
+        style="background: #fff"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData()"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+    ></app-paginator>
+  </div>
+</div>

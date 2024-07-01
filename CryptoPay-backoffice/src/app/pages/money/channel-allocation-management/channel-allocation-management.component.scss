@@ -1,0 +1,39 @@
+.title {
+  white-space: nowrap;
+  font-size: 16px;
+  color: #969bad;
+}
+
+.table {
+  .btn-default {
+    color: #7e8299;
+  }
+}
+
+.tooltip-integral {
+  //width: 120px;
+  text-align: left;
+  font-size: 14px;
+
+  &-wrap {
+    &::ng-deep {
+      .tooltip-inner {
+        border-radius: 6px;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.025);
+      }
+    }
+  }
+
+  &::ng-deep {
+    .mat-expansion-panel:not([class*='mat-elevation-z']) {
+      box-shadow: 0 1px 1px -2px rgb(0 0 0 / 20%), 0px 1px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 10%);
+    }
+  }
+
+  > div {
+    height: 36px;
+    line-height: 36px;
+    padding-left: 6px;
+    padding-right: 10px;
+  }
+}

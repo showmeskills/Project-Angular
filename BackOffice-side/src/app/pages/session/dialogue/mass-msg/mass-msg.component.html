@@ -1,0 +1,159 @@
+<modal-title [title]="'session.chat.massMsg' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="p-8">
+  <form-row [label]="'member.coupon.model.sendObject' | lang" label-width="150" required>
+    <ng-template>
+      <div class="channel-tab-hd">
+        <label
+          class="radio radio-lg radio-success fz-16 channel-tab-hd-item"
+          [class.active]="item.value === control.getRawValue()"
+          *ngFor="let item of specifyUserInputType"
+        >
+          <input type="radio" name="specifyUserInputType" [value]="item.value" [formControl]="control" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+
+      <div class="channel-tab-bd" [ngSwitch]="control.getRawValue()">
+        <!-- 选择会员 -->
+        <ng-container *ngSwitchCase="1">
+          <div class="d-flex flex-ac">
+            <button
+              type="button"
+              class="btn btn-light-primary px-9 fz-14 py-2 mr-8"
+              (click)="onOpenMemberSelectPopup()"
+            >
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              <span class="vam">{{ 'member.coupon.model.chooseMember' | lang }}</span>
+            </button>
+
+            <!-- 已选择N个会员< -->
+            <div class="color-aaa">
+              {{ 'member.coupon.model.chosen' | lang }}{{ memberSelectedList.length
+              }}{{ 'member.coupon.model.members' | lang }}
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select" *ngIf="memberSelectedList.length">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberSelectedList; let i = index">
+              <span>{{ item.name || item.uact || '-' }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberSelectedList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- 手动输入 -->
+        <ng-container *ngSwitchCase="2">
+          <!-- 请输入用户UID(以符号 ; 做拼接) -->
+          <div class="color-aaa">{{ 'member.coupon.model.pleaseEnterInfo' | lang }}</div>
+          <textarea
+            [style.height.px]="290"
+            type="text"
+            class="form-control"
+            autocomplete="off"
+            [(ngModel)]="memberManualRemark"
+            input-trim
+          ></textarea>
+        </ng-container>
+
+        <!-- 上传名单 -->
+        <ng-container *ngSwitchCase="3">
+          <div class="d-flex flex-ac">
+            <upload
+              class="mt-5 mb-5 mr-15"
+              [style.height.px]="50"
+              mark="file"
+              desc="Excel/xlsx"
+              [customUpload]="customUpload"
+              [accept]="['Excel', 'xlsx']"
+              [showLimitText]="false"
+              [limit]="2048"
+            ></upload>
+            <!-- 下载模板表格 -->
+            <span class="download" (click)="downloadTemplate()">{{ 'member.coupon.model.downloadForm' | lang }}</span>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select" *ngIf="memberManualUploadList.length">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberManualUploadList; index as i">
+              <span>{{ item.userName || item.uid }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberManualUploadList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <ng-container [formGroup]="formGroup">
+    <!-- 话题类型 -->
+    <form-row
+      name="topicCategory"
+      [label]="'common.type' | lang"
+      [invalidFeedback]="{ required: 'form.choose' | lang }"
+      label-width="150"
+      required
+    >
+      <ng-template let-control="formControl">
+        <div class="d-flex flex-wrap align-items-start">
+          <label class="radio radio-lg lh-22 mt-4 mb-2 fz-16 mr-12" *ngFor="let item of topicCategoryList">
+            <input
+              type="radio"
+              name="mass-topic-category"
+              [value]="item.id"
+              [formControl]="control"
+              (change)="onTopicCategory(item)"
+            />
+            <span class="mr-4"></span>{{ lang.isLocal ? item.nameCn : item.nameEn }}
+          </label>
+          <span *ngIf="!topicCategoryList.length" class="color-999">{{ 'common.emptyText' | lang }}</span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 话题 -->
+    <form-row
+      name="topic"
+      [label]="'session.topic' | lang"
+      [invalidFeedback]="{ required: 'form.choose' | lang }"
+      label-width="150"
+      required
+    >
+      <ng-template let-control="formControl">
+        <div class="d-flex flex-wrap align-items-start">
+          <label class="radio radio-lg lh-22 mt-4 mb-2 fz-16 mr-12" *ngFor="let item of topicList">
+            <input type="radio" name="mass-topic" [value]="item.id" [formControl]="control" />
+            <span class="mr-4"></span>{{ lang.isLocal ? item.nameCn : item.nameEn }}
+          </label>
+          <span *ngIf="!topicList.length" class="color-999">{{ 'common.emptyText' | lang }}</span>
+        </div>
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- 聊天框 -->
+  <form-row label-width="150">
+    <im-editor
+      #editor
+      class="mt-8 p-0"
+      [minH]="'460px'"
+      [maxH]="'460px'"
+      [enterSend]="false"
+      [showSendBtn]="false"
+      (send)="submit($event)"
+    ></im-editor>
+  </form-row>
+</div>
+
+<modal-footer (confirm)="editor.sendMsg()" (dismiss)="modal.dismiss()"></modal-footer>

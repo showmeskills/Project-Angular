@@ -1,0 +1,19 @@
+.box {
+  width: 600px;
+  height: 320px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #f3f6f9;
+  border-color: #f3f6f9;
+  font-size: 16px;
+  border-radius: 6px;
+  margin-top: 10px;
+  overflow-y: auto; /* 添加垂直滚动条 */
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(25% - 10px); /* 每行四个元素，减去间距 */
+    height: 50px;
+  }
+}

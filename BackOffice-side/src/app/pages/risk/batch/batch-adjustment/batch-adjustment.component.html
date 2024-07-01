@@ -1,0 +1,194 @@
+<div class="card pt-12">
+  <div class="py-8 px-12 batch-wrap" *ngFor="let group of formGroup.controls; index as i" [formGroup]="group">
+    <!-- 标题：数据x -->
+    <div class="batch-label color-999 fz-16 bg-fff">{{ 'common.data' | lang }}{{ i + 1 }}</div>
+
+    <!-- 移除当条记录 -->
+    <div class="batch-remove" (click)="remove(i)">
+      <svg-icon [src]="'./assets/images/svg/close-normal.svg'" class="svg-icon svg-icon-2x mr-0 color-999"></svg-icon>
+    </div>
+
+    <!-- UID、类型选择 -->
+    <div class="d-flex flex-row flex-wrap">
+      <!-- UID -->
+      <form-row label="UID" class="mr-16" name="uid">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input [class.is-invalid]="invalid" type="text" class="form-control" [formControl]="control" input-trim />
+        </ng-template>
+      </form-row>
+
+      <!-- 账户 -->
+      <form-row [label]="'member.overview.account' | lang" name="account" class="mr-16">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <mat-form-field>
+            <mat-select class="form-control" [formControl]="control" [class.is-invalid]="invalid">
+              <!-- PS [上午11:41] Ring (来宾) 写死这两个，其他的暂时不给操作 -->
+              <mat-option [value]="AdjustmentCategoryEnum.Main">{{
+                'member.overview.masterAccount' | lang
+              }}</mat-option>
+
+              <!-- PS https://gbd730.atlassian.net/wiki/spaces/Gaming/pages/1958051865 -> 目前只可以选择主账户 -->
+              <!-- <mat-option [value]="'WithdrawLimit'">提款流水要求</mat-option> -->
+
+              <!--            <mat-option [value]="4" [disabled]="true">首存红利钱包</mat-option>-->
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <!-- 货币类型 -->
+      <form-row [label]="'budget.currencyType' | lang" class="mr-16" name="currencyType">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <mat-form-field>
+            <mat-select
+              [class.is-invalid]="invalid"
+              class="form-control"
+              [formControl]="control"
+              (selectionChange)="currencyTypeChange(group, i)"
+            >
+              <mat-option *ngFor="let item of currencyTypeList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <!-- 币种 -->
+      <form-row [label]="'common.currency' | lang" name="currency" class="mr-16">
+        <ng-template let-control="formControl" let-invalid="invalid">
+          <mat-form-field>
+            <mat-select
+              class="form-control"
+              [formControl]="control"
+              [class.is-invalid]="invalid"
+              *search="let searchList$ of currencyList[i]; key: 'code'"
+              (click)="currencyTap(group, i)"
+            >
+              <input class="fz-16" type="search" searchInput />
+              <mat-option *ngFor="let item of searchList$ | async" [value]="item.code">{{ item.code }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <!-- 类型 -->
+      <form-row [label]="'common.type' | lang" class="mr-16" name="type">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <mat-form-field>
+            <mat-select
+              [class.is-invalid]="invalid"
+              class="form-control"
+              [formControl]="control"
+              (selectionChange)="typeChange(group, i)"
+            >
+              <mat-option *ngFor="let item of detailService.adjustmentTypeList" [value]="item.value">{{
+                item.lang | lang
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <!-- 游戏 -->
+      <ng-container *ngIf="group.controls.type.value === 4">
+        <!-- 厂商 -->
+        <form-row [label]="'dashboard.transaction.gameType' | lang" name="baseId" class="mr-16">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <mat-form-field>
+              <mat-select
+                class="form-control"
+                [formControl]="control"
+                [class.is-invalid]="invalid"
+                *search="let searchList$ of providerList; key: 'abbreviation'"
+                (selectionChange)="baseIdChange(group, i)"
+              >
+                <input class="fz-16" type="search" searchInput />
+                <mat-option *ngFor="let item of searchList$ | async" [value]="item.baseId">{{
+                  item.abbreviation
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <!-- 游戏种类 -->
+        <form-row [label]="'common.game' | lang" class="mr-16" name="gameCategory" *ngIf="!!group.value.type">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <mat-form-field [style.width.px]="300">
+              <mat-select
+                class="form-control"
+                [formControl]="control"
+                [class.is-invalid]="invalid"
+                *search="let searchList$ of gameList[i]; key: false"
+              >
+                <input class="fz-16" type="search" searchInput />
+                <mat-option *ngFor="let item of searchList$ | async" [value]="item.category">{{
+                  item.categoryName
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 调账金额 -->
+      <form-row name="amount" [label]="'finance.bill.adjustmentAmout' | lang" class="mr-16">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input
+            [class.is-invalid]="invalid"
+            [formControl]="control"
+            class="form-control"
+            type="text"
+            [input-float]="8"
+            [negative]="true"
+          />
+        </ng-template>
+      </form-row>
+
+      <!-- 提款限制 -->
+      <form-row name="withdrawalLimit" [label]="'finance.bill.withdrawalLimit' | lang" class="mr-16">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" input-float />
+        </ng-template>
+      </form-row>
+
+      <!-- 备注 -->
+      <form-row name="remarks" [label]="'common.remarks' | lang" class="mr-16">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" />
+        </ng-template>
+      </form-row>
+
+      <!-- 附件 -->
+      <form-row [label]="'member.overview.annex' | lang" name="image" class="mr-16">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <upload
+            type="AdminOperateAudit"
+            [showLimitText]="false"
+            [style.height.px]="42"
+            [limit]="1024 * 5"
+            [accept]="['jpg', 'png', 'gif', 'bmp', 'pdf']"
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+            [padding]="'0 20px'"
+            [style.width.px]="180"
+          ></upload>
+        </ng-template>
+      </form-row>
+    </div>
+  </div>
+
+  <!-- 提示 -->
+  <span class="px-12 text-danger fz-12">* {{ 'risk.batch.confirmMerchantTips' | lang }}</span>
+
+  <!-- 新增 -->
+  <div class="px-12 mt-8">
+    <button (click)="add()" type="button" class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32">
+      <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+      <span class="vam">{{ 'common.add' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="modal-footer btn-wrap mt-12">
+    <button type="button" class="c-btn btn btn-primary" (click)="submit()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>

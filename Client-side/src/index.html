@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <base href="/" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="icon" href="data:," />
+    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" href="data:," />
+    <script id="init">
+      (function (e) {
+        window.checkLangSupport = (languageCode, list) => {
+          var DEFAULT_LANGUAGE = list.find(x => x === 'en-us') || list[0];
+          if (languageCode && list.includes(languageCode)) {
+            window.languageCode = languageCode;
+            document.documentElement.setAttribute('lang', languageCode);
+          } else {
+            languageCode = localStorage.getItem('storage.platform.languageCode') || navigator.language.toLowerCase();
+            languageCode = list.find(x => x.includes(languageCode));
+            window.location.href = `${location.origin}/${languageCode || DEFAULT_LANGUAGE}${location.search}`;
+          }
+        };
+
+        var SUPPORT_LANGUAGE = ['th', 'vi', 'en-us', 'zh-cn', 'tr', 'pt-br', 'ja'];
+        window.checkLangSupport(location.pathname.split('/')[1], SUPPORT_LANGUAGE);
+
+        var isSupportWebp = false;
+        try {
+          isSupportWebp = document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0;
+        } catch (err) {}
+        window.isSupportWebp = isSupportWebp;
+        e && e.remove();
+      })(document.getElementById('init'));
+    </script>
+  </head>
+
+  <body class="theme-default" style="text-indent: unset !important">
+    <div id="root_con_wrap">
+      <app-root></app-root>
+    </div>
+    <div class="global-waiting animate__animated animate__fadeIn">
+      <style>
+        .global-waiting {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 9999999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          animation-duration: 0.2s;
+          animation-delay: 0.5s;
+        }
+
+        .global-waiting .global-waiting-icon img {
+          width: 100%;
+          height: 100%;
+          max-width: 160px;
+          max-height: 160px;
+          object-fit: contain;
+          transition: opacity 0.1s;
+        }
+
+        .global-waiting .global-waiting-icon .default {
+          position: relative;
+          width: 80px;
+          height: 80px;
+          background-color: var(--default-border-color);
+          border-radius: 100%;
+          overflow: hidden;
+        }
+
+        .global-waiting .global-waiting-icon .default img {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+
+        .global-waiting .global-waiting-icon.customize .default {
+          display: none;
+        }
+
+        .global-waiting .global-waiting-txt {
+          color: var(--text-color);
+          font-size: 14px;
+          line-height: 1.3;
+          height: 1.3em;
+          margin-top: 20px;
+        }
+      </style>
+      <div class="global-waiting-icon animate__animated animate__zoomIn animate__faster">
+        <div class="default">
+          <img src="assets/images/global_waiting_1.gif" alt="" />
+          <img style="opacity: 0" src="assets/images/global_waiting_2.gif" alt="" />
+          <img style="opacity: 0" src="assets/images/global_waiting_3.gif" alt="" />
+          <img style="opacity: 0" src="assets/images/global_waiting_4.gif" alt="" />
+          <img style="opacity: 0" src="assets/images/global_waiting_5.gif" alt="" />
+          <img style="opacity: 0" src="assets/images/global_waiting_6.gif" alt="" />
+        </div>
+      </div>
+      <script id="global-waiting-init">
+        (function (e) {
+          var local = localStorage.getItem('storage.platform.globalWaitingIcon');
+          if (local) {
+            var img = document.createElement('img');
+            var el = document.querySelector('.global-waiting-icon');
+            img.src = local;
+            el.classList.add('customize');
+            el.appendChild(img);
+          }
+          e && e.remove();
+        })(document.getElementById('global-waiting-init'));
+      </script>
+      <div class="global-waiting-txt"></div>
+    </div>
+    <script id="chrome-version-check">
+      (function (e) {
+        var userAgent = window.navigator.userAgent;
+        var match = userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+        if (match) {
+          var version = match[2];
+          if (Number(version) < 80) {
+            var iframe = document.createElement('iframe');
+            iframe.style.height = '100%';
+            iframe.style.width = '100%';
+            iframe.src = window.location.origin + '/chrome-not-support/index.html';
+            document.body.innerHTML = '';
+            document.body.appendChild(iframe);
+            return;
+          }
+        }
+        e && e.remove();
+      })(document.getElementById('chrome-version-check'));
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', 'GTM-KWTZG7H6');
+    </script>
+    <!-- End Google Tag Manager -->
+    <!-- Hotjar Tracking Code -->
+    <script>
+      if ('#{isOnline}#' === 'true') {
+        (function (h, o, t, j, a, r) {
+          h.hj =
+            h.hj ||
+            function () {
+              (h.hj.q = h.hj.q || []).push(arguments);
+            };
+          h._hjSettings = { hjid: 3823075, hjsv: 6 };
+          a = o.getElementsByTagName('head')[0];
+          r = o.createElement('script');
+          r.async = 1;
+          r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+          a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+      }
+    </script>
+    <!-- End Hotjar Tracking Code -->
+  </body>
+</html>

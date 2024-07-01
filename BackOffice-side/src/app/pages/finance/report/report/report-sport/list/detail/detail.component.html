@@ -1,0 +1,264 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <div class="modal-title">{{ 'game.detail.order_detal' | lang }}</div>
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="flex-1 w-100">
+      <div class="d-flex flex-wrap">
+        <ng-container *ngTemplateOutlet="tpl; context: { $implicit: 'UID：', value: base.uid }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.order_id' | lang, value: base.orderNumber }"
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: { $implicit: 'game.detail.game_type' | lang, value: base?.gameCategory || '体育' }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.three_id' | lang, value: base.wagerNumber }"
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.game_maker' | lang, value: base.gameProvider }"
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.ball_type' | lang, value: base.sportCode }"
+        ></ng-container>
+
+        <ng-container
+          *ngTemplateOutlet="simple ? raceTpl : tab; context: { $implicit: simple ? curData : detailData }"
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.odd' | lang, value: base.odds }"
+        ></ng-container>
+        <!-- 串关空行 -->
+        <ng-container *ngIf="!simple; else noSimple">
+          <ng-container *ngTemplateOutlet="tpl"></ng-container>
+        </ng-container>
+        <!-- 非串关显示 盘口 -->
+        <ng-template #noSimple>
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: { $implicit: ('game.detail.handicapType' | lang) + ':', value: base?.handicap || '' }
+            "
+          ></ng-container>
+        </ng-template>
+
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.trans_net' | lang,
+              custom: hasIconTplMoney,
+              value: base.principal | currencyValue: base.currency
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.bet' | lang,
+              custom: hasIconTpl,
+              value: base.bonus | currencyValue: base.currency
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.win' | lang,
+              custom: amountTpl,
+              value: base.payoutAmount | currencyValue: base.currency
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.rollover' | lang,
+              custom: hasIconTplWater,
+              value: base.activeFlow | currencyValue: base.currency
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.statu' | lang,
+              custom: statusTpl,
+              value: base.status
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.trans_time' | lang,
+              custom: timeTpl,
+              value: base.betTime
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.last_settle' | lang,
+              custom: timeTpl,
+              value: base.settleTime
+            }
+          "
+        ></ng-container>
+        <!-- 载具版本 -->
+        <!-- <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.carrier' | lang, value: base.vehicle }"
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.ver' | lang, value: base.version }"
+        ></ng-container> -->
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.trans_type' | lang,
+              custom: typeTpl,
+              value: base.transactionType
+            }
+          "
+        ></ng-container>
+        <!-- <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: 'game.detail.start_game' | lang,
+              custom: timeTpl,
+              value: base.gameTime
+            }
+          "
+        ></ng-container> -->
+
+        <ng-container *ngTemplateOutlet="tpl"></ng-container>
+
+        <report-opera
+          [orderNumber]="base?.orderNumber"
+          [data]="operaData"
+          (update)="update.emit($event)"
+        ></report-opera>
+
+        <ng-template #typeTpl let-value>
+          <span *ngIf="value === 'Large'" class="text-nowrap label label-lg label-inline label-light-danger">{{
+            'game.detail.big_trans' | lang
+          }}</span>
+          <span *ngIf="value === 'Normal'" class="text-nowrap label label-lg label-inline label-light-primary">{{
+            'game.detail.nor_trans' | lang
+          }}</span>
+        </ng-template>
+
+        <ng-template #amountTpl let-value>
+          <div *win="value; let value; prev as prev" [winColor]="value">
+            {{ prev }}{{ value | currencyValue: base.currency
+            }}<img class="ml-2" [currencyIcon]="base.currency" alt="" />
+          </div>
+        </ng-template>
+        <ng-template #hasIconTpl let-value>
+          <div>{{ value }}<img class="ml-2" [currencyIcon]="base.currency" /></div>
+        </ng-template>
+        <ng-template #hasIconTplMoney let-value>
+          <div>{{ value }}<img class="ml-2" [currencyIcon]="base.currency" /></div>
+        </ng-template>
+        <ng-template #hasIconTplWater let-value>
+          <div>{{ value }}<img class="ml-2" [currencyIcon]="base.currency" /></div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-primary" (click)="modal.close({ value: true })">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 基础类目模板 -->
+<ng-template #tpl let-title let-value="value" let-custom="custom">
+  <div class="d-flex flex-ac py-2 fz-16 w-50">
+    <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ title }}</label>
+
+    <div *ngIf="!custom">{{ value }}</div>
+    <ng-container
+      *ngIf="custom"
+      [ngTemplateOutlet]="custom"
+      [ngTemplateOutletContext]="{ $implicit: value }"
+    ></ng-container>
+  </div>
+</ng-template>
+
+<!-- 状态模板 -->
+<ng-template #statusTpl let-value>
+  <span [betStatusLabel]="value"></span>
+</ng-template>
+
+<!-- 时间模板 -->
+<ng-template #timeTpl let-value>
+  <span *ngIf="value > 0; else noTime">{{ value | timeFormat }}</span>
+  <ng-template #noTime><span> - </span></ng-template>
+</ng-template>
+
+<!-- 串关基础模板 -->
+<ng-template #raceTpl let-d>
+  <ng-container
+    *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.game_name' | lang, value: d?.tournamentName }"
+  ></ng-container>
+  <ng-container
+    *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.gaming_name' | lang, value: d?.eventName }"
+  ></ng-container>
+  <ng-container
+    *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.play' | lang, value: d?.betoptionName }"
+  ></ng-container>
+  <ng-container
+    *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.trans_content' | lang, value: d?.betContent }"
+  ></ng-container>
+  <ng-container
+    *ngTemplateOutlet="tpl; context: { $implicit: 'game.detail.result' | lang, value: d?.gameResult }"
+  ></ng-container>
+  <ng-container
+    *ngTemplateOutlet="tpl; context: { $implicit: ('game.detail.single_odd' | lang) + ':', value: d?.detailOdds }"
+  ></ng-container>
+</ng-template>
+
+<!-- 注单tab模板 -->
+<ng-template #tab>
+  <div class="tab mr-12 w-100">
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+    <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel">
+      <div
+        mat-tab-link
+        class="tab-hd-item"
+        [active]="curTab === i"
+        *ngFor="let nav of detailData; let i = index"
+        (click)="curTab = i"
+      >
+        {{ 'game.detail.note' | lang }} {{ i + 1 }}
+      </div>
+    </div>
+
+    <div class="tab-bd pb-0">
+      <ng-container *ngFor="let item of detailData; let i = index">
+        <div class="d-flex flex-wrap" *ngIf="curTab === i">
+          <ng-container *ngTemplateOutlet="raceTpl; context: { $implicit: item }"></ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

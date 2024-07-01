@@ -1,0 +1,25 @@
+<div class="min-height" [appLoading]="loading">
+  <ng-container *ngIf="!loading">
+    <div class="page-container top-nav-container">
+      <ng-container *ngIf="isShowNav">
+        <div class="main-container unity-padding-web">
+          <div class="container top-nav">
+            <ng-container *ngFor="let item of navList; let i = index">
+              <customize-button
+                [disabled]="item.disabled"
+                [active]="i === isActiveRouter"
+                [icon]="item.icon"
+                size="small"
+                type="text"
+                (onClick)="jumpToPage(i, item.page)"
+              >
+                <span class="font-color" [class.active-line]="i === isActiveRouter">{{ item.name | translate }}</span>
+              </customize-button>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <router-outlet *ngIf="ready"></router-outlet>
+  </ng-container>
+</div>

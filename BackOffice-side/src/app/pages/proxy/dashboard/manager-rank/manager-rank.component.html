@@ -1,0 +1,24 @@
+<div class="d-flex flex-ac flex-bt px-10 pt-7 pb-6">
+  <div class="fz-20 color-222">{{ 'dashboard.info.managerRanking' | lang }}</div>
+  <div>
+    <mat-form-field class="ml-2" [style.width.px]="80">
+      <mat-select class="form-control" [(ngModel)]="curType" (selectionChange)="getData()">
+        <mat-option [value]="item.value" *ngFor="let item of typeList">{{ item.lang | lang }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="rank-wrap">
+  <div class="rank-bd pl-10 mr-6">
+    <div class="rank-item pr-7 color-222 d-flex flex-ac flex-bt" *ngFor="let item of list; let i = index">
+      <div>
+        <div class="fz-16">{{ item.managerName }}</div>
+        <div class="color-aaa mt-1">{{ 'dashboard.info.valueContent' | lang }}</div>
+      </div>
+      <div class="fz-20">
+        {{ item.active || item.contributors || item.trade || 0 }}
+      </div>
+    </div>
+  </div>
+</div>

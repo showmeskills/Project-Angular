@@ -1,0 +1,17 @@
+<ng-template subHeader>
+  <div class="cursor-pointer d-flex flex-ac" (click)="router.navigate(['/proxy/review'])">
+    <span class="color-aaa">{{ 'marketing.commissionList.pendingReview' | lang }}</span>
+    <span class="ml-4">{{ proxyService.navCount.pendingProxySize }}</span>
+  </div>
+  <div class="mx-12 cursor-pointer d-flex flex-ac" (click)="router.navigate(['/proxy/commission'])">
+    <span class="color-aaa">{{ 'marketing.commissionList.commissionView' | lang }}</span>
+    <span class="ml-4">{{ proxyService.navCount.pendingCommissionSize }}</span>
+  </div>
+
+  <div class="mr-12 cursor-pointer d-flex flex-ac" *ngIf="showRemove">
+    <span class="color-aaa">{{ 'marketing.commissionList.removalView' | lang }}</span>
+    <span class="ml-4">{{ proxyService.navCount.memberRemoveSize }}</span>
+  </div>
+
+  <ng-content></ng-content>
+</ng-template>

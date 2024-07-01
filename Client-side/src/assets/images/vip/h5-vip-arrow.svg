@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27">
+    <g data-name="组 1">
+        <g data-name="椭圆 1" style="stroke:#626367;stroke-width:.6px;fill:none">
+            <circle cx="13.5" cy="13.5" r="13.5" style="stroke:none"/>
+            <circle cx="13.5" cy="13.5" r="13.2" style="fill:none"/>
+        </g>
+        <path data-name="直线 1" transform="translate(8.5 13.5)" style="stroke:#f5f5f5;stroke-linecap:round;stroke-width:1.6px;fill:none" d="M13 0H0"/>
+        <path data-name="路径 1" d="m27.922 36.56-6.085 6.085 6.085 6.085" transform="translate(-14 -29.06)" style="stroke-linejoin:round;stroke:#f5f5f5;stroke-linecap:round;stroke-width:1.6px;fill:none"/>
+    </g>
+</svg>

@@ -1,0 +1,16 @@
+<div
+  cdkDrag
+  *ngIf="ref"
+  class="full-btn"
+  [class.sport-position]="sportsFullscreenMode"
+  [class.active]="active"
+  [cdkDragBoundary]="ref"
+>
+  <div *ngIf="sportsFullscreenMode" class="btn mutual-opacity onact96" (click)="clickPopup()">
+    <i class="icon-coin-switch"></i>
+  </div>
+  <div *ngIf="ableFull" class="btn mutual-opacity onact96" (click)="click('toggle')">
+    <i class="{{ state ? 'icon-narrow' : 'icon-full-screen' }}"></i>
+  </div>
+  <div class="btn mutual-opacity onact96-not" (click)="click('close')"><i class="icon-close-circle"></i></div>
+</div>

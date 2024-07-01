@@ -1,0 +1,95 @@
+<div class="modal-header">
+  <div class="modal-title h4" id="example-modal-sizes-title-lg">交易记录</div>
+  <div class="c-btn-close" (click)="close()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+  </div>
+</div>
+
+<!--balance: 0-->
+<!--bankBranches: "BankName"-->
+<!--beneficiaryAccountNumber: "5425233430109903"-->
+<!--beneficiaryBank: "BankName"-->
+<!--checked: false-->
+<!--currency: "USD"-->
+<!--id: 15158360501829-->
+<!--isEnable: true-->
+<!--merchantId: 908740293083205-->
+<!--payType: "公司账户转账"-->
+<!--payeeName: "Test03"-->
+<!--status: "NotActivated"-->
+<!--swiftCode: "BankName   "-->
+<!--todayIncome: 0-->
+<!--todayOutcome: 0-->
+
+<div class="px-20 pt-13 pb-5" style="min-height: 404px">
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.transactionNumber' | lang }}:</div>
+    <div class="text-dark fw-bold">154234567</div>
+  </div>
+
+  <div class="d-flex flex-ac">
+    <div class="d-flex flex-ac fz-16">
+      <div class="text-black-50">{{ 'common.currency' | lang }}:</div>
+      <div class="text-dark fw-bold">{{ data.currency }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.paymentMethod.paymentMethod' | lang }}:</div>
+    <div class="text-dark fw-bold">ERC20</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16 lh-50 mt-2">
+    <div class="text-black fw-bolder">{{ 'payment.companyAccountManagement.details' | lang }}</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.depositoryBank' | lang }}:</div>
+    <div class="text-dark fw-bold">{{ data.beneficiaryBank }}</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.depositAccount' | lang }}:</div>
+    <div class="text-dark fw-bold">{{ data.payeeAddress }}</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.message' | lang }}1:</div>
+    <div class="text-dark fw-bold">020-2234-2454-2234</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.message' | lang }}2:</div>
+    <div class="text-dark fw-bold">020-2234-2454-2234</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'common.amount' | lang }}:</div>
+    <div class="text-dark fw-bold">1,000.00</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.method.handlingFee' | lang }}:</div>
+    <div class="text-dark fw-bold">0.235</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.exchangeRate' | lang }}:</div>
+    <div class="text-dark fw-bold">6.43722</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.transactionHour' | lang }}:</div>
+    <div class="text-dark fw-bold">2021-10-02 14:32:05</div>
+  </div>
+
+  <div class="d-flex flex-ac fz-16">
+    <div class="text-black-50">{{ 'payment.companyAccountManagement.tradingStatus' | lang }}:</div>
+    <app-label type="yellow" width="72">{{ 'payment.companyAccountManagement.waiting' | lang }}</app-label>
+  </div>
+</div>
+
+<div class="modal-footer btn-wrap flex-nowrap text-nowrap">
+  <button type="button" class="c-btn c-btn-default" (click)="close()">{{ 'common.back' | lang }}</button>
+  <button type="button" class="c-btn c-btn-primary" (click)="close()">{{ 'common.confirm' | lang }}</button>
+</div>

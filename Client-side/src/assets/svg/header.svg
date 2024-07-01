@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+    <defs>
+        <linearGradient id="8ogm28gega" x1=".5" y1="1" x2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#fb6943"/>
+        </linearGradient>
+    </defs>
+    <g data-name="组 6912">
+        <g data-name="组 6953">
+            <path data-name="矩形 8277" style="fill:none" d="M0 0h40v40H0z"/>
+            <g data-name="组 6911" transform="translate(1123 -1459)">
+                <circle data-name="椭圆 175" cx="7" cy="7" r="7" transform="translate(-1115.297 1463)" style="fill:url(#8ogm28gega)"/>
+                <path data-name="减去 34" d="M30 14H0V7a7.008 7.008 0 0 1 7-7h16a7.008 7.008 0 0 1 7 7v7zM9.644 3 15 10l5.358-7z" transform="translate(-1123 1480.219)" style="fill:#f8623b"/>
+                <path data-name="联合 176" d="M5 14V9H0V5h5V0h4v5h5v4H9v5z" transform="translate(-1097.001 1463)" style="fill:#f55b32"/>
+            </g>
+        </g>
+    </g>
+</svg>

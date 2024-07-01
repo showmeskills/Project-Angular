@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="con-tit"><i class="icon-cunkuan"></i>活动提醒</div>
+  <div class="content-box">
+    <p class="text-20">
+      为帮助您管理游戏时间，您可对账户设置活动提醒。一旦设置了提醒，将有弹出信息提示您已登录账户的具体时长。
+    </p>
+    <p class="text-20">活动提醒计时器将在您登录时开始计时。如有任何更改，新的设置会在您下次登录时生效。</p>
+    <p class="text-20">
+      如果您想缩短活动提醒时间，更改将立即生效。但若要延长提醒时间，则需在提出请求后等待24小时才可生效。
+    </p>
+    <p class="text-20">
+      收到活动提醒后，您可选择保持登录、查看您的账户历史或登出账户。若您选择保持登录，则在相同时段后您会再收到一个提醒，由此您可记录进行游戏的总时间。
+    </p>
+  </div>
+  <div class="content-box">
+    <p class="title">您当前的活动提醒设置为</p>
+    <p class="title m-top-20" *ngIf="isFirstStep">{{ remindString }}</p>
+    <ng-container *ngIf="!isFirstStep">
+      <div class="select-time">
+        <ng-container *ngFor="let item of selectTime; let idx = index">
+          <customize-button
+            type="text"
+            size="small"
+            [plain]="true"
+            [active]="idx === activeIdx"
+            minWidth="80px"
+            (onClick)="onSelectTime(idx)"
+          >
+            {{ item.name }}
+          </customize-button>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isFirstStep">
+      <div class="password">
+        <app-customize-input
+          #iPwd
+          [label]="'password_text' | translate"
+          type="password"
+          [autocomplete]="false"
+          size="medium"
+          width="100%"
+          (valueChange)="onValueChange($event)"
+        >
+          <i
+            class="onact96-not"
+            right-content
+            [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+            (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+          ></i>
+        </app-customize-input>
+      </div>
+    </ng-container>
+    <div class="submit">
+      <ng-container *ngIf="!isFirstStep">
+        <customize-button
+          [minWidth]="isH5 ? 'unset' : '140px'"
+          [width]="isH5 ? '100%' : 'unset'"
+          type="default"
+          size="medium"
+          (onClick)="onCancel()"
+        >
+          取消
+        </customize-button>
+        <customize-button
+          [disabled]="!canSubmit()"
+          [minWidth]="isH5 ? 'unset' : '140px'"
+          [width]="isH5 ? '100%' : 'unset'"
+          type="primary"
+          size="medium"
+          (onClick)="onContinue()"
+        >
+          确认
+        </customize-button>
+      </ng-container>
+      <ng-container *ngIf="isFirstStep">
+        <customize-button
+          [minWidth]="isH5 ? '100%' : '140px'"
+          type="primary"
+          size="medium"
+          (onClick)="this.isFirstStep = !this.isFirstStep"
+        >
+          更改
+        </customize-button>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="role-transfer">
+  <div class="modal-header">
+    <div class="modal-title">选择角色</div>
+
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="role-transfer-main">
+      <div class="block-left">
+        <select-group
+          value="id"
+          label="name"
+          [(select)]="selectedLeft"
+          [data]="roleList"
+          [scrollHeight]="260"
+        ></select-group>
+      </div>
+
+      <div class="btn-vertical">
+        <button (click)="join()">
+          加入
+          <svg-icon class="svg-icon lh-1n" [src]="'./assets/images/svg/left-move.svg'"></svg-icon>
+        </button>
+        <button (click)="del()" class="btn-remove">
+          <svg-icon class="svg-icon lh-1n" [src]="'./assets/images/svg/right-move.svg'"></svg-icon>
+          移除
+        </button>
+      </div>
+
+      <div class="block-right p-4">
+        <div class="selected-txt">
+          已选：角色 {{ rightList.length }} 个
+          <span class="text-primary" (click)="clear()">清空</span>
+        </div>
+        <div class="checkbox-list" *ngFor="let item of rightList">
+          <div class="item">
+            <label class="checkbox checkbox-lg"
+              ><input type="checkbox" [(ngModel)]="item.checked" /> <span></span>{{ item.name }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button class="c-btn c-btn-default" (click)="close()">返回</button>
+    <button class="c-btn c-btn-primary" (click)="ok()">确认</button>
+  </div>
+</div>

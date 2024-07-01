@@ -1,0 +1,21 @@
+<div class="page-container flex-col">
+  <div class="main-container unity-padding-web">
+    <div class="container top-continer">
+      <p class="text" *ngIf="!isH5">{{ 'abount_us' | translate }}</p>
+      <p class="empty" *ngIf="isH5"></p>
+      <div class="top-nav">
+        <a
+          class="nav-item onact96-not"
+          *ngFor="let item of navList; let idx = index"
+          [routerLink]="item.path"
+          routerLinkActive="nav-active"
+          (click)="onRouterlinkActive(idx)"
+        >
+          {{ item.name }}
+        </a>
+      </div>
+      <p class="empty"></p>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

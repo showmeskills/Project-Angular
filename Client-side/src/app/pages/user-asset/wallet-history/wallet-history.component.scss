@@ -1,0 +1,117 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+div {
+  display: flex;
+}
+
+:host {
+  padding: 20px 0 149px;
+  display: block;
+}
+
+.page-container {
+  background-color: var(--container-bg-color) !important;
+}
+
+// 此样式会导致全局样式污染，导致顶部钱包下拉无法显示，bug单：https://gbd730.atlassian.net/browse/WU2021-6935
+// 旧关联PR https://dev.azure.com/GBDigital/Platform%20Frontend/_git/PlatformWeb/pullrequest/13664
+// 旧关联jira https://gbd730.atlassian.net/browse/WU2021-6141
+// 因感觉不出这个样式的作用，去掉似乎没看到影响，故暂时注释掉。如有问题需要复原请注意全局污染问题。 by hallen 2022-10-08
+// ::ng-deep {
+//   .main-container {
+//     @media (max-width:767px) {
+//       overflow: hidden;
+//     }
+//   }
+// }
+
+.overall-container {
+  padding: 20px 32px;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .title-container {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .title {
+      font-size: 32px;
+      font-weight: 600;
+
+      &:host-context(.dark) & {
+        color: #fff;
+      }
+
+      @media (max-width: 767px) {
+        font-size: 24px;
+        color: var(--text-color);
+        // padding-top: 23px;
+      }
+    }
+
+    .export {
+      font-size: 14px;
+      color: #707a8a;
+      cursor: pointer;
+      align-items: flex-end;
+      user-select: none;
+      @media (max-width: 767px) {
+        display: none;
+      }
+
+      .export-icon {
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-image: url(src/assets/svg/export.svg);
+        height: 12px;
+        width: 12px;
+        margin-right: 6px;
+      }
+    }
+  }
+
+  .table-container {
+    flex-direction: column;
+
+    .tabs {
+      overflow-x: scroll;
+      display: flex;
+      @include polyfills.flex-gap(24px, 'row nowrap');
+      margin-bottom: 25px;
+
+      @media (max-width: 767px) {
+        -ms-overflow-style: none;
+        /* Internet Explorer 10+ */
+        scrollbar-width: none;
+      }
+
+      &::-webkit-scrollbar {
+        display: none;
+        /* Safari and Chrome */
+      }
+    }
+
+    .tab {
+      font-size: 14px;
+      padding: 11px 16px;
+      color: #707a8a;
+      // margin-right: 24px;
+      // margin-bottom: 33px;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+      &.active {
+        // background-color: #eaecef;
+        background-color: var(--default-border-color);
+        // color: #1e2329;
+        color: var(--text-color);
+        border-radius: 2px;
+      }
+    }
+  }
+}

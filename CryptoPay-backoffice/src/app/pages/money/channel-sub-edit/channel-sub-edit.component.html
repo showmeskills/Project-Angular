@@ -1,0 +1,404 @@
+<div class="p-12" [class.channel-card]="isEdit">
+  <!-- 主渠道 -->
+  <form-row [label]="'payment.subChannel.mainChannel' | lang" [label-width]="lang.isLocal ? '120' : '200'">
+    <ng-template>
+      <div *ngIf="isAdd">
+        <mat-form-field [style.width.px]="200" [style.line-height.px]="28">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="data.channelId"
+            (selectionChange)="onChannel()"
+            *search="let channelList$ of channelList; key: 'name'"
+          >
+            <input type="search" searchInput />
+            <mat-option *ngFor="let item of channelList$ | async" [value]="item.code">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="fz-16" *ngIf="isEdit">{{ channelName }}</div>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.subChannel.merchantConfiguration' | lang" [label-width]="lang.isLocal ? '120' : '200'">
+    <ng-template>
+      <div class="d-flex flex-wrap flex-1">
+        <ng-container *ngFor="let item of curMerchantList">
+          <div class="merchant">
+            <span>{{ item.name }}</span>
+            <svg-icon
+              *ngIf="!isDigital"
+              (click)="deleteMerchants([item.id])"
+              class="cursor-pointer p-2 svg-icon svg-icon-1x"
+              [src]="'assets/images/svg/close.svg'"
+            ></svg-icon>
+          </div>
+        </ng-container>
+
+        <div class="position-relative">
+          <div *ngIf="ls.isGB" class="merchant-edit" (click)="openMerchantSelect()"></div>
+
+          <select-group
+            [position]="true"
+            [select]="data.merchantIds"
+            [(show)]="showSelect"
+            [data]="merchantList"
+            label="name"
+            value="id"
+            style="z-index: 3"
+            (confirm)="onSelectMerchant($event)"
+          ></select-group>
+        </div>
+      </div>
+
+      <!--    <div class="fz-16" *ngIf="isEdit && isDigital">{{ merchantName }}</div>-->
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.subChannel.subChannelName' | lang" [label-width]="lang.isLocal ? '120' : '200'">
+    <ng-template>
+      <input
+        [style.width.px]="200"
+        type="text"
+        class="form-control"
+        autocomplete="off"
+        [(ngModel)]="data.subChannelName"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 支持币种 -->
+  <div class="d-flex py-2" *ngIf="data.channelId && currency.length">
+    <label class="pr-4 pt-4 mb-0 label-title" [style.width.px]="lang.isLocal ? 120 : 200"
+      >{{ 'payment.channelConfig.supCurrencies' | lang }}：</label
+    >
+
+    <!-- tab -->
+    <div class="tab flex-1 min-w-0">
+      <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+      <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel">
+        <div
+          mat-tab-link
+          class="tab-hd-item"
+          [active]="curTab === i"
+          *ngFor="let nav of currency; let i = index"
+          (click)="curTab = i"
+        >
+          {{ nav.code }}
+        </div>
+      </div>
+
+      <div class="tab-bd pb-0">
+        <ng-container *ngFor="let item of currency; let i = index">
+          <div *ngIf="curTab === i">
+            <div class="d-flex py-2" *ngIf="curSupport.deposit?.length">
+              <label class="mr-0 mb-0 pt-4 label-title">{{ 'payment.channelConfig.depositMethod' | lang }}：</label>
+
+              <!-- 存款 -->
+              <mat-tab-group class="w-0 flex-1 min-w-0">
+                <mat-tab [label]="deposit.name" *ngFor="let deposit of curSupport.deposit">
+                  <div class="d-flex flex-wrap">
+                    <form-row
+                      [label]="'payment.subChannel.minimumBalance' | lang"
+                      [label-width]="lang.isLocal ? '120' : '200'"
+                      class="flex-1 mr-40"
+                    >
+                      <ng-template>
+                        <div class="input-wrap">
+                          <input
+                            [style.width.%]="100"
+                            type="text"
+                            class="form-control"
+                            autocomplete="off"
+                            input-float
+                            [decimal]="8"
+                            [(ngModel)]="deposit.balanceMinimum"
+                          />
+                        </div>
+                      </ng-template>
+                    </form-row>
+
+                    <!-- 余额上限 -->
+                    <form-row
+                      [label]="'payment.subChannel.balanceCap' | lang"
+                      [label-width]="lang.isLocal ? '120' : '200'"
+                      class="flex-1 mr-40"
+                    >
+                      <ng-template>
+                        <div class="input-wrap">
+                          <input
+                            [style.width.%]="100"
+                            type="text"
+                            class="form-control"
+                            autocomplete="off"
+                            input-float
+                            [decimal]="8"
+                            [(ngModel)]="deposit.balanceMaximum"
+                          />
+                        </div>
+                      </ng-template>
+                    </form-row>
+
+                    <!-- 单日限额 -->
+                    <form-row
+                      [label]="'payment.subChannel.singleDayLimit' | lang"
+                      [label-width]="lang.isLocal ? '120' : '200'"
+                      class="flex-1 mr-40"
+                    >
+                      <ng-template>
+                        <div class="input-wrap">
+                          <input
+                            [style.width.%]="100"
+                            type="text"
+                            class="form-control"
+                            autocomplete="off"
+                            input-float
+                            [decimal]="8"
+                            [(ngModel)]="deposit.singleDayLimit"
+                          />
+                        </div>
+                      </ng-template>
+                    </form-row>
+
+                    <!-- 单笔限额 -->
+                    <div class="flex-1 mr-40" *ngIf="deposit.paymentMethod !== 'Overview'">
+                      <form-row
+                        [label]="'payment.subChannel.singleLimit' | lang"
+                        [label-width]="lang.isLocal ? '120' : '200'"
+                        class="flex-1"
+                        *ngIf="deposit.method !== 'Overview'"
+                      >
+                        <ng-template>
+                          <div class="input-wrap">
+                            <div class="d-flex">
+                              <input
+                                type="text"
+                                class="form-control flex-1"
+                                autocomplete="off"
+                                [(ngModel)]="deposit.singleOrderMinimum"
+                                (input)="onLimit($event, deposit, curSupport.deposit, 'singleOrderMinimum')"
+                                input-float
+                                [decimal]="8"
+                              />&nbsp;&nbsp;-&nbsp;&nbsp;<input
+                                type="text"
+                                class="form-control flex-1"
+                                autocomplete="off"
+                                input-float
+                                [decimal]="8"
+                                [(ngModel)]="deposit.singleOrderMaximum"
+                                (input)="onLimit($event, deposit, curSupport.deposit, 'singleOrderMaximum')"
+                              />
+                            </div>
+                          </div>
+                        </ng-template>
+                      </form-row>
+                    </div>
+
+                    <!-- 虚拟币 VIP等级 -->
+                    <form-row
+                      [label]="('payment.subChannel.vipLevel' | lang) + '>='"
+                      label-width="120"
+                      class="flex-1 mr-40"
+                      *ngIf="deposit.paymentMethod !== 'Overview' && deposit.isDigital"
+                    >
+                      <ng-template>
+                        <mat-form-field [style.width.px]="200">
+                          <mat-select class="form-control fz-14 w-100" [(ngModel)]="deposit.vipLevelLimit">
+                            <mat-option *ngFor="let item of vipLevelList" [value]="item">{{ 'VIP' + item }}</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </ng-template>
+                    </form-row>
+
+                    <!-- 法币 -->
+                    <ng-container *ngIf="deposit.paymentMethod !== 'Overview' && !deposit.isDigital">
+                      <form-row
+                        [label]="'payment.subChannel.channelRate' | lang"
+                        [label-width]="lang.isLocal ? '120' : '200'"
+                        class="flex-1 mr-40"
+                      >
+                        <ng-template>
+                          <div class="d-flex">
+                            <input
+                              type="text"
+                              class="form-control"
+                              autocomplete="off"
+                              [style.width.px]="72"
+                              [(ngModel)]="deposit.feeRate"
+                            />
+                            <span class="ml-2">%</span>
+                          </div>
+                        </ng-template>
+                      </form-row>
+
+                      <!-- VIP等级 -->
+                      <form-row
+                        [label]="('payment.subChannel.vipLevel' | lang) + '>='"
+                        label-width="120"
+                        class="flex-1 mr-40"
+                      >
+                        <ng-template>
+                          <mat-form-field [style.width.px]="200">
+                            <mat-select class="form-control fz-14 w-100" [(ngModel)]="deposit.vipLevelLimit">
+                              <mat-option *ngFor="let item of vipLevelList" [value]="item">{{
+                                'VIP' + item
+                              }}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </ng-template>
+                      </form-row>
+
+                      <form-row
+                        [label]="'payment.subChannel.dailyLimitThreshold' | lang"
+                        label-width="120"
+                        class="flex-1 mr-40"
+                      >
+                        <ng-template>
+                          <div class="input-wrap">
+                            <input
+                              type="text"
+                              class="form-control"
+                              autocomplete="off"
+                              input-float
+                              [style.width.px]="200"
+                              [decimal]="8"
+                              [(ngModel)]="deposit.singleDayLimitThreshold"
+                            />
+                          </div>
+                        </ng-template>
+                      </form-row>
+                    </ng-container>
+                  </div>
+
+                  <!-- 状态 -->
+                  <form-row
+                    [label]="'common.status' | lang"
+                    label-width="112"
+                    *ngIf="deposit.paymentMethod !== 'Overview'"
+                  >
+                    <ng-template>
+                      <label class="switch switch-success mb-0 cursor-pointer fz-16 d-inline-flex">
+                        <input type="checkbox" [(ngModel)]="deposit.isEnable" />
+                        <span class="mr-4"></span
+                        >{{ deposit.isEnable ? ('payment.method.open' | lang) : ('payment.method.shutDown' | lang) }}
+                      </label>
+                    </ng-template>
+                  </form-row>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+
+            <div class="w-100 d-flex py-2" *ngIf="curSupport.withdrawal?.length">
+              <label class="mr-0 mb-0 pt-4 label-title">{{ 'payment.subChannel.withdrawaMethod' | lang }}：</label>
+
+              <!-- 提款 -->
+              <mat-tab-group class="w-100">
+                <mat-tab [label]="dra.name" *ngFor="let dra of curSupport.withdrawal">
+                  <form-row [label]="'payment.method.singleLimit' | lang" [label-width]="lang.isLocal ? '120' : '200'">
+                    <ng-template>
+                      <div class="input-wrap">
+                        <div class="d-flex flex-wrap flex-ac flex-1">
+                          <input
+                            type="text"
+                            class="form-control flex-1"
+                            autocomplete="off"
+                            [(ngModel)]="dra.singleOrderMinimum"
+                            input-float
+                            [decimal]="8"
+                            (input)="onLimit($event, dra, curSupport.withdrawal, 'singleOrderMinimum')"
+                          />&nbsp;&nbsp;-&nbsp;&nbsp;
+                          <input
+                            type="text"
+                            class="form-control flex-1"
+                            autocomplete="off"
+                            input-float
+                            [decimal]="8"
+                            [(ngModel)]="dra.singleOrderMaximum"
+                            (input)="onLimit($event, dra, curSupport.withdrawal, 'singleOrderMaximum')"
+                          />
+                        </div>
+                      </div>
+                    </ng-template>
+                  </form-row>
+
+                  <!-- 状态 -->
+                  <form-row [label]="'common.status' | lang" [label-width]="lang.isLocal ? '120' : '200'">
+                    <ng-template>
+                      <label class="switch switch-success mb-0 cursor-pointer fz-16 d-inline-flex">
+                        <input type="checkbox" [(ngModel)]="dra.isEnable" />
+                        <span class="mr-4"></span
+                        >{{ dra.isEnable ? ('payment.method.open' | lang) : ('payment.method.shutDown' | lang) }}
+                      </label>
+                    </ng-template>
+                  </form-row>
+
+                  <!-- felix: 提款 - 是否强制获取 -->
+                  <form-row
+                    [label]="'payment.method.mandatoryAcquisition' | lang"
+                    [label-width]="lang.isLocal ? '120' : '200'"
+                  >
+                    <ng-template>
+                      <label class="switch switch-success mb-0 cursor-pointer fz-16 d-inline-flex">
+                        <input type="checkbox" [(ngModel)]="dra.isForcingGrabOrder" />
+                        <span class="mr-4"></span>
+                        {{
+                          dra.isForcingGrabOrder ? ('payment.method.open' | lang) : ('payment.method.shutDown' | lang)
+                        }}
+                      </label>
+                    </ng-template>
+                  </form-row>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+
+            <div class="d-flex flex-center pb-8 mt-8" *ngIf="isEdit && currency?.length > 1">
+              <button
+                (click)="setPayList()"
+                type="button"
+                class="btn btn-light fz-16 mx-2 px-10 btn-hover-light-default"
+              >
+                {{ 'common.reset' | lang }}
+              </button>
+              <button (click)="onSubmit(true)" type="button" class="btn btn-primary fz-16 mx-2 px-10">
+                {{ 'common.submit' | lang }}
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- 按钮组 -->
+  <div class="btn-wrap flex-center pt-8" *ngIf="isEdit">
+    <button class="c-btn c-btn-default ml-0" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onSubmit()">
+      {{ currency?.length > 1 ? ('common.submitAll' | lang) : ('common.submit' | lang) }}
+    </button>
+  </div>
+</div>
+
+<!-- 子渠道信息 -->
+<div class="p-12 mt-8" [class.channel-card]="isEdit">
+  <!-- 信息 -->
+  <div class="d-flex flex-ac flex-wrap">
+    <form-row
+      [label]="'payment.subChannel.subChannelInfo' | lang"
+      [label-width]="lang.isLocal ? '120' : '200'"
+      class="flex-1"
+    >
+      <textarea
+        type="text"
+        class="form-control w-100 fz-14 resize-none word-break"
+        autocomplete="off"
+        [(ngModel)]="data.merchantAccountApiSettings"
+        rows="10"
+      ></textarea>
+    </form-row>
+  </div>
+
+  <div class="btn-wrap flex-center pt-8">
+    <button class="c-btn c-btn-default ml-0" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onMerchantInfoSubmit()">{{ 'common.submit' | lang }}</button>
+  </div>
+</div>

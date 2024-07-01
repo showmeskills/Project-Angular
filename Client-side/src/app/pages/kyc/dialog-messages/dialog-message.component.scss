@@ -1,0 +1,269 @@
+.verify-container {
+  flex-direction: column;
+  background-color: var(--container-bg-color);
+  overflow: hidden;
+  display: flex;
+
+  div {
+    display: flex;
+  }
+
+  // @media (min-width:768px) {
+  //   min-height: 684px;
+  //   max-height: 90vh;
+  // }
+
+  @media (max-width: 767px) {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+
+    &::before {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      left: -100px;
+      right: -100px;
+      top: 0;
+      bottom: -100px;
+      box-shadow: inset 0 3px 6px 0 rgb(0 0 0 / 10%);
+    }
+  }
+
+  .close-icon {
+    position: relative;
+    right: -413px;
+    cursor: pointer;
+    background-size: 14px 14px;
+    height: 14px;
+    background-repeat: no-repeat;
+    background-image: url(src/assets/images/kyc/close-3.png);
+
+    &.offset-right {
+      right: -468px !important;
+      display: none;
+    }
+  }
+
+  //手机号提示
+  .main-cloum-5 {
+    width: 326px;
+    height: 310px !important;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+  }
+
+  //初级kyc
+  .main-cloum-4 {
+    width: 326px;
+    height: 343px !important;
+    justify-content: center;
+
+    @media (max-width: 767px) {
+      width: 100%;
+      justify-content: flex-start;
+      padding-top: 200px;
+    }
+  }
+
+  //升级审核
+  .main-cloum-3 {
+    padding: 38px 81px 30px 81px;
+  }
+
+  //验证失败
+  .main-cloum-2 {
+    width: 326px;
+    height: 373px !important;
+    flex-direction: column;
+    padding: 28px 30px 0 30px;
+    align-items: center;
+  }
+
+  //验证成功
+  .main-cloum-1 {
+    width: 326px;
+    height: 378px !important;
+    padding: 38px 63px 0 63px;
+  }
+
+  //主要内容
+  .main-cloum-2,
+  .main-cloum-3,
+  .main-cloum-4,
+  .main-cloum-5,
+  .main-cloum-1 {
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+
+    @media (max-width: 767px) {
+      width: 100%;
+      height: 100% !important;
+    }
+
+    .correct-icon,
+    .important-icon,
+    .sand-clock-icon {
+      height: 88px;
+      width: 88px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+    }
+
+    // 正确icon
+    .correct-icon {
+      background-image: url(src/assets/svg/success-green-star.svg);
+    }
+
+    // 惊叹号icon
+    .important-icon {
+      background-image: url(src/assets/svg/red-correct.svg);
+    }
+
+    // 沙漏icon
+    .sand-clock-icon {
+      background-image: url(src/assets/svg/sand-clock-1.svg);
+    }
+
+    .text-header-2 {
+      font-size: 28px;
+      color: var(--text-color);
+      padding: 34px 0;
+    }
+
+    .text-header-1 {
+      font-size: 28px;
+      color: var(--text-color);
+      padding: 34px 0;
+    }
+
+    .text-header-3 {
+      font-size: 28px;
+      color: var(--text-color);
+      padding: 34px 0;
+    }
+
+    .text-header-4 {
+      font-size: 28px;
+      padding: 34px 0;
+      color: var(--text-color-30);
+    }
+
+    .phone-num-header {
+      font-size: 28px;
+      color: #050306;
+
+      &:host-context(.dark) & {
+        color: #fff;
+      }
+    }
+
+    .notic-contant {
+      padding: 34px 0;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #828995;
+    }
+
+    .notic-contant-2 {
+      line-height: 1.5;
+      font-size: 14px;
+      color: #828995;
+    }
+
+    .font-size-25 {
+      font-size: 25px !important;
+      padding-top: 42px !important;
+      padding-bottom: 22.9px !important;
+    }
+
+    .normal-text {
+      font-size: 17px;
+      font-weight: 300;
+      color: #828995;
+      padding-bottom: 15px;
+      height: 48px;
+    }
+
+    .hight-color {
+      color: #b9bfc8 !important;
+      text-align: center;
+      padding: 0 15px;
+    }
+
+    .hight-color-3 {
+      color: #727988 !important;
+    }
+
+    .offset-bottom-21 {
+      padding-bottom: 21px !important;
+    }
+
+    .offset-bottom-30 {
+      padding-bottom: 30px !important;
+    }
+
+    .offset-top-19 {
+      margin-top: 19.8px !important;
+    }
+
+    .normal-text-3 {
+      font-size: 14px;
+      color: var(--text-color);
+    }
+
+    .normal-text-1 {
+      font-size: 14px;
+      color: #828995;
+      padding-bottom: 23px;
+    }
+
+    .large-text {
+      color: #ff580e;
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    .large-text-3 {
+      color: #ff580e;
+      font-size: 14px;
+      padding: 15px 0 23px;
+    }
+
+    .span-laber {
+      padding-top: 14.3px;
+      border-bottom: 1px solid #f3f3f3;
+      width: 356px;
+      margin-bottom: 39.5px;
+    }
+
+    .span-laber-4 {
+      padding-top: 24.5px;
+      border-bottom: 1px solid #f3f3f3;
+      width: 480px;
+      margin-bottom: 39.5px;
+    }
+
+    .currency-row {
+      color: #727988;
+      font-size: 16px;
+      padding-bottom: 15px;
+
+      .small-laber {
+        //height      : 1px;
+        border-left: 1px solid #707070;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.margin-t {
+  margin-top: 10px;
+}

@@ -1,0 +1,424 @@
+<modal-title
+  [title]="('risk.toBeUploaded' | lang) + ' - ' + (getTitle.first | lang) + '(' + (getTitle.last | lang) + ')'"
+  (close)="modal.dismiss()"
+></modal-title>
+
+<div class="modal-body">
+  <!-- 基础信息 -->
+  <div class="fz-16 lh-22 fw-bolder mb-4">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+  <div class="px-8 box">
+    <div class="py-4 d-flex box-items">
+      <!-- 亚洲 -->
+      <ng-container *ngIf="!isEurope; else nameEurope">
+        <!-- 姓名 -->
+        <div class="pr-4 flex-1 item">
+          <div class="fz-14 color-aaa">{{ 'payment.transactionList.name' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            {{ userDetailInfo?.fullName || '-' }}
+          </div>
+        </div>
+      </ng-container>
+      <!-- 欧洲 -->
+      <ng-template #nameEurope>
+        <!-- 名字 -->
+        <div class="pr-4 flex-1 item">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.firstName' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            {{ userDetailInfo?.firstName || '-' }}
+          </div>
+        </div>
+        <!-- 姓氏 -->
+        <div class="px-4 flex-1 item">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.lastName' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            {{ userDetailInfo?.lastName || '-' }}
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="py-4 d-flex box-items">
+      <!-- 邮箱 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'auManage.sys.email' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ userDetailInfo?.email || '-' }}</div>
+      </div>
+      <!-- 出生日期 -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.dateofBirth' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ userDetailInfo?.birthday | timeFormat: 'YYYY-MM-DD' }}</div>
+      </div>
+    </div>
+
+    <div class="py-4 d-flex box-items">
+      <!-- 地址： -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.land' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ userDetailInfo?.address || '-' }}</div>
+      </div>
+      <!-- 邮政编码： -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          {{ userDetailInfo?.zipCode || '-' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="py-4 d-flex box-items">
+      <!-- 城市 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}</div>
+        <div class="fz-16 pt-2">
+          {{ userDetailInfo?.city || '-' }}
+        </div>
+      </div>
+      <!-- UID -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">UID：</div>
+        <div class="fz-16 pt-2">{{ data?.uid || '-' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 补充内容 -->
+  <div class="fz-16 lh-22 fw-bolder mt-8 mb-4">{{ 'member.kyc.model.pendingContent' | lang }}</div>
+  <!-- KYC审核 -->
+  <ng-container *ngIf="pendingedType === PendingedCategoryObjEnum.Kyc">
+    <ng-container [ngSwitch]="data?.type">
+      <!-- 欧洲中级 -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.KycIntermediate">
+        <!-- ID -->
+        <ng-container *ngTemplateOutlet="IdPendingedTpl"></ng-container>
+
+        <!-- POA -->
+        <div class="mt-5">
+          <ng-container *ngTemplateOutlet="PoaPendingedTpl"></ng-container>
+        </div>
+      </ng-container>
+
+      <!-- 欧洲高级 -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.KycAdvanced">
+        <!-- 财富来源证明 -->
+        <ng-container *ngTemplateOutlet="MoneySourcesPendingedTpl"></ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
+  <!-- 风控审核 -->
+  <ng-container *ngIf="pendingedType === PendingedCategoryObjEnum.Risk">
+    <ng-container [ngSwitch]="data?.type">
+      <!-- 发送文件请求 - ID -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.ID">
+        <ng-container *ngTemplateOutlet="IdPendingedTpl"></ng-container>
+      </ng-container>
+
+      <!-- 发送文件请求 - POA -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.POA">
+        <ng-container *ngTemplateOutlet="PoaPendingedTpl"></ng-container>
+      </ng-container>
+
+      <!-- 发送文件请求 - 支付方式 -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.PaymentMethod">
+        <div class="px-8 box">
+          <!-- 支付方式 -->
+          <div class="py-4 box-items">
+            <div class="fz-14 color-aaa">{{ 'risk.docRequest.payMentMethod' | lang }}：</div>
+            <div class="fz-16 pt-2">
+              <input
+                class="form-control fz-16 h36 lh-36"
+                autocomplete="off"
+                type="text"
+                [(ngModel)]="paymentMethodData.paymentName"
+              />
+            </div>
+          </div>
+          <div class="py-4 box-items">
+            <!-- 截图 -->
+            <div class="fz-14 color-aaa mb-4">{{ 'risk.docRequest.screenshot' | lang }}：</div>
+            <upload
+              class="w-100"
+              desc="*.jpg, *.png, *.jpeg, *.pdf"
+              [style.height.px]="150"
+              [limit]="5 * 1024"
+              [accept]="['png', 'jpeg', 'jpg', 'pdf']"
+              [(ngModel)]="paymentMethodData.screenshotProof"
+            >
+            </upload>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- 发送文件请求 - 自定义 -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.Customize">
+        <div class="px-8 box">
+          <!-- 文件名称 -->
+          <div class="py-4 box-items">
+            <div class="fz-14 color-aaa">{{ 'risk.docRequest.docName' | lang }}：</div>
+            <div class="fz-16 pt-2">
+              <input
+                class="form-control fz-16 h36 lh-36"
+                autocomplete="off"
+                type="text"
+                [(ngModel)]="customizeData.customizeName"
+              />
+            </div>
+          </div>
+          <div class="py-4 box-items">
+            <!-- 截图 -->
+            <div class="fz-14 color-aaa mb-4">{{ 'risk.docRequest.screenshot' | lang }}：</div>
+            <upload
+              class="w-100"
+              desc="*.jpg, *.png, *.jpeg, *.pdf"
+              [style.height.px]="150"
+              [limit]="5 * 1024"
+              [accept]="['png', 'jpeg', 'jpg', 'pdf']"
+              [(ngModel)]="customizeData.screenshotProof"
+            >
+            </upload>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- 发送文件请求 - 财富来源 -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.WealthSourceDocument">
+        <!-- 财富来源证明 -->
+        <ng-container *ngTemplateOutlet="MoneySourcesPendingedTpl"></ng-container>
+      </ng-container>
+
+      <!-- EDD -->
+      <ng-container *ngSwitchCase="RiskFormTypeObjEnum.EDD">
+        <div class="px-8 box">
+          <div class="py-4 d-flex box-items">
+            <!-- 月薪 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.monthlySalary' | lang }}：</div>
+              <div class="fz-16 pt-2 d-flex">
+                <input
+                  class="form-control fz-16 h36 lh-36"
+                  autocomplete="off"
+                  type="text"
+                  [(ngModel)]="eddData.monthlySalary"
+                />
+                <mat-form-field class="ml-2">
+                  <mat-select class="form-control h36" [(ngModel)]="eddData.currency">
+                    <mat-option *ngFor="let item of currencyService.list" [value]="item.code">
+                      {{ item.code }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <!-- 雇佣状态 -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'risk.employmentStatus' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                <mat-form-field class="w-100">
+                  <mat-select class="form-control h36" [(ngModel)]="eddData.employmentStatusDesc">
+                    <mat-option *ngFor="let item of employmentStatusList" [value]="item.value">{{
+                      lang.isLocal ? item.name : item.value
+                    }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 职业 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.occupation' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                <input
+                  class="form-control fz-16 h36 lh-36"
+                  autocomplete="off"
+                  type="text"
+                  [(ngModel)]="eddData.occupation"
+                />
+              </div>
+            </div>
+            <!-- 资金来源 -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.sourcesFunds' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                <mat-form-field class="w-100">
+                  <mat-select class="form-control h36" [(ngModel)]="eddData.sourceOfFundsDesc">
+                    <mat-option *ngFor="let item of sourceOfFundsList" [value]="item.value">{{
+                      lang.isLocal ? item.name : item.value
+                    }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<!-- 按钮组 -->
+<modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>
+
+<!-- ID审核 - 补充模板 -->
+<ng-template #IdPendingedTpl>
+  <div class="px-8 box">
+    <!-- 欧洲中级KYC - ID补充才会姓名补充 -->
+    <div class="py-4 d-flex box-items" *ngIf="data?.type === RiskFormTypeObjEnum.KycIntermediate">
+      <!-- 名字 -->
+      <div class="pr-4 flex-1 item">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.firstName' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          <input class="form-control fz-16 h36 lh-36" autocomplete="off" type="text" [(ngModel)]="idData.firstName" />
+        </div>
+      </div>
+      <!-- 姓氏 -->
+      <div class="px-4 flex-1 item">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.lastName' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          <input class="form-control fz-16 h36 lh-36" autocomplete="off" type="text" [(ngModel)]="idData.lastName" />
+        </div>
+      </div>
+    </div>
+    <div class="py-4 d-flex box-items">
+      <!-- 证件签发国/地区 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          <mat-form-field class="w-100">
+            <mat-select
+              class="form-control h36"
+              [(ngModel)]="idData.countryCode"
+              *search="let searchList$ of subHeaderService.countryList; key: 'countryName'"
+            >
+              <input type="search" searchInput />
+              <mat-option *ngFor="let item of searchList$ | async" [value]="item?.countryIso3">{{
+                item.countryName
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <!-- 选择发行文件 -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.selectRelease' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          <mat-form-field class="w-100">
+            <mat-select class="form-control h36" [(ngModel)]="idData.idType">
+              <mat-option *ngFor="let item of idTypeList" [value]="item.value">{{
+                lang.isLocal ? item.name : item.value
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <!-- 发行文件照片 -->
+    <div class="py-4 box-items">
+      <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+      <div class="d-flex">
+        <div class="item pr-4 flex-1">
+          <upload
+            class="w-100"
+            desc="*.jpg, *.png, *.jpeg, *.pdf"
+            [style.height.px]="150"
+            [limit]="5 * 1024"
+            [accept]="['png', 'jpeg', 'jpg', 'pdf']"
+            [(ngModel)]="idData.idFrontsideImage"
+          >
+          </upload>
+        </div>
+        <div class="item px-4 flex-1" *ngIf="idData.idType === 'ID_CARD'">
+          <upload
+            class="w-100"
+            desc="*.jpg, *.png, *.jpeg, *.pdf"
+            [style.height.px]="150"
+            [limit]="5 * 1024"
+            [accept]="['png', 'jpeg', 'jpg', 'pdf']"
+            [(ngModel)]="idData.idBacksideImage"
+          >
+          </upload>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- POA审核 - 补充模板 -->
+<ng-template #PoaPendingedTpl>
+  <div class="px-8 box">
+    <div class="py-4 box-items">
+      <!-- 居住地址 -->
+      <div class="fz-14 color-aaa">{{ 'member.kyc.model.address' | lang }}：</div>
+      <div class="fz-16 pt-2">
+        <input class="form-control fz-16 h36 lh-36" autocomplete="off" type="text" [(ngModel)]="poaData.address" />
+      </div>
+    </div>
+    <div class="py-4 d-flex box-items">
+      <!-- 居住城市 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          <input class="form-control fz-16 h36 lh-36" autocomplete="off" type="text" [(ngModel)]="poaData.city" />
+        </div>
+      </div>
+      <!-- 邮政编码  -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          <input class="form-control fz-16 h36 lh-36" autocomplete="off" type="text" [(ngModel)]="poaData.zipCode" />
+        </div>
+      </div>
+    </div>
+
+    <div class="py-4 box-items">
+      <!-- 居住证 -->
+      <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.residenceCertificate' | lang }}：</div>
+      <upload
+        class="w-100"
+        desc="*.jpg, *.png, *.jpeg, *.pdf"
+        [style.height.px]="150"
+        [limit]="5 * 1024"
+        [accept]="['png', 'jpeg', 'jpg', 'pdf']"
+        [(ngModel)]="poaData.networkImgeUrl"
+      >
+      </upload>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 财富来源 - 补充模板  -->
+<ng-template #MoneySourcesPendingedTpl>
+  <div class="px-8 box">
+    <div class="py-4 box-items">
+      <div class="fz-14 color-aaa">{{ 'risk.docRequest.sourceOfWealth' | lang }}：</div>
+      <div class="fz-16 pt-2">
+        <mat-form-field class="w-100">
+          <mat-select class="form-control" [(ngModel)]="moneySources" multiple (selectionChange)="moneySourcesChange()">
+            <mat-option *ngFor="let item of moneySourcesList" [value]="item.key">{{
+              lang.isLocal ? item.name : item.key
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="py-4 box-items" *ngFor="let item of moneySourcesImageList; index as i">
+      <div class="fz-14 color-aaa mb-2">{{ lang.isLocal ? item.name : item.key }}：</div>
+      <upload
+        class="w-100 mb-4"
+        desc="*.jpg, *.png, *.jpeg, *.pdf"
+        [style.height.px]="150"
+        [limit]="5 * 1024"
+        [accept]="['png', 'jpeg', 'jpg', 'pdf']"
+        [(ngModel)]="moneySourcesImageList[i].imgUrl"
+      >
+      </upload>
+      <!-- 财富来源证明照片 - 新增 -->
+      <!-- <button type="button" class="btn btn-light-primary py-3 w-100" (click)="addMoneySourcesImg()">
+        <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        <span class="vam">{{ 'common.add' | lang }}</span>
+      </button> -->
+    </div>
+  </div>
+</ng-template>

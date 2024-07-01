@@ -1,0 +1,79 @@
+.list-container {
+  border-radius: 8px;
+  background-color: var(--container-bg-color);
+  padding: 18px;
+  min-height: 246px;
+  width: 400px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  .list-container-close {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .icon-close-simple {
+      font-size: 16px;
+    }
+  }
+}
+
+//好友列表样式
+table {
+  margin-top: 30px;
+  width: 100%;
+  text-align: left;
+
+  th {
+    background-color: var(--list-hover-bg-color);
+  }
+
+  th,
+  td {
+    padding: 12px 0;
+    color: var(--text-color);
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+  }
+}
+
+// 全部推荐样式
+.all-container-content {
+  margin-top: 20px;
+  min-height: 300px;
+
+  .all-list-header,
+  .all-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .all-list-item {
+    padding: 14px 0;
+
+    .default {
+      padding: 3px 10px;
+      border-radius: 4px;
+      background-color: var(--default-border-color);
+      color: var(--text-color-20);
+      margin-left: 10px;
+    }
+
+    .active {
+      background-color: var(--primary-color-opacity-50);
+      color: var(--text-white-at-night);
+    }
+  }
+}
+
+.all-container-btns {
+  margin-top: 20px;
+
+  .amount-text {
+    margin-bottom: 12px;
+  }
+}

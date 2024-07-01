@@ -1,0 +1,13 @@
+.box {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0;
+  padding-left: 0px;
+  li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+  }
+}

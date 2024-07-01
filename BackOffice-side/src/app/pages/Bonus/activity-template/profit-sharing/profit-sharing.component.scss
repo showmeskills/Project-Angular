@@ -1,0 +1,32 @@
+.week-bg {
+  width: 47px;
+  height: 32px;
+
+  &.active {
+    background: #f1faff;
+  }
+
+  &.active-last {
+    background: linear-gradient(to right, #f1faff 40%, #fff 0);
+  }
+
+  &.acitve-first {
+    background: linear-gradient(to left, #f1faff 60%, #fff 0);
+  }
+}
+
+.week {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  border-radius: 50%;
+  background: #f5f8fa;
+  font-size: 14px;
+  cursor: pointer;
+
+  &.active {
+    background: #009ef7;
+    color: #fff;
+  }
+}

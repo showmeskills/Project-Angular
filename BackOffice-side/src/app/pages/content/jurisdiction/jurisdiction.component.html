@@ -1,0 +1,154 @@
+<div class="card">
+  <div class="card-body">
+    <h2 class="color-111 mb-10 fz-18 fw-bolder">{{ 'content.sf.sf1' | lang }}</h2>
+    <div [formGroup]="formGroup" *ngIf="formGroup">
+      <form-row
+        [label]="'content.sf.name' | lang"
+        name="name_one"
+        label-width="202"
+        required
+        [invalidFeedback]="{ required: ('content.sf.cName' | lang) }"
+      >
+        <ng-template let-invalid="invalid">
+          <input
+            class="form-control w-100"
+            type="text"
+            formControlName="name_one"
+            autocomplete="off"
+            [placeholder]="'content.sf.cName' | lang"
+            [class.is-invalid]="invalid"
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <!-- <div [formGroup]="formGroup" *ngIf="formGroup">
+      <div *ngFor="let _ of nameArrayForm.controls; let j = index" [hidden]="i !== j">
+        <form-row 
+          label="名称" 
+          name="name" 
+          label-width="202" 
+          required  
+          [control]="nameArrayForm.controls[j]['controls']['name']"
+          [invalidFeedback]="{ required: '请输入配置名称' }"
+        >
+          <ng-template let-invalid="invalid">
+            <input 
+              class="form-control w-100"
+              type="text" autocomplete="off"
+              placeholder="请输入配置名称"
+              [formControl]="nameArrayForm.controls[j]['controls']['name']" 
+              [class.is-invalid]="invalid" />
+          </ng-template>
+        </form-row>
+      </div>
+    </div> -->
+
+    <form-row [label]="'content.sf.sp' | lang" label-width="202" required class="mt-4">
+      <ng-template>
+        <div class="w-100">
+          <div class="allchecked" *ngIf="countryList_one.length > 0">
+            <label class="checkbox checkbox-lg" [class.checkbox-indeterminate]="isIndeterminate(allchecked, 1)">
+              <input type="checkbox" [(ngModel)]="allchecked['selected']" (change)="checkItem(allchecked, 1)" />
+              <span></span>
+              {{ allchecked.lang | lang }}
+            </label>
+          </div>
+
+          <mat-accordion multi>
+            <ng-container *ngFor="let items of countryList_one">
+              <mat-expansion-panel *ngIf="items">
+                <mat-expansion-panel-header [style.height.px]="42">
+                  <mat-panel-title>
+                    <label class="checkbox checkbox-lg" [class.checkbox-indeterminate]="isIndeterminate(items, 1)">
+                      <input type="checkbox" [(ngModel)]="items['selected']" (change)="checkItem(items, 1)" />
+                      <span></span>
+                      {{ lang.isLocal ? items.continentName : items.continentCode }}
+                    </label>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <mat-list>
+                  <div class="countriesList">
+                    <label class="checkbox checkbox-lg countries" *ngFor="let item of items.countries">
+                      <input type="checkbox" [(ngModel)]="item['selected']" />
+                      <span></span>
+                      {{ lang.isLocal ? item.countryName : item.countryEnName }}
+                    </label>
+                  </div>
+                </mat-list>
+              </mat-expansion-panel>
+            </ng-container>
+          </mat-accordion>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <h2 class="color-111 mb-10 mt-10 fz-18 fw-bolder">{{ 'content.sf.sf2' | lang }}</h2>
+    <div [formGroup]="formGroup" *ngIf="formGroup">
+      <form-row
+        [label]="'content.sf.name' | lang"
+        name="name_two"
+        label-width="202"
+        required
+        [invalidFeedback]="{ required: ('content.sf.cName' | lang) }"
+      >
+        <ng-template let-invalid="invalid">
+          <input
+            class="form-control w-100"
+            type="text"
+            formControlName="name_two"
+            autocomplete="off"
+            [placeholder]="'content.sf.cName' | lang"
+            [class.is-invalid]="invalid"
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <form-row [label]="'content.sf.sp' | lang" label-width="202" required class="mt-4">
+      <ng-template>
+        <div class="w-100">
+          <div class="allchecked" *ngIf="countryList_two.length > 0">
+            <label class="checkbox checkbox-lg" [class.checkbox-indeterminate]="isIndeterminate(allchecked, 2)">
+              <input type="checkbox" [(ngModel)]="allchecked['selected']" (change)="checkItem(allchecked, 2)" />
+              <span></span>
+              {{ allchecked.lang | lang }}
+            </label>
+          </div>
+
+          <mat-accordion multi>
+            <ng-container *ngFor="let items of countryList_two">
+              <mat-expansion-panel *ngIf="items">
+                <mat-expansion-panel-header [style.height.px]="42">
+                  <mat-panel-title>
+                    <label class="checkbox checkbox-lg" [class.checkbox-indeterminate]="isIndeterminate(items, 2)">
+                      <input type="checkbox" [(ngModel)]="items['selected']" (change)="checkItem(items, 2)" />
+                      <span></span>
+                      {{ lang.isLocal ? items.continentName : items.continentCode }}
+                    </label>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <mat-list>
+                  <div class="countriesList">
+                    <label class="checkbox checkbox-lg countries" *ngFor="let item of items.countries">
+                      <input type="checkbox" [(ngModel)]="item['selected']" />
+                      <span></span>
+                      {{ lang.isLocal ? item.countryName : item.countryEnName }}
+                    </label>
+                  </div>
+                </mat-list>
+              </mat-expansion-panel>
+            </ng-container>
+          </mat-accordion>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap d-flex flex-center mt-12">
+      <!--      <button class="c-btn c-btn-default">{{ 'content.info.cancel' | lang }}</button>-->
+      <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'content.info.save' | lang }}</button>
+    </div>
+  </div>
+</div>

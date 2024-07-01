@@ -1,0 +1,218 @@
+<div class="card rounded">
+  <div class="card-header py-8 d-flex flex-wrap">
+    <form-row [label]="'lotto.timeSelect' | lang" label-width="106" class="mr-16">
+      <ng-template>
+        <div class="d-flex">
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeFrom"
+            [placeholder]="'common.startTime' | lang"
+            [style.width.px]="140"
+            [owlDateTime]="timeStart"
+            [owlDateTimeTrigger]="timeStart"
+            [(ngModel)]="searchData.time"
+            formatLabel="yyyy-MM-dd"
+            selectMode="rangeFrom"
+          />
+          <owl-date-time class="fz-20" pickerType="calendar" #timeStart></owl-date-time>
+
+          <div class="date-line lh-42"></div>
+
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeTo"
+            [placeholder]="'common.endTime' | lang"
+            [style.width.px]="140"
+            [owlDateTime]="timeEnd"
+            [owlDateTimeTrigger]="timeEnd"
+            [(ngModel)]="searchData.time"
+            formatLabel="yyyy-MM-dd"
+          />
+          <owl-date-time class="fz-20" pickerType="calendar" #timeEnd></owl-date-time>
+        </div>
+      </ng-template>
+    </form-row>
+    <form-row [label]="'game.no' | lang" [contentWidth]="lang.isLocal ? '150' : '240'">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [placeholder]="'lotto.enterIssueNum' | lang"
+          [(ngModel)]="searchData.lotteryIssueNumber"
+        />
+      </ng-template>
+    </form-row>
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="fz-20 new-cc-tab">
+      <div class="card-tab-title">{{ listData.lotteryName }}</div>
+      <div class="card-tab-cell">
+        <span class="tab-cc-title">{{ 'lotto.issueNum' | lang }}</span
+        ><span>{{ listData.issueCount }}</span>
+      </div>
+      <div class="card-tab-cell">
+        <span class="tab-cc-title">{{ 'original.analysis.people' | lang }}</span
+        ><span>{{ listData.userCount }}</span>
+      </div>
+      <div class="card-tab-cell">
+        <span class="tab-cc-title">{{ 'dashboard.country.count' | lang }}</span
+        ><span>{{ listData.betCount }}</span>
+      </div>
+      <div class="card-tab-cell">
+        <span class="tab-cc-title">{{ 'game.win' | lang }}</span>
+        <span class="success-text" *ngIf="listData.profitAndLoss > 0">{{ listData.profitAndLoss }}</span>
+        <span class="red-text" *ngIf="listData.profitAndLoss < 0">{{ listData.profitAndLoss }}</span>
+      </div>
+    </div>
+
+    <div class="flex-fill">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'lotto.num' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'lotto.drawResult' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'dashboard.country.count' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'original.analysis.people' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.win' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.operate' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="color-222">
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.lotteryIssueNumber }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lotteryIssueNumberData }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.betCount }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.userCount }}</span>
+            </td>
+
+            <td>
+              <span class="cell success-text" *ngIf="item.profitAndLoss > 0">{{ item.profitAndLoss }}</span>
+              <span class="cell red-text" *ngIf="item.profitAndLoss < 0">{{ item.profitAndLoss }}</span>
+            </td>
+            <td>
+              <span class="cell text-nowrap">
+                <span class="btn btn-default mx-2" (click)="onEdit(handicapEdit, item.lotteryIssueNumberId)">{{
+                  'lotto.modifyResult' | lang
+                }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #handicapEdit let-d="dismiss" let-c="close" let-data>
+  <div class="modal-content">
+    <div class="modal-header flex-ac">
+      <div class="modal-title fz-20 fw-bolder">{{ 'lotto.modyDrawResult' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body fz-16">
+      <div class="d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'lotto.handicap' | lang }}：</label>
+        <div class="lh-42 color-222">{{ editDate.lotteryName }}</div>
+      </div>
+      <div class="d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'lotto.num' | lang }}：</label>
+        <div class="lh-42 color-222">{{ editDate.lotteryIssueNumber }}</div>
+      </div>
+      <div class="d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'lotto.nowOpenNum' | lang }}：</label>
+        <div class="lh-42 color-222">
+          {{ editDate.lotteryIssueNumberData }}
+        </div>
+      </div>
+
+      <div class="d-flex py-2">
+        <label class="mr-0 mb-0 label-title">{{ 'lotto.changeOpenNum' | lang }}：</label>
+        <div class="flex-1 d-flex flex-ac flex-wrap color-999 code-box">
+          <input
+            *ngFor="let item of lotteryNumber; let i = index"
+            [style.width.px]="42"
+            class="form-control text-center mt-2 ml-2"
+            maxlength="2"
+            type="number"
+            [input-percentage]="false"
+            [max]="80"
+            [min]="1"
+            [(ngModel)]="lotteryNumber[i]"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true); onSubmit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>

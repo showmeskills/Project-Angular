@@ -1,0 +1,486 @@
+<!-- 状态模板 -->
+<ng-template #allocationTpl let-allocations="allocations" let-data>
+  <div class="flex-1">
+    <div class="d-flex flex-ac mb-4 lh-24 pt-4" *ngIf="allocations.length">
+      <div class="custom-scroll-y flex-1" style="max-height: 160px; overflow-y: auto">
+        <!-- 精简展示一条 -->
+        <ng-container *ngIf="!data.showAllocations">
+          <div *ngFor="let his of allocations.slice(0, 1)">
+            <span>{{ his.time | timeFormat : 'YYYY-MM-DD HH:mm:ss' }}</span>
+            <span class="ml-6">{{ his.desc }}</span>
+          </div>
+        </ng-container>
+        <!-- 全展示 -->
+        <ng-container *ngIf="data.showAllocations">
+          <div *ngFor="let his of allocations" class="mb-4">
+            <span>{{ his.time | timeFormat : 'YYYY-MM-DD HH:mm:ss' }}</span>
+            <span class="ml-6">{{ his.desc }}</span>
+          </div>
+        </ng-container>
+      </div>
+
+      <span
+        class="btn btn-default px-5 text-nowrap ml-8"
+        (click)="data.showAllocations = !data.showAllocations"
+        *ngIf="allocations.length > 1"
+        >{{ 'budget.model.course' | lang }}</span
+      >
+    </div>
+
+    <ng-container [ngTemplateOutlet]="stateTpl" [ngTemplateOutletContext]="{ $implicit: data }"></ng-container>
+  </div>
+</ng-template>
+
+<!-- 订单状态模板 -->
+<ng-template #stateTpl let-data>
+  <state-label [data]="data"></state-label>
+</ng-template>
+
+<!-- 操作 -->
+<ng-template #operationTpl let-item>
+  <button
+    *ngIf="
+      data.currencyCoinCategory === 'Currency' && ['Allocating', 'Fail', 'Cancel', 'Reverse'].includes(item.status)
+    "
+    type="button"
+    class="btn btn-primary px-6 py-0 mr-8 lh-34"
+    [style.padding.px]="6"
+    (click)="openChangeChannel(channelTpl, item)"
+  >
+    <span class="vam">{{ 'payment.transactionList.designatedChannel' | lang }}</span>
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary px-6 mr-8 lh-34 py-0"
+    [style.padding.px]="6"
+    (click)="openChangeIntegral(integrityTpl, item)"
+    *ngIf="data.currencyCoinCategory === 'Currency'"
+  >
+    <span class="vam">{{ 'payment.transactionList.adjustPoints' | lang }}</span>
+  </button>
+  <button
+    *ngIf="item.status === 'Allocating' || (data.currencyCoinCategory === 'Coin' && item.status === 'Confirming')"
+    [style.padding.px]="6"
+    (click)="sendCancelWithdraw(item.orderRecordId)"
+    class="btn btn-danger px-6 mr-8 lh-34 py-0"
+    type="button"
+  >
+    <span class="vam">{{ 'payment.transactionList.cancelPayment' | lang }}</span>
+  </button>
+  <button
+    *ngIf="showRedemption(item)"
+    type="button"
+    class="btn btn-primary px-6 mr-8 lh-34 py-0"
+    [style.padding.px]="6"
+    (click)="openRedemption(item)"
+  >
+    <span class="vam">{{ 'payment.transactionList.redemption' | lang }}</span>
+  </button>
+  <!--  &lt;!&ndash;  <button *ngIf="data.paymentCategory === 'Withdraw' && data.status === 'Fail'" type="button"&ndash;&gt;-->
+  <!--  &lt;!&ndash;    class="btn btn-primary px-3 mr-8" [style.padding.px]="6" (click)="sendWithdraw()">&ndash;&gt;-->
+  <!--  &lt;!&ndash;    <svg-icon [src]="'./assets/images/svg/refresh.svg'" &ndash;&gt;-->
+  <!--  &lt;!&ndash;      class="svg-icon svg-icon-2x5 text-white"></svg-icon>&ndash;&gt;-->
+  <!--  &lt;!&ndash;    <span class="vam">重送提款</span>&ndash;&gt;-->
+  <!--  &lt;!&ndash;  </button>&ndash;&gt;-->
+</ng-template>
+
+<!-- 通知商户 -->
+<ng-template #noticeMerchantTpl let-data>
+  <button
+    type="button"
+    class="btn btn-primary px-3 mr-8"
+    [style.padding.px]="6"
+    (click)="sendCallback(data.orderRecordId)"
+  >
+    <svg-icon [src]="'./assets/images/svg/bell.svg'" class="svg-icon svg-icon-2x5 text-white"></svg-icon>
+    <span class="vam">{{ 'payment.transactionList.notifyMerchants' | lang }}</span>
+  </button>
+</ng-template>
+
+<!-- 重送查询 -->
+<ng-template #resendTpl let-data>
+  <ng-container *ngTemplateOutlet="noticeMerchantTpl; context: { $implicit: data }"></ng-container>
+  <button
+    *ngIf="!['Allocating', 'Success', 'Cancel', 'Reverse'].includes(data.status)"
+    type="button"
+    class="btn btn-primary px-3 mr-8"
+    [style.padding.px]="6"
+    (click)="sendQuery(data.orderRecordId)"
+  >
+    <svg-icon [src]="'./assets/images/svg/refresh.svg'" class="svg-icon svg-icon-2x5 text-white"></svg-icon>
+    <span class="vam">{{ 'payment.transactionList.resendQuery' | lang }}</span>
+  </button>
+</ng-template>
+
+<!-- 法币 -->
+<ng-template #fiatTpl let-d>
+  <form-row *ngIf="ls.isGB" [label]="'payment.subChannel.subChannelName' | lang" label-width="120"
+    >{{ d.channelAccountAlias || '-' }}
+  </form-row>
+  <form-row [label]="'payment.transactionList.name' | lang" label-width="120">{{ d.bankAccountHolder }}</form-row>
+  <form-row [label]="'budget.amount' | lang" label-width="120">${{ d.amount | currencyValue : d.currency }}</form-row>
+  <form-row [label]="'payment.transactionList.amountReceived' | lang" label-width="120">
+    <span>${{ d.receiveAmount | currencyValue : d.currency }}</span>
+  </form-row>
+  <form-row [label]="'payment.currency.currency' | lang" label-width="120">{{ d.currency }}</form-row>
+  <form-row [label]="'payment.transactionList.merchantFee' | lang" label-width="120"
+    >${{ d.merchantFee | currencyValue : d.currency }}</form-row
+  >
+  <form-row *ngIf="ls.isGB" [label]="'payment.transactionList.channelFee' | lang" label-width="120"
+    >${{ d.channelFee | currencyValue : d.currency }}
+  </form-row>
+  <form-row [label]="'payment.bank.bankName' | lang" label-width="120">{{ d.bankName }}</form-row>
+  <form-row [label]="'payment.transactionList.cardNumber' | lang" label-width="120">{{ d.bankAccountNumber }}</form-row>
+  <form-row *ngIf="ls.isGB" [label]="'payment.transactionList.integral' | lang" label-width="120">{{
+    d.integrals | toFormatMoney
+  }}</form-row>
+  <ng-container *ngIf="!['Unknown', 'Waiting', 'Rejected'].includes(data.status)">
+    <form-row [label]="'payment.transactionList.updateTime' | lang" label-width="120">{{
+      +d.modifiedTime ? (d.modifiedTime | timeFormat) : '-'
+    }}</form-row>
+    <form-row [label]="'common.status' | lang" label-width="120">
+      <ng-template>
+        <ng-container
+          *ngTemplateOutlet="allocationTpl; context: { $implicit: d, allocations: getAllocations(d) }"
+        ></ng-container>
+      </ng-template>
+    </form-row>
+
+    <ng-container *ngIf="!data.hideOpera">
+      <ng-container *ngIf="ls.isGB">
+        <form-row [label]="'payment.paymentMethod.operating' | lang" label-width="120">
+          <ng-container *ngTemplateOutlet="operationTpl; context: { $implicit: d }"></ng-container>
+        </form-row>
+        <form-row [label]="'payment.transactionList.resendQuery' | lang" label-width="120">
+          <ng-container *ngTemplateOutlet="resendTpl; context: { $implicit: d }"></ng-container>
+        </form-row>
+      </ng-container>
+
+      <!-- 没有GB的资源 -->
+      <ng-container *ngIf="!ls.isGB">
+        <form-row [label]="'payment.transactionList.resendQuery' | lang" label-width="120">
+          <ng-container *ngTemplateOutlet="noticeMerchantTpl; context: { $implicit: d }"></ng-container>
+        </form-row>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- 虚拟币 -->
+<ng-template #digitalTpl let-d>
+  <form-row [label]="'budget.record.quantity' | lang" label-width="120">{{ d.amount | toFormatMoney }}</form-row>
+  <form-row [label]="'budget.currencyType' | lang" label-width="120">{{ d.currency }}</form-row>
+  <form-row label="Txid" label-width="120">
+    <ng-template>
+      <div class="w-100">
+        <div class="text-break" *ngIf="d.txHash">{{ d.txHash }}</div>
+        <span *ngIf="!d.txHash">-</span>
+      </div>
+    </ng-template>
+  </form-row>
+  <form-row [label]="'budget.withdrawalAddress' | lang" label-width="120">{{ d.bankAccountNumber }}</form-row>
+  <form-row [label]="'budget.transferNetwork' | lang" label-width="120">{{ data.paymentMethodId }}</form-row>
+  <form-row [label]="'payment.transactionList.merchantFee' | lang" label-width="120"
+    >${{ d.merchantFee | currencyValue : d.currency }}</form-row
+  >
+  <form-row *ngIf="ls.isGB" [label]="'payment.transactionList.channelFee' | lang" label-width="120"
+    >${{ d.channelFee | currencyValue : d.currency }}
+  </form-row>
+  <form-row [label]="'budget.model.arrivalQuantity' | lang" label-width="120">{{ d.amount | toFormatMoney }}</form-row>
+  <form-row
+    [label]="'budget.model' | lang : (ls.isGB ? 'channelProcessingTime' : 'orderProcessingTime')"
+    label-width="120"
+    >{{ +d.channelTime ? (d.channelTime | timeFormat) : '-' }}
+  </form-row>
+  <form-row [label]="'budget.model.orderCompletionTime' | lang" label-width="120">{{
+    +d.completeTime ? (d.completeTime | timeFormat) : '-'
+  }}</form-row>
+  <!--  <form-row label="积分" label-width="120">{{ d.integrals }}</form-row>-->
+  <ng-container *ngIf="!['Unknown', 'Waiting', 'Rejected'].includes(data.status)">
+    <form-row [label]="'payment.transactionList.updateTime' | lang" label-width="120">{{
+      +d.modifiedTime ? (d.modifiedTime | timeFormat) : '-'
+    }}</form-row>
+    <form-row [label]="'common.status' | lang" label-width="120">
+      <ng-template>
+        <ng-container
+          *ngTemplateOutlet="allocationTpl; context: { $implicit: d, allocations: getAllocations(d) }"
+        ></ng-container>
+      </ng-template>
+    </form-row>
+
+    <ng-container *ngIf="!data.hideOpera">
+      <ng-container *ngIf="ls.isGB">
+        <form-row [label]="'common.operate' | lang" label-width="120">
+          <ng-container *ngTemplateOutlet="operationTpl; context: { $implicit: d }"></ng-container>
+        </form-row>
+        <form-row [label]="'payment.transactionList.resendQuery' | lang" label-width="120">
+          <ng-container *ngTemplateOutlet="resendTpl; context: { $implicit: d }"></ng-container>
+        </form-row>
+      </ng-container>
+
+      <!-- 没有GB的资源 -->
+      <ng-container *ngIf="!ls.isGB">
+        <form-row [label]="'payment.transactionList.resendQuery' | lang" label-width="120">
+          <ng-container *ngTemplateOutlet="noticeMerchantTpl; context: { $implicit: d }"></ng-container>
+        </form-row>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- 换汇 -->
+<ng-template #distributionTpl let-d>
+  <!-- 子渠道名称 -->
+  <form-row [label]="'payment.subChannel.subChannelName' | lang" label-width="120">{{
+    d.channelAccountAlias || '-'
+  }}</form-row>
+  <!-- 到账地址 -->
+  <form-row [label]="'payment.transactionList.accountAddress' | lang" label-width="120">
+    <div class="text-break lh-20 pt-4 cursor-pointer" (click)="appService.copy(d.toAddress)">
+      <span>{{ d.toAddress || '-' }}</span>
+    </div>
+  </form-row>
+  <!-- TxHash -->
+  <form-row label="TxHash" label-width="120">
+    <div class="text-break lh-20 pt-4 cursor-pointer" (click)="appService.copy(d.txHash)">{{ d.txHash || '-' }}</div>
+  </form-row>
+
+  <!-- 兑换币种 -->
+  <!--  <form-row [label]="'payment.approval.exchange' | lang" label-width="120">{{ d.exchangeCurrency || '-' }} </form-row>-->
+  <!-- 兑换汇率 -->
+  <form-row [label]="'payment.approval.exchangeRate' | lang" label-width="120">{{ d.exchangeRate || '-' }} </form-row>
+  <!-- 兑换金额 -->
+  <form-row [label]="'common.amount' | lang" label-width="120"
+    >{{ d.amount ? (d.amount | currencyValue : d.currency) : '-' }}
+  </form-row>
+  <!-- 实际收入：加密货币数量 -->
+  <form-row [label]="'payment.transactionList.digitalCurrencyNumber' | lang" label-width="120"
+    >{{ d.exchangeAmount ? (d.exchangeAmount | currencyValue : d.exchangeCurrency) : '-' }} {{ d.exchangeCurrency }} ({{
+      d.exchangeNetwork
+    }})</form-row
+  >
+
+  <!-- 状态 -->
+  <form-row [label]="'common.status' | lang" label-width="120" *ngIf="data.status !== 'Waiting'">
+    <ng-template>
+      <ng-container *ngTemplateOutlet="stateTpl; context: { $implicit: d }"></ng-container>
+    </ng-template>
+  </form-row>
+</ng-template>
+
+<!-- 批量详情模板 -->
+<ng-template #batchTpl let-d>
+  <!-- 换汇的商户名称 -->
+  <form-row [label]="'common.merchantName' | lang" label-width="120">{{
+    d?.exchangeMerchantId | merchantName
+  }}</form-row>
+  <form-row [label]="'payment.merchantFunding.merchantOrder' | lang" label-width="120">{{
+    d.merchantOrderId
+  }}</form-row>
+  <form-row *ngIf="ls.isGB" [label]="'payment.transactionList.channelOrderNumber' | lang" label-width="120">{{
+    d.channelOrderId
+  }}</form-row>
+
+  <!-- 法币模板 -->
+  <ng-container
+    *ngIf="data.currencyCoinCategory === WithdrawalTypeEnum.Currency"
+    [ngTemplateOutlet]="fiatTpl"
+    [ngTemplateOutletContext]="{ $implicit: d }"
+  >
+  </ng-container>
+
+  <!-- 虚拟币 -->
+  <ng-container
+    *ngIf="data.currencyCoinCategory === WithdrawalTypeEnum.Coin"
+    [ngTemplateOutlet]="digitalTpl"
+    [ngTemplateOutletContext]="{ $implicit: d }"
+  ></ng-container>
+
+  <!-- 换汇 -->
+  <ng-container
+    *ngIf="data.currencyCoinCategory === WithdrawalTypeEnum.CurrencyExchange"
+    [ngTemplateOutlet]="distributionTpl"
+    [ngTemplateOutletContext]="{ $implicit: d }"
+  ></ng-container>
+</ng-template>
+
+<!-- 左侧展示数据 -->
+<div class="item">
+  <form-row [label]="'budget.model.applicant' | lang" label-width="120">{{ data.createdUserName }}</form-row>
+  <form-row [label]="'budget.applicationTime' | lang" label-width="120">
+    <span>{{ +data.createdTime ? (data.createdTime | timeFormat) : data.createdTime }}</span>
+  </form-row>
+  <!-- 换汇正常展示 -->
+  <ng-container *ngIf="data.currencyCoinCategory === WithdrawalTypeEnum.CurrencyExchange">
+    <form-row [label]="'budget.approver' | lang" label-width="120">{{ data.auditUserName || '-' }}</form-row>
+    <form-row [label]="'budget.model.processingTime' | lang" label-width="120">
+      <span>{{ +data.auditTime ? (data.auditTime | timeFormat) : '-' }}</span>
+    </form-row>
+  </ng-container>
+  <!-- 换汇其余显示多级审批 -->
+  <ng-container *ngIf="data.currencyCoinCategory !== WithdrawalTypeEnum.CurrencyExchange">
+    <form-row [label]="'budget.approver1' | lang" label-width="120">{{ data.auditUserName || '-' }}</form-row>
+    <form-row [label]="'budget.approver2' | lang" label-width="120">{{ data.auditUserName2 || '-' }}</form-row>
+    <form-row [label]="'budget.model.processingTime1' | lang" label-width="120">
+      <span>{{ +data.auditTime ? (data.auditTime | timeFormat) : '-' }}</span>
+    </form-row>
+    <form-row [label]="'budget.model.processingTime2' | lang" label-width="120">
+      <span>{{ +data.auditTime2 ? (data.auditTime2 | timeFormat) : '-' }}</span>
+    </form-row>
+  </ng-container>
+  <form-row [label]="'budget.department' | lang" label-width="120">-</form-row>
+  <form-row [label]="'budget.label' | lang" label-width="120">{{ data.withdrawTabName }}</form-row>
+  <form-row [label]="'budget.remarks' | lang" label-width="120">{{ data.description }}</form-row>
+  <form-row [label]="'budget.type' | lang" label-width="120">
+    <span>{{ (payService.findCurrencyType(data.currencyCoinCategory)?.label | lang) || '-' }}</span>
+  </form-row>
+  <!-- 换汇 -->
+  <ng-container *ngIf="data.currencyCoinCategory === WithdrawalTypeEnum.CurrencyExchange">
+    <!-- 法币币种 -->
+    <form-row [label]="'payment.approval.fiatCoinType' | lang" label-width="120">{{ data.currency }}</form-row>
+    <!-- 兑换币种 -->
+    <form-row [label]="'payment.approval.exchange' | lang" label-width="120">{{
+      data.transactionDetails?.[0]?.exchangeCurrency || '-'
+    }}</form-row>
+  </ng-container>
+
+  <ng-container *ngIf="data.currencyCoinCategory !== WithdrawalTypeEnum.CurrencyExchange">
+    <form-row [label]="'budget.currency' | lang" label-width="120">{{ data.currency }}</form-row>
+    <form-row
+      [label]="'budget.record.quantity' | lang"
+      label-width="120"
+      *ngIf="data.currencyCoinCategory === WithdrawalTypeEnum.Coin"
+      >{{ data.totalAmount | toFormatMoney }}
+    </form-row>
+    <form-row
+      [label]="'budget.amount' | lang"
+      label-width="120"
+      *ngIf="data.currencyCoinCategory !== WithdrawalTypeEnum.Coin"
+    >
+      <span>${{ data.totalAmount | currencyValue : data.currency }}</span>
+    </form-row>
+  </ng-container>
+
+  <form-row [label]="'budget.record.payMethod' | lang" label-width="120">{{ data.paymentMethodId }}</form-row>
+  <form-row [label]="'payment.transactionList.screenshot' | lang" *ngIf="data?.imagePath?.length">
+    <img-viewer [showClear]="false" class="mr-20" [list]="data.imagePath"></img-viewer>
+  </form-row>
+
+  <!-- 一级审批原因 -->
+  <ng-template #auditLabel1>
+    {{ 'budget.model.auditDesc1' | lang }}
+    <ng-container
+      *ngIf="![FinancialWithdrawStatus.Unknown, FinancialWithdrawStatus.Waiting].includes($any(data.status))"
+    >
+      <ng-container *ngIf="data.status === FinancialWithdrawStatus.Rejected && !data.note2; else passTpl">
+        ({{ 'payment.approval.rejected' | lang }})
+      </ng-container>
+      <ng-template #passTpl>({{ 'payment.approval.pass' | lang }})</ng-template>
+    </ng-container>
+  </ng-template>
+  <form-row [label]="auditLabel1" *ngIf="data.currencyCoinCategory !== WithdrawalTypeEnum.CurrencyExchange">
+    <span class="lh-22 py-4 fz-16 word-break">{{ data.note1 || '-' }}</span>
+  </form-row>
+
+  <!-- 二级审批原因 -->
+  <ng-template #auditLabel2>
+    {{ 'budget.model.auditDesc2' | lang }}
+    <ng-container
+      *ngIf="
+        ![
+          FinancialWithdrawStatus.Unknown,
+          FinancialWithdrawStatus.Waiting,
+          FinancialWithdrawStatus.Waiting2,
+          FinancialWithdrawStatus.Rejected
+        ].includes($any(data.status)) ||
+        (data.status === FinancialWithdrawStatus.Rejected && data.note2)
+      "
+    >
+      <ng-container *ngIf="data.status === FinancialWithdrawStatus.Rejected && data.note2; else passTpl">
+        ({{ 'payment.approval.rejected' | lang }})
+      </ng-container>
+      <ng-template #passTpl>({{ 'payment.approval.pass' | lang }})</ng-template>
+    </ng-container>
+  </ng-template>
+  <form-row [label]="auditLabel2" *ngIf="data.currencyCoinCategory !== WithdrawalTypeEnum.CurrencyExchange">
+    <span class="lh-22 py-4 fz-16 word-break">{{ data.note2 || '-' }}</span>
+  </form-row>
+</div>
+
+<!-- 右侧 -->
+<div
+  class="item warning"
+  [class.success]="item.status === 'Success'"
+  [class.fail]="item.status === 'Fail'"
+  *ngFor="let item of data?.transactionDetails; let i = index"
+>
+  <div class="info-title">
+    <span class="mr-4">{{ 'common.information' | lang }}{{ i + 1 }}：</span>
+  </div>
+
+  <!-- 批量详情模板 -->
+  <ng-container *ngTemplateOutlet="batchTpl; context: { $implicit: item }"></ng-container>
+</div>
+
+<div class="item empty"></div>
+
+<!-- 指定渠道 -->
+<ng-template #channelTpl let-data="$implicit" let-c="close" let-d="dismiss">
+  <modal-title [title]="'payment.transactionList.changeChannel' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-8">
+    <form-row
+      [label]="'payment.transactionList.changeChannel' | lang"
+      [control]="data.control"
+      [invalidFeedback]="{ required: ('payment.transactionList.selectChannel' | lang) }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+            class="form-control rounded-0"
+            *search="let channelList$ of data.list; key: 'channelAccountAlias'"
+          >
+            <input type="search" searchInput />
+            <mat-option *ngFor="let item of channelList$ | async" [value]="item['channelAccountId']">{{
+              item['channelAccountAlias']
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <modal-footer (confirm)="onChangeChannel(c, data)" (dismiss)="d()"></modal-footer>
+</ng-template>
+
+<!-- 调整积分 -->
+<ng-template #integrityTpl let-_="$implicit" let-c="close" let-d="dismiss">
+  <modal-title [title]="'payment.transactionList.adjustPoints' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-8">
+    <form-row [label]="'payment.transactionList.existingPoints' | lang" contentWidth="369">
+      <span class="pl-4">{{ _.data.integrals | toFormatMoney }}</span>
+    </form-row>
+    <form-row
+      [label]="'payment.transactionList.adjustPoints' | lang"
+      [control]="_.control"
+      [invalidFeedback]="{ required: ('payment.transactionList.enterAdjustedPoints' | lang) }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          input-trim
+          input-number
+          [formControl]="control"
+          [class.is-valid]="invalid"
+          class="form-control rounded-0"
+          type="text"
+          (keyup)="$event.keyCode === 13 && onChangeIntegrity(c, _)"
+        />
+      </ng-template>
+    </form-row>
+  </div>
+
+  <modal-footer (confirm)="onChangeIntegrity(c, _)" (dismiss)="d()"></modal-footer>
+</ng-template>

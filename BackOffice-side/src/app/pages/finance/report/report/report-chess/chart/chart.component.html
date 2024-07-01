@@ -1,0 +1,48 @@
+<div class="d-flex mt-6">
+  <report-amount
+    [title]="reportDetail.curProviderData?.name || ('game.chess' | lang)"
+    [data]="reportDetail.payoutModule"
+    (flipChange)="graph.chart?.['chartObj']?.windowResizeHandler()"
+  ></report-amount>
+
+  <report-graph class="flex-1 ml-6" #graph [category]="category"></report-graph>
+</div>
+
+<!-- 交易统计 -->
+<div class="d-flex bg-fff mt-6 pt-8 pb-2 px-3 rounded flex-wrap">
+  <stat-data-item
+    [titleLang]="item.lang"
+    [icon]="item.icon"
+    *ngFor="let item of reportDetail.statItem"
+    [class]="['mx-3'].concat(item.class || [])"
+    class="mb-6"
+  >
+    {{
+      item.key === 'todayCancelQuantity'
+        ? (reportDetail.transactionSummary?.[item.key] | toFormatMoney)
+        : item.key === 'todayActiveCount'
+          ? reportDetail.transactionSummary?.[item.key]
+          : (reportDetail.transactionSummary?.[item.key] | currencyValue: 'USDT')
+    }}
+  </stat-data-item>
+  <stat-data-item
+    class="mx-3 py-0 h-0 my-0 overflow-hidden"
+    *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+  ></stat-data-item>
+</div>
+
+<!-- 厂商统计 -->
+<div class="d-flex flex-wrap bg-fff mt-6 pt-8 px-4 rounded">
+  <stat-provider-item
+    class="game-module mb-8 mx-4"
+    [item]="item"
+    *ngFor="let item of reportDetail.gameModule"
+  ></stat-provider-item>
+  <stat-provider-item
+    class="game-module mx-4 my-0 py-0 h-0 overflow-hidden"
+    *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+  ></stat-provider-item>
+
+  <!-- 空显示 -->
+  <empty [style.height.px]="200" class="w-100" *ngIf="!reportDetail?.gameModule?.length"></empty>
+</div>

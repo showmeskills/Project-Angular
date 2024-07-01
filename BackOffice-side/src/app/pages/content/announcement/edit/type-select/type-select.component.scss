@@ -1,0 +1,82 @@
+:host {
+  &::ng-deep {
+    .mat-expansion-panel-body {
+      padding: 0;
+    }
+
+    mat-expansion-panel {
+      box-shadow: none !important;
+      margin-bottom: 0;
+    }
+
+    .mat-expansion-panel-spacing {
+      margin-top: 0;
+    }
+
+    .mat-expansion-indicator {
+      line-height: 0;
+      vertical-align: middle;
+
+      &:after {
+        border-width: 0 1px 1px 0;
+      }
+    }
+  }
+}
+
+mat-expansion-panel-header.mat-expanded {
+  height: 52px;
+}
+
+.item,
+mat-expansion-panel-header {
+  height: 52px;
+  border-radius: 4px;
+  display: flex;
+  border: 1px dashed #e4e6ef;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 0 20px 0 10px;
+  user-select: none;
+  cursor: pointer;
+  margin-top: 5px;
+
+  &-child {
+    background: #f5f8fa;
+    padding-left: 26px;
+  }
+}
+
+label {
+  color: #181c32;
+  margin-bottom: 0;
+}
+
+.scroll {
+  overflow: hidden;
+  overflow-y: auto;
+  max-height: 460px;
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: #e9edf1;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+}
+
+.radio.radio-lg {
+  font-size: 14px;
+
+  > span {
+    width: 22px;
+    height: 22px;
+    margin-right: 7px;
+
+    &:after {
+      width: 12px;
+      height: 12px;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <defs>
+        <clipPath id="j6519jtq8a">
+            <path data-name="矩形 10047" transform="translate(879 822)" style="stroke:#fb6943;fill:#fff" d="M0 0h20v20H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="蒙版组 2363" transform="translate(-879 -822)" style="clip-path:url(#j6519jtq8a)">
+        <g data-name="组 8651">
+            <path data-name="矩形 10048" transform="translate(880 823)" style="fill:rgba(255,255,255,.01)" d="M0 0h19v19H0z"/>
+            <path data-name="矩形 10049" transform="translate(883 826)" style="fill:none;stroke-linejoin:round;stroke:#fb6943" d="M0 0h5v5H0z"/>
+            <path data-name="矩形 10050" transform="translate(883 834)" style="fill:none;stroke-linejoin:round;stroke:#fb6943" d="M0 0h5v5H0z"/>
+            <path data-name="路径 16332" d="M30.718 11.436A2.718 2.718 0 1 0 28 8.718a2.718 2.718 0 0 0 2.718 2.718z" transform="translate(862.872 819.692)" style="fill:none;stroke-linejoin:round;stroke:#fb6943"/>
+            <path data-name="矩形 10051" transform="translate(891 834)" style="fill:none;stroke-linejoin:round;stroke:#fb6943" d="M0 0h5v5H0z"/>
+        </g>
+    </g>
+</svg>

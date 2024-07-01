@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40.001" height="40" viewBox="0 0 40.001 40">
+    <defs>
+        <linearGradient id="wviuoavu7a" x1=".5" y1="1" x2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#fb6943"/>
+        </linearGradient>
+    </defs>
+    <g data-name="组 6913">
+        <path data-name="矩形 8275" transform="translate(.001)" style="fill:none" d="M0 0h40v40H0z"/>
+        <g data-name="组 6910">
+            <path data-name="减去 32" d="M-1524 98h-40V66h40v32zm-18-11v4h14v-4zm-14-4a4 4 0 0 0-4 4v4h15v-4a4 4 0 0 0-4-4zm14-3v4h14v-4zm-10.5-7a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4.005 4.005 0 0 0-4-4zm10.5 0v4h8v-4z" transform="translate(1564 -62.001)" style="fill:url(#wviuoavu7a)"/>
+        </g>
+    </g>
+</svg>

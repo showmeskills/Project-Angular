@@ -1,0 +1,69 @@
+@use 'sass/tools' as *;
+
+%bd {
+  .member-select {
+    max-height: 290px;
+    gap: 10px;
+
+    &-item {
+      height: 42px;
+      border: 1px dashed #e4e6ef;
+      border-radius: 6px;
+      padding: 8px 10px;
+      .del-icon {
+        width: 32px;
+        height: 32px;
+        background: #f5f8fa;
+        border-radius: 4px;
+        margin-left: 10px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .download {
+    color: #319ef7;
+    font-size: 16px;
+    text-decoration: underline;
+    word-break: keep-all;
+    cursor: pointer;
+  }
+}
+
+@include tab-line('channel-tab') {
+  @at-root {
+    %hd-item {
+      height: 42px;
+      line-height: 42px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    %bd {
+      @extend %bd;
+    }
+  }
+};
+
+:host {
+  ::ng-deep {
+    .label-text {
+      line-height: 20px;
+      padding-top: 12px;
+    }
+  }
+
+  @extend %bd;
+}
+
+.country-image {
+  width: 18px;
+  height: 18px;
+  .countryIcon {
+    transform: scale(calc(18 / 48));
+  }
+}
+
+.modal-footer {
+  border-top: 0 none;
+}

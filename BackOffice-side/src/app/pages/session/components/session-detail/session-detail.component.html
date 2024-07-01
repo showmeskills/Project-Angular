@@ -1,0 +1,8 @@
+<modal-title [title]="'session.history.drawer.drawerTitle' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="session-history-content flex-1 min-h-0 d-flex">
+  <dialogue-im [showEmpty]="true" [hideHeader]="true" [hideInput]="true" class="flex-1 custom-scroll-y"></dialogue-im>
+
+  <!-- 信息框 -->
+  <im-info class="flex-1 custom-scroll-y"></im-info>
+</div>

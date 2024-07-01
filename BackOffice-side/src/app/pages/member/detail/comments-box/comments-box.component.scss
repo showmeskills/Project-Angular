@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex-flow: column nowrap;
+
+  .popup-header {
+    min-height: 250px;
+    background-size: cover;
+    background: url(/assets/images/svg/member/comments-box.svg) no-repeat center / 100%;
+  }
+
+  main {
+    flex: 1;
+    min-height: 0;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    margin-top: -16px;
+    background: #fff;
+  }
+
+  dl,
+  dt,
+  dd {
+    margin-bottom: 0;
+  }
+
+  .gray {
+    color: #a1a5b7;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  dl {
+    position: relative;
+    display: flex;
+    padding-bottom: 24px;
+    line-height: 18px;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      border: 4px solid #50cd89;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      left: 130px;
+      top: 3px;
+      z-index: 2;
+    }
+  
+    &::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 113%;
+      background: #f1f4f6;
+      left: 136px;
+      top: 2px;
+      z-index: 1;
+    }
+  
+    dt {
+      min-width: 118px;
+      padding-left: 8px;
+      position: relative;
+      white-space: nowrap;
+    }
+  
+    dd {
+      margin-left: 44px;
+      word-break: break-all;
+    }
+
+    &:last-child {
+      &::after {
+        display: none;
+      }
+    }
+  }
+}

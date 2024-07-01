@@ -1,0 +1,110 @@
+<div
+  class="start-tournament"
+  [class]="renderTournamentBanner()?.tournamentType || 'casino'"
+  *ngIf="renderTournamentBanner()"
+>
+  <ng-container *ngIf="!renderWidth(); else mobile">
+    <ng-container *ngTemplateOutlet="tournamentIntro"></ng-container>
+    <app-lazy-image
+      class="tournament-image"
+      [lazy]="renderTournamentBanner()?.activityThumbnails || ''"
+      [thumbWidth]="500"
+      [ratio]="8 / 2"
+    ></app-lazy-image>
+    <ng-container *ngTemplateOutlet="tournamentRank"></ng-container>
+  </ng-container>
+  <ng-template #mobile>
+    <app-lazy-image [lazy]="renderTournamentBanner()?.activityThumbnails || ''" [ratio]="303 / 304"></app-lazy-image>
+    <ng-container *ngTemplateOutlet="tournamentIntro"></ng-container>
+    <ng-container *ngTemplateOutlet="tournamentRank"></ng-container>
+  </ng-template>
+</div>
+
+<ng-template #tournamentIntro>
+  <div class="start-intro">
+    <p class="intro-title">{{ renderTournamentBanner()?.activityName || '' }}</p>
+    <p class="intro-sub-title">{{ renderTournamentBanner()?.activitySubName || '' }}</p>
+    <div class="start-rewards">
+      <div class="first-rewards" *ngIf="renderTournamentBanner()?.numberVos?.length">
+        <img src="assets/images/activity/tournament/glod-coin.png" />
+        <p class="reward mlr-12" *ngIf="renderTournamentBanner()?.numberVos?.length">
+          {{
+            renderTournamentBanner()!.totalPrizeAmount || 0 | transToDefaultCurrency: renderDefaultCurrency() || 'USDT'
+          }}
+        </p>
+        <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+      </div>
+      <div class="rewards-list" *ngIf="renderTournamentBanner()?.numberVos?.length">
+        <div class="list-item" *ngFor="let item of renderTournamentBanner()!.numberVos; let index = index">
+          <img class="reward-badge" [src]="'assets/images/activity/tournament/' + index + '-award.svg'" />
+          <p class="reward-text mlr-12">{{ item.amount || 0 | transToDefaultCurrency: item?.currency || 'USDT' }}</p>
+          <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+        </div>
+      </div>
+    </div>
+    <div class="temp-btn">
+      <customize-button
+        *ngIf="renderTournamentBanner()?.uidCanJoin"
+        type="primary"
+        size="large"
+        width="100%"
+        [radius]="'30px'"
+        [disabled]="renderJoinLoading()"
+        (onClick)="onJoin()"
+      >
+        {{ 'jion_now' | translate }}
+      </customize-button>
+      <customize-button
+        *ngIf="!renderTournamentBanner()?.uidCanJoin && detailsShowBtn"
+        type="primary"
+        size="large"
+        width="100%"
+        [radius]="'30px'"
+        (onClick)="onSeeMore()"
+      >
+        {{ 'see_more' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #tournamentRank>
+  <div class="start-rank">
+    <ng-container *ngIf="renderTournamentBanner()?.remainingTime !== 0">
+      <div
+        class="end-time"
+        [class.flex-0]="
+          renderTournamentBanner()?.tmpCode === renderRankList()?.tmpCode &&
+          renderRankList()?.pageTable?.records?.length
+        "
+      >
+        <p class="end-time-title">
+          {{ renderTextStatus() }}
+        </p>
+        <app-tournament-timer [calcTimer]="renderTournamentBanner()?.remainingTime || 0"></app-tournament-timer>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="renderTournamentBanner()?.tmpCode === renderRankList()?.tmpCode">
+      <div class="rank-list" *ngIf="renderRankList()?.pageTable?.records?.length">
+        <table>
+          <thead>
+            <th *ngFor="let title of ['rank_a', 'gamer', 'bonus_t', 'score']">
+              {{ title | translate }}
+            </th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let rank of renderRankList()?.pageTable?.records?.slice(0, 5)">
+              <td>{{ rank?.rankNumber || '' }}</td>
+              <td>{{ rank?.userName || ('invisible' | translate) }}</td>
+              <td class="glod-color">
+                {{ rank?.amount || 0 | transToDefaultCurrency: rank?.currency || 'USDT' }}
+                <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+              </td>
+              <td>{{ rank.rankScore || 0 | currencyValue: 'CNY' : undefined : undefined : 2 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

@@ -1,0 +1,56 @@
+<div class="wrapper">
+  <div class="title">
+    <span>{{ 'dice_jackport' | translate }}</span>
+    <i class="orignal-icon-close onact96" (click)="close()"></i>
+  </div>
+  <div class="content">
+    <div class="top">
+      <ng-container *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8]; let i = index">
+        <span>5X</span>
+        <div *ngIf="i != 7"></div>
+      </ng-container>
+    </div>
+    <div class="des des1">
+      {{ 'dice_jackport_des1' | translate }} 8 {{ 'times' | translate }} 5x -> 5x -> 5x -> 5x -> 5x -> 5x -> 5x ->
+      5x（{{ 'include' | translate }}），{{ 'in' | translate }} x
+      {{ 'dice_jackport_des2' | translate }}（58、50、52、57、55、59、53、56）。{{ 'dice_jackport_des3' | translate }}
+    </div>
+    <div class="percent">
+      <div class="item" *ngFor="let item of [5, 30, 50]">
+        <div class="p">{{ item }}%</div>
+        <div class="bet">{{ 'bet' | translate }}≥</div>
+        <div class="number">0.61538463</div>
+        <div class="unit">USDT</div>
+      </div>
+    </div>
+    <div class="des des2">{{ 'dice_jackport_des4' | translate }}</div>
+    <div class="winner">
+      <div class="title">{{ 'winner' | translate }}</div>
+      <div class="table">
+        <ul class="title">
+          <li>{{ 'time' | translate }}</li>
+          <li>{{ 'user' | translate }}</li>
+          <li>{{ 'pay' | translate }}</li>
+        </ul>
+        <div class="list-wrap">
+          <app-scrollbar>
+            <ul class="list" *ngFor="let item of [1, 2, 3, 4, 5]">
+              <li>
+                2022年11月22日<br />
+                下午1:11:04
+              </li>
+              <li>
+                <img src="assets/orignal/images/dice/profile.png" alt="" />
+                <span>Jacks</span>
+              </li>
+              <li>
+                <div class="symbol-cny"></div>
+                <span>1.95657133</span>
+              </li>
+            </ul>
+          </app-scrollbar>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<modal-title [title]="'member.detail.selectCountry' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="px-8 pt-8 pb-4">
+  <form-wrap>
+    <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+    <input
+      #countryRef
+      class="form-control"
+      autocomplete="off"
+      type="text"
+      [(ngModel)]="areaSearch"
+      (keyup)="searchGroup['countries'] = $event.target?.['value'] || ''"
+    />
+    <svg-icon
+      suffix
+      *ngIf="areaSearch"
+      class="svg-icon svg-icon-1x"
+      [src]="'assets/images/svg/close.svg'"
+      (click)="onClear('countries', countryRef)"
+    ></svg-icon>
+  </form-wrap>
+</div>
+
+<div class="w-100 custom-scroll-y area-box">
+  <div
+    class="w-100 d-flex flex-ac flex-between px-10 item"
+    *ngFor="let item of countries | search: 'name' : searchGroup['countries']"
+    (click)="selectedArea(item.areaCode)"
+  >
+    <div class="d-flex flex-ac">
+      <div class="country-image">
+        <i class="country countryIcon" [class]="className(item.code)"></i>
+      </div>
+      <span class="ml-4">{{ item.name }}</span>
+    </div>
+    <div>{{ item.areaCode }}</div>
+  </div>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!(countries | search: 'name' : searchGroup['countries']).length">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>

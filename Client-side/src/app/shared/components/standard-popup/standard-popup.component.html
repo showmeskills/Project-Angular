@@ -1,0 +1,44 @@
+<div class="popup-common standard-popup" [style.width]="width">
+  <i *ngIf="closeIcon" class="close-btn icon-close-simple onact96-not" (click)="onNoClick()"></i>
+  <div *ngIf="title" class="title">{{ title }}</div>
+  <div class="content">
+    <ng-container *ngIf="icon ?? type">
+      <ng-container *ngTemplateOutlet="iconTemplate; context: { icon: icon ?? imgMap[type!] }"></ng-container>
+    </ng-container>
+    <pre *ngIf="content"><span>{{ content }}</span></pre>
+    <pre *ngIf="description" class="description" [class.left]="alignLeft">{{ description }}</pre>
+    <ng-content></ng-content>
+    <div *ngIf="info" class="description info" [innerHTML]="info | toHtmlElement"></div>
+  </div>
+  <ng-container *ngIf="inputFooter; else defaultFooter">
+    <div class="footer">
+      <ng-container *ngTemplateOutlet="inputFooter"></ng-container>
+    </div>
+  </ng-container>
+  <ng-template #defaultFooter>
+    <div class="footer" [class.disabled]="loading$ | async">
+      <ng-container *ngFor="let item of buttons; let i = index">
+        <customize-button
+          #button
+          [disabled]="buttonsWaitList[i]?.disabled ?? false"
+          (onReady)="readyWait(item, i)"
+          width="100%"
+          size="large"
+          [type]="item.primary ? 'primary' : 'default'"
+          [loading]="item.primary && !!(loading$ | async)"
+          (onClick)="clickBtn(item, i)"
+          >{{ item.text }}{{ buttonsWaitList[i] ? '(' + (buttonsWaitList[i]?.time || 0) / 1000 + ')' : '' }}
+        </customize-button>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="footerTemplate">
+      <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+    </ng-container>
+  </ng-template>
+</div>
+<ng-template #iconTemplate let-icon="icon">
+  <ng-container [ngSwitch]="icon.includes('/')">
+    <img *ngSwitchCase="true" [src]="icon" />
+    <i *ngSwitchCase="false" [class]="icon"></i>
+  </ng-container>
+</ng-template>

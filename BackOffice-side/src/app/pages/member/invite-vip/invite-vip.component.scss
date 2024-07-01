@@ -1,0 +1,20 @@
+.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+member-list ::ng-deep .card {
+  border: 0;
+
+  .card-body {
+    padding-top: 0 !important;
+  }
+}
+
+.cancel {
+  border-left: 1px solid #eff2f5;
+  margin-left: 10px;
+  padding-left: 10px;
+  cursor: pointer;
+}

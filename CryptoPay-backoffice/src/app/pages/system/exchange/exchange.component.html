@@ -1,0 +1,164 @@
+<div class="bg-fff rounded p-8 d-flex flex-ac" sticky>
+  <!-- 币种 -->
+  <div class="py-2 flex-wrap flex-nowrap d-flex flex-ac mr-16">
+    <label class="mr-4 mb-0 label-title">{{ 'common.currency' | lang }}</label>
+
+    <div class="position-relative" style="min-width: 0">
+      <div [style.min-width.px]="130" [style.max-width.px]="256">
+        <div class="form-control d-flex flex-ac cursor-pointer" (click)="showSelect = true">
+          <span class="flex-fill mr-4 fz-16 text-nowrap text-truncate">{{
+            isAllCurrencies ? ('common.all' | lang) : currenciesName
+          }}</span>
+          <svg-icon class="d-inline-block" [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <select-group
+        [position]="true"
+        [select]="data.currenciesSelect"
+        [(show)]="showSelect"
+        [data]="currenciesList"
+        label="code"
+        value="code"
+        (confirm)="onCurrency($event)"
+      ></select-group>
+    </div>
+  </div>
+
+  <!-- 币种类型：加密货币、法币 -->
+  <form-row [label]="'common.type' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.isDigital" (selectionChange)="loadData(true)">
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="false">{{ 'payment.currency.fiatCurrency' | lang }}</mat-option>
+          <mat-option [value]="true">{{ 'payment.currency.digitalCurrency' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-6 list">
+  <div class="p-14">
+    <!-- 数据表格 -->
+    <table class="table mb-0">
+      <thead sticky>
+        <tr>
+          <th>
+            <span class="cell">{{ 'common.currency' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'system.exchange.middlePrice' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'system.exchange.buyPrice' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'system.exchange.sellPrice' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'system.exchange.spread' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.operate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.rate | toFormatMoney : { maximumDecimalPlaces: 9 } }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              {{
+                (item.rate | bigNumber)
+                  .times((item.buyRateSpread | bigNumber).div(100))
+                  .plus(item.rate)
+                  .toString() | toFormatMoney : { maximumDecimalPlaces: 9 }
+              }}
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{
+                (item.rate | bigNumber)
+                  .times((item.sellRateSpread | bigNumber).div(100))
+                  .plus(item.rate)
+                  .toString() | toFormatMoney : { maximumDecimalPlaces: 9 }
+              }}
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ (item.buyRateSpread | bigNumber).minus(item.sellRateSpread) }}%</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="switch switch-success">
+                <label class="mx-auto">
+                  <input type="checkbox" (change)="updateStatus(item)" [(ngModel)]="item.isEnable" />
+                  <span></span>
+                </label>
+              </span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <button type="button" class="btn btn-light edit" (click)="onEdit(item)">
+                {{ 'common.edit' | lang }}
+              </button>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty pt-10" style="height: 250px" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-between pt-20">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(false)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- 分页 -->
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginator"
+          [simple]="true"
+          (paginate)="loadData()"
+          [isLoading]="isLoading"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

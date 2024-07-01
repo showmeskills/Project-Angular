@@ -1,0 +1,66 @@
+<modal-title matModalClose [title]="'payment.transactionList.digitalReplenishment' | lang"></modal-title>
+
+<div class="p-8 pt-6" [formGroup]="formGroup">
+  <form-row name="merchantId" [label]="'common.merchant' | lang" label-width="96px">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <mat-form-field class="w-100">
+        <mat-select
+          class="form-control rounded-0"
+          [placeholder]="'payment.subChannel.selectMerchant' | lang"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        >
+          <mat-option [value]="item.id" *ngFor="let item of merchantList">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row name="currency" [label]="'common.currency' | lang" label-width="96px">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <mat-form-field class="w-100">
+        <mat-select
+          class="form-control rounded-0"
+          [placeholder]="'common.currencyTips' | lang"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        >
+          <mat-option [value]="item.code" *ngFor="let item of currencyList">{{ item.code }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row name="network" [label]="'payment.transactionList.network' | lang" label-width="96px">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <mat-form-field class="w-100">
+        <mat-select
+          class="form-control rounded-0"
+          [placeholder]="'payment.transactionList.networkTips' | lang"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        >
+          <mat-option [value]="item.code" *ngFor="let item of networkList">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row name="txHash" label="TxHash" label-width="96px">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        class="form-control rounded-0 w-100"
+        input-trim
+        type="text"
+        [class.fz-12]="control.value"
+        [placeholder]="'form.enterTips' | lang : { label: 'TxHash' }"
+        [class.is-invalid]="invalid"
+        [formControl]="control"
+      />
+    </ng-template>
+  </form-row>
+
+  <div class="fz-16 text-danger mt-4">{{ 'payment.transactionList.infoIsTrue' | lang }}</div>
+</div>
+
+<modal-footer dismissClose (confirm)="onSubmit()"></modal-footer>

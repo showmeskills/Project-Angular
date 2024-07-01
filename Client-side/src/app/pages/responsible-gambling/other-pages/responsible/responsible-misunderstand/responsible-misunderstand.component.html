@@ -1,0 +1,25 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container misunderstand-container">
+    <p class="text-20">{{ 'respon_ga' | translate }}</p>
+    <div class="faq-ans" *ngFor="let item of contextArr">
+      <div class="line">
+        <i class="icon-correct wrapper"></i>
+        <p class="text-16 nowrap">{{ 'respon_gb' | translate }}</p>
+        <p class="text-16">{{ item.text }}</p>
+      </div>
+      <div class="line">
+        <i class="icon-fail wrapper"></i>
+        <p class="text-16 nowrap">{{ 'respon_gc' | translate }}</p>
+        <p class="text-16">{{ item.info }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-other-pages-footer
+  imgSrc="assets/images/responsible-gambling/misunderstand/bottom-banner.png"
+  [textOne]="textOne"
+  [textTwo]="textTwo"
+  [textThree]="textThree"
+>
+</app-other-pages-footer>

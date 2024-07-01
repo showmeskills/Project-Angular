@@ -1,0 +1,91 @@
+<form action="#" class="form" [formGroup]="formGroup">
+  <ng-container *ngIf="role">
+    <!-- 角色名称 -->
+    <form-row [label]="'auManage.role.name' | lang" [label-width]="labelWidth" required>
+      <ng-template>
+        <input
+          type="text"
+          class="form-control"
+          [placeholder]="'auManage.role.enterNam' | lang"
+          autocomplete="off"
+          [class.is-invalid]="validator.isControlInvalid('name')"
+          [class.is-valid]="validator.isControlValid('name')"
+          name="groupName"
+          formControlName="name"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 所属群组 -->
+    <!-- <form-row label="所属群组" [label-width]="labelWidth" [required]="!!group">
+      <ng-template>
+        <mat-form-field appearance="standard" class="w-100">
+          <mat-select
+            [disabled]="!!group || !!id"
+            class="form-control"
+            placeholder="请选择所属群组"
+            [class.is-invalid]="validator.isControlInvalid('group')"
+            [class.is-valid]="validator.isControlValid('group')"
+            formControlName="group"
+          >
+            <mat-option *ngIf="!group" [value]="''">无</mat-option>
+            <mat-option *ngFor="let item of groupList" [value]="item.id">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row> -->
+
+    <!-- 状态 -->
+    <form-row [label]="'common.status' | lang" [label-width]="labelWidth" required>
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <span class="switch switch-success">
+            <label>
+              <input type="checkbox" (change)="onState()" formControlName="state" />
+              <span></span>
+            </label>
+          </span>
+
+          <span class="fz-16 color-999 ml-4">{{ role.state ? ('common.open' | lang) : ('game.off' | lang) }}</span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 权限 -->
+    <form-row [label]="'auManage.role.qx' | lang" [label-width]="labelWidth" required>
+      <ng-template>
+        <div>
+          <div class="d-flex justify-content-end mb-6">
+            <button
+              type="button"
+              class="btn btn-primary px-6 mr-4 lh-30 py-0"
+              [style.padding.px]="6"
+              (click)="batchAll(true)"
+            >
+              <span class="vam">{{ 'auManage.role.expandAll' | lang }}</span>
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary px-6 lh-30 py-0"
+              [style.padding.px]="6"
+              (click)="batchAll(false)"
+            >
+              <span class="vam">{{ 'auManage.role.collapseAll' | lang }}</span>
+            </button>
+          </div>
+
+          <mat-accordion multi>
+            <permission-item *ngFor="let item of permissionList" [data]="item"></permission-item>
+          </mat-accordion>
+        </div>
+      </ng-template>
+    </form-row>
+  </ng-container>
+</form>
+
+<div class="btn-wrap pb-12 d-flex flex-center" [class.modal-footer]="!!group">
+  <button class="c-btn c-btn-default" type="button" (click)="onBack()">{{ 'common.back' | lang }}</button>
+  <button class="c-btn c-btn-primary" type="button" (click)="ok()" [disabled]="!formGroup.valid">
+    {{ 'common.confirm' | lang }}
+  </button>
+</div>

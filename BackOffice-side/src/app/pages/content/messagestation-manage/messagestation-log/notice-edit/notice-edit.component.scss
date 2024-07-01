@@ -1,0 +1,17 @@
+.main {
+  display: flex;
+  flex-flow: column nowrap;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px #523f690d;
+  padding: 30px;
+  .label-title {
+    flex: 0 0 90px;
+    line-height: 42px;
+    align-self: flex-start;
+  }
+  .level {
+    justify-content: space-between;
+    max-width: 535px;
+  }
+}

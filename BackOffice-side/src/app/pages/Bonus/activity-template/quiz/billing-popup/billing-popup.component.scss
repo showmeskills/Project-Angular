@@ -1,0 +1,64 @@
+.box {
+  margin-top: 20px;
+  .title {
+    color: #969bad;
+    margin-bottom: 14px;
+  }
+}
+ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  padding-left: 0px;
+}
+li {
+  display: flex;
+  align-items: center;
+}
+.box {
+  padding-left: 30px;
+}
+.leftText {
+  // margin-left: 5px;
+  // margin-right: 10px;
+  width: 85px;
+  text-align: center;
+}
+.rightText {
+  // margin-left: 10px;
+  // margin-right: 5px;
+  width: 85px;
+  text-align: center;
+}
+.teamIps {
+  width: 72px;
+  height: 26px;
+  background: #fff8dd;
+  border: 1px solid #fff8dd;
+  border-radius: 6px;
+  color: #ffcd1c;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15px;
+}
+.enTeamtps {
+  width: 85px;
+  height: 26px;
+  background: #fff8dd;
+  border: 1px solid #fff8dd;
+  border-radius: 7px;
+  color: #ffcd1c;
+  font-size: 12px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15px;
+}
+.teamLogo {
+  width: 24px;
+  height: 24px;
+}

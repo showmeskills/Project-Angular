@@ -1,0 +1,28 @@
+<ng-container *ngIf="otherLogins.length && !singleUse">
+  <div class="other-login-container" [class.show]="otherLogins.length">
+    <div class="footer-3">
+      <span class="line"></span>
+      <span class="text">{{ 'other_login' | translate }}</span>
+      <span class="line"></span>
+    </div>
+    <div class="footer-4">
+      <div class="item mutual-opacity" *ngFor="let item of otherLogins" (click)="loginVer(item.name)">
+        <img class="login-pic" [src]="item.pic" />
+        <ng-container *ngIf="item.src && item.name === 'Telegram'">
+          <iframe [src]="item.src | safe" (load)="buildClick(item)"></iframe>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="otherLogins.length && singleUse">
+  <ng-container
+    *ngTemplateOutlet="single; context: { item: otherLogins | filterByKeyValue : 'name' : singleUse }"
+  ></ng-container>
+  <ng-template #single let-item="item">
+    <ng-container *ngIf="item[0].src">
+      <iframe [src]="item[0].src | safe" (load)="buildClick(item[0])"></iframe>
+    </ng-container>
+  </ng-template>
+</ng-container>

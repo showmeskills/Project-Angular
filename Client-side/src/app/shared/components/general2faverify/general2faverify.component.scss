@@ -1,0 +1,323 @@
+@use 'sass:math';
+
+:host {
+  background-color: transparent !important;
+  display: flex;
+}
+
+div {
+  display: flex;
+}
+
+.switch-container {
+  display: flex;
+  align-items: flex-end;
+  .or {
+    font-size: 14px;
+    color: var(--text-color-20);
+    margin: 0 6px;
+  }
+}
+
+.verify-container {
+  width: 484px;
+  height: 100%; //357px;
+  flex-direction: column;
+  padding: 24px;
+  overflow-y: hidden;
+
+  // padding: 24px;
+  // position: relative;
+  // display: flex;
+  // flex-direction: column;
+  border-radius: 10px;
+  box-shadow: 5px 11px 18px 0 rgba(0, 0, 0, 0.16);
+  // background-color: #fff;
+  background-color: var(--container-bg-color);
+  // width: 384px; //此宽度是web的宽度，h5宽度自动为 styles.scss 里定义的
+  // gap: 24px;
+
+  @media (max-width: 767px) {
+    width: 100vw;
+    margin: 0 14px;
+  }
+
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    //标题
+    .title {
+      // color: #1e2329;
+      color: var(--text-color);
+      font-size: 20px;
+    }
+
+    //关闭icon
+    .icon-close {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  .contant {
+    width: 100%;
+    flex-direction: column;
+
+    @media (max-width: 767px) {
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .options {
+      flex-direction: column;
+    }
+
+    .txt {
+      font-size: 12px;
+      padding-top: 20px;
+      color: var(--text-color-20);
+      // color: #707a8a;
+
+      @media (max-width: 767px) {
+        padding-top: 24px;
+      }
+    }
+
+    //Form表单
+    .form-group {
+      flex-direction: column;
+      margin-top: 32px;
+
+      @media (max-width: 767px) {
+        margin-top: 36px;
+      }
+
+      label {
+        font-size: 14px;
+        color: var(--text-color-20);
+        line-height: 14px;
+      }
+      ::ng-deep {
+        app-verify-code {
+          label {
+            color: var(--text-color-20);
+          }
+          .link {
+            color: var(--primary-color);
+          }
+        }
+      }
+    }
+
+    //输入框错误信息
+    .error-msg {
+      color: var(--txt-err-color);
+      font-size: 12px;
+      line-height: 14px;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+
+    .bottom-1 {
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    //输入框错误信息
+    .d-msg {
+      // color: #707a8a;
+      color: var(--text-color-20);
+      font-size: 12px;
+      line-height: 14px;
+      margin-top: 4px;
+    }
+
+    .d-msg-1 {
+      font-size: 12px;
+      color: var(--primary-color);
+      padding-top: 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    // 发送验证失败
+    .notice-msg {
+      flex-direction: column;
+      // color: #707a8a;
+      color: var(--text-color-20);
+
+      .n-1 {
+        padding: 4px 0;
+        font-size: 12px;
+      }
+
+      .txt-f {
+        font-size: 12px;
+      }
+    }
+
+    .p-1 {
+      padding-top: 24px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    // link txt
+    .link-orange {
+      color: var(--primary-color);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .m-top {
+      margin-top: 41px;
+    }
+  }
+}
+
+.container {
+  margin-top: 127px;
+  margin-left: (math.div(551, 1920) * 100%);
+  width: 385px;
+  flex-direction: column;
+
+  @media (max-width: 1024px) {
+    align-self: center;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 55px;
+    width: 100%;
+    padding: 0 18px;
+    margin-left: 0;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 33px;
+    font-weight: bold;
+    color: var(--text-color);
+
+    & + .form-group {
+      &::before {
+        content: '';
+        flex: 0 0 20px;
+      }
+    }
+    @media (max-width: 767px) {
+      font-size: 24px;
+    }
+  }
+
+  .description {
+    font-size: 16px;
+    color: #474d57;
+    margin-top: 18px;
+    line-height: 22px;
+    margin-bottom: 36px;
+
+    &:host-context(.dark) & {
+      color: var(--text-color-20);
+    }
+    @media (max-width: 767px) {
+      margin-top: 9px;
+      margin-bottom: 41px;
+    }
+  }
+
+  .switch-container {
+    color: #474d57;
+    font-size: 14px;
+    align-items: center;
+    margin-top: 12px;
+    > * + * {
+      margin-left: 6px;
+    }
+    .d-msg-1 {
+      color: var(--link-color);
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+
+  .description-bottom {
+    margin-top: 17px;
+    font-size: 14px;
+  }
+  //Form表单
+  .form-group {
+    flex-direction: column;
+    //输入框错误信息
+    .error-msg {
+      color: var(--txt-err-color);
+      font-size: 14px;
+      line-height: 14px;
+      margin-top: 7px;
+    }
+  }
+
+  //提交按钮
+  .m-top {
+    margin-top: 80px;
+  }
+}
+
+.standard-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 380px;
+  padding: 36px 25px 46px 25px;
+  border-radius: 10px;
+  @media (max-width: 767px) {
+    width: 100vw;
+  }
+  .header {
+    width: 52px;
+    height: 60px;
+    img {
+      width: 100%;
+    }
+  }
+  .popup-body {
+    display: flex;
+    flex-direction: column;
+    .one {
+      margin-top: 20px;
+      font-size: 18px;
+      color: var(--text-color);
+      text-align: center;
+    }
+    .two {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-color-20);
+      line-height: 1.48;
+    }
+    .three {
+      display: flex;
+      flex-direction: column;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-color-20);
+      > * + * {
+        margin-top: 10px;
+      }
+      p {
+        line-height: 1.48;
+      }
+    }
+  }
+  .cancel-btn {
+    margin-top: 50px;
+  }
+}

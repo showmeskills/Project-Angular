@@ -1,0 +1,155 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <div class="modal-title">{{ 'game.detail.order_detal' | lang }}</div>
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="flex-1 d-flex w-100">
+      <div class="flex-1">
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">UID：</label>
+          <div>{{ base?.uid }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.order_id' | lang }}</label>
+          <div>{{ base?.orderNumber }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.game_maker' | lang
+          }}</label>
+          <div>{{ base.gameProvider }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.three_id' | lang }}</label>
+          <div class="word-break">{{ base?.wagerNumber }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.lotto_name_text' | lang }}</label>
+          <div>{{ base.gameName }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.play_text' | lang
+          }}</label>
+          <div>{{ base.playWay }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.result' | lang }}</label>
+          <!-- style="word-break:break-all;" -->
+          <div style="word-break: break-all">{{ base.gameResult }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.trans_net' | lang
+          }}</label>
+          <div>
+            {{ base.principal | currencyValue: base.currency }}<img class="ml-2" [currencyIcon]="base.currency" />
+          </div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.win' | lang }}</label>
+          <div *win="base.payoutAmount; let value; prev as prev" [winColor]="value">
+            {{ prev }}{{ value | currencyValue: base.currency
+            }}<img class="ml-2" [currencyIcon]="base.currency" alt="" />
+          </div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.statu' | lang }}</label>
+          <div [betStatusLabel]="base.status"></div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.last_settle' | lang
+          }}</label>
+          <div *ngIf="base.settleTime > 0; else noTime">
+            {{ base.settleTime | timeFormat }}
+          </div>
+          <ng-template #noTime><div>-</div></ng-template>
+        </div>
+        <!-- 隐藏版本 -->
+        <!-- <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px;">{{ 'game.detail.ver' | lang }}</label>
+          <div>{{ base?.version }}</div>
+        </div> -->
+      </div>
+
+      <div class="flex-1">
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.game_type' | lang
+          }}</label>
+          <!-- <div>彩票</div> -->
+          <div>{{ base?.gameCategory || ('game.lotto' | lang) }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.subGameType' | lang }}</label>
+          <div>{{ base.lotterCategory }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.no' | lang }}</label>
+          <div style="word-break: break-all">{{ base.roundNo }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.trans_content' | lang
+          }}</label>
+          <div>
+            {{ base?.gameDetail }}
+          </div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.odd' | lang }}</label>
+          <div>{{ base.odds }}</div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.bet' | lang }}</label>
+          <div>{{ base.bonus | currencyValue: base.currency }}<img class="ml-2" [currencyIcon]="base.currency" /></div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ 'game.detail.rollover' | lang }}</label>
+          <div>
+            {{ base.activeFlow | currencyValue: base.currency }}<img class="ml-2" [currencyIcon]="base.currency" />
+          </div>
+        </div>
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.trans_time' | lang
+          }}</label>
+          <div>{{ base.betTime | timeFormat }}</div>
+        </div>
+        <!-- 隐藏载具 -->
+        <!-- <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px;">{{
+            'game.detail.carrier' | lang
+          }}</label>
+          <div>{{ base?.vehicle }}</div>
+        </div> -->
+        <div class="d-flex flex-ac py-2 fz-16">
+          <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{
+            'game.detail.trans_type' | lang
+          }}</label>
+          <div [ngSwitch]="base.transactionType">
+            <span *ngSwitchCase="'Large'" class="text-nowrap label label-lg label-inline label-light-danger">{{
+              'game.detail.big_trans' | lang
+            }}</span>
+            <span *ngSwitchCase="'Normal'" class="text-nowrap label label-lg label-inline label-light-success">{{
+              'game.detail.nor_trans' | lang
+            }}</span>
+          </div>
+        </div>
+
+        <report-opera [orderNumber]="base?.orderNumber" [data]="base" (update)="update.emit($event)"></report-opera>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-primary" (click)="modal.close({ value: true })">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

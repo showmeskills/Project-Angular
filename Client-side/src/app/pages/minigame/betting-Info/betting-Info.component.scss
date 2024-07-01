@@ -1,0 +1,177 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+:host {
+  ::ng-deep {
+    .mat-mdc-tab {
+      --mdc-secondary-navigation-tab-container-height: 37px;
+      padding: 0 14px;
+      min-width: auto;
+      font-size: 14px;
+      font-weight: bold;
+      color: #707a8a;
+      margin-bottom: 7px;
+      opacity: 1 !important;
+
+      &-active {
+        color: #1e2329;
+
+        :host-context(.dark) & {
+          color: #fff;
+        }
+      }
+    }
+
+    .mat-mdc-tab-header {
+      border-bottom: none;
+    }
+
+    .mat-ink-bar {
+      z-index: 2;
+      bottom: 1px;
+      background-color: var(--primary-color) !important;
+    }
+
+    app-customize-select {
+      .input-container {
+        height: 37px !important;
+
+        input {
+          padding-right: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.content-box {
+  margin-top: 19px;
+  margin-bottom: 28px;
+  margin-bottom: 120px;
+
+  @media (max-width: 767px) {
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-bottom: 48px;
+  }
+}
+
+.tabs {
+  position: relative;
+
+  &::after {
+    content: '';
+    height: 2px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    background-color: #eaecef;
+
+    :host-context(.dark) & {
+      background-color: #2f4553;
+    }
+  }
+
+  .tool {
+    i {
+      color: #717a8a;
+    }
+
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    @include polyfills.flex-gap(7px, 'row nowrap');
+    align-items: center;
+  }
+}
+
+.list-data {
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    color: #707a8a;
+    font-size: 14px;
+
+    :host-context(.dark) & {
+      color: #b1bad3;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #f5f5f5;
+
+      :host-context(.dark) & {
+        background-color: #2f4553;
+      }
+    }
+
+    th {
+      height: 52px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    td {
+      height: 49px;
+      text-align: center;
+      white-space: nowrap;
+
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        @include polyfills.flex-gap(7px, 'row nowrap');
+
+        img {
+          width: 14px;
+          height: 14px;
+          object-fit: contain;
+        }
+      }
+    }
+
+    td,
+    th {
+      padding: 10px 14px;
+
+      &:first-child {
+        text-align: left;
+
+        span {
+          justify-content: flex-start;
+        }
+      }
+
+      &:last-child {
+        text-align: right;
+
+        span {
+          justify-content: flex-end;
+        }
+      }
+    }
+  }
+
+  .dark {
+    color: #1e2329;
+
+    :host-context(.dark) & {
+      color: #fff;
+    }
+  }
+
+  .well {
+    color: #15bf7b;
+  }
+
+  .many-words {
+    white-space: normal;
+    line-height: 1.3;
+    word-break: break-all;
+  }
+
+  .stealth {
+    cursor: help;
+  }
+}

@@ -1,0 +1,13 @@
+.new-thead-box {
+  display: flex;
+  .right {
+    margin-left: auto;
+    font-size: 16px;
+    display: flex;
+    .has-icon {
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+    }
+  }
+}

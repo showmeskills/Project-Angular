@@ -1,0 +1,208 @@
+$award-s: #35fff3;
+$award-1: #5dff35;
+$award-2: #3562ff;
+$award-3: #ff357e;
+$award-4: #ff8a35;
+$award-5: #be35ff;
+
+@mixin style($color) {
+  background: linear-gradient(to top, $color -140%, transparent 100%);
+
+  > div {
+    color: darken($color, 30%);
+  }
+
+  :host-context(.dark) & {
+    > div {
+      @if $color==#3562FF {
+        color: lighten($color, 10%);
+      } @else {
+        color: $color;
+      }
+    }
+
+    background: linear-gradient(to top, $color -40%, transparent 100%);
+  }
+
+  &::after {
+    border-color: rgba($color, 0.3);
+  }
+}
+
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  padding-top: 40px;
+  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 20px;
+  }
+}
+
+.box {
+  border-radius: 4px;
+  padding: 40px 35px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
+
+  &::after {
+    content: '';
+    border: 1px solid transparent;
+    position: absolute;
+    // inset: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  > img {
+    position: absolute;
+    right: 6%;
+    width: 130px;
+    height: 130px;
+
+    &.big {
+      width: 179px;
+      height: 179px;
+    }
+
+    @media (max-width: 767px) {
+      right: 15px;
+    }
+  }
+
+  p {
+    font-size: 28px;
+    color: var(--text-color);
+    text-indent: 2px;
+    padding-bottom: 5px;
+
+    @media (max-width: 767px) {
+      font-size: 20px;
+    }
+  }
+
+  em {
+    font-size: 50px;
+    padding-top: 20px;
+
+    @media (max-width: 767px) {
+      padding-top: 30px;
+      font-size: 40px;
+    }
+  }
+
+  span {
+    font-size: 26px;
+    text-indent: 2px;
+    padding-top: 20px;
+
+    @media (max-width: 767px) {
+      padding-top: 30px;
+      font-size: 20px;
+    }
+  }
+
+  &.award-s {
+    @media (min-width: 768px) {
+      > div {
+        flex-direction: row;
+        align-items: flex-end;
+      }
+
+      span {
+        padding-left: 10px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      > img {
+        transform: scale(0.8);
+        right: -10px;
+      }
+    }
+
+    @include style($award-s);
+  }
+
+  &.award-1 {
+    @include style($award-1);
+  }
+
+  &.award-2 {
+    @include style($award-2);
+  }
+
+  &.award-3 {
+    @include style($award-3);
+  }
+
+  &.award-4 {
+    @include style($award-4);
+  }
+
+  &.award-5 {
+    @include style($award-5);
+  }
+
+  @media (max-width: 767px) {
+    padding: 25px 15px;
+  }
+}
+
+.boxs {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -20px;
+
+  .box {
+    flex: 1 1 35%;
+    margin: 20px;
+  }
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    margin: 0;
+
+    .box {
+      margin: 0;
+      flex: 1;
+
+      &.placeholder {
+        display: none;
+      }
+
+      & + .box {
+        margin-top: 20px;
+      }
+    }
+  }
+}
+
+.tip {
+  font-size: 14px;
+  line-height: 1.3;
+  margin: 30px 0;
+
+  @media (max-width: 767px) {
+    font-size: 18px;
+    margin: 20px 0;
+  }
+}

@@ -1,0 +1,67 @@
+<div class="page-container dividend">
+  <div class="card-page main-container unity-padding-web unity-padding-h5-16">
+    <div class="dividend-container container">
+      <div class="dividend-section">
+        <div class="activity-detail">
+          <div class="detail-header" [appLoading]="loading">
+            <app-lazy-image
+              [lazy]="detailData?.detailImgUrl"
+              [thumbWidth]="500"
+              [radius]="16"
+              [ratio]="isH5 ? 436 / 229 : 360 / 190"
+            ></app-lazy-image>
+          </div>
+          <div class="detail" *ngIf="!loading; else skeleton">
+            <div class="apply-btn">
+              <ng-container *ngIf="logined && detailData.isJoin">
+                <customize-button
+                  [size]="isH5 ? 'small' : 'medium'"
+                  [type]="detailData.isEnroll ? 'text' : 'primary'"
+                  (onClick)="submitApply()"
+                  radius="21px"
+                  minWidth="116px"
+                  [loading]="applyLoading"
+                  [disabled]="applyLoading"
+                  [plain]="detailData.isEnroll"
+                  [active]="detailData.isEnroll"
+                >
+                  {{ detailData.isEnroll ? ('applied' | translate) : ('imm_applied' | translate) }}
+                </customize-button>
+              </ng-container>
+            </div>
+            <div class="content" [innerHTML]="detailData.content"></div>
+            <ng-container *ngIf="detailData?.labelCode === 'contest' && logined">
+              <div class="activity-btn">
+                <customize-button
+                  size="medium"
+                  type="primary"
+                  (onClick)="dailyRacesService.openPopup(bonusActivitiesNo)"
+                  width="100%"
+                >
+                  {{ 'my_rank_btn' | translate }}
+                </customize-button>
+              </div>
+            </ng-container>
+          </div>
+          <ng-template #skeleton>
+            <div class="detail">
+              <div class="skeleton-loading" style="height: 50px; margin: 25px 0; width: 100%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 30%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 50%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 80%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 60%"></div>
+              <div class="skeleton-loading" style="height: 50px; margin: 25px 0; width: 100%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 30%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 50%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 80%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 60%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 95%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 95%"></div>
+              <div class="skeleton-loading" style="height: 30px; margin-top: 10px; width: 95%"></div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

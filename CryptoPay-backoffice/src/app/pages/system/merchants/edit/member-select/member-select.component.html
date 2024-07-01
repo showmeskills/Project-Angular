@@ -1,0 +1,19 @@
+<div class="member-select">
+  <div class="modal-header">
+    <div class="modal-title h4">{{ 'system.merchants.selectedMember' | lang }}</div>
+
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="member-select-wrap">
+    <select-group value="id" label="userName" [(select)]="select" [data]="list" [scrollHeight]="260"> </select-group>
+    <!-- <div *ngIf="list.length == 0" class="item empty">目前无任何角色，请先新增角色</div> -->
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button class="c-btn c-btn-default" (click)="close()">{{ 'common.cancel' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="save()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>

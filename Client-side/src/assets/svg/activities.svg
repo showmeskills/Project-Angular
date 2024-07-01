@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#ff7e10"/>
+            <stop offset="1" stop-color="#f5432c"/>
+        </linearGradient>
+        <style>
+            .cls-3{fill:#54616f}
+        </style>
+    </defs>
+    <g id="Group_3528" data-name="Group 3528" transform="translate(-405 -297)">
+        <path id="Rectangle_1960" data-name="Rectangle 1960" transform="translate(405 297)" style="fill:none" d="M0 0h22v22H0z"/>
+        <path id="Rectangle_1973" data-name="Rectangle 1973" transform="translate(414 299)" style="fill:url(#linear-gradient)" d="M0 0h11v18H0z"/>
+        <path id="Polygon_1" data-name="Polygon 1" class="cls-3" d="m6 0 6 6H0z" transform="rotate(90 60.25 362.25)"/>
+        <path id="Rectangle_1974" data-name="Rectangle 1974" class="cls-3" transform="translate(407 307)" d="M0 0h10v2H0z"/>
+    </g>
+</svg>

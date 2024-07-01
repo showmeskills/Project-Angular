@@ -1,0 +1,84 @@
+<div class="card card-body">
+  <form class="form" [formGroup]="formGroup">
+    <form-row [label]="'system.chnnelCode.channel' | lang" class="mr-16" label-width="210" name="channel" required>
+      <ng-template let-control="formControl">
+        <mat-form-field>
+          <mat-select class="form-control" [formControl]="control">
+            <mat-option value="MyAffiliate">MyAffiliate</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+    <form-row
+      required
+      [label]="'system.chnnelCode.referralCode' | lang"
+      class="mr-16"
+      label-width="210"
+      [contentWidth]="600"
+      name="referralCode"
+      [invalidFeedback]="{
+        required: 'system.chnnelCode.fillCode' | lang
+      }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input [class.is-invalid]="invalid" class="form-control w-100" type="text" [formControl]="control" />
+      </ng-template>
+    </form-row>
+    <form-row
+      required
+      [label]="'system.chnnelCode.uidCollection' | lang"
+      class="mr-16"
+      label-width="210"
+      [contentWidth]="600"
+      name="uidCollection"
+      [invalidFeedback]="{
+        required: 'system.chnnelCode.fillUid' | lang
+      }"
+    >
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <textarea
+          type="text"
+          class="form-control"
+          [style.height.px]="320"
+          autocomplete="off"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        ></textarea>
+      </ng-template>
+    </form-row>
+    <div class="btn-wrap py-2 flex-center d-flex mt-10">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="submit()">{{ 'common.submit' | lang }}</button>
+    </div>
+    <!-- 会员是否绑定到MA -->
+    <form-row class="mr-6 mt-5" [label]="'system.chnnelCode.detectMa' | lang" name="time" label-width="210">
+      <ng-template let-control="formControl">
+        <div class="d-flex">
+          <input
+            class="text-center form-control"
+            [style.width.px]="200"
+            type="text"
+            [placeholder]="'system.chnnelCode.detectionTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [formControl]="control"
+            (dateTimeChange)="timeChange()"
+            readonly
+          />
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+          <button class="c-btn c-btn-primary ml-10" (click)="testing()">
+            {{ 'system.chnnelCode.detect' | lang }}
+          </button>
+        </div>
+        <div class="box">
+          <span *ngFor="let item of list">{{ item }}</span>
+          <!-- 空显示 -->
+          <empty class="w-100 h-100" *ngIf="!list?.length && !isLoading"></empty>
+        </div>
+      </ng-template>
+    </form-row>
+  </form>
+</div>

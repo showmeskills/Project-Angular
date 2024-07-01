@@ -1,0 +1,66 @@
+<div class="page-container" [style.margin-left]="layoutContentMarginLeft">
+  <div class="main-container">
+    <div class="container" appMouseScroll (scroll)="closePop()">
+      <div class="content-box header">
+        @for (item of navigationMenus; track $index) {
+          <div
+            cdkOverlayOrigin
+            #orderOrigin="cdkOverlayOrigin"
+            [class.active]="item.show"
+            (mouseenter)="showPop($index)"
+            (mouseleave)="closePop(150)"
+            (click)="clickshowPop($index)"
+            class="menu-trigger mutual-opacity order"
+          >
+            @if (!item.routerLink || (item.children.length > 0 && isH5)) {
+              <div class="menu-trigger-item">
+                @if (item.icon) {
+                  <img [src]="item.show ? item.icon : item.menuIcon" />
+                }
+                <span class="trigger-txt">{{ item.name }}</span>
+                @if (item.children.length > 0) {
+                  <i class="select-icon icon-arrow-right-simple"></i>
+                }
+              </div>
+            } @else {
+              <div class="menu-trigger-item" [routerLink]="item.routerLink" routerLinkActive="linkActive">
+                @if (item.icon) {
+                  <img class="icon" [src]="item.show ? item.icon : item.menuIcon" />
+                  <!-- linkActive css控制选中 -->
+                  <img class="menuIcon" [src]="item.icon" />
+                }
+                <span class="trigger-txt">{{ item.name }}</span>
+                @if (item.children.length > 0) {
+                  <i class="select-icon icon-arrow-right-simple"></i>
+                }
+              </div>
+            }
+          </div>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="orderOrigin"
+            [cdkConnectedOverlayOpen]="item.show"
+            [cdkConnectedOverlayPositions]="orderPositions"
+            [cdkConnectedOverlayFlexibleDimensions]="true"
+          >
+            <div
+              class="general-pop top-level2"
+              (mouseenter)="showPop($index, false)"
+              (mouseleave)="closePop()"
+              (click)="closePop()"
+            >
+              <div>
+                @for (info of item.children; track $index) {
+                  <div [routerLink]="info.routerLink" class="onact96 general-item" routerLinkActive="active">
+                    <!-- <i [class]="item.icon"></i> -->
+                    <span>{{ info.labelName }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </ng-template>
+        }
+      </div>
+    </div>
+  </div>
+</div>

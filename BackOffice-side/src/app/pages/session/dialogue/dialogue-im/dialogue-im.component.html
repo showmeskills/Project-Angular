@@ -1,0 +1,109 @@
+<div *ngIf="!hideHeader" class="bg-fff mx-4 px-4 pt-4 rounded-3 fz-16 d-flex flex-wrap lh-34 im-hd">
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="selTopicShow"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayBackdropClass]="'bg-transparent'"
+    (backdropClick)="selTopicShow = false"
+    (detach)="clearSelTopic()"
+  >
+    <!-- 设置主题 -->
+    <div class="im-theme-sel-wrap d-flex">
+      <!-- 类型 -->
+      <mat-card class="im-theme-sel-card">
+        <span class="color-999 p-6">{{ 'common.type' | lang }}</span>
+
+        <div class="bt-1 im-theme-sel-card-content d-flex flex-wrap gap-4 p-4 custom-scroll-y">
+          <topic-label
+            [data]="item"
+            *ngFor="let item of topicCategory"
+            [active]="item.id === selTopicCategory?.id"
+            (click)="onTopicCategory(item)"
+          />
+        </div>
+      </mat-card>
+
+      <!-- 主题 -->
+      <mat-card class="im-theme-sel-card im-theme-sel-theme" *ngIf="selTopicCategory">
+        <span class="color-999 p-6">{{ 'common.theme' | lang }}</span>
+        <div
+          class="bt-1 im-theme-sel-card-content d-flex flex-wrap gap-4 p-4 custom-scroll-y"
+          [appLoading]="selTopicCategoryLoading"
+          [style.min-height.px]="53"
+        >
+          <topic-label
+            [data]="item"
+            *ngFor="let item of topic"
+            [active]="item.id === selTopic?.id"
+            (click)="onTopic(item)"
+          />
+          <div class="fz-12 color-999 w-100 text-center lh-32" *ngIf="!topic.length && !selTopicCategoryLoading">
+            {{ 'common.emptyText' | lang }}
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </ng-template>
+
+  <div class="flex-1">
+    <div #trigger="cdkOverlayOrigin" cdkOverlayOrigin>
+      <button
+        type="button"
+        class="btn btn-light-primary fz-16 px-5 py-2 text-nowrap mb-4"
+        (click)="selTopicShow = !selTopicShow"
+        [hidden]="hasTopic"
+      >
+        <svg-icon class="lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        <span class="vam">{{ 'session.topic' | lang }}</span>
+      </button>
+      <div class="d-flex flex-ac hd-topic" *ngIf="hasTopic">
+        <span class="d-flex color-999 fz-14" (click)="openTopicByEdit()">
+          <span class="hd-topic-item">{{ curTopicCategoryName }}</span>
+          <span class="px-2">/</span>
+          <span class="hd-topic-item">{{ curTopicName }}</span>
+        </span>
+
+        <svg-icon
+          [src]="'./assets/images/svg/admin-del.svg'"
+          class="cursor-pointer svg-icon svg-icon-22 hd-topic-del ml-4"
+          [style.margin-top.px]="-4"
+          (click)="onResetTopic()"
+        ></svg-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- 结束对话 -->
+  <button type="button" class="btn btn-danger mb-4" (click)="endSession()">{{ 'session.finish' | lang }}</button>
+</div>
+
+<!-- 聊天会话 -->
+<div class="ml-5 pr-4 mr-2 flex-1 d-flex flex-column min-h-0">
+  <div class="min-w-0 custom-scroll-y d-flex flex-column flex-1" #sessionWrap>
+    <div class="im-msg-top" #scrollTopRef></div>
+    <!-- 查看之前对话 -->
+    <!--  <div class="text-center text-primary cursor-pointer" *ngIf="sessionService.hasHistory">-->
+    <!--    {{ 'session.viewHistoryMsg' | lang }}-->
+    <!--  </div>-->
+
+    <!-- 玩家发起对话 -->
+    <!--  <im-tips>06/29 15:21:49 {{ 'session.tipsCustomerCreateChat' | lang }}</im-tips>-->
+
+    <!-- 对话超时系统自动结束 -->
+    <!--  <im-tips type="danger">06/29 15:21:49 {{ 'session.tipsTimeout' | lang }}</im-tips>-->
+
+    <!-- 转接会话 -->
+    <!--  <im-tips type="success" icon="transfer">06/29 15:21:49 SuperAdmin {{ 'session.transfer' | lang }} Test001</im-tips>-->
+
+    <!-- 消息 -->
+    <im-msg [data]="msg" [isSelf]="msg.chatType === 1" *ngFor="let msg of sessionService.curSessionMsg"></im-msg>
+    <empty class="flex-1" *ngIf="showEmpty && !sessionService.curSessionMsg.length"></empty>
+
+    <!-- 监听是否可滚动底部的元素 -->
+    <div class="im-msg-bottom" #scrollBottomRef></div>
+  </div>
+</div>
+
+<!-- 聊天框 -->
+<im-editor *ngIf="!hideInput" class="mx-4" (send)="sendMsg($event)" (change)="scrollBottom()"></im-editor>

@@ -1,0 +1,212 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12 mt-8">
+  <!-- UID -->
+  <form-row [label]="'UID'" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 设备指纹 -->
+  <form-row [label]="'risk.deviceFingerprint' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.device"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 时间 -->
+  <form-row [label]="'common.date' | lang" class="mr-8" [contentWidth]="264">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 列表 -->
+<div class="card card-body mt-12">
+  <!-- 查询结果 -->
+  <div class="fz-20">{{ 'risk.fundFlowAnalysis.searchResult' | lang }}</div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 设备指纹 -->
+          <th [style.width.%]="40">
+            <span class="cell">{{ 'risk.deviceFingerprint' | lang }}</span>
+          </th>
+          <!-- 时间 -->
+          <th>
+            <span class="cell">{{ 'common.date' | lang }}</span>
+          </th>
+          <!-- 唯一用户 -->
+          <th>
+            <span class="cell">{{ 'risk.ipMonitoring.uniqueUser' | lang }}</span>
+          </th>
+          <!-- 操作 -->
+          <th>
+            <span class="cell">{{ 'common.operate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of list; index as i">
+          <tr [class.expand]="isExpand">
+            <td>
+              <span class="cell">{{ item.fingerprint || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.userCount || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell" (click)="onExpand(item, i)">
+                <svg-icon
+                  class="svg-icon svg-icon-2x5 cursor-pointer"
+                  [src]="
+                    item.expand
+                      ? './assets/images/svg/sports/competition/matched-expand.svg'
+                      : './assets/images/svg/sports/competition/matched-shrink.svg'
+                  "
+                ></svg-icon>
+              </span>
+            </td>
+          </tr>
+
+          <!-- 详情展开 -->
+          <ng-container *ngIf="item.expand">
+            <tr>
+              <td colspan="13" class="p-0 border-0">
+                <div [style.min-height.px]="160" [appLoading]="detailLoading">
+                  <table class="table mb-0 detail-table">
+                    <thead>
+                      <tr>
+                        <!-- UID -->
+                        <th>
+                          <span class="cell">{{ 'UID' }}</span>
+                        </th>
+                        <!-- 账户创建日期 -->
+                        <th>
+                          <span class="cell">{{ 'risk.deviceFingerprintInfo.creationDate' | lang }}</span>
+                        </th>
+                        <!-- 用户的总存款金额(USDT) -->
+                        <th>
+                          <span class="cell">{{ 'risk.deviceFingerprintInfo.totalDeposit' | lang }}</span>
+                        </th>
+                        <!-- 用户的总提款金额(USDT) -->
+                        <th>
+                          <span class="cell">{{ 'risk.deviceFingerprintInfo.totalWithdrawal' | lang }}</span>
+                        </th>
+                        <!-- 账号状态 -->
+                        <th>
+                          <span class="cell">{{ 'risk.deviceFingerprintInfo.status' | lang }}</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let detail of detailList">
+                        <td>
+                          <span class="cell">{{ detail.uid || '-' }}</span>
+                        </td>
+                        <td>
+                          <span class="cell">{{ detail.createTime | timeFormat }}</span>
+                        </td>
+                        <td>
+                          <span class="cell">{{ detail.dispostAmountUsdt | currencyValue: true }}</span>
+                        </td>
+                        <td>
+                          <span class="cell">{{ detail.withdrawalAmountUsdt | currencyValue: true }}</span>
+                        </td>
+                        <td>
+                          <span class="cell">{{ detail.status }}</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- 空显示 -->
+                  <empty [style.height.px]="250" *ngIf="!detailList.length && !detailLoading"></empty>
+
+                  <!-- 页码 -->
+                  <div class="d-flex flex-between py-5 table-footer" *ngIf="detailList.length > 0">
+                    <div></div>
+                    <div>
+                      <app-paginator
+                        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+                        [paginator]="detailPaginator"
+                        (paginate)="getDetailList(item.fingerprint)"
+                      ></app-paginator>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

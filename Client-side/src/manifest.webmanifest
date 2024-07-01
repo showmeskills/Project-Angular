@@ -1,0 +1,15 @@
+{
+  "name": "#{merchantName}#",
+  "short_name": "#{merchantName}#",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "#{appleTouchIcon}#",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}

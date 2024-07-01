@@ -1,0 +1,91 @@
+<div class="card">
+  <div class="card-body p-12">
+    <div class="d-flex flex-ac justify-content-between">
+      <h2 class="mb-0 fz-20">{{ 'nav.mobilePhoneQuery' | lang }}</h2>
+
+      <button *ngIf="false" (click)="onExport()" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl d-inline-block"></svg-icon>
+        <span class="vam">{{ 'common.export' | lang }}</span>
+      </button>
+    </div>
+
+    <div class="mt-4">
+      <table class="table mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th class="w-10px">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" selectGroup />
+                <span></span>
+              </label>
+            </th>
+            <th><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'otp.phoneNum' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'system.phoneQuery.verifyTime' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">
+                <label class="checkbox checkbox-lg">
+                  <input type="checkbox" select [(ngModel)]="item.checked" [checked]="item.checked" />
+                  <span></span>
+                </label>
+              </span>
+            </td>
+            <!-- uid -->
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <!-- 手机号码 -->
+            <td>
+              <span class="cell">{{ item.mobile }}</span>
+            </td>
+            <!-- 交易时间 -->
+            <td>
+              <span class="cell">{{ item.modifiedTime | timeFormat }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-10 table-footer">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

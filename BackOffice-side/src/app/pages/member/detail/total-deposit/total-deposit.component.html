@@ -1,0 +1,130 @@
+<modal-title type="drawer" (close)="modal.dismiss()">{{
+  (isDeposit ? 'member.detail.balance.totalDeposit' : 'member.detail.balance.totalWithdraw') | lang
+}}</modal-title>
+
+<main class="py-6 px-8 custom-scroll-y">
+  <!-- <div class="d-flex flex-wrap plane-item-wrap">
+    <div class="plane-item" *ngFor="let item of totalList">
+      <div>
+        <img class="vam" src="" [currencyIcon]="item.currency" alt="" />
+        {{ item.currency }}
+      </div>
+      <cite>{{ item.amount }}</cite>
+    </div>
+
+    <div class="plane-item empty" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8]"></div>
+  </div> -->
+
+  <!-- 存款各币种总额 -->
+  <div class="w-100 d-flex flex-wrap total">
+    <div class="px-6 d-flex flex-column item" *ngFor="let item of totalList">
+      <div class="d-flex flex-ac fz-14 mb-3">
+        <img class="vam mr-2" src="" [currencyIcon]="item.currency" alt="" />
+        {{ item.currency }}
+      </div>
+      <div class="fz-16">{{ item.amount | currencyValue: item.currency }}</div>
+    </div>
+  </div>
+  <div class="container-empty" [style.height.px]="150" *ngIf="!totalList.length">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <!-- TODO 体验优化：这里可以加个吸顶效果 -->
+  <div class="pt-10">
+    <span
+      *ngFor="let item of isDeposit ? typeObj.deposit : typeObj.withdraw; index as i"
+      class="btn btn-default py-3 mr-4"
+      [class.btn-primary]="activeType === item.value"
+      (click)="onTypeChange(item.value)"
+    >
+      {{ (isDeposit ? 'member.detail.balance.depositFilter' : 'member.detail.balance.withdrawFilter') | lang: i }}
+    </span>
+  </div>
+
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{
+            (isDeposit ? 'member.detail.balance.depositAmount' : 'member.detail.balance.withdrawAmount') | lang
+          }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.detail.balance.order' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.detail.balance.arrivalTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">
+            <img class="vam mr-2" src="" [currencyIcon]="item.currency" alt="" />
+            <span class="vam">{{ item.amount | currencyValue: item.currency }}</span>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.orderNum }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createdTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell" [ngSwitch]="item.status">
+            <!-- TODO 这里后期封装成组件调用，这里临时 -->
+            <app-label *ngSwitchCase="'Success'" type="success">{{
+              (isDeposit ? 'member.detail.balance.depositSuccess' : 'member.detail.balance.withdrawSuccess') | lang
+            }}</app-label>
+            <app-label *ngSwitchCase="'Timeout'" type="warning">{{
+              (isDeposit ? 'member.detail.balance.depositOverTime' : 'member.detail.balance.withdrawOverTime') | lang
+            }}</app-label>
+            <app-label *ngSwitchCase="'Fail'" type="danger">{{
+              (isDeposit ? 'member.detail.balance.depositFail' : 'member.detail.balance.withdrawFail') | lang
+            }}</app-label>
+            <app-label *ngSwitchDefault type="default">{{ item.status }}</app-label>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</main>
+
+<div class="d-flex flex-between pt-10 table-footer py-6 px-8">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+    ></app-paginator>
+  </div>
+</div>

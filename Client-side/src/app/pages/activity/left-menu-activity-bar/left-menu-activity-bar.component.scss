@@ -1,0 +1,114 @@
+.activity-body {
+  padding: 10px 17px 0;
+
+  @media (max-width: 767px) {
+    padding: 10px 24px 0;
+  }
+
+  .daily-races {
+    background: linear-gradient(95.14deg, #1d3647 6.25%, #1ed800 130.25%);
+  }
+
+  .none-sticky {
+    background: linear-gradient(95.14deg, #1d3647 6.25%, #00d8cb 130.25%);
+  }
+
+  .daily-guess {
+    background: linear-gradient(95.14deg, #1d3647 6.25%, #d8004e 130.25%);
+  }
+
+  .lucky-wheel {
+    background: linear-gradient(95.14deg, #143751 6.25%, #7900d8 130.25%);
+  }
+
+  .tournament {
+    background: linear-gradient(95.14deg, #351d47 6.25%, #bb09a6 130.25%);
+  }
+
+  .activity-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+  }
+
+  .activity-item {
+    &.long {
+      grid-column: span 2;
+    }
+
+    &.short {
+      grid-column: span 1;
+    }
+    height: 60px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    .ac-label {
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 6px;
+
+      span {
+        color: #fff;
+        font-weight: 600;
+        font-size: 14px;
+        transition: color 0.1s ease-in-out;
+        line-height: 20px;
+      }
+
+      .span-second-line {
+        font-family: 'Microsoft YaHei';
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        opacity: 0.1;
+      }
+    }
+
+    .none-sticky-bg {
+      position: absolute;
+      top: 0;
+      right: -10px;
+      bottom: 0;
+      display: block;
+      height: auto;
+    }
+    .bonus__bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      display: block;
+      height: 100%;
+    }
+
+    .wheel-bg {
+      width: 90px;
+      position: absolute;
+      top: 0px;
+      right: -40px;
+      display: block;
+      animation: rolling 3s linear infinite;
+    }
+  }
+}
+
+@keyframes rolling {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.skeleton-loading {
+  margin-bottom: 10px;
+  &:host-context(.dark) & {
+    background-color: #243845;
+  }
+}

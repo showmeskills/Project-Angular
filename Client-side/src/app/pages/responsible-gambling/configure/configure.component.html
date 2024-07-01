@@ -1,0 +1,33 @@
+<div class="page-container">
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container title">
+      <div class="text">
+        <h3>有节制博彩</h3>
+        <p>
+          我们坚信博彩的唯一方法就是有节制地进行。对于一小部分人来说，博彩可以产生有害的影响。如果您对自身的博彩存有疑虑，请通过设置来处理您的博彩问题。
+        </p>
+      </div>
+    </div>
+    <ng-container [ngTemplateOutlet]="nav" *ngIf="isH5"></ng-container>
+  </div>
+  <div class="main-container page-area inner-page unity-padding-web unity-padding-h5-16">
+    <ng-container [ngTemplateOutlet]="nav" *ngIf="!isH5"></ng-container>
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<ng-template #nav>
+  <div class="container menu">
+    <ul>
+      <li
+        *ngFor="let item of menu"
+        class="menu-item mutual-opacity onact96-not"
+        [routerLink]="item.page"
+        routerLinkActive="active"
+        (click)="checkScroll()"
+      >
+        {{ item.name }}
+      </li>
+    </ul>
+  </div>
+</ng-template>

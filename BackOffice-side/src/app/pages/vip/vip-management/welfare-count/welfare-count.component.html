@@ -1,0 +1,58 @@
+<div class="card">
+  <header class="card-header d-flex flex-between flex-ac border-0 px-12">
+    <div class="d-flex flex-ac">
+      <span class="fz-18 color-222 fw-bolder">{{ 'member.management.Benefits' | lang }}</span>
+    </div>
+
+    <div class="d-flex flex-ac">
+      <div class="d-flex flex-ac mr-8">
+        <span class="fz-16 color-999">{{ 'member.management.timeInterval' | lang }}</span>
+
+        <div class="d-flex flex-ac ml-4">
+          <input
+            [style.width.px]="230"
+            class="form-control text-center"
+            type="text"
+            placeholder=""
+            selectMode="date-range"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [(ngModel)]="time"
+            (dateTimeChange)="loadData()"
+          />
+
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </div>
+      </div>
+
+      <span class="btn c-btn btn-light-primary px-9" (click)="openSetting()">{{
+        'payment.currency.update' | lang
+      }}</span>
+    </div>
+  </header>
+
+  <div class="item-content px-12 pb-7">
+    <div class="d-flex item-wrap">
+      <div class="item" *ngFor="let item of list">
+        <div class="title d-flex flex-between">
+          <div>{{ item.name }}</div>
+          <div class="fz-18">{{ item.number }}</div>
+        </div>
+        <div class="item-text">
+          USDT<span class="ml-2 fz-20">{{ item.amount | currencyValue: 'USDT' }}</span>
+        </div>
+      </div>
+
+      <div class="item empty" *ngFor="let item of [1, 2, 3, 4, 5]"></div>
+    </div>
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading" style="height: 120px">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+</div>

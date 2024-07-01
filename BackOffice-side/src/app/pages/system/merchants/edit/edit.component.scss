@@ -1,0 +1,117 @@
+@use 'sass/tools' as *;
+
+:host {
+  display: block;
+}
+
+.label-title {
+  white-space: pre-line;
+}
+
+.fee-title {
+  flex: 0 0 120px;
+  min-width: 120px;
+}
+
+.color-select {
+  ul {
+    margin-bottom: 0;
+  }
+
+  ul > li {
+    list-style: none;
+    display: flex;
+    margin-left: 30px;
+
+    span {
+      display: flex;
+      min-width: 56px;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      text-align: left;
+      color: #969bad;
+    }
+
+    > div {
+      min-width: 80px;
+      padding: 0 6px;
+      height: 40px;
+      margin: 0 0 0 9px;
+      border-radius: 4px;
+      font-size: 14px;
+      text-align: center;
+      line-height: 40px;
+      color: #009ef7;
+      cursor: pointer;
+    }
+  }
+}
+.defaultAvatar {
+  display: flex;
+  align-items: center;
+  height: 160px;
+  .lable-title {
+    color: #969bad;
+    font-size: 16px;
+    word-break: break-word;
+    white-space: normal;
+  }
+  .box {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    border-radius: 4px;
+    border: dashed 1px #e4e6ef;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 100%;
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 1em;
+      background-color: rgba(50, 50, 50, 0.3);
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: 1em;
+      background-color: rgba(50, 50, 50, 0.1);
+    }
+  }
+}
+.color-input {
+  width: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.upload-title {
+  line-height: 128px;
+  min-width: 105px;
+  font-size: 16px;
+  margin-right: 20px;
+  text-align: right;
+}
+
+.img-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(298px, calc(25% - 66px)));
+  gap: 0 66px;
+
+  upload {
+    min-width: 168px;
+  }
+}
+
+.config-add {
+  display: flex;
+  width: 360px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}

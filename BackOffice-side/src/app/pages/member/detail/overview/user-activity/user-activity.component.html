@@ -1,0 +1,1661 @@
+<div class="activities card h-100">
+  <div class="px-8 pt-8 pb-4">
+    <div class="d-flex flex-ac pb-7 justify-content-between">
+      <div class="mr-16">
+        <div class="title fw-bolder f20">{{ 'member.overview.userActivity.userActivityTitle' | lang }}</div>
+        <span class="gray fz-14">{{ total || 0 }} {{ 'member.overview.userActivity.operation' | lang }}</span>
+      </div>
+
+      <div class="d-flex flex-ac flex-wrap" [class.disabled]="isOnlySelectRemark && isDelRemarkFlag">
+        <!-- tab -->
+        <ng-container *ngFor="let item of queryList; let idx = index">
+          <button
+            [class]="item?.checked ? 'btn-primary' : 'btn-default'"
+            class="btn text-nowrap px-6 mx-2 my-2"
+            (click)="onQueryUserBehavior(item)"
+          >
+            {{ 'member.list.act' + item.categoryCode | lang }}
+          </button>
+        </ng-container>
+
+        <!-- 导出 -->
+        <button class="btn btn-light-primary text-nowrap px-6" (click)="export()">
+          {{ 'game.provider.export' | lang }}
+        </button>
+      </div>
+    </div>
+
+    <!-- 当tab类型只为备注时 -->
+    <div class="d-flex flex-ac flex-between pb-7" *ngIf="isOnlySelectRemark">
+      <mat-form-field>
+        <mat-select
+          class="form-control"
+          [(ngModel)]="remarkType"
+          (selectionChange)="getActivityAllList()"
+          [disabled]="isDelRemarkFlag"
+        >
+          <mat-option value="RC">{{ 'member.list.rcComment' | lang }}</mat-option>
+          <mat-option value="Normal">{{ 'member.list.normalComment' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div>
+        <ng-container *ngIf="!isDelRemarkFlag; else delSureTpl">
+          <!-- 删除 -->
+          <button
+            class="btn btn-light-primary px-6 d-flex flex-ac"
+            (click)="onDelRemark()"
+            [disabled]="!userBehaviors.length"
+          >
+            <svg-icon class="mr-2" [src]="'./assets/images/svg/del.svg'"></svg-icon>
+            <span>{{ 'common.delete' | lang }}</span>
+          </button>
+        </ng-container>
+
+        <ng-template #delSureTpl>
+          <button class="btn btn-default px-8 py-5 mr-4" (click)="isDelRemarkFlag = false">
+            <span>{{ 'game.manage.cancel' | lang }}</span>
+          </button>
+          <button class="btn btn-primary px-8 py-5" (click)="onDelRemarkConfirm()">
+            <span>{{ 'game.provider.confirm' | lang }}</span>
+          </button>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- 会员活动 -->
+    <div class="fz-14 custom-scroll-y" [style.height.px]="575" #myContent>
+      <ng-container *ngIf="userBehaviors.length > 0">
+        <ng-container *ngFor="let item of userBehaviors">
+          <ng-container
+            *ngTemplateOutlet="
+              memberActivityTemplate;
+              context: {
+                actionType: item['actionType'],
+                item: item,
+                content: item.content,
+                success: item.success
+              }
+            "
+          ></ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!userBehaviors?.length && !isLoading"></empty>
+    </div>
+
+    <!-- 翻页 -->
+    <div class="d-flex flex-between flex-ac w-100 mt-2" *ngIf="userBehaviors.length > 0">
+      <mat-form-field [style.width.px]="88">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="getActivityAllList()"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="getActivityAllList()"
+        [isLoading]="isLoading"
+      ></app-paginator>
+    </div>
+
+    <!-- 备注 -->
+    <div
+      class="d-flex flex-between flex-ac w-100"
+      [style.marginTop.px]="10"
+      [class.disabled]="isOnlySelectRemark && isDelRemarkFlag"
+    >
+      <input class="form-control" type="text" [(ngModel)]="remark" (keyup)="$event.keyCode === 13 && onSend()" />
+      <button class="c-btn c-btn-primary ml-20" (click)="onSend()">{{ 'member.overview.newKyc.send' | lang }}</button>
+    </div>
+  </div>
+
+  <!-- 会员活动模版 -->
+  <ng-template
+    #memberActivityTemplate
+    let-actionType="actionType"
+    let-item="item"
+    let-content="content"
+    let-success="success"
+  >
+    <ng-container>
+      <!-- 备注：删除勾选 -->
+      <label class="checkbox checkbox-lg" style="float: left" *ngIf="isOnlySelectRemark && isDelRemarkFlag">
+        <input type="checkbox" [(ngModel)]="item.checked" />
+        <span></span>
+      </label>
+
+      <dl [class]="!!getActionGreen[actionType] ? 'green' : getActionYellow[actionType] ? 'yellow' : 'red'">
+        <!-- 时间 -->
+        <dt>{{ item.createTime | timeFormat: 'YYYY-MM-DD HH:mm' }}</dt>
+
+        <!-- 用户登录 -->
+        <dd class="gray" *ngIf="actionType === getAction.Login">
+          <ng-container *ngIf="content.complete">
+            <ng-container *ngIf="+content.loginType === 1">
+              {{
+                'member.overview.userActivity.phoneLogin'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+            </ng-container>
+            <ng-container *ngIf="+content.loginType === 2">
+              {{
+                'member.overview.userActivity.userNameLogin'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+            </ng-container>
+            <ng-container *ngIf="+content.loginType === 3">
+              {{
+                'member.overview.userActivity.keepLoginRefresh'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+            </ng-container>
+            <ng-container *ngIf="+content.loginType === 4">
+              {{
+                'member.overview.userActivity.socialLogin'
+                  | lang
+                    : {
+                        userIp: item?.ip || '',
+                        zone: item?.zone || '',
+                        platform: item?.platform || '',
+                        social: item?.content.social || ''
+                      }
+              }}
+            </ng-container>
+            <!-- 通过邮箱登录成功 -->
+            <ng-container *ngIf="+content.loginType === 5">
+              {{
+                'member.overview.userActivity.emailLogin'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+            </ng-container>
+            <!-- 生物识别登录 -->
+            <ng-container *ngIf="+content.loginType === 6">
+              <!-- {{ '生物识别登录 ：203.111.111.3 iOS 中国 上海 iphone 13 max' }} -->
+              {{
+                'member.overview.userActivity.biometricLogin'
+                  | lang
+                    : {
+                        userIp: item?.ip || '',
+                        platform: item?.platform || '',
+                        zone: item?.zone || '',
+                        deviceName: content?.deviceName || ''
+                      }
+              }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!content.complete">
+            <ng-container *ngIf="+content.loginType === 1">
+              {{
+                'member.overview.userActivity.phoneLoginFailed'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+              {{ content?.errorMsg || '' }}
+            </ng-container>
+            <ng-container *ngIf="+content.loginType === 2">
+              {{
+                'member.overview.userActivity.userNameLoginFailed'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+              {{ content?.errorMsg || '' }}
+            </ng-container>
+            <ng-container *ngIf="+content.loginType === 3">
+              {{
+                'member.overview.userActivity.keepLoginRefreshFailed'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+              {{ content?.errorMsg || '' }}
+            </ng-container>
+            <ng-container *ngIf="+content.loginType === 4">
+              {{
+                'member.overview.userActivity.socialLoginFailed'
+                  | lang
+                    : {
+                        userIp: item?.ip || '',
+                        zone: item?.zone || '',
+                        platform: item?.platform || '',
+                        social: item?.content.social || ''
+                      }
+              }}
+              {{ content?.errorMsg || '' }}
+            </ng-container>
+            <!-- 通过邮箱登录失败 -->
+            <ng-container *ngIf="+content.loginType === 5">
+              {{
+                'member.overview.userActivity.phoneLoginFailed'
+                  | lang: { userIp: item?.ip || '', zone: item?.zone || '', platform: item?.platform || '' }
+              }}
+              {{ content?.errorMsg || '' }}
+            </ng-container>
+            <!-- 生物识别登录失败 -->
+            <ng-container *ngIf="+content.loginType === 6">
+              {{
+                'member.overview.userActivity.biometricLoginFail'
+                  | lang
+                    : {
+                        userIp: item?.ip || '',
+                        zone: item?.zone || '',
+                        platform: item?.platform || ''
+                      }
+              }}
+              {{ content?.errorMsg || '' }}
+            </ng-container>
+          </ng-container>
+        </dd>
+
+        <!-- 用户修改默认币种 -->
+        <dd class="gray" *ngIf="actionType === getAction.DefCurrency">
+          <ng-container *ngIf="content.complete">
+            {{
+              'member.overview.userActivity.modifiedCurrencySuc'
+                | lang
+                  : {
+                      beforeCurrencyCode: content?.beforeCurrencyCode || '',
+                      currentCurrencyCode: content?.currentCurrencyCode || ''
+                    }
+            }}
+            {{ 'common.success' | lang }}
+          </ng-container>
+          <ng-container *ngIf="!content.complete">
+            {{
+              'member.overview.userActivity.modifiedCurrencySuc'
+                | lang
+                  : {
+                      beforeCurrencyCode: content?.beforeCurrencyCode || '',
+                      currentCurrencyCode: content?.currentCurrencyCode || ''
+                    }
+            }}
+            {{ 'common.fail' | lang }}
+          </ng-container>
+        </dd>
+
+        <!-- 生物登录识别 -->
+        <dd class="gray" *ngIf="actionType === getAction.Biometric">
+          <ng-container *ngIf="content.actionType === 1">
+            {{ 'member.overview.addBiometrics' | lang }} {{ content?.deviceName }}</ng-container
+          >
+          <ng-container *ngIf="content.actionType === 2">
+            {{ 'member.overview.removeBiometrics' | lang }} {{ content?.deviceName }}
+          </ng-container>
+        </dd>
+
+        <!-- 用户登出 -->
+        <dd class="gray" *ngIf="actionType === getAction.Logout">
+          {{
+            'member.overview.userActivity.userSignOut'
+              | lang: { userIp: item.ip || '', platform: item.platform || '', zone: item.zone || '' }
+          }}
+        </dd>
+
+        <!-- 修改用户名 -->
+        <dd class="gray" *ngIf="actionType === getAction.ModifyName">
+          {{ 'member.overview.userActivity.modifyName' | lang: { userName: content?.userName || '' } }}
+        </dd>
+
+        <!-- 修改密码 -->
+        <dd class="gray" *ngIf="actionType === getAction.ModifyPassword">
+          {{ 'member.overview.userActivity.changePwd' | lang }}
+        </dd>
+
+        <!-- 重置密码 -->
+        <dd class="gray" *ngIf="actionType === getAction.ResetPassword">
+          {{ 'member.overview.userActivity.resetPwd' | lang }}
+        </dd>
+
+        <!-- 绑定/解绑谷歌身份验证器 -->
+        <dd class="gray" *ngIf="actionType === getAction.BindGoogleValidator">
+          {{ 'member.overview.userActivity.bindGoogleValidator' | lang }}:
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+        </dd>
+
+        <dd class="gray" *ngIf="actionType === getAction.UnBindGoogleValidator">
+          {{ 'member.overview.userActivity.unBindGoogleValidator' | lang }}:
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+        </dd>
+
+        <!-- 创建谷歌验证码 -->
+        <dd class="gray" *ngIf="actionType === getAction.CreateGoogleValid">
+          {{ 'member.overview.userActivity.createGoogleValid' | lang }}:
+          {{ content?.key }}
+        </dd>
+
+        <!-- 发送验证码 -->
+        <dd class="gray d-flex gap-2" *ngIf="actionType === getAction.VerCode">
+          <!-- 如果是手机发送验证码 -->
+          <ng-container *ngIf="content.mobile">
+            {{ 'member.overview.userActivity.verCode' | lang: { mobileNumber: content?.mobile || '' } }}
+            <i class="country countryIcon" [class]="'country-' + content?.countryName || ''"></i>
+            {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+          </ng-container>
+          <!-- 如果是邮箱发送验证码 -->
+          <ng-container *ngIf="content.email">
+            {{ 'member.overview.userActivity.bindEmailVercode' | lang: { mobileNumber: content?.email || '' } }}
+            <i class="country countryIcon" [class]="'country-' + content?.countryName || ''"></i>
+            {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+          </ng-container>
+        </dd>
+
+        <!-- 绑定手机号 -->
+        <dd class="gray d-flex gap-2" *ngIf="actionType === getAction.BindMobile">
+          {{
+            +content.bindType === 1
+              ? ('member.overview.userActivity.bindMobile' | lang: { updateMobile: content?.updateMobile || '' })
+              : ('member.overview.userActivity.phoneNumber' | lang: { updateMobile: content?.updateMobile || '' })
+          }}:
+          <i class="country countryIcon" [class]="'country-' + content?.countryName || ''"></i>
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+        </dd>
+
+        <!-- 解绑手机号 -->
+        <dd class="gray d-flex gap-2" *ngIf="actionType === getAction.UnBindMobile">
+          {{
+            +content.bindType === 2
+              ? ('member.overview.userActivity.unBindMobile' | lang: { updateMobile: content?.updateMobile || '' })
+              : ('member.overview.userActivity.phoneNumber' | lang: { updateMobile: content?.updateMobile || '' })
+          }}
+          <i class="country countryIcon" [class]="'country-' + content?.countryName || ''"></i>
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+        </dd>
+
+        <!-- 邮箱绑定 -->
+        <dd class="gray d-flex gap-2" *ngIf="actionType === getAction.BindEmail">
+          {{
+            +content.bindType === 1
+              ? ('member.overview.userActivity.bindEmail' | lang: { email: content?.email || '' })
+              : ('member.overview.userActivity.emailNum' | lang: { email: content?.email || '' })
+          }}:
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+        </dd>
+
+        <!-- 邮箱解绑 -->
+        <dd class="gray d-flex gap-2" *ngIf="actionType === getAction.UnBindEmail">
+          {{
+            +content.bindType === 2
+              ? ('member.overview.userActivity.unBindEmail' | lang: { email: content?.email || '' })
+              : ('member.overview.userActivity.emailNum' | lang: { email: content?.email || '' })
+          }}
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+        </dd>
+
+        <!-- 修改手机号 -->
+        <dd class="gray d-flex gap-2" *ngIf="actionType === getAction.ModifyMobile">
+          {{
+            +content.bindType === 3
+              ? ('member.overview.userActivity.modifyMobile'
+                | lang: { currentMobile: content?.currentMobile || '', updateMobile: content?.updateMobile || '' })
+              : ('member.overview.userActivity.unModifyMobile'
+                | lang: { currentMobile: content?.currentMobile || '', updateMobile: content?.updateMobile || '' })
+          }}
+          <i class="country countryIcon" [class]="'country-' + content?.countryName || ''"></i>
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+        </dd>
+
+        <!-- 启动/关闭提现白名单 -->
+        <dd class="gray" *ngIf="actionType === getAction.WithdrawWhiteList">
+          {{ +content.status === 1 ? ('common.open' | lang) : ('common.close' | lang) }}
+          {{ 'member.overview.userActivity.withdrawWhiteList' | lang }}
+        </dd>
+
+        <!-- 删除设备：设备名 -->
+        <dd class="gray" *ngIf="actionType === getAction.DeleteDevice">
+          {{ 'member.overview.userActivity.deleteDevice' | lang: { deviceName: content.deviceName || '' } }}
+        </dd>
+
+        <!-- 老KYC -->
+        <dd class="gray" *ngIf="actionType === getAction.Kyc">
+          <ng-container *ngIf="+content.kycType === 1">
+            <!-- 是否欧洲 -->
+            <ng-container *ngIf="content?.isEU">
+              {{ 'member.overview.newKyc.kycPrimary' | lang }}
+              {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+              {{ content?.errorMsg }}
+            </ng-container>
+            <!-- 亚洲 -->
+            <ng-container *ngIf="!content?.isEU">
+              {{
+                'member.overview.userActivity.kycA'
+                  | lang: { realName: content?.realName || '', mobile: content?.mobile || '' }
+              }}
+              <ng-container *ngIf="content?.countryName">
+                <i class="country countryIcon" [class]="'country-' + content?.countryName || ''"></i>
+              </ng-container>
+              {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+            </ng-container>
+            <!-- 结束 -->
+          </ng-container>
+          <ng-container *ngIf="+content.kycType === 2">
+            <!-- 是否欧洲 -->
+            <ng-container *ngIf="content?.isEU">
+              {{ 'member.overview.newKyc.intermediate' | lang }}
+              <ng-container
+                *ngIf="content.idVerificationStatus === 'S' && content.poaVerificationStatus === 'S'; else elseBlock"
+              >
+                {{ 'member.overview.newKyc.sucVerification' | lang }}
+              </ng-container>
+              <ng-template #elseBlock>
+                <!-- id获批 -->
+                <span *ngIf="content.idVerificationStatus === 'S'"
+                  >{{ 'member.overview.newKyc.idApproved' | lang }},</span
+                >
+                <!-- POA获批 -->
+                <span *ngIf="content.poaVerificationStatus === 'S'"
+                  >{{ 'member.overview.newKyc.poaApproved' | lang }},</span
+                >
+                <!-- 提交逻辑 -->
+                <ng-container *ngIf="content.idVerificationStatus === 'P' || content.poaVerificationStatus === 'P'">
+                  {{ content?.isResubmit ? ('member.overview.newKyc.reSubmit' | lang) : ('common.submit' | lang)
+                  }}{{
+                    content.idVerificationStatus === 'P' && content.poaVerificationStatus === 'P'
+                      ? ('member.overview.newKyc.idOradress' | lang)
+                      : ''
+                  }}{{
+                    content.idVerificationStatus === 'P' && content.poaVerificationStatus !== 'P'
+                      ? ('member.overview.newKyc.personalId' | lang)
+                      : ''
+                  }}{{
+                    content.poaVerificationStatus === 'P' && content.idVerificationStatus !== 'P'
+                      ? ('member.overview.newKyc.address' | lang)
+                      : ''
+                  }}
+                </ng-container>
+                <!-- 不是通过或者提交 content.idVerificationStatus可能为空或者null -->
+                <ng-container
+                  *ngIf="!['S', 'P'].includes(content.idVerificationStatus) && !!content.idVerificationStatus"
+                >
+                  {{ 'member.overview.newKyc.idDenied' | lang }}
+                  {{ 'member.overview.newKyc.reason' | lang }}
+                  <span class="text-primary cursor: pointer" (click)="content.flagId = !content.flagId">&gt;&gt;</span>
+                  <span *ngIf="content.flagId">{{ content?.idVerificationRejectReason }}</span>
+                </ng-container>
+                <ng-container
+                  *ngIf="!['S', 'P'].includes(content.poaVerificationStatus) && !!content.poaVerificationStatus"
+                >
+                  {{ 'member.overview.newKyc.poaRejected' | lang }}
+                  {{ 'member.overview.newKyc.reason' | lang }}
+                  <span class="text-primary cursor-pointer" (click)="content.flagPoa = !content.flagPoa">&gt;&gt;</span>
+                  <span *ngIf="content.flagPoa">{{ content?.poaVerificationRejectReason }}</span>
+                </ng-container>
+              </ng-template>
+            </ng-container>
+            <!-- 亚洲 -->
+            <ng-container *ngIf="!content?.isEU">
+              {{ 'member.overview.userActivity.kycB' | lang: { realName: content?.realName || '' } }}
+              <ng-container *ngIf="content?.countryName">
+                <i class="country countryIcon" [class]="'country-' + content?.countryName || ''"></i>
+              </ng-container>
+              {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }}
+              {{ !content.complete ? content?.errorMsg : '' }}
+            </ng-container>
+          </ng-container>
+          <!-- 高级kyc认证 -->
+          <ng-container *ngIf="+content.kycType === 3">
+            <ng-container *ngIf="content?.isEU">
+              <!-- 获批 -->
+              <ng-container *ngIf="content.verificationStatus === 'S'"
+                >{{ 'member.overview.newKyc.verificationSuc' | lang }}
+              </ng-container>
+              <!-- 失败 -->
+              <ng-container *ngIf="content.verificationStatus === 'R'">
+                {{ 'member.overview.newKyc.verificationFail' | lang }}
+                <!-- 拒绝原因-->
+                <ng-container *ngIf="content?.errorMsg">
+                  {{ 'member.overview.newKyc.reason' | lang }}
+                  <span class="text-primary cursor-pointer" (click)="content.flag = !content.flag">&gt;&gt;</span>
+                  <span *ngIf="content.flag">{{ content?.errorMsg }}</span>
+                </ng-container>
+              </ng-container>
+              <!-- 提交或重复提交 -->
+              <ng-container *ngIf="content.verificationStatus === 'P'">
+                {{
+                  content?.isResubmit
+                    ? ('member.overview.newKyc.ReAdvancedVerification' | lang)
+                    : ('member.overview.newKyc.advancedVerification' | lang)
+                }}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="!content?.isEU">
+              {{
+                content.complete
+                  ? ('member.overview.newKyc.verificationSuc' | lang)
+                  : ('member.overview.newKyc.verificationFail' | lang)
+              }}
+            </ng-container>
+          </ng-container>
+        </dd>
+
+        <!-- 红利卡券领取 -->
+        <dd class="gray" *ngIf="actionType === getAction.Bonus">
+          <ng-container *ngIf="content?.currency !== 'Unknown'">
+            {{ 'member.overview.userActivity.bonus' | lang: { bonusName: content?.bonusName || '' } }}
+            <span class="d-flex flex-ac" *ngFor="let bonus of content?.bonusInfo | keyvalue">
+              <img class="ml-2 mr-2" [currencyIcon]="bonus?.key || ''" />
+              <span class="blue text-vertical">{{ bonus?.value || 0 | currencyValue: $any(bonus?.key) }}</span>
+            </span>
+          </ng-container>
+          <ng-container *ngIf="content?.currency === 'Unknown'">
+            {{ 'member.overview.userActivity.bonusSVIP' | lang }}
+          </ng-container>
+        </dd>
+
+        <!-- 存款 -->
+        <dd class="gray" *ngIf="actionType === getAction.Deposit">
+          <!-- 申请存款 -->
+          <ng-template #depositNormalTpl
+            >:
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span
+            >, {{ content?.psp || '' }},
+            {{ content?.orderNum || '' }}
+          </ng-template>
+
+          <!-- 申请存款（虚拟币 → 法币） -->
+          <ng-template #depositVirtualTpl>
+            <span class="mr-2">(Virtual → Fiat) :</span>
+            <span class="text-primary mr-2"
+              >{{ content?.exchangeAmount || 0 | currencyValue: content?.exchangeCurrency }}
+              {{ content?.exchangeCurrency || '' }},</span
+            >
+            <span class="mr-2">{{ 'payment.transactionList.orderNumber' | lang }}: {{ content?.orderNum || '' }},</span>
+            <span class="text-primary">
+              {{ 'payment.transactionList.amount' | lang }}
+              {{ content?.amount || 0 | currencyValue: content?.currency }}
+              {{ content?.currency || '' }}
+            </span>
+          </ng-template>
+
+          <ng-container *ngIf="+content?.status === 4">
+            {{ 'member.overview.userActivity.depositApplication' | lang
+            }}<!-- 申请存款（虚拟币 → 法币） --><ng-container
+              *ngIf="
+                content?.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase();
+                then depositVirtualTpl;
+                else depositNormalTpl
+              "
+            ></ng-container>
+          </ng-container>
+
+          <!-- 人工编辑 -->
+          <ng-container *ngIf="+content?.status === -7">
+            <ng-container *ngIf="+content?.amount < +content?.orderAmount">
+              {{
+                'member.overview.userActivity.manualEdit.common'
+                  | lang
+                    : {
+                        operatorName: content?.operatorName || '',
+                        orderNum: content?.orderNum || '',
+                        psp: content?.psp || ''
+                      }
+              }}, {{ 'member.overview.userActivity.manualEdit.apply' | lang }}
+              <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+              <span class="blue text-vertical">
+                {{ content?.orderAmount || 0 | currencyValue: content?.currency || '' }} </span
+              >,
+              {{ 'member.overview.userActivity.manualEdit.receive' | lang }}
+              <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+              <span class="blue text-vertical"> {{ content?.amount || 0 | currencyValue: content?.currency }} </span>
+            </ng-container>
+            <ng-container *ngIf="+content?.amount > +content?.orderAmount">
+              {{
+                'member.overview.userActivity.manualEdit.common'
+                  | lang
+                    : {
+                        operatorName: content?.operatorName || '',
+                        orderNum: content?.orderNum || '',
+                        psp: content?.psp || ''
+                      }
+              }},
+              {{ 'member.overview.userActivity.manualEdit.apply' | lang }}
+              <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+              <span class="blue text-vertical">
+                {{ content?.orderAmount || 0 | currencyValue: content?.currency || '' }} </span
+              >,
+              {{ 'member.overview.userActivity.manualEdit.receive' | lang }}
+              <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+              <span class="blue text-vertical"> {{ content?.amount || 0 | currencyValue: content?.currency }}</span
+              >, {{ 'member.overview.userActivity.manualEdit.audit' | lang }} {{ content?.auditName || '' }}
+            </ng-container>
+          </ng-container>
+
+          <!-- 存款成功/失败 -->
+          <ng-container *ngIf="+content?.status !== 4 && +content?.status !== -7">
+            <ng-template #depositSucOrFailTpl>
+              <ng-container *ngIf="!content?.isDigital">
+                <ng-container *ngIf="content?.complete && +content?.status === 1">
+                  {{ 'member.overview.userActivity.depositSuccess' | lang }}
+                  <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+                  <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+                  , {{ content?.psp ? content?.psp + ',' : '' }}
+                  {{ content?.orderNum || '' }}
+                </ng-container>
+                <ng-container *ngIf="+content?.status !== 1">
+                  {{ 'member.overview.userActivity.depositFail' | lang }}: {{ content?.orderNum || '' }},
+                  <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+                  <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="content?.isDigital">
+                <ng-container *ngIf="content?.complete && +content?.status === 1">
+                  {{ 'member.overview.userActivity.depositSuccess' | lang }}:
+                  <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+                  <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span
+                  >,
+                  {{
+                    'member.overview.userActivity.cryptoDesposit'
+                      | lang
+                        : {
+                            fromAddress: content?.fromAddress || '',
+                            network: content?.network || ''
+                          }
+                  }}
+                </ng-container>
+                <ng-container *ngIf="+content?.status !== 1">
+                  {{ 'member.overview.userActivity.depositFail' | lang }}: {{ content?.orderNum || '' }},
+                  <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+                  <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span
+                  >,
+                  {{
+                    'member.overview.userActivity.cryptoDesposit'
+                      | lang
+                        : {
+                            fromAddress: content?.fromAddress || '',
+                            network: content?.network || ''
+                          }
+                  }}
+                  {{ +content?.status === 5 ? ('member.overview.userActivity.expired' | lang) : '' }}
+                </ng-container>
+              </ng-container>
+            </ng-template>
+
+            <!-- 存款成功/失败（虚拟币 → 法币） -->
+            <ng-template #depositVirtualSucOrFailTpl>
+              {{ 'member.list.deposit' | lang
+              }}{{ 'common' | lang: (content?.complete && +content?.status === 1 ? 'success' : 'fail') }}
+              <ng-container *ngTemplateOutlet="depositVirtualTpl"></ng-container>
+            </ng-template>
+
+            <ng-container
+              *ngIf="
+                content?.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase();
+                then depositVirtualSucOrFailTpl;
+                else depositSucOrFailTpl
+              "
+            ></ng-container>
+          </ng-container>
+        </dd>
+
+        <!-- 提款 -->
+        <dd class="gray" *ngIf="actionType === getAction.Withdraw">
+          <!-- 提款模板 -->
+          <ng-template #withdrawalNormalTpl
+            >:
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span
+            >,
+            {{
+              content?.isDigital
+                ? ('member.overview.userActivity.withdraw.cyptoAddress' | lang)
+                : ('member.overview.userActivity.withdraw.cardNumber' | lang)
+            }}
+            {{ content?.receiveAddress || '' }}, {{ content?.orderNum || '' }}
+          </ng-template>
+
+          <!-- 提款模板（法币 → 虚拟币） -->
+          <ng-template #withdrawalVirtualTpl>
+            <span class="mr-2"> (Fiat → Virtual) : </span>
+            <span class="text-primary mr-2">
+              {{ content?.amount || 0 | currencyValue: content?.currency }}
+              {{ content?.currency || '' }}
+            </span>
+            <span>
+              {{ 'member.overview.userActivity.withdraw.cyptoAddress' | lang }}
+              {{ content?.receiveAddress || '-' }},
+            </span>
+            <span class="mr-2">{{ 'payment.transactionList.orderNumber' | lang }}: {{ content?.orderNum || '' }},</span>
+            <span class="text-primary mr-2">
+              {{ 'payment.transactionList.amount' | lang }}
+              {{ content?.exchangeAmount || 0 | currencyValue: content?.exchangeCurrency }}
+              {{ content?.exchangeCurrency || '' }}
+            </span>
+          </ng-template>
+
+          <!-- 提款申请 -->
+          <ng-container *ngIf="[7, 8, 9].includes(+content?.status)">
+            {{ 'member.overview.userActivity.withdraw.applyFor' | lang
+            }}<ng-container
+              *ngIf="
+                content?.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase();
+                then withdrawalVirtualTpl;
+                else withdrawalNormalTpl
+              "
+            ></ng-container>
+          </ng-container>
+
+          <!-- 提款成功 -->
+          <ng-container *ngIf="content?.complete && +content?.status === 1">
+            {{ 'member.overview.userActivity.withdraw.withdrawSuccess' | lang
+            }}<ng-container
+              *ngIf="
+                content?.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase();
+                then withdrawalVirtualTpl;
+                else withdrawalNormalTpl
+              "
+            ></ng-container>
+          </ng-container>
+
+          <!-- 提款审核拒绝 -->
+          <ng-container *ngIf="[2, 5, 10].includes(+content?.status)">
+            {{ 'member.overview.userActivity.withdraw.manualReject' | lang
+            }}<ng-container
+              *ngIf="
+                content?.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase();
+                then withdrawalVirtualTpl;
+                else withdrawalNormalTpl
+              "
+            ></ng-container>
+          </ng-container>
+
+          <!-- 人工取消提款 -->
+          <ng-container *ngIf="content?.status === 6">
+            {{ 'member.overview.userActivity.withdraw.goMoenyOperation' | lang: { orderNum: content?.orderNum || '' } }}
+            <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+          </ng-container>
+
+          <!-- 提款部分冲正 -->
+          <ng-container *ngIf="content?.status === -6">
+            {{
+              'member.overview.userActivity.reversalOrder.partialReversal'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '',
+                      orderNum: content?.orderNum || '',
+                      psp: content?.psp || ''
+                    }
+            }}
+            {{ 'member.overview.userActivity.manualEdit.apply' | lang }}
+            <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">
+              {{ content?.orderAmount || 0 | currencyValue: content?.currency || '' }} </span
+            >，
+            {{ 'member.overview.userActivity.manualEdit.receive' | lang }}
+            <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical"> {{ content?.amount || 0 | currencyValue: content?.currency || '' }} </span
+            >, {{ 'member.overview.userActivity.manualEdit.audit' | lang }} {{ content?.auditName || '' }}
+          </ng-container>
+
+          <!-- 冲正撤单 提款全部冲正 -->
+          <ng-container *ngIf="content?.status === 11">
+            {{
+              'member.overview.userActivity.reversalOrder.entireReversal'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '',
+                      orderNum: content?.orderNum || '',
+                      psp: content?.psp || ''
+                    }
+            }}
+            <img class="ml-2 mr-2 mb-1" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">
+              {{ content?.amount || 0 | currencyValue: content?.currency || '' }}
+            </span>
+            ， {{ 'member.overview.userActivity.manualEdit.audit' | lang }}{{ content?.auditName || '' }}
+          </ng-container>
+        </dd>
+
+        <!-- 清零 -->
+        <dd class="gray" *ngIf="actionType === getAction.Clear">
+          <ng-container *ngIf="+content.actionType === 4">
+            {{ 'member.overview.userActivity.clear' | lang }}:
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            {{ content?.amount || 0 | currencyValue: content?.currency }}
+          </ng-container>
+          <ng-container *ngIf="+content.actionType === 5">
+            {{ 'member.overview.userActivity.zeroAudit' | lang }}:
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            {{ content?.amount || 0 | currencyValue: content?.currency }}
+            {{ 'member.overview.userActivity.clearNumber' | lang: { approveName: content?.approveName || '' } }}
+            {{ content?.isAgree ? ('common.approve' | lang) : ('common.reject' | lang) }}
+          </ng-container>
+        </dd>
+
+        <!-- 清零 -->
+        <dd class="gray" *ngIf="clearObj[actionType]">
+          <!--        clearObj-->
+          {{ clearObj[actionType].lang | lang }}:
+          {{ content?.bonusName || '' }}
+          <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+          <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+        </dd>
+
+        <!-- 划转 -->
+        <dd class="gray" *ngIf="actionType === getAction.Transfer">
+          <ng-container *ngIf="content?.complete">
+            <ng-container *ngIf="content?.transferStatus === 'Transfer'">
+              {{
+                'member.overview.userActivity.transferSuccess'
+                  | lang
+                    : {
+                        fromWalletCategory: content.fromWalletCategory || '',
+                        toWalletCategory: content.toWalletCategory || ''
+                      }
+              }}
+              <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+              <span class="blue"> {{ content?.amount || 0 | currencyValue: content?.currency }} </span>
+            </ng-container>
+            <!-- 划转新状态 取消划转 -->
+            <ng-container *ngIf="content?.transferStatus === 'CancelTransfer'">
+              {{
+                'member.overview.userActivity.cancelTransfer'
+                  | lang: { fromWalletCategory: content?.fromWalletCategory || '' }
+              }}
+              <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+              <span class="blue"> {{ content?.amount || 0 | currencyValue: content?.currency }} </span>,
+              {{ 'member.overview.userActivity.operator' | lang }}:
+              {{ content?.operateUser || '' }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!content?.complete">
+            {{
+              'member.overview.userActivity.transferFail'
+                | lang
+                  : {
+                      fromWalletCategory: content.fromWalletCategory || '',
+                      toWalletCategory: content.toWalletCategory || ''
+                    }
+            }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue"> {{ content?.amount || 0 | currencyValue: content?.currency }} </span>
+          </ng-container>
+        </dd>
+
+        <!-- 银行卡管理 -->
+        <dd class="gray" *ngIf="actionType === getAction.BankCard">
+          <ng-container *ngIf="+content.actionType === 1 || content.actionType === 'Add'">
+            {{ 'member.overview.userActivity.addBankCard' | lang }}:
+            <ng-container *ngFor="let card of content?.bankInfo | keyvalue">
+              {{ card?.value || '' }} {{ card.key || '' }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="+content.actionType === 2 || content.actionType === 'Delete'">
+            {{ 'member.overview.userActivity.removeBankCard' | lang }}:
+            <ng-container *ngFor="let card of content?.bankInfo | keyvalue">
+              {{ card?.value || '' }} {{ card.key || '' }}
+            </ng-container>
+          </ng-container>
+        </dd>
+
+        <!-- 数字货币地址管理 -->
+        <dd class="gray" *ngIf="actionType === getAction.TokenAddress">
+          <ng-container *ngIf="+content?.actionType === 1">
+            <ng-container *ngIf="content?.token">
+              {{
+                'member.overview.userActivity.addTokenAddress'
+                  | lang
+                    : {
+                        token: content?.token || '',
+                        address: content?.address || '',
+                        network: content?.network || '',
+                        remark: content?.remark || ''
+                      }
+              }}
+            </ng-container>
+            <ng-container *ngIf="!content?.token">
+              {{
+                'member.overview.userActivity.commonTokenAddress'
+                  | lang
+                    : {
+                        address: content?.address || '',
+                        network: content?.network || '',
+                        remark: content?.remark || ''
+                      }
+              }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="+content?.actionType === 2">
+            {{
+              'member.overview.userActivity.removeTokenAddress'
+                | lang
+                  : { address: content?.address || '', network: content?.network || '', remark: content?.remark || '' }
+            }}
+          </ng-container>
+        </dd>
+
+        <!-- 调账 -->
+        <dd class="gray" *ngIf="actionType === getAction.Adjust">
+          {{
+            'member.overview.userActivity.adjustSuccess'
+              | lang: { operatorName: content?.operatorName || '', walletType: content?.walletType || '' | walletType }
+          }}
+          <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+          <span class="blue">
+            {{
+              !(content.amount * 1)
+                ? 0
+                : content.amount * 1 > 0
+                  ? '+' + (content.amount | currencyValue: content?.currency)
+                  : (content.amount | currencyValue: content?.currency)
+            }} </span
+          >, {{ 'member.overview.userActivity.adjustWithdrawLimit' | lang }}:
+          <span class="blue">
+            {{
+              !(content.withdrawLimit * 1)
+                ? 0
+                : content.withdrawLimit * 1 > 0
+                  ? '+' + (content.withdrawLimit | currencyValue: content?.currency)
+                  : (content.withdrawLimit | currencyValue: content?.currency)
+            }}
+          </span>
+          <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />,
+          {{ content.complete ? ('common.success' | lang) : ('common.fail' | lang) }},
+          {{
+            'member.overview.userActivity.adjustOrderNumber'
+              | lang
+                : {
+                    orderNum: content?.orderNum || '',
+                    remark: content?.remark || '',
+                    type: getAdjustType(content?.adjustType) | lang: { $defaultValue: '-' }
+                  }
+          }}
+        </dd>
+
+        <!-- 交易/下注 -->
+        <dd class="gray" *ngIf="actionType === getAction.Wager">
+          <ng-container *ngIf="+content?.wagerStatus === 0">
+            {{
+              'member.overview.userActivity.wager'
+                | lang
+                  : {
+                      gameName: content?.gameName || '',
+                      providerName: content?.providerName || '',
+                      gameCode: content?.gameCode || '',
+                      odds: content?.odds || 0
+                    }
+            }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            {{ content.betAmount | currencyValue: content?.currency }},
+            {{ 'member.overview.userActivity.unsettlement' | lang }}
+          </ng-container>
+          <ng-container *ngIf="+content?.wagerStatus !== 0">
+            {{
+              'member.overview.userActivity.wager'
+                | lang
+                  : {
+                      gameName: content?.gameName || '',
+                      providerName: content?.providerName || '',
+                      gameCode: content?.gameCode || '',
+                      odds: content?.odds || 0
+                    }
+            }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            {{ content.betAmount | currencyValue: content?.currency }},
+            {{ 'member.overview.userActivity.lossWin' | lang }}:
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span *win="content?.payoutAmount; let value; prev as prev">
+              <span [winColor]="value" [winColorReverse]="true"
+                >{{ prev }}{{ value | currencyValue: content?.currency }}</span
+              > </span
+            >, {{ 'member.overview.userActivity.wagerActiveFlow' | lang }}:
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            {{ content?.gameActiveFlow || 0 | currencyValue: content?.currency }}
+          </ng-container>
+        </dd>
+
+        <!-- VIP -->
+        <dd class="gray" *ngIf="actionType === getAction.Vip">
+          <ng-container *ngIf="(+content?.beforeLevel || 0) !== (+content?.afterLevel || 0)">
+            <ng-container *ngIf="+content.beforeLevel < +content?.afterLevel">
+              {{
+                'member.overview.userActivity.vipUpLevel'
+                  | lang: { points: content?.points || 0 | toFormatMoney, afterLevel: content?.afterLevel || 0 }
+              }}
+            </ng-container>
+            <ng-container *ngIf="+content.beforeLevel > +content?.afterLevel">
+              {{
+                'member.overview.userActivity.vipDownLevel'
+                  | lang: { points: content?.points || 0 | toFormatMoney, afterLevel: content?.afterLevel || 0 }
+              }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="(+content?.beforeLevel || 0) === (+content?.afterLevel || 0)">
+            {{ 'member.overview.userActivity.vipNoChange' | lang }}
+          </ng-container>
+          <ng-container *ngIf="content?.operatorName">
+            {{ 'member.overview.userActivity.operator' | lang }}:{{ content?.operatorName }}
+          </ng-container>
+        </dd>
+
+        <!-- 成为代理 -->
+        <dd class="gray" *ngIf="actionType === getAction.Agent">
+          <ng-container *ngIf="content?.complete">
+            {{ 'member.overview.userActivity.agentAgree' | lang: { operatorName: content?.operatorName || '' } }}
+          </ng-container>
+          <ng-container *ngIf="!content?.complete">
+            {{
+              'member.overview.userActivity.agentDisagree'
+                | lang: { rejectInfo: content?.rejectInfo || '', operatorName: content?.operatorName || '' }
+            }}
+          </ng-container>
+        </dd>
+
+        <!-- 会员邀请 -->
+        <dd class="gray" *ngIf="actionType === getAction.InviteMembers">
+          <ng-container *ngIf="content?.isAgreed">
+            {{ 'member.overview.userActivity.inviteMembersSuccess' | lang: { inviteUid: content?.inviteUid || '' } }}
+          </ng-container>
+          <ng-container *ngIf="!content?.isAgreed">
+            {{ 'member.overview.userActivity.inviteMembersFail' | lang: { inviteUid: content?.inviteUid || '' } }}
+          </ng-container>
+        </dd>
+
+        <!-- 下级解绑 -->
+        <dd class="gray" *ngIf="actionType === getAction.LowerLevelUnbind">
+          <ng-container *ngIf="content?.complete">
+            {{ 'member.overview.userActivity.lowerLevelUnbindSuccess' | lang: { unbindUid: content?.unbindUid || '' } }}
+          </ng-container>
+          <ng-container *ngIf="!content?.complete">
+            {{ 'member.overview.userActivity.lowerLevelUnbindFail' | lang: { unbindUid: content?.unbindUid || '' } }}
+          </ng-container>
+        </dd>
+
+        <!-- 佣金获得&返佣获得 -->
+        <dd class="gray" *ngIf="actionType === getAction.Commission">
+          <ng-container *ngIf="+content.category === 1 && +content.returnType === 1">
+            {{ 'member.overview.userActivity.commission.comm' | lang }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+          </ng-container>
+          <ng-container *ngIf="+content.returnType === 2">
+            {{ 'member.overview.userActivity.commission.reComm' | lang }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+          </ng-container>
+          <ng-container *ngIf="+content.category === 1 && +content.returnType === 3">
+            {{ 'member.overview.userActivity.commission.dailyComm' | lang }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+          </ng-container>
+          <ng-container *ngIf="+content.category === 2 && +content.returnType === 3">
+            {{ 'member.overview.userActivity.commission.monthlyComm' | lang }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+          </ng-container>
+          <ng-container *ngIf="+content.category === 3 && +content.returnType === 3">
+            {{ 'member.overview.userActivity.commission.prepayComm' | lang }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+          </ng-container>
+          <ng-container *ngIf="+content.category === 4 && +content.returnType === 1">
+            {{ 'member.overview.userActivity.commission.topReComm' | lang }}
+            <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+            <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+          </ng-container>
+        </dd>
+
+        <!-- 注册 -->
+        <dd class="gray" *ngIf="actionType === getAction.Register">
+          <ng-container *ngIf="+content.registerType === 1">
+            {{
+              'member.overview.userActivity.registerByPhone'
+                | lang: { ip: item?.ip || '', platform: item?.platform || '', zone: item?.zone || '' }
+            }}
+          </ng-container>
+          <ng-container *ngIf="+content.registerType === 3">
+            {{
+              'member.overview.userActivity.registerBySocial'
+                | lang
+                  : {
+                      social: content?.social,
+                      ip: item?.ip || '',
+                      platform: item?.platform || '',
+                      zone: item?.zone || ''
+                    }
+            }}
+          </ng-container>
+          <!-- 当用户通过邮箱注册 -->
+          <ng-container *ngIf="+content.registerType === 4">
+            {{
+              'member.overview.userActivity.emailReg'
+                | lang: { ip: item?.ip || '', platform: item?.platform || '', zone: item?.zone || '' }
+            }}
+          </ng-container>
+          <ng-container *ngIf="![1, 3, 4].includes(+content.registerType)">
+            {{
+              'member.overview.userActivity.registerByUsername'
+                | lang: { ip: item?.ip || '', platform: item?.platform || '', zone: item?.zone || '' }
+            }}
+          </ng-container>
+        </dd>
+
+        <!-- 禁用： 登录 -->
+        <dd class="gray" *ngIf="actionType === getAction.DisableLogin">
+          <ng-container *ngIf="+content?.status === 1">
+            {{
+              'member.overview.userActivity.disableLoginOn'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      auto: content?.isAuto ? ('member.overview.auto' | lang) : '',
+                      approveName: content?.approveName || '-',
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+          <ng-container *ngIf="+content?.status !== 1">
+            {{
+              'member.overview.userActivity.disableLoginOff'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      time: content?.isForever
+                        ? ('member.overview.lifelong' | lang)
+                        : (content.startTime | timeFormat) + '-' + (content.endTime | timeFormat),
+                      approveName: content?.approveName || '-',
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+        </dd>
+
+        <!-- 备注 -->
+        <dd
+          class="gray cursor-pointer text-break"
+          *ngIf="actionType === getAction.Communicate"
+          (click)="openActivityRemarkPopup(content)"
+        >
+          {{
+            'member.overview.userActivity.communicate'
+              | lang
+                : {
+                    operatorName: content?.operatorName || '',
+                    remark: content?.remark || ''
+                  }
+          }}
+        </dd>
+
+        <!-- 禁用：游戏厂商 -->
+        <dd class="gray" *ngIf="actionType === getAction.DisableGame">
+          <ng-container *ngIf="+content?.status === 1">
+            {{
+              'member.overview.userActivity.disableGameOn'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      auto: content?.isAuto ? ('member.overview.auto' | lang) : '',
+                      game: content?.providerName || '-',
+                      approveName: content?.approveName || '-',
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+          <ng-container *ngIf="+content?.status !== 1">
+            {{
+              'member.overview.userActivity.disableGameOff'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      game: content?.providerName || '-',
+                      time: content?.isForever
+                        ? ('member.overview.lifelong' | lang)
+                        : (content.startTime | timeFormat) + '-' + (content.endTime | timeFormat),
+                      approveName: content?.approveName || '-',
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+        </dd>
+
+        <!-- 禁用：支付方式 -->
+        <dd class="gray" *ngIf="actionType === getAction.DisablePayment">
+          <ng-container *ngIf="+content?.status === 1">
+            {{
+              'member.overview.userActivity.disablePayOn'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      auto: content?.isAuto ? ('member.overview.auto' | lang) : '',
+                      payName: payLang(content.name),
+                      payType: (payTypeLang(content.type) | lang),
+                      approveName: content?.approveName || '-',
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+          <ng-container *ngIf="+content?.status !== 1">
+            {{
+              'member.overview.userActivity.disablePayOff'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      payName: payLang(content.name),
+                      payType: (payTypeLang(content.type) | lang),
+                      time: content?.isForever
+                        ? ('member.overview.lifelong' | lang)
+                        : (content.startTime | timeFormat) + '-' + (content.endTime | timeFormat),
+                      approveName: content?.approveName || '-',
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+        </dd>
+
+        <!-- 禁用：更改风控级别 -->
+        <dd class="gray" *ngIf="actionType === getAction.RiskControl">
+          {{
+            'member.overview.userActivity.disableRiskLevel'
+              | lang
+                : {
+                    operatorName: content?.operatorName || '-',
+                    originalRiskControl: content?.originalRiskControl || '-',
+                    riskControl: content?.riskControl || '-',
+                    approveName: content?.approveName || '-',
+                    remark: content?.remark || '-'
+                  }
+          }}
+        </dd>
+
+        <!-- 代客充值 -->
+        <dd class="gray" *ngIf="actionType === getAction.ForUserDeposit">
+          {{ 'member.overview.userActivity.userDeposit' | lang }}:
+          <ng-container *ngIf="+content?.status === 0">
+            {{ 'member.overview.userActivity.userDepositApply' | lang }}
+          </ng-container>
+          <ng-container *ngIf="+content?.status === 1">
+            {{ 'member.overview.userActivity.userDepositReceipt' | lang }}
+          </ng-container>
+          <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+          <span class="blue text-vertical">{{ content?.amount || 0 | currencyValue: content?.currency }}</span>
+        </dd>
+
+        <!-- 活动奖励 活动行为 -->
+        <ng-container *ngIf="actionType === getAction.ActivityBonus">
+          <ng-container
+            *ngIf="toJson(content?.activityInfo || '[]').length > 0 && toJson(content?.prizeInfo || '[]').length"
+          >
+            <dd class="gray">
+              <!-- 活动奖励： -->
+              {{ 'member.overview.userActivity.activityAward' | lang }}：
+
+              <!-- 活动名称 -->
+              {{ 'member.activity.sencli12.campaignName' | lang }}：
+              <ng-container *ngFor="let item of toJson(content.activityInfo)">
+                <ng-container *ngIf="item.LanguageCode === langeCode">
+                  {{ item?.ActivityName || content.bonusName || '-' }}
+                </ng-container> </ng-container
+              >，
+
+              <!-- 签到活动显示签到类型 -->
+              <ng-container *ngIf="content.typeCode === 'VipSignIn'">
+                {{ 'common.type' | lang }}：{{ content.bonusTag || '-' }}，
+              </ng-container>
+
+              <!-- 奖品名称 -->
+              {{ 'luckRoulette.prizeName' | lang }}：
+              <ng-container *ngFor="let item of toJson(content.prizeInfo)">
+                <ng-container *ngIf="item.LanguageCode === langeCode">
+                  {{ item?.PrizeName || '-' }}
+                </ng-container>
+              </ng-container>
+            </dd>
+          </ng-container>
+        </ng-container>
+
+        <!-- LED兑换  -->
+        <dd class="gray d-flex flex-ac" *ngIf="actionType === getAction.LedExchange">
+          <!-- 兑换成功：金额 -->
+          {{ 'member.overview.userActivity.exchangeSuccess' | lang }}：
+          {{ 'common.amount' | lang }}
+          <div class="mx-2 d-flex flex-ac">
+            <img class="mr-2" [currencyIcon]="content?.fromCurrency" />
+            <span class="blue">{{ content.fromAmount | currencyValue: content?.fromCurrency }}</span>
+          </div>
+          <!-- 兑换为 -->
+          {{ 'member.overview.userActivity.exchangeTo' | lang }}：
+          <div class="ml-2 d-flex flex-ac">
+            <img class="mr-2" [currencyIcon]="content?.toCurrency" />
+            <span class="blue">{{ content.toAmount | currencyValue: content?.toCurrency }}</span>
+          </div>
+        </dd>
+
+        <!-- LED领取 -->
+        <dd class="gray d-flex flex-ac" *ngIf="actionType === getAction.LedReceive">
+          <!-- 领取成功：金额 -->
+          {{ 'member.overview.userActivity.receiveSuccess' | lang }}：
+          {{ 'common.amount' | lang }}
+          <div class="mx-2 d-flex flex-ac">
+            <img class="mr-2" [currencyIcon]="content?.currency" />
+            <span class="blue">{{ content?.amount | currencyValue: content?.currency }}</span>
+          </div>
+        </dd>
+
+        <!-- kyc文档审核管理员 -->
+        <dd class="gray" *ngIf="actionType === getAction.KycDocAudit">
+          {{ verification(+content?.kycType) | lang }}
+          {{ 'member.overview.newKyc.supportingDoc' | lang }}-{{ verification(content?.kycDocType) | lang }}，
+          {{ content?.extendInfo }}
+          {{ content?.isPasse ? ('member.overview.newKyc.approved' | lang) : ('common.fail' | lang) }}
+          <!-- 拒绝原因-->
+          <ng-container *ngIf="!content?.isPasse">
+            {{ 'member.overview.newKyc.reason' | lang }}
+            <span class="text-primary cursor-pointer" (click)="content.flag = !content.flag">&gt;&gt;</span>
+            <span *ngIf="content.flag">{{ content?.errorMsg }}</span>
+          </ng-container>
+        </dd>
+
+        <!-- 用户kyc文档提交 -->
+        <dd class="gray" *ngIf="actionType === getAction.KycDocSubmit">
+          {{ verification(+content?.kycType) | lang }}
+          {{ content?.isMore ? ('member.overview.newKyc.reSubmit' | lang) : ('common.submit' | lang)
+          }}{{ 'member.overview.newKyc.supportingDoc' | lang }}
+          {{ ' ' + (verification(content?.kycDocType) | lang) }}
+          {{ content?.extendInfo ? '-' + content.extendInfo : '' }}
+        </dd>
+
+        <!-- kyc用户信息 -->
+        <dd class="gray" *ngIf="actionType === getAction.KycUserInfo">
+          <!-- 通用 -->
+          {{ 'member.overview.newKyc.userInfo' | lang }}：{{ 'member.overview.newKyc.admin' | lang }}
+          {{ content?.operatorName }}
+          <ng-container
+            *ngIf="
+              content.userInfoStatus === getUserInfoStatusEnum.None ||
+              content.userInfoStatus === getUserInfoStatusEnum.Unknown
+            "
+          >
+            {{
+              content?.complete
+                ? ('member.overview.newKyc.changeSuc' | lang)
+                : ('member.overview.newKyc.changeFail' | lang)
+            }}
+          </ng-container>
+          <!-- 修改 -->
+          <ng-container *ngIf="content.userInfoStatus === getUserInfoStatusEnum.Edit">
+            {{ 'member.overview.newKyc.modify' | lang }}
+          </ng-container>
+          <!--  审核拒绝  -->
+          <ng-container *ngIf="content.userInfoStatus === getUserInfoStatusEnum.Reject">
+            {{ 'member.overview.newKyc.reviewRejected' | lang }}</ng-container
+          >
+          <!--  审核成功 -->
+          <ng-container *ngIf="content.userInfoStatus === getUserInfoStatusEnum.Approve">
+            {{ 'member.overview.newKyc.reviewApproved' | lang }}
+          </ng-container>
+          <!-- 内容通用 -->
+          <ng-container *ngFor="let item of content?.userInfo; let last = last">
+            {{ item?.note }}: {{ item?.before || 'NA' }}-->{{ item?.after }}
+            <ng-container *ngIf="!last">,</ng-container>
+            <!-- <ng-container *ngIf="last">。</ng-container> -->
+          </ng-container>
+        </dd>
+
+        <!-- kyc文档请求 -->
+        <dd class="gray" *ngIf="actionType === getAction.KycDoc">
+          {{ 'member.overview.newKyc.document' | lang }}：{{ 'member.overview.newKyc.admin' | lang }}
+          {{ content?.operatorName }}{{ kycDocLang(content).length ? ',' : '' }}
+          <ng-container *ngFor="let item of kycDocLang(content); let last = last">
+            {{ 'member.overview.newKyc.requestSub' | lang }}{{ ' ' + item }}
+            <ng-container *ngIf="!last">,</ng-container>
+            <ng-container *ngIf="last">。</ng-container>
+          </ng-container>
+        </dd>
+
+        <!-- 备注 -->
+        <dd class="gray" *ngIf="actionType === getAction.Remark">
+          {{ 'member.overview.newKyc.admin' | lang }}
+          {{ content?.operatorName }}：{{ content?.remark }}
+        </dd>
+
+        <!-- kyc验证 -->
+        <dd class="gray" *ngIf="actionType === getAction.KycVerify">
+          <!-- 中级验证 -->
+          <ng-container *ngIf="content?.kycType === 2">
+            {{ 'member.overview.newKyc.admin' | lang }}
+            {{ content?.operatorName }}，{{ 'member.overview.newKyc.nowFeature' | lang }}
+          </ng-container>
+          <!-- 高级验证 -->
+          <ng-container *ngIf="content?.kycType === 3">
+            {{ 'member.overview.newKyc.admin' | lang }}
+            {{ content?.operatorName }}，{{ 'member.overview.newKyc.verificationInvitation' | lang }}
+          </ng-container>
+        </dd>
+
+        <!-- kycEDD -->
+        <dd class="gray" *ngIf="actionType === getAction.KycEDD">
+          EDD:
+          <ng-container *ngIf="content?.eDDStatus === getEDDStatusEnum.Initiated">
+            {{ content?.operatorName }}，{{ 'member.overview.newKyc.eddInvitation' | lang }}
+          </ng-container>
+          <ng-container *ngIf="content?.eDDStatus === getEDDStatusEnum.Submitted">
+            {{ 'member.overview.newKyc.submitEdd' | lang }}</ng-container
+          >
+          <ng-container *ngIf="content?.eDDStatus === getEDDStatusEnum.Rejected">
+            {{ 'member.overview.newKyc.eddDeclined' | lang }}
+            <!-- 拒绝原因-->
+            <ng-container *ngIf="content?.rejectMsg">
+              {{ 'member.overview.newKyc.reason' | lang }}
+              <span class="text-primary cursor-pointer" (click)="content.flag = !content.flag">&gt;&gt;</span>
+              <span *ngIf="content.flag">{{ content?.rejectMsg }}</span>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="content?.eDDStatus === getEDDStatusEnum.Resubmitted">
+            {{ 'member.overview.newKyc.resubmiEdd' | lang }}</ng-container
+          >
+          <ng-container *ngIf="content?.eDDStatus === getEDDStatusEnum.Approved"
+            >EDD{{ 'member.overview.newKyc.approved' | lang }}
+          </ng-container>
+        </dd>
+
+        <!-- 非粘性 -->
+        <dd class="gray" *ngIf="actionType === getAction.NonSticky">
+          <ng-container *ngIf="content?.nonStickyType === getNonStickyTypeEnum.Get">
+            {{ 'member.detail.nonsticky.get' | lang }}</ng-container
+          >
+          <ng-container *ngIf="content?.nonStickyType === getNonStickyTypeEnum.Activate">
+            {{ 'member.detail.nonsticky.activation' | lang }}
+          </ng-container>
+          <ng-container *ngIf="content?.nonStickyType === getNonStickyTypeEnum.Claim">
+            {{ 'member.detail.nonsticky.claim' | lang }}
+          </ng-container>
+          <ng-container *ngIf="content?.nonStickyType === getNonStickyTypeEnum.Abandon">
+            {{ 'member.detail.nonsticky.abandon' | lang }}</ng-container
+          >
+          {{ content?.gameCategoryName }}，{{ content?.name }}，{{ content?.amount }}
+          <img class="ml-2 mr-2" [currencyIcon]="content?.currency || ''" />
+          {{ 'member.detail.nonsticky.nonsticky' | lang }}
+        </dd>
+
+        <!-- 免费旋转 -->
+        <dd class="gray" *ngIf="actionType === getAction.FreeSpin">
+          <!-- 已发放 -->
+          <ng-container *ngIf="content?.freeSpinType === 0">
+            {{ 'member.detail.freeSpin.freeSpin' | lang }}{{ 'member.detail.freeSpin.give' | lang }}：{{
+              'member.detail.freeSpin.activityPrizeName' | lang
+            }}：{{ content?.name }}，{{ 'member.detail.freeSpin.spins' | lang }}：{{ content?.maxSpinNum
+            }}{{ 'luckRoulette.times' | lang }}（{{ content?.providerName }}/{{ content?.gameName }}）
+          </ng-container>
+
+          <!-- 获得非粘性奖金 -->
+          <ng-container *ngIf="content?.freeSpinType === 2">
+            {{ 'member.detail.freeSpin.freeSpin' | lang }}{{ 'member.detail.freeSpin.get' | lang }}：{{
+              'member.detail.freeSpin.gameCategory' | lang
+            }}：{{ content?.gameCategoryName }}，{{ 'member.detail.freeSpin.activityPrizeName' | lang }}：{{
+              content?.name
+            }}，
+            <div class="mx-2 d-flex flex-ac">
+              <img class="mr-2" [currencyIcon]="content?.currency" />
+              <span class="blue">{{ content?.amount | currencyValue: content?.currency }}</span>
+            </div>
+            {{ 'member.detail.nonsticky.nonsticky' | lang }}
+          </ng-container>
+
+          <!-- 获得现金卷 -->
+          <ng-container *ngIf="content?.freeSpinType === 3">
+            {{ 'member.detail.freeSpin.freeSpin' | lang }}{{ 'member.detail.freeSpin.get' | lang }}：{{
+              'member.detail.freeSpin.activityPrizeName' | lang
+            }}：{{ content?.name }}，
+            <div class="mx-2 d-flex flex-ac">
+              <img class="mr-2" [currencyIcon]="content?.currency" />
+              <span class="blue">{{ content?.amount | currencyValue: content?.currency }}</span>
+            </div>
+            {{ 'member.detail.freeSpin.sentToMainWallet' | lang }}
+          </ng-container>
+        </dd>
+
+        <!-- 红利禁止用 -->
+        <dd class="gray" *ngIf="actionType === getAction.DisableActivity">
+          <!-- 解禁 -->
+          <ng-container *ngIf="content.status === 1">
+            {{
+              'member.overview.userActivity.disableActivityOff'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      approveName: content?.approveName || '-',
+                      activities: getActivities(content?.activityCodes),
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+          <!-- 禁止 -->
+          <ng-container *ngIf="content.status === 2">
+            {{
+              'member.overview.userActivity.disableActivityOn'
+                | lang
+                  : {
+                      operatorName: content?.operatorName || '-',
+                      approveName: content?.approveName || '-',
+                      activities: getActivities(content?.activityCodes),
+                      remark: content?.remark || '-'
+                    }
+            }}
+          </ng-container>
+        </dd>
+
+        <dd class="gray" *ngIf="actionType === getAction.AccountManager">
+          <ng-container *ngIf="+content.bindType === 1">
+            {{
+              'member.overview.userActivity.enableAccountManager'
+                | lang
+                  : {
+                      accountName: content?.accountName || '',
+                      operatorName: content?.operatorName || ''
+                    }
+            }}
+          </ng-container>
+          <ng-container *ngIf="+content.bindType === 2">
+            {{
+              'member.overview.userActivity.disableAccountManager'
+                | lang
+                  : {
+                      accountName: content?.accountName || '',
+                      operatorName: content?.operatorName || ''
+                    }
+            }}
+          </ng-container>
+        </dd>
+
+        <!-- 不良数据 -->
+        <dd class="gray" *ngIf="actionType === getAction.BadDataRiskControl">
+          <!-- 添加 -->
+          <ng-container *ngIf="+content?.operatorType === 1">
+            <!-- 登录/注册 -->
+            <ng-container *ngIf="[2, 3].includes(+content?.source)">
+              <ng-container *ngIf="+content?.source === 2">{{ 'risk.register' | lang }}</ng-container>
+              <ng-container *ngIf="+content?.source === 3">{{ 'allPop.loginEnter' | lang }}</ng-container>
+            </ng-container>
+            {{
+              'member.overview.userActivity.addBadData'
+                | lang
+                  : {
+                      type: content?.type || '-',
+                      value: content?.value || '-',
+                      originalRiskControl: content?.originalRiskControl || '-',
+                      riskControl: content?.riskControl || '-'
+                    }
+            }}
+          </ng-container>
+
+          <!-- 删除 -->
+          <ng-container *ngIf="+content?.operatorType === 2">
+            {{
+              'member.overview.userActivity.deleteBadData'
+                | lang
+                  : {
+                      type: content?.type || '-',
+                      value: content?.value || '-',
+                      originalRiskControl: content?.originalRiskControl || '-',
+                      riskControl: content?.riskControl || '-'
+                    }
+            }}
+          </ng-container>
+        </dd>
+      </dl>
+    </ng-container>
+  </ng-template>
+
+  <!-- 会员活动 备注弹窗 -->
+  <ng-template #activityRemarkPopup>
+    <!-- 调账模态框 -->
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'common.remarks' | lang }}</div>
+
+      <div class="c-btn-close" (click)="closeActivityRemarkDialog.close()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form class="form w-100" [formGroup]="formGroup" #form>
+        <form-row
+          required
+          name="remark"
+          label-width="120"
+          [label]="'common.remarks' | lang"
+          [invalidFeedback]="{ required: 'common.remarksTips' | lang }"
+        >
+          <ng-template let-invalid="invalid">
+            <textarea [class.is-invalid]="invalid" formControlName="remark" class="form-control" rows="10"></textarea>
+          </ng-template>
+        </form-row>
+        <form-row
+          required
+          name="attachment"
+          [label]="'risk.att' | lang"
+          label-width="120"
+          class="mr-23"
+          [invalidFeedback]="{ required: 'common.attachTips' | lang }"
+        >
+          <ng-template>
+            <upload
+              [style.min-width.px]="180"
+              [showLimitText]="false"
+              formControlName="attachment"
+              [limit]="1024 * 5"
+              [accept]="['jpg', 'png', 'gif', 'bmp', 'pdf']"
+              desc=""
+              (change)="updateAttachment($event)"
+              (clear)="communicateAttachmentFullUrl = ''"
+            ></upload>
+          </ng-template>
+        </form-row>
+      </form>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button
+        type="button"
+        class="c-btn btn btn-light"
+        (click)="closeActivityRemarkDialog.close()"
+        style="color: #373a49"
+      >
+        {{ 'common.cancel' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onSubmit()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </ng-template>
+</div>

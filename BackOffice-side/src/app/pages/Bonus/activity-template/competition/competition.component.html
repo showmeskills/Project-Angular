@@ -1,0 +1,291 @@
+<div class="card card-body">
+  <div class="fz-20 mb-10">{{ 'member.activity.sencli9.name' | lang }}</div>
+
+  <!-- 验证表单 -->
+  <form class="form w-100 mb-8" [formGroup]="formGroup" #form>
+    <!-- 多语系 -->
+    <lang-tab #langTab formArrayName="lang" [(value)]="selectLang" (languageChange)="updateLanguageForm()">
+      <ng-template let-i="i" let-current="current">
+        <!-- 活动标题 -->
+        <form-row
+          class="mb-8"
+          required
+          name="name"
+          label-width="200"
+          [label]="('member.activity.sencliCommon.activityTitle' | lang) + '（' + current?.name + '）'"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" />
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+  </form>
+
+  <div class="pl-8 pr-8">
+    <!-- 活动代码 -->
+    <ng-container [formGroup]="formGroup" *ngIf="formGroup">
+      <form-row class="mb-8" [label]="'member.activity.sencli9.code' | lang" name="code" label-width="200" required>
+        <ng-template let-invalid="invalid">
+          <input
+            class="form-control"
+            [class.is-invalid]="invalid"
+            [style.width]="'50%'"
+            autocomplete="off"
+            type="text"
+            maxlength="20"
+            formControlName="code"
+          />
+        </ng-template>
+      </form-row>
+    </ng-container>
+
+    <!-- 活动时间 -->
+    <form-row
+      class="mb-8"
+      [label]="'member.activity.sencli9.activityTime' | lang"
+      label-width="200"
+      [contentWidth]="250"
+      required
+    >
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'form.chooseTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="~"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="time"
+        />
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <!-- 用户地区 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli9.area' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap" style="gap: 20px">
+          <div
+            class="d-flex flex-ac px-5 h42"
+            style="background: #f5f8fa; border-radius: 6px"
+            *ngFor="let item of selectCountryList; index as i"
+          >
+            <div class="country-image">
+              <i iconSize="18" [iconCountry]="item.countryEnName"></i>
+            </div>
+            <div class="px-2">{{ lang.isLocal ? item.countryName : item.countryEnName }}</div>
+            <svg-icon
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+              (click)="selectCountryList.splice(i, 1)"
+            ></svg-icon>
+          </div>
+          <span class="btn btn-light-primary fz-16 d-flex flex-ac h42" (click)="openAddPopup('area')">
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            <!-- 添加 -->
+            {{ 'member.activity.sencliCommon.add' | lang }}
+          </span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 支持币种 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli9.currency' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap" style="gap: 20px">
+          <div
+            class="d-flex flex-ac px-5"
+            style="background: #f5f8fa; border-radius: 6px"
+            *ngFor="let item of selectCurrencyList; index as i"
+          >
+            <img [currencyIcon]="item" currencySize="18" class="mr-2" />
+            <div class="px-2">{{ item }}</div>
+            <svg-icon
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+              (click)="selectCurrencyList.splice(i, 1)"
+            ></svg-icon>
+          </div>
+          <span class="btn btn-light-primary fz-16 d-flex flex-ac h42" (click)="openAddPopup('currency')">
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            <!-- 添加 -->
+            {{ 'member.activity.sencliCommon.add' | lang }}
+          </span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛内容 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli9.content' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of contentList; index as i">
+            <input type="radio" name="content" [value]="item.value" [(ngModel)]="content" />
+            <span class="mr-4"></span>{{ 'member.activity.sencli9.contentList' | lang: i }}
+          </label>
+        </div>
+        <div class="d-flex flex-wrap" *ngIf="content === 1">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of bigWinlist; index as i">
+            <input type="radio" name="win" [value]="item.value" [(ngModel)]="win" />
+            <span class="mr-4"></span>{{ 'member.activity.sencli9.bigWinlist' | lang: i }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛范围 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli9.limit' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of limitList; index as i">
+            <input type="radio" name="limit" [value]="item.value" [(ngModel)]="limit" />
+            <span class="mr-4"></span>{{ 'member.activity.sencli9.limitList' | lang: i }}
+          </label>
+        </div>
+
+        <!-- 指定游戏 -->
+        <ng-container *ngIf="limit === 2">
+          <div class="d-flex flex-ac flex-wrap" selectChildren *ngFor="let items of gameProviderList">
+            <div class="color-aaa" [style.width.px]="100">{{ items.code }}</div>
+            <label class="checkbox checkbox-lg ml-4 mr-6">
+              <input name="gameProvider" type="checkbox" selectGroup />
+              <span class="mr-2"></span>
+              {{ 'common.all' | lang }}
+            </label>
+            <label class="checkbox checkbox-lg mr-5" *ngFor="let item of items.providers">
+              <input name="gameProvider" type="checkbox" [(ngModel)]="item.checked" />
+              <span class="mr-2"></span>
+              {{ item.providerName }}
+            </label>
+          </div>
+        </ng-container>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛范围: 游戏厂商 -->
+    <form-row
+      class="mb-8"
+      [label]="'member.activity.sencli9.gameProviders' | lang"
+      label-width="200"
+      *ngIf="limit === 1"
+    >
+      <ng-template>
+        <div class="d-flex flex-wrap flex-column">
+          <ng-container *ngIf="providerList.length > 0; else noProviderData">
+            <form-row
+              class="pt-0"
+              label-width="111px"
+              [label]="lang.isLocal ? category['description'] : category['code']"
+              *ngFor="let category of providerList"
+            >
+              <ng-template>
+                <div class="d-flex flex-wrap pt-2 lh-20" selectChildren>
+                  <label class="checkbox checkbox-lg mr-12 my-2 fz-16">
+                    <input type="checkbox" selectGroup />
+                    <span class="mr-4"></span>{{ 'common.all' | lang }}
+                  </label>
+                  <label class="checkbox checkbox-lg mr-12 my-2 fz-16" *ngFor="let item of category.providers">
+                    <input type="checkbox" [(ngModel)]="item.checked" />
+                    <span class="mr-4"></span>{{ lang.isLocal ? item.providerName : item.providerId }}
+                  </label>
+                </div>
+              </ng-template>
+            </form-row>
+          </ng-container>
+          <ng-template #noProviderData>
+            <!-- 暂无厂商数据！ -->
+            <div class="color-aaa w-100 text-center">{{ 'member.coupon.model.noManufacturer' | lang }}</div>
+          </ng-template>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛范围: 指定游戏 -->
+    <form-row class="mb-8" [label]="'GameCode'" label-width="200" *ngIf="limit === 2">
+      <ng-template>
+        <div class="game-code">
+          <textarea
+            type="text"
+            class="form-control"
+            rows="5"
+            autocomplete="off"
+            [placeholder]="'member.activity.sencli9.codePlaceholder' | lang"
+            [(ngModel)]="gameCode"
+          >
+          </textarea>
+          <button class="btn btn-primary game-button" (click)="getGameImg()">{{ 'common.confirm' | lang }}</button>
+        </div>
+        <div class="game-img">
+          <img [src]="item.webLogo ? item.webLogo : './assets/images/game-noCover.png'" *ngFor="let item of gameList" />
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛周期 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli9.cycle' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of cycleList; index as i">
+            <input type="radio" name="cycle" [value]="item.value" [(ngModel)]="cycle" />
+            <span class="mr-4"></span>{{ 'member.activity.sencli9.cycleList' | lang: i }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛奖金 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli9.bonus' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap mb-4" *ngFor="let items of rankContentList">
+          <!-- 名次 -->
+          <span class="color-aaa">{{ 'member.activity.sencli9.ranking' | lang }}</span>
+          <form-wrap [style.width.px]="80" class="ml-4 mr-4">
+            <input class="form-control" autocomplete="off" type="text" [(ngModel)]="items.rankNumStart" />
+          </form-wrap>
+          -
+          <form-wrap [style.width.px]="80" class="ml-4 mr-12">
+            <input class="form-control" autocomplete="off" type="text" [(ngModel)]="items.rankNumEnd" />
+          </form-wrap>
+
+          <!-- <mat-form-field [style.width.px]="120">
+            <mat-select class="form-control" [(ngModel)]="selectCurrencyCode" [style.width.px]="120">
+              <mat-select-trigger>
+                <div class="d-flex flex-ac">
+                  <img [currencyIcon]="selectCurrencyCode" currencySize="18" class="mr-4" />
+                  <span>{{ selectCurrencyCode }}</span>
+                </div>
+              </mat-select-trigger>
+              <mat-option *ngFor="let item of currencyList" [value]="item">
+                <img [currencyIcon]="item" currencySize="18" class="mr-4" />
+                <span>{{ item }}</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
+          <ng-container *ngFor="let item of items.rankBonus">
+            <div class="d-flex flex-ac px-5 mr-8" style="background: #f5f8fa; border-radius: 6px">
+              <img [currencyIcon]="'USDT'" currencySize="18" class="mr-2" />
+              <div class="px-2">USDT</div>
+            </div>
+
+            <form-wrap [style.width.px]="80">
+              <input class="form-control" autocomplete="off" type="text" [(ngModel)]="item.money" />
+            </form-wrap>
+          </ng-container>
+        </div>
+        <span class="btn btn-light-primary fz-16 d-flex flex-ac h42" [style.width.px]="112" (click)="addRank()">
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          {{ 'member.activity.sencli9.addRanking' | lang }}
+        </span>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="pt-10 d-flex flex-center btn-wrap">
+    <button class="c-btn c-btn-default" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button type="button" class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'common.submit' | lang }}</button>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="56" viewBox="0 0 48 56">
+    <defs>
+        <linearGradient id="xooct9730c" x1=".5" y1=".974" x2=".5" y2="-.026" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fafafa"/>
+            <stop offset="1" stop-color="#e6e8ea"/>
+        </linearGradient>
+        <linearGradient id="rnjz6e1r7b" y1=".5" x2="1" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#fa8465" stop-opacity=".502"/>
+        </linearGradient>
+        <linearGradient id="4jgehac1ga" x1="1" y1="-5.097" x2="0" y2="-5.097" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#a3adba"/>
+            <stop offset="1" stop-color="#8d96a4"/>
+        </linearGradient>
+        <linearGradient id="3kl6stxlgd" y1="9.189" x2="0" y2="9.189" xlink:href="#4jgehac1ga"/>
+        <linearGradient id="hml6ayxq9e" y1=".869" x2="0" y2=".869" xlink:href="#4jgehac1ga"/>
+        <linearGradient id="dgwjg08yef" x1="1" y1="0" x2="0" y2="0" xlink:href="#rnjz6e1r7b"/>
+    </defs>
+    <g data-name="组 7113" transform="translate(-12.001 -8.088)">
+        <path data-name="路径 13450" d="M72 48.117 48 64.088v-56h24z" transform="translate(-12)" style="fill-rule:evenodd;fill:#e6e8ea"/>
+        <path data-name="路径 13451" d="M36 8.088v56l-24-16v-40z" style="fill:url(#xooct9730c);fill-rule:evenodd"/>
+        <path data-name="路径 13452" d="M54 50.757H32V22.09h22z" transform="translate(-6.666 -4.667)" style="fill:url(#rnjz6e1r7b)"/>
+        <path data-name="路径 13453" d="M32 69.757h22V65.09H32z" transform="translate(-6.666 -19.001)" style="fill:url(#4jgehac1ga);opacity:.8"/>
+        <path data-name="路径 13454" d="M32 19.757h22V15.09H32z" transform="translate(-6.666 -2.334)" style="fill:url(#3kl6stxlgd);opacity:.8"/>
+        <path data-name="路径 13455" d="M64.333 27.09H39v13.333h6v8l8-8h11.333z" transform="translate(-9 -6.334)" style="fill:url(#hml6ayxq9e)"/>
+        <path data-name="路径 13458" d="m18 36.09 3 3 3-3-3-3zm36.667-19.333 1.667 1.667L58 16.757l-1.667-1.667zm-1.333 26.332h2v-2h-2z" transform="translate(-2 -2.334)" style="fill:#fff"/>
+        <circle data-name="椭圆 41" cx="2.411" cy="2.411" r="2.411" transform="translate(40.1 22.444)" style="fill:url(#dgwjg08yef)"/>
+        <path data-name="矩形 334" d="M2 0h5.644a2 2 0 0 1 2 2v1.858H0V2a2 2 0 0 1 2-2z" transform="translate(37.689 28.23)" style="fill:url(#dgwjg08yef)"/>
+    </g>
+</svg>

@@ -1,0 +1,96 @@
+<header class="d-flex flex-between flex-ac">
+  <div class="d-flex flex-ac">
+    <span class="fz-18 color-222 fw-bolder">{{ 'member.management.welfareStatus' | lang }}</span>
+    <div class="tab ml-8 text-nowrap">
+      <span (click)="selectStatus('All')" [class.active]="status === 'All'">{{ 'common.all' | lang }}</span>
+      <span (click)="selectStatus('UnComplete')" [class.active]="status === 'UnComplete'">{{
+        'member.management.undone' | lang
+      }}</span>
+    </div>
+  </div>
+  <!-- <div class="btn btn-light cursor-pointer fz-14 text-nowrap">{{ 'member.management.seeMore' | lang }}</div> -->
+</header>
+
+<div class="mt-2">
+  <table class="table mb-0">
+    <thead class="sticky-wrapper">
+      <tr>
+        <th>
+          <span class="cell">{{ 'member.management.memberUid' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.management.benefitName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.management.IssuanceTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.management.pickTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.management.schedule' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.name }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createdTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.receiveTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <span
+              class="label label-lg label-inline"
+              [ngClass]="item.receiveTime > 0 ? 'label-light-success' : 'label-light-warning'"
+            >
+              {{ item.receiveTime > 0 ? ('member.table.carryOut' | lang) : ('member.table.undone' | lang) }}
+            </span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading" [style.height.px]="300">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-between">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData()"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+      [isLoading]="isLoading"
+    ></app-paginator>
+  </div>
+</div>

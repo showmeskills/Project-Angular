@@ -1,0 +1,88 @@
+<header class="fz-20">{{ 'game.proxy.commissionList' | lang }}</header>
+
+<div class="flex-fill mt-2">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'game.proxy.month' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'marketing.commissionList.activeUser' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'marketing.commissionList.volume' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'marketing.list.model.contribution' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'marketing.commissionList.newDeposit' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.review' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list; let i = index">
+        <td>
+          <span class="cell">{{ item.month | timeFormat: 'YYYY-MM' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.activePeople | toFormatMoney }}</span>
+        </td>
+        <td>
+          <span class="cell"
+            >{{ item.transactionMonth | currencyValue: 'USDT' }}<img class="ml-2" currencyIcon="USDT"
+          /></span>
+        </td>
+        <td>
+          <span class="cell">{{ item.contribution | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.firstDeposit | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell"
+            ><span class="btn btn-default px-6 text-nowrap">{{ 'common.details' | lang }}</span></span
+          >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list?.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-between flex-ac">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+      [isLoading]="isLoading"
+    ></app-paginator>
+  </div>
+</div>

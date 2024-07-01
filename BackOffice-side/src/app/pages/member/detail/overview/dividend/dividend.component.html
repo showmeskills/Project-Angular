@@ -1,0 +1,114 @@
+<div class="p-6">
+  <button
+    type="button"
+    class="btn btn-default p-3 mr-4"
+    *ngFor="let item of typeList"
+    [class.btn-primary]="activeType === item.value"
+    (click)="onType(item.value)"
+  >
+    {{ item.lang | lang }}
+  </button>
+</div>
+
+<div class="flex-1 mb-5 custom-scroll-y">
+  <table class="table" *ngIf="bonusList.length > 0">
+    <thead>
+      <tr>
+        <th>
+          <div class="cell">{{ 'member.overview.discountActivity' | lang }}</div>
+        </th>
+        <th>
+          <div class="cell">{{ 'member.giveOut.IssuanceTime' | lang }}</div>
+        </th>
+        <th>
+          <div class="cell">{{ 'member.giveOut.pickTime' | lang }}</div>
+        </th>
+        <th>
+          <div class="cell">{{ 'common.amount' | lang }}</div>
+        </th>
+        <th>
+          <div class="cell">{{ 'member.giveOut.IssuanceType' | lang }}</div>
+        </th>
+        <th>
+          <div class="cell">{{ 'common.status' | lang }}</div>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of bonusList">
+        <td>
+          <span class="cell">{{ item.bonusName }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.grantTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.receiveTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <div>
+              <span class="vam ml-2">{{ item.amount | currencyValue: item.currency }}</span>
+              <img class="vam rounded-circle ml-5" [currencyIcon]="item.currency" alt="" />
+            </div>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ getTypeText(item.grantType) | lang }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <app-label *ngIf="item.cardStatus === 'Unclaimed'" type="yellow">{{
+              'member.giveOut.pendingCollection' | lang
+            }}</app-label>
+            <app-label *ngIf="item.cardStatus === 'Received'">{{ 'member.giveOut.received' | lang }}</app-label>
+            <app-label *ngIf="item.cardStatus === 'InUse'" type="primary">{{
+              'member.giveOut.Using' | lang
+            }}</app-label>
+            <app-label *ngIf="item.cardStatus === 'Used'" type="info">{{ 'member.giveOut.Used' | lang }}</app-label>
+            <app-label *ngIf="item.cardStatus === 'Invalid'" type="danger">{{
+              'member.giveOut.expired' | lang
+            }}</app-label>
+            <app-label *ngIf="item.cardStatus === 'Review'" type="info">{{ 'member.giveOut.review' | lang }}</app-label>
+            <app-label *ngIf="item.cardStatus === 'Rejected'" type="warning">{{
+              'member.giveOut.rejected' | lang
+            }}</app-label>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 空显示 -->
+<div class="container-empty flex-1" *ngIf="bonusList.length === 0 && !isLoading">
+  <div>
+    <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+    <div class="txt">{{ 'common.emptyText' | lang }}</div>
+  </div>
+</div>
+
+<div class="d-flex flex-between px-12 py-8" *ngIf="bonusList.length > 0">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+    ></app-paginator>
+  </div>
+</div>

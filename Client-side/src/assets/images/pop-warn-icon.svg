@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+    <defs>
+        <linearGradient id="f9xfzhk5ma" x1="1" y1=".5" x2="0" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#f5432c" stop-opacity=".051"/>
+        </linearGradient>
+    </defs>
+    <g data-name="Group 3438" transform="translate(-3945 -4062)">
+        <circle data-name="Ellipse 263" cx="40" cy="40" r="40" transform="translate(3945 4062)" style="opacity:.999;fill:url(#f9xfzhk5ma)"/>
+        <circle data-name="Ellipse 264" cx="29" cy="29" r="29" transform="translate(3956 4073)" style="fill:#f04e23"/>
+        <g data-name="Group 2814">
+            <path data-name="Rectangle 1580" d="M0 0h6v24H0z" transform="translate(3982 4084)" style="fill:#fff"/>
+            <path data-name="Rectangle 1581" d="M0 0h6v6H0z" transform="translate(3982 4114)" style="fill:#fff"/>
+        </g>
+    </g>
+</svg>

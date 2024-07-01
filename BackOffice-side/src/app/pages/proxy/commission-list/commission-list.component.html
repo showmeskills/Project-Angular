@@ -1,0 +1,236 @@
+<nav-header>
+  <div class="ml-8 cursor-pointer d-flex flex-ac">
+    <mat-form-field [style.width.px]="114">
+      <mat-select
+        class="fz-14 px-4 team-select"
+        [(ngModel)]="proxyService.curTeamId"
+        [style.height.px]="34"
+        [placeholder]="'marketing.list.selectTeam' | lang"
+        [class.is-invalid]="!+proxyService.curTeamId"
+      >
+        <mat-option *ngFor="let item of proxyService.teamList" [value]="item.id">{{ item.groupName }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</nav-header>
+
+<div class="card px-12 py-8 d-flex flex-row flex-wrap">
+  <form-row [label]="'marketing.list.channelManager' | lang" [label-width]="lang.isLocal ? '120' : '160'">
+    <ng-template>
+      <input
+        class="form-control"
+        [placeholder]="'marketing.pendingList.enterManagerID' | lang"
+        type="text"
+        [style.width.px]="160"
+        [(ngModel)]="data.manager"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'marketing.list.agentID' | lang" [label-width]="120">
+    <ng-template>
+      <input
+        class="form-control"
+        [placeholder]="'marketing.pendingList.enterAgentID' | lang"
+        type="text"
+        [style.width.px]="160"
+        [(ngModel)]="data.proxyId"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'marketing.commissionList.commissionMonth' | lang" [label-width]="lang.isLocal ? '130' : '160'">
+    <div class="d-flex">
+      <div class="form-control d-flex flex-ac" [style.width.px]="180">
+        <input class="commission-month" matInput [matDatepicker]="dp" [formControl]="date" />
+        <mat-datepicker-toggle matSuffix [for]="dp">
+          <svg-icon matDatepickerToggleIcon [src]="'./assets/images/svg/date.svg'"></svg-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker
+          #dp
+          startView="multi-year"
+          (yearSelected)="chosenYearHandler($event)"
+          (monthSelected)="chosenMonthHandler($event, dp)"
+          (closed)="onDPClose()"
+          panelClass="month-picker"
+        >
+        </mat-datepicker>
+      </div>
+    </div>
+  </form-row>
+
+  <form-row [label]="'common.type' | lang" [label-width]="lang.isLocal ? '120' : '160'">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="curReview" (selectionChange)="loadData(true)">
+          <mat-option [value]="item.value" *ngFor="let item of typeList">{{ item.label | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="d-flex justify-content-end card-toolbar flex-1 btn-wrap flex-nowrap text-nowrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card px-12 py-8 mt-8" [selectChildren]="true">
+  <div class="d-flex">
+    <div class="flex-1 d-flex flex-ac">
+      <div class="fz-16">
+        <ng-template selectTpl let-data let-checkAll="checkAll">
+          <!-- 已选择 -->
+          <span class="vam">{{ data.count }} {{ 'marketing.commissionList.chosen' | lang }}</span>
+          <span class="vam line mx-4"></span>
+          <span class="vam cursor-pointer" *ngIf="!data.isAll" (click)="checkAll()">{{
+            'common.selectAll' | lang
+          }}</span>
+          <span class="vam cursor-pointer" *ngIf="data.isAll" (click)="checkAll()">{{
+            'common.canceSelect' | lang
+          }}</span>
+        </ng-template>
+        <span
+          class="btn btn-light btn-hover-primary ml-10 px-7"
+          *ngIf="[0, 1].includes(curReview)"
+          (click)="onReviewPass(true)"
+          >{{ 'marketing.pendingList.approve' | lang }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2 px-3">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg"><input type="checkbox" selectGroup /><span></span></label>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.list.team' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.list.channelManager' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.list.agentID' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.month' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.activeUser' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.addActive' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.volume' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.contribution' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.newDeposit' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.commisOfMonth' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.commissionList.view' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <tr *ngFor="let item of list; let i = index">
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg"
+                ><input select type="checkbox" [(ngModel)]="item.checked" /><span></span>
+              </label>
+            </span>
+          </th>
+          <td>
+            <span class="cell">{{ item.teamName }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.channelManagerName }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.uid }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.localMonth }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.active | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.newActive | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.transactionTotal | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.contributionTotal }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.newFirstDeposit | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.monthCommission | currencyValue: 'USDT' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="btn btn-light px-6 text-nowrap" (click)="onDetail(item.id)">{{
+                'common.details' | lang
+              }}</span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+  </div>
+
+  <div class="d-flex flex-between flex-ac pt-4 px-3">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData()"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="isLoading"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,203 @@
+<div class="main-container">
+  <!-- 标题行 -->
+  <div class="title-row">
+    <div class="row-1">
+      <div class="title">{{ 'bc_manage' | translate }}</div>
+      <ng-container
+        *ngTemplateOutlet="addBtn; context: { show: !isH5 && !editMode && cardList.length > 0, minWidth: '100px' }"
+      ></ng-container>
+    </div>
+
+    <!-- 管理行 -->
+    <div>
+      <customize-button
+        type="text"
+        size="small"
+        [active]="true"
+        minWidth="60px"
+        [plain]="true"
+        *ngIf="cardList.length > 0 && !editMode"
+        (onClick)="editMode = true"
+        >{{ 'management' | translate }}
+      </customize-button>
+    </div>
+
+    <!-- 选择卡数 -->
+    <div class="manage-row" *ngIf="cardList.length > 0 && editMode">
+      <ng-container *ngIf="!isH5">
+        <ng-container *ngTemplateOutlet="manageBtns"></ng-container>
+      </ng-container>
+      <customize-button
+        class="last"
+        type="text"
+        size="small"
+        [active]="true"
+        [plain]="true"
+        (onClick)="editMode = false"
+        >{{ 'finish' | translate }}</customize-button
+      >
+    </div>
+  </div>
+
+  <div class="container-box" [appLoading]="loading">
+    <!-- 银行卡数据表 -->
+    <ng-container *ngIf="cardList.length > 0">
+      <table>
+        <thead *ngIf="!isH5">
+          <th width="1%" *ngIf="editMode"></th>
+          <th>{{ 'curr' | translate }}</th>
+          <th>{{ 'acc_name' | translate }}</th>
+          <th>{{ 'bank' | translate }}</th>
+          <th>{{ 'bc_num' | translate }}</th>
+          <th *ngIf="!editMode">{{ 'action' | translate }}</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of cardList; trackBy: trackMethod" [class.disabled]="item.isLock">
+            <!-- Web checkbox -->
+            <td class="checkbox-td" *ngIf="!isH5 && editMode">
+              <mat-checkbox
+                *ngIf="!item.isLock"
+                [disableRipple]="true"
+                [(ngModel)]="item.checked"
+                (ngModelChange)="onCheckCard()"
+              >
+              </mat-checkbox>
+            </td>
+            <td class="action" *ngIf="isH5">
+              <!-- h5选择 -->
+              <mat-checkbox
+                *ngIf="isH5 && editMode && !item.isLock"
+                [disableRipple]="true"
+                [(ngModel)]="item.checked"
+                (ngModelChange)="onCheckCard()"
+              ></mat-checkbox>
+              <!-- h5单个编辑 -->
+              <ng-container *ngIf="isH5 && !editMode">
+                <div class="box-checked" *ngIf="item.isDefault"></div>
+                <i
+                  class="icon-three-dot onact96-not mutual-opacity"
+                  (click)="item.isShow = !item.isShow"
+                  (clickOutside)="item.isShow = false"
+                ></i>
+                <ng-container *ngIf="item.isShow">
+                  <ng-container *ngTemplateOutlet="editDrop; context: { item: item }"></ng-container>
+                </ng-container>
+              </ng-container>
+            </td>
+            <td [attr.data-label]="'curr' | translate" class="has-data-label">
+              {{ item.currencyType }}
+            </td>
+            <td [attr.data-label]="'acc_name' | translate" class="has-data-label">
+              {{ item.name }}
+            </td>
+            <td [attr.data-label]="'bank' | translate" class="has-data-label">
+              <div class="line">
+                <img class="bank-icon" src="assets/images/bankicon/{{ item.bankCode }}.png" loading="lazy" />
+                {{ item.bankName }}
+              </div>
+            </td>
+            <td [attr.data-label]="'bc_num' | translate" class="has-data-label">
+              {{ item.cardNum }}
+            </td>
+            <!-- 操作 显示菜单 删除与设为默认卡-->
+            <td [attr.data-label]="" class="action" *ngIf="!isH5 && !editMode">
+              <div class="onact96-not" (click)="item.isShow = !item.isShow" (clickOutside)="item.isShow = false">
+                {{ 'edit' | translate }}
+              </div>
+              <ng-container *ngIf="item.isShow">
+                <ng-container *ngTemplateOutlet="editDrop; context: { item: item }"></ng-container>
+              </ng-container>
+              <div class="box-checked" *ngIf="item.isDefault"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <!-- h5的底部添加按钮 动态视口检测是否定位 -->
+
+    <!-- h5点击管理后底部菜单 -->
+    <ng-container *ngIf="isH5 && editMode">
+      <!-- trigger触发偏移计算 差不多同上 -->
+      <div
+        class="intersectionObserver-trigger"
+        (intersectFullChange)="h5BottomOperateAreaintersectChange($event)"
+        [intersectionObserver]="true"
+        [intersectionObserver-config]="{ offset: '0px 0px -132px 0px' }"
+      ></div>
+      <div
+        class="h5BottomOperateArea manage-row manage-row-h5 animate__animated animate__fadeInUp animate__faster"
+        [class.sticky]="h5BottomOperateAreaSticky"
+      >
+        <!-- <div class=""> -->
+        <ng-container *ngTemplateOutlet="manageBtns; context: { small: true }"></ng-container>
+        <!-- </div> -->
+      </div>
+    </ng-container>
+
+    <app-empty
+      icon="assets/images/manage-empty.png"
+      *ngIf="cardList.length <= 0 && !loading"
+      [text]="'use_future' | translate"
+      [smallText]="true"
+    >
+      <ng-container
+        *ngIf="!isH5"
+        [ngTemplateOutlet]="addBtn"
+        [ngTemplateOutletContext]="{ show: true, minWidth: '100px' }"
+      >
+      </ng-container>
+    </app-empty>
+
+    <ng-container *ngIf="isH5 && !editMode && bottomBarActive">
+      <!-- trigger触发偏移计算 ： 64 底部菜单高度 + 10 距离底部菜单间距 + 48 功能区高度 + 20 功能区上间距 = 142 -->
+      <div
+        class="intersectionObserver-trigger"
+        (intersectFullChange)="h5BottomOperateAreaintersectChange($event)"
+        [intersectionObserver]="true"
+        [intersectionObserver-config]="{ offset: '0px 0px -142px 0px' }"
+      ></div>
+      <div
+        class="h5BottomOperateArea animate__animated animate__fadeInUp animate__faster"
+        [class.sticky]="h5BottomOperateAreaSticky"
+      >
+        <ng-container *ngTemplateOutlet="addBtn; context: { show: true, minWidth: '100%' }"></ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- 全选按钮，提示，删除 -->
+<ng-template #manageBtns>
+  <mat-checkbox [disableRipple]="true" [(ngModel)]="checkAll" (change)="setAll()"
+    >{{ 'select_all' | translate }}
+  </mat-checkbox>
+  <div class="manage-text" *ngIf="selectLength > 0">
+    {{ 'have_select' | translate }} {{ selectLength }} {{ 'bc_wish' | translate }}
+  </div>
+  <customize-button [disabled]="selectLength < 1" type="primary" size="small" (onClick)="handelBatchDelete()">
+    {{ 'delete' | translate }}</customize-button
+  >
+</ng-template>
+<ng-template #editDrop let-item="item">
+  <div *ngIf="item.isShow" class="box">
+    <div class="box-item onact96-not" (click)="setDefault(item)" *ngIf="!item.isDefault">
+      {{ 'set_bc' | translate }}
+    </div>
+    <div class="box-item onact96-not" (click)="deleteCard(item)">{{ 'delete' | translate }}</div>
+  </div>
+</ng-template>
+
+<!-- 添加地址的按钮 -->
+<ng-template #addBtn let-show="show" let-minWidth="minWidth">
+  <customize-button
+    *ngIf="show"
+    type="primary"
+    size="medium"
+    [minWidth]="minWidth"
+    (onClick)="addBankCard()"
+    [loading]="kycLoading"
+    [disabled]="kycLoading"
+  >
+    {{ 'add_bc' | translate }}</customize-button
+  >
+</ng-template>

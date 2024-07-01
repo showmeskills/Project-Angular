@@ -1,0 +1,34 @@
+<div class="container" [appLoading]="isLoading">
+  <div class="offset-bottom" *ngIf="!isH5">
+    <span class="icon-speaker"></span>
+    <app-tool-tip>
+      <span origin class="mutual-opacity onact96-not" (click)="openRetrievingAccount()">{{
+        'dep_not_arrive' | translate
+      }}</span>
+      <span tooltip>
+        <em>{{ 'sub_com' | translate }} </em>
+        <em class="theme-color mutual-opacity onact96-not" (click)="openRetrievingAccount()"
+          >{{ 'com_now' | translate }}
+        </em></span
+      >
+    </app-tool-tip>
+  </div>
+
+  <!-- <div>如果您在充值过程中遇到以下问题，您可以通过“充值未到账查询”功能查询当前充值状态或自助申请找回您的资产。</div>
+  <span>。充值后长时间未到账 </span>
+  <span>。充值时忘填或错填Tag/Memo</span>
+  <span>。充值了币安未上线的币种</span>
+  <div class="search-i">
+    立即查询<i class="right-arrow"></i>
+  </div> -->
+  <span class="offset-top onact96-not" (click)="jumpToPage(true)">FAQ</span>
+  <!-- 未选择货币的时候默认教程 -->
+
+  <ng-container *ngIf="articleList.length > 0">
+    <div class="offset-top onact96" *ngFor="let item of articleList" (click)="jumpToPage(false, item)">
+      <i class="icon-file"></i>
+      <span class="text-decoration" [title]="item.title">{{ item.title }}</span>
+    </div>
+  </ng-container>
+  <app-empty *ngIf="articleList.length === 0 && !isLoading" [text]="'no' | translate"></app-empty>
+</div>

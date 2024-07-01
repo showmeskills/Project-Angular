@@ -1,0 +1,535 @@
+.page-container {
+  background: linear-gradient(200deg, #901831 0%, #310818 100%);
+  position: relative;
+}
+
+.activity-top {
+  background: linear-gradient(180deg, #b70b3d -5.85%, #271216 244.5%);
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 767px) {
+    background: linear-gradient(200deg, #901831 0%, #310818 100%);
+    padding-top: 38px;
+    padding-bottom: 150px;
+    z-index: 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      background: url(src/assets/images/activity/worldcup2022/bg.svg) repeat-y top center;
+      background-size: contain;
+      // inset: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: -1;
+    }
+  }
+
+  .top_bg {
+    max-height: 573px;
+    max-width: 100%;
+    object-fit: cover;
+
+    @media (max-width: 767px) {
+      display: none;
+    }
+  }
+
+  .container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: none;
+    display: flex;
+    justify-content: center;
+    max-height: 136%;
+
+    @media (max-width: 767px) {
+      max-height: none;
+      position: relative;
+      flex-direction: column;
+    }
+
+    .content {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+
+      @media (max-width: 767px) {
+        flex-direction: column;
+      }
+    }
+
+    .tob_bg2 {
+      flex-basis: 43%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      img {
+        max-height: 68%;
+        width: 100%;
+        object-fit: contain;
+        object-position: left;
+
+        @media (max-width: 767px) {
+          max-height: none;
+        }
+
+        &.tit {
+          max-height: 65px;
+          margin-bottom: 20px;
+
+          @media (max-width: 767px) {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .cup {
+      flex-basis: 50%;
+      background: rgba(132, 14, 48, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      overflow: hidden;
+
+      @media (max-width: 767px) {
+        margin-top: 50px;
+      }
+
+      img {
+        object-position: top;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.activity-main {
+  padding-top: 180px;
+  position: relative;
+  z-index: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    background: url(src/assets/images/activity/worldcup2022/bg.svg) repeat-y top center;
+    background-size: contain;
+    // inset: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+
+  @media (max-width: 1930px) {
+    padding-top: 220px;
+  }
+
+  @media (max-width: 1630px) {
+    padding-top: 200px;
+  }
+
+  @media (max-width: 1430px) {
+    padding-top: 180px;
+  }
+
+  @media (max-width: 1250px) {
+    padding-top: 150px;
+  }
+
+  @media (max-width: 1000px) {
+    padding-top: 130px;
+  }
+
+  @media (max-width: 850px) {
+    padding-top: 110px;
+  }
+
+  @media (max-width: 767px) {
+    padding-top: 0;
+  }
+
+  .team-info {
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 767px) {
+      margin-top: -110px;
+    }
+
+    .tit2 {
+      display: none;
+
+      @media (max-width: 767px) {
+        display: block;
+        margin-bottom: 10px;
+        max-height: 65px;
+        max-width: 70%;
+        align-self: center;
+      }
+    }
+
+    .all-team {
+      padding: 20px;
+      background: linear-gradient(180deg, #ba113f 0%, #340f16 100%);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+
+      .teams {
+        display: grid;
+        gap: 40px 6.8%;
+        grid-template-columns: repeat(4, 1fr);
+        margin: 20px 0;
+
+        @media (max-width: 1000px) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 767px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        img {
+          width: 100%;
+        }
+      }
+    }
+
+    .c1 {
+      height: 40px;
+      background: url(src/assets/images/activity/worldcup2022/c1.svg) no-repeat center center;
+      background-size: contain;
+    }
+  }
+
+  .event-info {
+    margin: 0 0 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px 4px 20px 20px;
+    overflow: hidden;
+
+    @media (max-width: 767px) {
+      margin: 20px 0 40px;
+    }
+
+    .main-tab {
+      display: flex;
+      height: 51px;
+
+      > div {
+        flex: 1;
+        background: #22080d;
+        border-radius: 4px;
+        position: relative;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fa5481;
+
+        img {
+          position: absolute;
+          opacity: 0.2;
+          z-index: -1;
+          max-width: 60%;
+          object-fit: contain;
+        }
+
+        &.active {
+          background: linear-gradient(89.95deg, #b7113e 0.63%, #390f18 99.97%);
+          color: #fff;
+
+          img {
+            opacity: 0.5;
+          }
+
+          &::after,
+          &::before {
+            content: '';
+            position: absolute;
+            // inset: 0;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            background: url(src/assets/images/activity/worldcup2022/c2.svg) no-repeat left center;
+            z-index: -1;
+          }
+
+          &::after {
+            transform: scaleX(-1);
+          }
+        }
+      }
+    }
+
+    .main-con {
+      min-height: 300px;
+      padding: 20px 0 100px 0;
+      background: url(src/assets/images/activity/worldcup2022/event-bg.svg) no-repeat center bottom;
+
+      @media (max-width: 767px) {
+        background-size: contain;
+      }
+
+      .tabs {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 20px;
+        padding-bottom: 5px;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        -webkit-overflow-scroll: touch;
+        // For Firefox
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        scrollbar-width: thin;
+
+        &::-webkit-scrollbar {
+          width: var(--scrollbar-size);
+          height: var(--scrollbar-size);
+        }
+
+        // 滚动条滑槽样式
+        &::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
+
+        // 滚动条样式
+        &::-webkit-scrollbar-thumb {
+          border-radius: var(--scrollbar-size);
+          background: rgba(0, 0, 0, 0.2);
+        }
+
+        .tab {
+          height: 40px;
+          min-width: 96px;
+          flex: 1;
+          border: 1px solid #a33652;
+          border-radius: 4px;
+          font-size: 16px;
+          font-weight: bold;
+          color: #a33652;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+
+          em {
+            text-transform: uppercase;
+          }
+
+          & + .tab {
+            margin-left: 3%;
+
+            @media (max-width: 767px) {
+              margin-left: 1%;
+            }
+          }
+
+          &.active {
+            color: #fff;
+            background: linear-gradient(90deg, #b7113e 0.63%, #390f18 99.97%);
+
+            &::before {
+              content: '';
+              position: absolute;
+              // inset: 0;
+              top: 0;
+              bottom: 0;
+              left: 5px;
+              right: 5px;
+              background: url(src/assets/images/activity/worldcup2022/c4.svg) no-repeat right center;
+              opacity: 0.2;
+            }
+          }
+        }
+      }
+
+      .con {
+        padding: 0 20px;
+        margin-top: 23px;
+
+        &.sc,
+        &.final {
+          display: grid;
+          gap: 20px 39px;
+          grid-template-columns: repeat(2, 1fr);
+
+          @media (max-width: 767px) {
+            grid-template-columns: repeat(1, 1fr);
+          }
+
+          img {
+            width: 100%;
+          }
+        }
+
+        &.final {
+          display: none;
+
+          &.show {
+            display: grid;
+          }
+        }
+
+        &.rank {
+          margin-top: 15px;
+
+          table {
+            width: 100%;
+            font-size: 16px;
+            color: #fff;
+
+            @media (max-width: 767px) {
+              font-size: 14px;
+            }
+
+            th {
+              text-align: center;
+              padding: 22px 5px;
+
+              &.nowrap {
+                white-space: nowrap;
+              }
+            }
+
+            td {
+              padding: 0;
+
+              > div {
+                width: 100%;
+                min-height: 90px;
+                padding: 10px;
+                border: 0px solid #e9440a;
+                border-top-width: 1px;
+                border-bottom-width: 1px;
+                background-color: #3b1018;
+                margin: 7px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+
+              &:first-child {
+                > div {
+                  border-left-width: 1px;
+                  border-radius: 20px 0 0 20px;
+                  position: relative;
+                  z-index: 0;
+
+                  &::before {
+                    content: '';
+                    position: absolute;
+                    left: 10px;
+                    z-index: -1;
+                    width: 112px;
+                    height: 59px;
+                    background: url(src/assets/images/activity/worldcup2022/c3.png) no-repeat left center;
+                  }
+                }
+              }
+
+              &:last-child {
+                > div {
+                  border-radius: 0 20px 20px 0;
+                  border-right-width: 1px;
+                  position: relative;
+                  z-index: 0;
+
+                  &::before {
+                    content: '';
+                    position: absolute;
+                    right: 10px;
+                    z-index: -1;
+                    width: 112px;
+                    height: 59px;
+                    background: url(src/assets/images/activity/worldcup2022/c3.png) no-repeat left center;
+                  }
+                }
+              }
+            }
+          }
+
+          .flag {
+            > div {
+              flex: 1 1 60%;
+              display: flex;
+              justify-content: flex-end;
+              padding-right: 20px;
+
+              img {
+                max-width: 100%;
+              }
+
+              @media (max-width: 767px) {
+                padding-right: 2vw;
+              }
+            }
+
+            > span {
+              flex: 0 0 40%;
+              display: flex;
+              min-width: 2em;
+              justify-content: flex-start;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .tree {
+    padding: 10px 0 120px;
+
+    img {
+      width: 100%;
+      object-fit: contain;
+      cursor: pointer;
+      user-select: none;
+
+      &.tree_h5 {
+        display: none;
+
+        & + .tree_h5 {
+          margin-top: 70px;
+        }
+
+        @media (max-width: 767px) {
+          display: block;
+        }
+      }
+
+      &.tree_web {
+        display: none;
+
+        @media (min-width: 768px) {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.bet_btn {
+  position: fixed;
+  right: 0;
+  top: 35%;
+  z-index: 3;
+}

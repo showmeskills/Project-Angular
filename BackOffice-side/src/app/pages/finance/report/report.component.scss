@@ -1,0 +1,41 @@
+.report-header {
+  background: #fff;
+  border-radius: 6px;
+  display: flex;
+  padding: 0 20px 0;
+  height: 62px;
+  align-items: center;
+}
+
+.tab {
+  display: flex;
+  position: relative;
+  align-self: flex-end;
+  flex: 1;
+
+  &-item {
+    padding: 8px 15px 0;
+    height: 48px;
+    font-size: 16px;
+    color: #a1a5b7;
+    cursor: pointer;
+    position: relative;
+
+    a {
+      color: #a1a5b7;
+    }
+
+    &.active a {
+      color: #009ef7;
+      transition: all 0.3s linear;
+    }
+  }
+
+  &-active {
+    position: absolute;
+    height: 2px;
+    background: #009ef7;
+    bottom: 0;
+    transition: all 0.3s ease-in;
+  }
+}

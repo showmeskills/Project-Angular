@@ -1,0 +1,155 @@
+.detail-header {
+  .btn {
+    width: 126px;
+    text-align: center;
+  }
+  .btn-default {
+    background-color: #fff;
+  }
+}
+
+.detail-title {
+  height: 60px;
+  align-items: center;
+  color: #181c32;
+  display: flex;
+  .btn {
+    margin-left: auto;
+    height: 34px;
+  }
+}
+.item-img-detail {
+  height: 550px;
+  width: 700px;
+  border-radius: 14px;
+  background-color: #f5f8fa;
+}
+.list-item {
+  width: 25%;
+  height: 60px;
+  align-items: center;
+  font-size: 16px;
+  display: flex;
+  .list-title {
+    color: #969bad;
+    word-break: keep-all;
+  }
+  .list-body {
+    color: #373a49;
+    word-break: break-all;
+    padding-right: 20px;
+    .list-btn {
+      width: 72px;
+      height: 34px;
+      line-height: 34px;
+      text-align: center;
+      font-size: 14px;
+      border-radius: 6px;
+      display: inline-block;
+      &.list-btn-success {
+        color: #37bc74;
+        background-color: #e8fff3;
+      }
+      &.list-btn-ing {
+        color: #ffc734;
+        background-color: #fff8dd;
+      }
+      &.list-btn-default {
+        color: #5d5d5d;
+        background-color: #f0f0f0;
+      }
+    }
+  }
+  &.list-item-w100 {
+    width: 100%;
+  }
+}
+.video-box-div {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.video-body {
+  max-width: 100%;
+  max-height: 100%;
+}
+.img-list {
+  .list-item-img {
+    margin-left: 40px;
+    height: 230px;
+    border-radius: 14px;
+    background-color: #f5f8fa;
+    width: 25%;
+    cursor: pointer;
+  }
+  .list-item-video {
+    position: relative;
+    .video-show {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+.list-item-form {
+  margin-top: 24px;
+  .list-title {
+    width: 80px;
+  }
+  .list-body {
+    display: block;
+    width: 650px;
+    .input-text-uc {
+      display: flex;
+      margin-top: 16px;
+      padding-left: 27px;
+      span {
+        color: #969bad;
+        line-height: 42px;
+      }
+      input {
+        width: 240px;
+        color: #969bad;
+      }
+    }
+    .label-tip-text {
+      background-color: #f3f6f9;
+      border-color: #f3f6f9;
+      border-radius: 6px;
+      padding: 15px 15px;
+      color: #969bad;
+      margin-top: 16px;
+    }
+    .label-tip-input {
+      padding: 0 15px;
+      margin-top: 16px;
+    }
+    .radio {
+      b {
+        margin-left: 5px;
+        font-weight: normal;
+        color: #373a49;
+      }
+      .text {
+        color: #969bad;
+        &.input-text {
+          display: flex;
+          align-items: center;
+          margin-left: 30px;
+          input {
+            margin-left: 15px;
+          }
+        }
+        &.tip-text {
+          margin-top: 4px;
+          font-size: 12px;
+        }
+      }
+    }
+    textarea {
+      height: 100px;
+    }
+  }
+}

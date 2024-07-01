@@ -1,0 +1,529 @@
+<div class="sub-theme-container">
+  <div class="sub-theme-header">
+    <div class="sub-theme-left">
+      <i class="header-icon"></i>
+      <span class="header-title">{{ 'affiliate_r' | translate }}</span>
+      <app-tool-tip [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }">
+        <i origin class="icon-warning mutual-opacity"></i>
+        <div tooltip class="tooltip-info">
+          <div class="tooltip-info-text">{{ 'aff_re_ys' | translate }}</div>
+        </div>
+      </app-tool-tip>
+    </div>
+    <i class="right-icon mutual-opacity onact96-not" (click)="openLineChartDialog()"></i>
+  </div>
+  <!-- 头部导航 -->
+  <div class="gray-bgc-nav">
+    <ng-container *ngFor="let item of affiliateCommissionNav; let i = index">
+      <div>
+        <customize-button
+          class="nav-btn onact96-btn"
+          minWidth="130px"
+          [type]="isAffiliateNavActive === i ? 'default' : 'text'"
+          size="medium"
+          [loading]="isAffiliateNavActive === i && loading"
+          [disabled]="loading"
+          (onClick)="onSelectComReturnItem(i)"
+        >
+          <span [class.active]="isAffiliateNavActive == i">{{ item.name }}</span>
+        </customize-button>
+      </div>
+    </ng-container>
+  </div>
+  <!-- 文字 -->
+  <div class="commission-services-txt">
+    <span class="text">{{ 'aff_c_fyrz_d' | translate }}</span>
+  </div>
+  <!-- 表格数据 -->
+  <ng-container
+    *ngTemplateOutlet="
+      dataTemplate;
+      context: {
+        idx: isAffiliateNavActive
+      }
+    "
+  ></ng-container>
+  <app-recommended-return></app-recommended-return>
+</div>
+
+<!-- 数据 template-->
+<ng-template #dataTemplate let-idx="idx">
+  <ng-container [ngSwitch]="idx">
+    <ng-container *ngSwitchCase="0">
+      <ng-container *ngTemplateOutlet="transactionOverviewTmep"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="1">
+      <ng-container *ngTemplateOutlet="productDetailsTmp"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+      <ng-container *ngTemplateOutlet="costInfoTmp"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="3">
+      <ng-container *ngTemplateOutlet="commissionTmp"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="4">
+      <ng-container *ngTemplateOutlet="affiliateDividendTmp"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- 交易总览 -->
+<ng-template #transactionOverviewTmep>
+  <app-table-component
+    [tableHeader]="transOverviewTableHeader"
+    [tableBodyTmp]="overviewTableBodyTmp"
+    [h5DataTemp]="overviewH5DataTmp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="transactionOverview.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="true"
+    [infoTips]="'sent_cc' | translate"
+  ></app-table-component>
+  <ng-template #overviewTableBodyTmp>
+    <tr *ngFor="let item of transactionOverview">
+      <td>{{ item.date }}</td>
+      <td>
+        {{ item.people }}
+        <img class="img-size-icon m-left-5" src="assets/images/friend/icon-people.svg" alt="" />
+      </td>
+      <td>
+        {{ item.ggr | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>
+        {{ item.bonus | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>
+        {{ item.overheadSum | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>
+        {{ item.reconciliation | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>
+        <span class="text">{{ item.miscellaneousTotal | currencyValue : 'USDT' }}</span>
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTmp;
+            context: {
+              title: ('aff_c_yjfhxq' | translate),
+              item: item.miscellaneousTotalCurrency,
+              default: true
+            }
+          "
+        ></ng-container>
+      </td>
+      <td>
+        <span class="text">{{ item.affiliate | currencyValue : 'USDT' }}</span>
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTmp;
+            context: {
+              title: ('aff_rev00' | translate),
+              item: item.affiliateCurrency,
+              default: true
+            }
+          "
+        ></ng-container>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #overviewH5DataTmp>
+    <div class="h5-agent-table-data" *ngFor="let item of transactionOverview">
+      <div class="first-line">
+        <span class="text">{{ 'aff_rev00' | translate }}:</span>
+        {{ item.affiliate | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTmp;
+            context: {
+              title: ('aff_rev00' | translate),
+              item: item.affiliateCurrency,
+              default: true
+            }
+          "
+        ></ng-container>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'dates' | translate }}</p>
+        <p class="group-text">{{ item.date }}</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'aff_c_jyrs' | translate }}</p>
+        <p class="group-text">
+          {{ item.people }}
+          <img class="img-size-icon m-left-5" src="assets/images/friend/icon-people.svg" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">GGR({{ 'aff_re_lr' | translate }})</p>
+        <p class="group-text">
+          {{ item.ggr | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'aff_re_hl' | translate }}</p>
+        <p class="group-text">
+          {{ item.bonus | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'fees' | translate }}</p>
+        <p class="group-text">
+          {{ item.overheadSum | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'aff_re_fees' | translate }}</p>
+        <p class="group-text">
+          {{ item.reconciliation | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'aff_re_fr' | translate }}</p>
+        <p class="group-text">
+          <span class="text">{{ item.miscellaneousTotal | currencyValue : 'USDT' }}</span>
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+          <ng-container
+            *ngTemplateOutlet="
+              toolTipTmp;
+              context: {
+                title: ('aff_c_yjfhxq' | translate),
+                item: item.miscellaneousTotalCurrency,
+                default: true
+              }
+            "
+          ></ng-container>
+        </p>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- 产品利润 -->
+<ng-template #productDetailsTmp>
+  <app-table-component
+    [tableHeader]="dailProfitTableHeader"
+    [tableBodyTmp]="dailyProfitTableBodyTmp"
+    [h5DataTemp]="dailyProfith5DataTemp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="dailyProfit.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="true"
+    [infoTips]="'sent_cc' | translate"
+  ></app-table-component>
+
+  <!-- 表格模版 -->
+  <ng-template #dailyProfitTableBodyTmp>
+    <tr *ngFor="let item of dailyProfit">
+      <td>{{ item.date | mdate : 'YYYY-MM-DD' }}</td>
+      <td *ngFor="let data of item.profitVoList">
+        <div class="group">
+          <div class="left">
+            {{ data.total | currencyValue : 'USDT' }}
+            <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+          </div>
+          <div class="right">
+            {{ data.people }}
+            <img class="img-size-icon m-left-5" src="assets/images/friend/icon-people.svg" />
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- h5数据 -->
+  <ng-template #dailyProfith5DataTemp>
+    <div class="h5-agent-table-data" *ngFor="let item of dailyProfit">
+      <div class="group">
+        <p class="group-text">{{ 'aff_c_jyrq' | translate }}</p>
+        <p class="group-text">{{ item.date | mdate : 'YYYY-MM-DD' }}</p>
+      </div>
+      <div class="group" *ngFor="let data of item.profitVoList">
+        <p class="group-text">{{ data.gameCategory | translate }}</p>
+        <p class="group-text">
+          {{ data.total | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5 m-right-5" [src]="'USDT' | currencyIcon" />
+          {{ data.people }}
+          <img class="img-size-icon m-left-5" src="assets/images/friend/icon-people.svg" />
+        </p>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- 费用明细 -->
+<ng-template #costInfoTmp>
+  <app-table-component
+    [tableHeader]="costInfoTableHeader"
+    [tableBodyTmp]="costInfoTableBodyTmp"
+    [h5DataTemp]="costInfoH5DataTemp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="costInfo.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="true"
+    [infoTips]="'sent_cc' | translate"
+  ></app-table-component>
+
+  <ng-template #costInfoTableBodyTmp>
+    <tr *ngFor="let item of costInfo">
+      <td>{{ item.date | mdate : 'YYYY-MM-DD' }}</td>
+      <td>
+        {{ item.platform | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>
+        {{ item.venue | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>
+        {{ item.cost | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #costInfoH5DataTemp>
+    <div class="h5-agent-table-data" *ngFor="let item of costInfo">
+      <div class="group">
+        <p class="group-text">{{ 'dates' | translate }}</p>
+        <p class="group-text">{{ item.date | mdate : 'YYYY-MM-DD' }}</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'plat_fee00' | translate }}</p>
+        <p class="group-text">
+          {{ item.platform }}
+          <img class="img-size-icon m-left-5" src="assets/images/friend/icon-people.svg" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'ven_fee00' | translate }}</p>
+        <p class="group-text">
+          {{ item.venue | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'aff_re_fee' | translate }}</p>
+        <p class="group-text">
+          {{ item.cost | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- 佣金返还 -->
+<ng-template #commissionTmp>
+  <app-table-component
+    [tableHeader]="commmissionTableHeader"
+    [tableBodyTmp]="commissionTableBodyTmp"
+    [h5DataTemp]="commissionH5DataTmp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="commissionInfo.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="true"
+    [infoTips]="'sent_cc' | translate"
+  ></app-table-component>
+
+  <ng-template #commissionTableBodyTmp>
+    <tr *ngFor="let item of commissionInfo">
+      <td>{{ item.localDate }}</td>
+      <td>{{ item.relationId }}</td>
+      <td>
+        {{ item.activeFlow | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>{{ item.commissionRate * 1000 }}‰</td>
+      <td>
+        {{ item.usdtCurrency | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTmp;
+            context: {
+              title: ('detail' | translate),
+              item: item,
+              default: false
+            }
+          "
+        ></ng-container>
+      </td>
+      <td [class.active]="item.accountStatus == 0">
+        {{ item.accountStatus == 0 ? ('no_p' | translate) : ('p_ed' | translate) }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #commissionH5DataTmp>
+    <div class="h5-agent-table-data" *ngFor="let item of commissionInfo">
+      <div class="first-line">
+        <span class="text">{{ 'ref_amo00' | translate }}:</span>
+        {{ item.usdtCurrency | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTmp;
+            context: {
+              title: ('detail' | translate),
+              item: item,
+              default: false
+            }
+          "
+        ></ng-container>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'dates' | translate }}</p>
+        <p class="group-text">{{ item.localDate }}</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'friends_id' | translate }}</p>
+        <p class="group-text">{{ item.relationId }}</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'effective_flow' | translate }}</p>
+        <p class="group-text">
+          {{ item.activeFlow | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'return_ratio' | translate }}</p>
+        <p class="group-text">{{ item.commissionRate * 1000 }}‰</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'acc_sta00' | translate }}</p>
+        <p class="group-text" [class.active]="item.accountStatus == 0">
+          {{ item.accountStatus == 0 ? ('no_p' | translate) : ('p_ed' | translate) }}
+        </p>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- 联盟分成 -->
+<ng-template #affiliateDividendTmp>
+  <app-table-component
+    [tableHeader]="dividendHeader"
+    [tableBodyTmp]="dividendBodayTmp"
+    [h5DataTemp]="dividendH5DataTmp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="affiliateDividend.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="true"
+    [infoTips]="'sent_cc' | translate"
+  >
+  </app-table-component>
+  <ng-template #dividendBodayTmp>
+    <tr *ngFor="let item of affiliateDividend">
+      <td>{{ item.date | date : 'yyyy-MM-dd' }}</td>
+      <td>
+        {{ item.people }}
+        <img class="img-size-icon m-left-5" src="assets/images/friend/icon-people.svg" alt="" />
+      </td>
+      <td>
+        {{ +item.commissionType === 1 ? ('daily' | translate) : ('monthly' | translate) }}
+      </td>
+      <td>
+        {{ item.revenue | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </td>
+      <td>{{ item.commissionRate * 100 }} %</td>
+      <td [class.active]="item.accountStatus == 0">
+        {{ item.accountStatus == 0 ? ('no_p' | translate) : ('p_ed' | translate) }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #dividendH5DataTmp>
+    <div class="h5-agent-table-data" *ngFor="let item of affiliateDividend">
+      <div class="group">
+        <p class="group-text">{{ 'dates' | translate }}</p>
+        <p class="group-text">{{ item.date | date : 'yyyy-MM-dd' }}</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'aff_c_jyrs' | translate }}</p>
+        <p class="group-text">
+          {{ item.people }}
+          <img class="img-size-icon m-left-5" src="assets/images/friend/icon-people.svg" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'comm_type' | translate }}</p>
+        <p class="group-text">
+          {{ +item.commissionType === 1 ? ('daily' | translate) : ('monthly' | translate) }}
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'aff_rev00' | translate }}</p>
+        <p class="group-text">
+          {{ item.revenue | currencyValue : 'USDT' }}
+          <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+        </p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'ratio' | translate }}</p>
+        <p class="group-text">{{ item.commissionRate * 100 }}%</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'acc_sta00' | translate }}</p>
+        <p class="group-text" [class.active]="item.accountStatus == 0">
+          {{ item.accountStatus == 0 ? ('no_p' | translate) : ('p_ed' | translate) }}
+        </p>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #toolTipTmp let-title="title" let-item="item" let-default="default">
+  <app-tool-tip class="inline-block-ml" [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }">
+    <i origin class="icon-warning mutual-opacity"></i>
+    <div tooltip class="tooltip-info">
+      <p class="cdk-tooltip-info-title">{{ title }}</p>
+      <div class="cdk-tooltip-info-list">
+        <ng-container *ngIf="default">
+          <div *ngFor="let amount of item | keyvalue" class="cdk-tooltip-info-group">
+            <p class="tooltip-info-text">{{ amount.key }}</p>
+            <div>
+              <p class="tooltip-info-text">
+                {{ amount.value | currencyValue : $any(amount.key) }}
+              </p>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!default">
+          <div *ngFor="let game of item.currencyAmount" class="cdk-tooltip-info-group">
+            <p class="tooltip-info-text">{{ game.key | translate }}</p>
+            <div>
+              <p class="tooltip-info-text" *ngFor="let value of game.value">
+                {{ value.amount | currencyValue : value.currency }} {{ value.currency }}
+              </p>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </app-tool-tip>
+</ng-template>

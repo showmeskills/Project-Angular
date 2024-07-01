@@ -1,0 +1,41 @@
+div {
+  display: flex;
+}
+
+.success-verification-clonum {
+  width: 370px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+
+  @media (max-width: 767px) {
+    max-width: 100%;
+  }
+
+  .header {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.38;
+    margin-bottom: 25px;
+  }
+
+  //icon
+  .success-icon {
+    background-image: url(src/assets/images/green_correct.svg);
+    background-size: 89px 83px;
+    background-repeat: no-repeat;
+    width: 89px;
+    height: 84px;
+    margin-top: 11px;
+    margin-bottom: 44px;
+    padding-top: 83px;
+  }
+
+  .success-text {
+    font-size: 14px;
+    color: #707a8a;
+    line-height: 1.43;
+  }
+}

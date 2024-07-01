@@ -1,0 +1,57 @@
+<div class="modal-content">
+  <modal-title [title]="'game.manage.ai_settings' | lang" (close)="modal.dismiss()"></modal-title>
+
+  <div class="modal-body" [appLoading]="isLoading" style="min-height: 450px">
+    <div class="w-100" *ngIf="list.length > 0">
+      <div class="lang-hd">
+        <div class="mr-4 d-flex">
+          <div
+            class="lang-hd-item"
+            *ngFor="let items of list; index as i"
+            [class.active]="curTabValue === items.key"
+            (click)="curTabValue = items.key"
+          >
+            {{ 'game.manage.ai_tabList' | lang: items.key }}
+          </div>
+        </div>
+      </div>
+
+      <div class="lang-bd custom-scroll-y" [style.height.px]="365">
+        <ng-container *ngFor="let items of list; index as i">
+          <div *ngIf="curTabValue === items?.key">
+            <ng-container *ngFor="let key of ['labelList', 'providerList']">
+              <form-row [label]="'game.manage.ai_tabContentList' | lang: key" label-width="140">
+                <ng-template>
+                  <div class="label-box">
+                    <div class="label-item" *ngFor="let item of items?.[key]; index as j">
+                      <img class="lh-1" *ngIf="item?.icon" [src]="item.icon | host" width="18" height="18" />
+                      <div class="px-5 label-item-name">{{ item?.name || item?.providerName || '-' }}</div>
+                      <svg-icon
+                        [src]="'./assets/images/svg/admin-del.svg'"
+                        class="svg-icon svg-icon-2x cursor-pointer d-flex"
+                        (click)="items[key].splice(j, 1)"
+                      ></svg-icon>
+                    </div>
+                    <div class="add" (click)="openSelectLabelPopup(items[key], i, key)">
+                      <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+                    </div>
+                  </div>
+                </ng-template>
+              </form-row>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length && !isLoading"></empty>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">{{ 'common.cancel' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="confirm()" [disabled]="isLoading || !list.length">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

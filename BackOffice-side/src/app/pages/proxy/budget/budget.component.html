@@ -1,0 +1,191 @@
+<div class="card px-12 py-8">
+  <div class="d-flex flex-ac">
+    <div class="flex-1 d-flex">
+      <ng-container *ngIf="!edit">
+        <form-row [label]="'budget.teamSelection' | lang" style="margin-right: 96px">
+          <ng-template>
+            <mat-form-field>
+              <mat-select
+                class="form-control"
+                [(ngModel)]="team"
+                [style.width.px]="200"
+                (selectionChange)="loadBudget()"
+              >
+                <mat-option [value]="item.id" *ngFor="let item of teamList">{{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <form-row class="flex-1" [label]="'budget.teamBudget' | lang">
+        <span class="fz-16"
+          >${{ data.totalRest | currencyValue: 'USDT' }} / ${{ data.totalQuota | currencyValue: 'USDT' }}</span
+        >
+      </form-row>
+    </div>
+
+    <span class="btn btn-light btn-hover-primary px-10" (click)="onEdit()">{{
+      edit ? ('common.cancel' | lang) : ('common.edit' | lang)
+    }}</span>
+    <!-- 新建申请 -->
+    <span class="btn btn-light btn-hover-primary px-4 ml-8" (click)="openApply()">{{
+      'budget.newApplication' | lang
+    }}</span>
+  </div>
+
+  <div>
+    <form-row class="flex-1" [label]="'budget.budgetAllocation' | lang"></form-row>
+  </div>
+
+  <div class="d-flex flex-wrap flex-bt main-content" style="margin: 0 -30px">
+    <form-row class="mx-12" [label]="item.userName" line-height="36px" *ngFor="let item of data?.quotaList">
+      <budget-select [edit]="edit" (add)="onAdd(item, $event)">
+        <!-- 剩余预算金额/总预算金额 -->
+        <ng-container budget-select-over>${{ item.rest | currencyValue: 'USDT' }}</ng-container>
+        <ng-container budget-select-total>${{ item.quota | currencyValue: 'USDT' }}</ng-container>
+      </budget-select>
+    </form-row>
+
+    <form-row class="mx-12 empty" line-height="0" *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"></form-row>
+  </div>
+
+  <div *ngIf="edit" class="d-flex justify-content-end card-toolbar flex-1 btn-wrap flex-nowrap text-nowrap pt-8">
+    <button class="c-btn c-btn-default" (click)="readCache()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="setBudget()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card px-12 py-8 mt-8">
+  <div class="d-flex flex-ac">
+    <!-- 提现记录 -->
+    <div class="fz-20 flex-1">{{ 'budget.withdrawalsRecord' | lang }}</div>
+
+    <div>
+      <mat-form-field [style.width.px]="117">
+        <mat-select class="form-control" [ngModel]="''" [style.height.px]="34">
+          <mat-option [value]="''">2022-01</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2 px-3">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'budget.applicationTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.transactionNumber' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.currency' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.amount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.applicant' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.approver' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.paymentProgress' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <tr *ngFor="let item of list; let i = index">
+          <td><span class="cell">2021-09-24 14:36:10</span></td>
+          <td><span class="cell">234666</span></td>
+          <td><span class="cell">CNY</span></td>
+          <td><span class="cell">2430.50</span></td>
+          <td><span class="cell">申请人A</span></td>
+          <td><span class="cell">审批人</span></td>
+          <td>
+            <span class="cell">
+              <span
+                *ngIf="i === 0"
+                class="cursor-pointer label label-lg label-inline label-light-yellow px-0 text-center"
+                >待审批</span
+              >
+              <span
+                *ngIf="i === 1"
+                class="cursor-pointer label label-lg label-inline label-light-success px-0 text-center"
+                >已审批</span
+              >
+              <span *ngIf="i === 2" class="cursor-pointer label label-lg label-inline label-light-info px-0 text-center"
+                >已提交</span
+              >
+              <span
+                *ngIf="i === 3"
+                class="cursor-pointer label label-lg label-inline label-light-primary px-0 text-center"
+                >出款完成</span
+              >
+              <span
+                *ngIf="i === 4"
+                class="cursor-pointer label label-lg label-inline label-light-danger px-0 text-center"
+                >已拒绝</span
+              >
+              <span
+                *ngIf="i === 5"
+                class="cursor-pointer label label-lg label-inline label-light-primary px-0 text-center"
+                >出款完成</span
+              >
+              <span
+                *ngIf="i > 5"
+                class="cursor-pointer label label-lg label-inline label-light-success px-0 text-center"
+                >已审批</span
+              >
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-right">
+      <div class="d-inline-block">
+        <form-row class="border-bottom" [label]="'budget.totalPrepaidCommission' | lang"
+          ><span class="color-222 fz-16">34,463,945.00</span></form-row
+        >
+      </div>
+    </div>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between flex-ac pt-12">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData()"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="isLoading"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

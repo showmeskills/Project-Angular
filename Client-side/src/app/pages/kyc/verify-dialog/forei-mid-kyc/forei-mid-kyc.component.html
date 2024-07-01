@@ -1,0 +1,440 @@
+<div class="mid-forei-container">
+  <!--标题栏-->
+  <div class="header-container">
+    <!--icon 返回-->
+    <div class="dailog-header">{{ 'inter_ceri' | translate }}</div>
+    <div>
+      <span
+        class="icon-left-arrow mutual-opacity onact96-not"
+        *ngIf="euPageStep !== 1 || aisaPageStep !== 1 || euIDPageStep !== 1 || poaPageStep !== 1"
+        (click)="back()"
+        [class.disabled]="renderNavDisable()"
+      ></span>
+      <span
+        class="icon-close-simple mutual-opacity onact96-not"
+        (click)="close()"
+        [class.disabled]="renderNavDisable()"
+      ></span>
+    </div>
+  </div>
+  <!--验证表单-->
+  <div class="dailog-container">
+    <!-- 欧洲表格 -->
+    <ng-container *ngIf="kycService.getSwitchEuKyc && isEurope; else defaultAisa">
+      <!-- 欧洲 全流程 -->
+      <ng-container *ngIf="isFullEuProcess">
+        <ng-container [ngSwitch]="euPageStep">
+          <!--ID-->
+          <ng-container *ngSwitchCase="1">
+            <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+          </ng-container>
+          <!--ID upload Img -->
+          <ng-container *ngSwitchCase="2">
+            <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+          </ng-container>
+          <!--Poa page1 地址信息 -->
+          <ng-container *ngSwitchCase="3">
+            <ng-container *ngTemplateOutlet="poaStapOne"></ng-container>
+          </ng-container>
+          <!--Poa page2 upload Img-->
+          <ng-container *ngSwitchCase="4">
+            <ng-container *ngTemplateOutlet="poaStapTwo"></ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <!-- 欧洲 补充ID 流程 -->
+      <ng-container *ngIf="isIDProcess">
+        <ng-container [ngSwitch]="euIDPageStep">
+          <!--ID-->
+          <ng-container *ngSwitchCase="1">
+            <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+          </ng-container>
+          <!--ID upload Img -->
+          <ng-container *ngSwitchCase="2">
+            <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <!-- 欧洲 补充 地址证明流程 -->
+      <ng-container *ngIf="poaProcess">
+        <ng-container [ngSwitch]="poaPageStep">
+          <!--Poa page1 地址信息 -->
+          <ng-container *ngSwitchCase="1">
+            <ng-container *ngTemplateOutlet="poaStapOne"></ng-container>
+          </ng-container>
+          <!--Poa page2 upload Img-->
+          <ng-container *ngSwitchCase="2">
+            <ng-container *ngTemplateOutlet="poaStapTwo"></ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+    <!-- 亚洲表 -->
+    <ng-template #defaultAisa>
+      <ng-container [ngSwitch]="aisaPageStep">
+        <!--ID-->
+        <ng-container *ngSwitchCase="1">
+          <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+        </ng-container>
+        <!--ID upload Img -->
+        <ng-container *ngSwitchCase="2">
+          <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-template>
+
+    <!--页脚：权责提示-->
+    <div class="footer-container">
+      <div class="btn-group">
+        <!-- <button class="consider-btn onact96-not" (click)="close()">{{ 'think_again' | translate }}</button> -->
+        <div class="overide-size">
+          <customize-button
+            width="100%"
+            type="primary"
+            size="large"
+            (onClick)="handleNext()"
+            [disabled]="!canSubmit() || submitLoading"
+            [loading]="submitLoading"
+          >
+            {{ 'continue' | translate }}
+          </customize-button>
+        </div>
+      </div>
+      <div class="notice-row">
+        <i class="safety-i"></i>
+        <div class="notice-text">
+          {{ 'secure_info' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--ID-->
+<ng-template #stepOne>
+  <!--地区选择-->
+  <div class="country-selecter-colunm">
+    <label class="form-header">{{ 'issue_c' | translate }}</label>
+    <!--选择国家  [disabled]="true"-->
+    <app-country-selecter
+      [smallSize]="certType === 'PASSPORT'"
+      [isFromDialog]="true"
+      [isShowSearch]="true"
+      [fullCountry]="false"
+      [disabled]="basicUserKycInfoLoading"
+    ></app-country-selecter>
+    <!-- 姓名输入框 -->
+    <div class="form-colunm" *ngIf="!isEurope">
+      <app-customize-input
+        [readonly]="true"
+        [disabled]="true"
+        [required]="true"
+        size="large"
+        [value]="fullName"
+        [label]="'name' | translate"
+        [trim]="false"
+        [disabled]="true"
+        notice="{{ 'fullname_notice' | translate }}"
+        [loading]="basicUserKycInfoLoading"
+      >
+      </app-customize-input>
+    </div>
+    <!-- 姓/名输入框 -->
+    <ng-container *ngIf="isEurope">
+      <div class="form-colunm">
+        <app-customize-input
+          [required]="true"
+          size="large"
+          [(value)]="firstName"
+          [label]="'first_name' | translate"
+          [trim]="false"
+          [disabled]="true"
+          [loading]="basicUserKycInfoLoading"
+        >
+        </app-customize-input>
+      </div>
+      <div class="form-colunm">
+        <app-customize-input
+          [required]="true"
+          size="large"
+          [(value)]="lastName"
+          [label]="'last_name' | translate"
+          [trim]="false"
+          [disabled]="true"
+          [loading]="basicUserKycInfoLoading"
+        >
+        </app-customize-input>
+      </div>
+    </ng-container>
+    <!--labe-->
+    <div class="dailog-labe">
+      <span class="txt-bold">{{ 'vaild_doc' | translate }}</span>
+      <span class="txt-s">{{ 'only_acc' | translate }}</span>
+    </div>
+  </div>
+  <!--验证表单-->
+  <!-- 身份证 -->
+  <div class="format-container" *ngIf="idcardAllowed">
+    <div class="cert-btn onact96" [class.select]="certType === 'ID_CARD'" (click)="onCertChanged('ID_CARD')">
+      <span
+        ><i class="icon-license" [ngClass]="{ 'icon-hover': certType === 'ID_CARD' }"></i
+        >{{ 'id_card' | translate }}</span
+      >
+    </div>
+  </div>
+  <!-- 护照 -->
+  <div class="format-container" *ngIf="passportAllowed">
+    <div class="cert-btn onact96" [class.select]="certType === 'PASSPORT'" (click)="onCertChanged('PASSPORT')">
+      <span
+        ><i class="icon-passport" [ngClass]="{ 'icon-hover': certType === 'PASSPORT' }"></i
+        >{{ 'passport' | translate }}</span
+      >
+    </div>
+  </div>
+  <!-- 驾照 -->
+  <div class="format-container" *ngIf="driverLicenseAllowed">
+    <div
+      class="cert-btn onact96"
+      [class.select]="certType === 'DRIVING_LICENSE'"
+      (click)="onCertChanged('DRIVING_LICENSE')"
+    >
+      <span
+        ><i class="icon-license" [ngClass]="{ 'icon-hover': certType === 'DRIVING_LICENSE' }"></i
+        >{{ 'driver_license' | translate }}</span
+      >
+    </div>
+  </div>
+</ng-template>
+<!--ID upload Img-->
+<ng-template #stepTwo>
+  <ng-container [ngSwitch]="certType">
+    <!--身份证验证-->
+    <ng-container *ngSwitchCase="'ID_CARD'">
+      <div class="ic-view-contianer">
+        <span class="header">{{ 'up_file' | translate }}</span>
+        <!--img-->
+        <div class="image" [class]="appService.languageCode"></div>
+        <div class="item-contant" *ngFor="let item of detailConfig; let i = index">
+          <span class="icon-{{ item.icon }} right" [class.red-color]="i == 4 || i == 5"></span>
+          {{ item.value }}
+        </div>
+        <div class="req-format">
+          {{ 'upl_limits' | translate }}
+        </div>
+        <div class="uploader-containter">
+          <!--正面-->
+          <div class="front-uploader" [class.disabled]="renderUploadData().ID_CARD.frontImage.loading">
+            <div class="note" [class.hide]="renderUploadData().ID_CARD.frontImage.valid">
+              <i class="icon"></i>
+              <span>{{ 'up_port' | translate }}</span>
+            </div>
+            <div class="note top" *ngIf="renderUploadData().ID_CARD.frontImage.valid">
+              <i class="up-icon"></i>
+              <span>{{ 'upload' | translate }}</span>
+            </div>
+            <i class="animation-icon-loading-dot" *ngIf="renderUploadData().ID_CARD.frontImage.loading"
+              ><i></i><i></i><i></i
+            ></i>
+            <object
+              *ngIf="renderUploadData().ID_CARD.frontImage.valid"
+              [type]="renderUploadData().ID_CARD.frontImage.upload.type"
+              [data]="renderUploadData().ID_CARD.frontImage.upload.imgFileUrl | safe"
+            ></object>
+            <input
+              class="mutual-opacity"
+              type="file"
+              #inputFront
+              (change)="selectFile(inputFront, 'ID_CARD', 'frontImage')"
+            />
+          </div>
+          <!--背面-->
+          <div class="back-uploader" [class.disabled]="renderUploadData().ID_CARD.backImage.loading">
+            <div class="note" [class.hide]="renderUploadData().ID_CARD.backImage.valid">
+              <i class="icon"></i>
+              <span>{{ 'up_country' | translate }}</span>
+            </div>
+            <div class="note top" *ngIf="renderUploadData().ID_CARD.backImage.valid">
+              <i class="up-icon"></i>
+              <span>{{ 'upload' | translate }}</span>
+            </div>
+            <i class="animation-icon-loading-dot" *ngIf="renderUploadData().ID_CARD.backImage.loading"
+              ><i></i><i></i><i></i
+            ></i>
+            <object
+              *ngIf="renderUploadData().ID_CARD.backImage.valid"
+              [type]="renderUploadData().ID_CARD.backImage.upload.type"
+              [data]="renderUploadData().ID_CARD.backImage.upload.imgFileUrl | safe"
+            ></object>
+            <input
+              class="mutual-opacity"
+              type="file"
+              #inputBack
+              (change)="selectFile(inputBack, 'ID_CARD', 'backImage')"
+            />
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!--护照验证-->
+    <ng-container *ngSwitchCase="'PASSPORT'">
+      <div class="ic-view-contianer">
+        <span class="header">{{ 'up_file' | translate }}</span>
+        <!--img-->
+        <div class="image" [class]="appService.languageCode"></div>
+        <div class="item-contant" *ngFor="let item of detailConfig; let i = index">
+          <span class="icon-{{ item.icon }} right" [class.red-color]="i == 4 || i == 5"></span>
+          {{ item.value }}
+        </div>
+        <div class="req-format">
+          {{ 'file_size' | translate }}
+        </div>
+        <div class="uploader-containter colunm" [class.disabled]="renderUploadData().PASSPORT.loading">
+          <div class="face-uploader">
+            <div class="note" [class.hide]="renderUploadData().PASSPORT.valid">
+              <i class="icon"></i>
+              <span>{{ 'up_port' | translate }}</span>
+            </div>
+            <div class="note top" *ngIf="renderUploadData().PASSPORT.valid">
+              <i class="up-icon"></i>
+              <span>{{ 'upload' | translate }}</span>
+            </div>
+            <i class="animation-icon-loading-dot" *ngIf="renderUploadData().PASSPORT.loading"><i></i><i></i><i></i></i>
+            <object
+              *ngIf="renderUploadData().PASSPORT.valid"
+              [type]="renderUploadData().PASSPORT.upload.type"
+              [data]="renderUploadData().PASSPORT.upload.imgFileUrl | safe"
+            ></object>
+            <input class="mutual-opacity" type="file" #input (change)="selectFile(input, 'PASSPORT')" />
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!--驾驶证-->
+    <ng-container *ngSwitchCase="'DRIVING_LICENSE'">
+      <div class="ic-view-contianer">
+        <span class="header">{{ 'up_file' | translate }}</span>
+        <!--img-->
+        <div class="image" [class]="appService.languageCode"></div>
+        <div class="item-contant" *ngFor="let item of detailConfig; let i = index">
+          <span class="icon-{{ item.icon }} right" [class.red-color]="i == 4 || i == 5"></span>
+          {{ item.value }}
+        </div>
+        <div class="req-format">
+          {{ 'file_size' | translate }}
+        </div>
+        <div class="uploader-containter colunm" [class.disabled]="renderUploadData().DRIVING_LICENSE.loading">
+          <div class="face-uploader">
+            <div class="note" [class.hide]="renderUploadData().DRIVING_LICENSE.valid">
+              <i class="icon"></i>
+              <span>{{ 'up_port' | translate }}</span>
+            </div>
+            <div class="note top" *ngIf="renderUploadData().DRIVING_LICENSE.valid">
+              <i class="up-icon"></i>
+              <span>{{ 'upload' | translate }}</span>
+            </div>
+            <i class="animation-icon-loading-dot" *ngIf="renderUploadData().DRIVING_LICENSE.loading"
+              ><i></i><i></i><i></i
+            ></i>
+            <object
+              *ngIf="renderUploadData().DRIVING_LICENSE.valid"
+              [type]="renderUploadData().DRIVING_LICENSE.upload.type"
+              [data]="renderUploadData().DRIVING_LICENSE.upload.imgFileUrl | safe"
+            ></object>
+            <input class="mutual-opacity" type="file" #input (change)="selectFile(input, 'DRIVING_LICENSE')" />
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+<!--POA page 1：地址，邮件等-->
+<ng-template #poaStapOne>
+  <div class="poa-container">
+    <p class="poa-header">{{ 'prof_ad' | translate }}</p>
+    <!--地区选择-->
+    <div class="mid-header">{{ 'confirm_residential_address' | translate }}</div>
+    <form>
+      <ul>
+        <!--选择国家：用户不可选择-->
+        <li class="form-colunm">
+          <label class="form-header">{{ 'nationality' | translate }}</label>
+          <app-country-selecter
+            [isShowSearch]="true"
+            [isFromDialog]="true"
+            [disabled]="true"
+            [countryISO]="countryCode"
+          ></app-country-selecter>
+        </li>
+        <li class="form-colunm">
+          <app-customize-input
+            [required]="true"
+            size="large"
+            [trim]="false"
+            [(value)]="address"
+            [label]="'residence_ad' | translate"
+            [disabled]="basicUserKycInfoLoading"
+            [loading]="basicUserKycInfoLoading"
+          ></app-customize-input>
+        </li>
+        <li class="form-colunm">
+          <div class="form-row">
+            <app-customize-input
+              [required]="true"
+              size="large"
+              type="text"
+              [(value)]="zipCode"
+              [format]="kycService.zipCodeFormat"
+              [trim]="basicUserKycInfoLoading"
+              [label]="'pt_c' | translate"
+              [loading]="basicUserKycInfoLoading"
+            ></app-customize-input>
+            <app-customize-input
+              [required]="true"
+              size="large"
+              [(value)]="city"
+              [trim]="basicUserKycInfoLoading"
+              [label]="'city' | translate"
+              [loading]="basicUserKycInfoLoading"
+            ></app-customize-input>
+          </div>
+        </li>
+      </ul>
+    </form>
+  </div>
+</ng-template>
+<!--POA page 2:传照片-->
+<ng-template #poaStapTwo>
+  <div class="poa-container">
+    <p class="poa-header">{{ 'prof_ad' | translate }}</p>
+    <div class="details-column">
+      <p class="txt txt-14">{{ 'provide_file' | translate }}</p>
+      <p class="link onact96" (click)="openNotice()" (clickOutside)="showNotice = false">
+        {{ 'support_file' | translate }}
+        <span *ngIf="showNotice" class="notice-box">
+          <p class="notice-title txt-14">{{ noticeConfig.title }}</p>
+          <p class="txt" *ngFor="let item of noticeConfig.list">.{{ item }}</p>
+        </span>
+      </p>
+      <p class="txt">{{ poaDetailConfig.title }}</p>
+      <p class="txt" *ngFor="let item of poaDetailConfig.detailList">{{ item }}</p>
+    </div>
+    <!--上传文档-->
+    <div class="document-box">
+      <div class="uploader-containter mutual-opacity colunm">
+        <div class="face-uploader">
+          <i *ngIf="renderUploadData().POA.loading" class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+          <div class="note">
+            <i class="icon-kyc-camera"></i>
+            <span>{{ (!renderUploadData().POA.valid ? 'up_files' : 'upload_again') | translate }}</span>
+          </div>
+          <object
+            *ngIf="renderUploadData().POA.valid"
+            [type]="renderUploadData().POA.upload.type"
+            [data]="renderUploadData().POA.upload.imgFileUrl | safe"
+          ></object>
+          <input class="mutual-opacity" type="file" #input (change)="selectFile(input, 'POA')" />
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,214 @@
+@mixin _show_status() {
+  .status-pending {
+    color: #0091ff;
+    cursor: pointer;
+  }
+
+  .status-process {
+    color: #e3ab6a;
+  }
+
+  .status-pass {
+    color: #6bb220;
+  }
+
+  .status-fail {
+    color: var(--primary-color);
+  }
+
+  .group-text-yellow {
+    background-color: rgba(227, 171, 106, 0.1);
+    color: #e3ab6a;
+  }
+
+  .positive-income,
+  .font-green {
+    color: #26a17b;
+  }
+
+  .negative-income,
+  .font-red {
+    color: var(--primary-color);
+  }
+
+  .active {
+    color: var(--primary-color);
+  }
+}
+
+.render-data-container {
+  min-height: 300px;
+
+  @media (max-width: 767px) {
+    min-height: 200px;
+  }
+}
+
+//导出
+.content-web-export {
+  max-width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--list-hover-bg-color);
+  padding: 0 32px 0 16px;
+
+  @media (max-width: 767px) {
+    padding: 8px 14px;
+  }
+
+  .text {
+    font-size: 12px;
+    color: var(--text-color);
+
+    @media (max-width: 767px) {
+      line-height: 1.48;
+      max-width: 60%;
+    }
+  }
+
+  .warning {
+    color: var(--primary-color);
+
+    @media (max-width: 767px) {
+      line-height: 1.48;
+      max-width: 60%;
+    }
+  }
+
+  &-graph {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .export-icon {
+      width: 15px;
+      height: 15px;
+      background-image: url(src/assets/images/friend/web-export.svg);
+    }
+
+    > span {
+      font-size: 12px;
+      color: var(--text-color);
+      margin-left: 6px;
+      white-space: nowrap;
+    }
+  }
+}
+
+.table-list {
+  margin-top: 15px;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+
+    .text {
+      display: inline-block;
+    }
+
+    thead {
+      tr {
+        th {
+          text-align: center;
+          padding: 12px 6px;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    ::ng-deep {
+      tbody {
+        tr {
+          &:nth-child(odd) {
+            background-color: var(--list-hover-bg-color);
+          }
+
+          td {
+            font-size: 14px;
+            color: var(--text-color);
+            padding: 12px 6px;
+            text-align: center;
+            white-space: nowrap;
+          }
+
+          @include _show_status();
+        }
+      }
+    }
+  }
+
+  .customize-table {
+    tr {
+      th {
+        background-color: var(--default-border-color);
+      }
+    }
+
+    ::ng-deep {
+      tbody {
+        tr {
+          &:nth-child(odd) {
+            background-color: transparent;
+          }
+
+          td {
+            padding: 18px 6px;
+            border-bottom: 1px solid var(--default-border-color);
+          }
+        }
+      }
+    }
+  }
+}
+
+//h5 推荐返还数据
+::ng-deep {
+  .h5-agent-table-data {
+    border-bottom: solid 1px #e6e8ea;
+    padding-bottom: 20px;
+
+    .icon-download {
+      width: 67px;
+      height: 25px;
+    }
+
+    .first-line {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 20px;
+    }
+
+    .text {
+      font-size: 14px;
+      color: var(--text-color);
+    }
+
+    .icon-right {
+      margin-right: 11px;
+    }
+
+    .group {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .group-text-red,
+      .group-text-yellow {
+        border-radius: 4px;
+        background-color: rgba(251, 105, 67, 0.03);
+        color: var(--primary-color);
+        padding: 4px;
+      }
+
+      .group-text {
+        font-size: 14px;
+        color: var(--text-color-20);
+      }
+
+      @include _show_status();
+    }
+  }
+}

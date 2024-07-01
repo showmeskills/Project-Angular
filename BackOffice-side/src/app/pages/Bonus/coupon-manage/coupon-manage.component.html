@@ -1,0 +1,360 @@
+<div class="card pl-8 pr-8 pt-8 pb-12 coupon-header">
+  <!-- 优惠券概览 -->
+  <div class="fz-20 fw-bolder mb-10">{{ 'member.coupon.couponOverview' | lang }}</div>
+  <ul class="w-100 overview-box">
+    <li class="item">
+      <div class="item-tips">
+        <svg-icon
+          [src]="'./assets/images/svg/coupon-vector.svg'"
+          class="svg-icon vector"
+          [ngbTooltip]="'member.coupon.totalCoup' | lang"
+          placement="top"
+        ></svg-icon>
+        <!-- 总共发送的优惠券数量 -->
+        <!-- <div class="tips-content" style="width: 230px">{{ 'member.coupon.totalCoup' | lang }}</div> -->
+      </div>
+      <div class="ml-23">
+        <div class="fz-32 lh-32 mb-4">{{ (sumData?.allCount | toFormatMoney) || '0' }}</div>
+        <!-- 总发送（张） -->
+        <div class="fz-16 color-aaa">{{ 'member.coupon.totalSent' | lang }}</div>
+      </div>
+    </li>
+    <li class="item">
+      <div class="item-tips">
+        <svg-icon
+          [src]="'./assets/images/svg/coupon-vector.svg'"
+          class="svg-icon vector"
+          [ngbTooltip]="'member.coupon.expiredCoup' | lang"
+          placement="top"
+        ></svg-icon>
+        <!-- 已经过期的优惠券数量 -->
+        <!-- <div class="tips-content" style="width: 400px">{{ 'member.coupon.expiredCoup' | lang }}</div> -->
+      </div>
+      <div class="ml-23">
+        <div class="fz-32 lh-32 mb-4">{{ (sumData?.expiryCount | toFormatMoney) || '0' }}</div>
+        <!-- 已过期（张） -->
+        <div class="fz-16 color-aaa">{{ 'member.coupon.expiredSheets' | lang }}</div>
+      </div>
+    </li>
+    <li class="item">
+      <div class="item-tips">
+        <svg-icon
+          [src]="'./assets/images/svg/coupon-vector.svg'"
+          class="svg-icon vector"
+          [ngbTooltip]="'member.coupon.sucRedeemed' | lang"
+          placement="top"
+        ></svg-icon>
+        <!-- 用户在前台成功兑换的数量 -->
+        <!-- <div class="tips-content" style="width: 400px; left: -150px">{{ 'member.coupon.sucRedeemed' | lang }}</div> -->
+      </div>
+      <div class="ml-23">
+        <div class="fz-32 lh-32 mb-4">{{ (sumData?.receivedCount | toFormatMoney) || '0' }}</div>
+        <div class="fz-16 color-aaa d-flex">
+          <!-- 已兑换 -->
+          {{ 'member.coupon.redeemed' | lang }}
+          <p
+            class="ml-23 cursor-pointer"
+            style="color: #009ef7"
+            (click)="router.navigate(['/bonus/coupon-manage/record'])"
+          >
+            <!-- 兑换记录 -->
+            {{ 'member.coupon.exchangeRecord' | lang }}
+          </p>
+        </div>
+      </div>
+    </li>
+    <li class="item">
+      <div class="item-tips">
+        <svg-icon
+          [src]="'./assets/images/svg/coupon-vector.svg'"
+          class="svg-icon vector"
+          [ngbTooltip]="'member.coupon.percentage' | lang"
+          placement="left"
+        ></svg-icon>
+        <!-- 百分比 -->
+        <!-- <div class="tips-content" style="width: 400px; left: -350px">{{ 'member.coupon.percentage' | lang }}</div> -->
+      </div>
+      <div class="ml-23">
+        <div class="fz-32 lh-32 mb-4">
+          {{ (sumData?.useRate | toFormatMoney: { minimumDecimalPlaces: 2 }) || '0.00' }}%
+        </div>
+        <!-- 使用率 -->
+        <div class="fz-16 color-aaa">{{ 'member.coupon.Usage' | lang }}</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="card rounded mt-12 mb-12">
+  <div class="card-header py-8 d-flex flex-wrap">
+    <form-row [label]="'common.name' | lang" class="mr-16" [contentWidth]="350">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="data.name"
+          [placeholder]="'member.coupon.keyword' | lang"
+          (keyup)="$event.keyCode === 13 && getList(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'member.coupon.type' | lang" class="mr-16" [contentWidth]="200">
+      <ng-template>
+        <mat-form-field [style.width.px]="200">
+          <mat-select class="form-control" [(ngModel)]="data.type" (selectionChange)="getList(true)">
+            <mat-option value="">{{ 'common.all' | lang }} </mat-option>
+            <mat-option *ngFor="let item of typeList" [value]="item.value">
+              {{ item.lang | lang }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="getList(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex flex-ac justify-content-between">
+      <div class="fz-20 fw-bolder">{{ 'member.coupon.coupList' | lang }}</div>
+      <div>
+        <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4" (click)="onAddCoupnPopup()">
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'member.coupon.addCoup' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th [style.width]="'23%'">
+              <span class="cell">{{ 'common.name' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.couponCode' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.type' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort('createTime')">
+                  <span>{{ 'member.coupon.creadTime' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="data.order === 'createTime' && data.isAsc"></div>
+                    <div class="triangle-down" [class.active]="data.order === 'createTime' && !data.isAsc"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                  <span>{{ 'member.coupon.validityPeriod' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="data.order === 'tmpExpiry' && data.isAsc"></div>
+                    <div class="triangle-down" [class.active]="data.order === 'tmpExpiry' && !data.isAsc"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.exchangeQuantity' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.Usage' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.status' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.operating' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.voucherName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.tmpCode || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ this.couponService.getCouponTypeLang(item.voucherType) | lang }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createTime | timeUTCFormatLocal }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.voucherIndateValue || ('member.coupon.perValid' | lang) }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.receivedCount ? (item.receivedCount | toFormatMoney) : '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.receivedRate ? item.receivedRate + '%' : '-' }}</span>
+            </td>
+            <td>
+              <span class="cell text-nowrap">
+                <ng-container [ngSwitch]="item.tmpState">
+                  <!-- 红色 - -1: 上架审核中 -->
+                  <span *ngSwitchCase="-1" class="label label-lg label-inline label-light-yellow text-center">{{
+                    'member.coupon.openUnderReview' | lang
+                  }}</span>
+
+                  <!-- 红色 - 0:待审核 -->
+                  <span *ngSwitchCase="0" class="label label-lg label-inline label-light-danger text-center">{{
+                    'member.coupon.pendingReview' | lang
+                  }}</span>
+
+                  <!-- 黄色 - 1:已审核:优惠券通过审核，但还未配置发放人群 -->
+                  <span *ngSwitchCase="1" class="label label-lg label-inline label-light-yellow text-center">{{
+                    'member.coupon.audited' | lang
+                  }}</span>
+
+                  <!-- 红色 - 2:审批失败 -->
+                  <span *ngSwitchCase="2" class="label label-lg label-inline label-light text-center">{{
+                    'member.coupon.approvalFailed' | lang
+                  }}</span>
+
+                  <!-- 绿色 - 3:已发放:完成配置发放人群 -->
+                  <span *ngSwitchCase="3" class="label label-lg label-inline label-light-success text-center">{{
+                    'member.coupon.issued' | lang
+                  }}</span>
+
+                  <!-- 红色 - -2: 下架审核中 -->
+                  <span *ngSwitchCase="-2" class="label label-lg label-inline label-light-yellow text-center">{{
+                    'member.coupon.closeUnderReview' | lang
+                  }}</span>
+
+                  <!-- 灰色 - 4:已下架:卡券被下架，卡券不可以再被兑换 -->
+                  <span *ngSwitchCase="4" class="label label-lg label-inline label-light text-center">{{
+                    'member.coupon.beenRemoved' | lang
+                  }}</span>
+
+                  <!-- 灰色 - 5:已过期:卡券过期 -->
+                  <span *ngSwitchCase="5" class="label label-lg label-inline label-light text-center">{{
+                    'member.coupon.expired' | lang
+                  }}</span>
+
+                  <!-- 未知状态 -->
+                  <span *ngSwitchDefault class="label label-lg label-inline label-light text-center">{{
+                    'member.coupon.statusUnknown' | lang
+                  }}</span>
+                </ng-container>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <ng-container [ngSwitch]="item.tmpState">
+                  <!-- 0:待审核 -->
+                  <ng-container *ngSwitchCase="0">
+                    <span class="btn btn-default mx-2" (click)="onAddCoupnPopup(item)">{{
+                      'member.coupon.edit' | lang
+                    }}</span>
+                    <span
+                      class="btn btn-light-danger mx-2"
+                      (click)="onOpenWarningPopup('audit', item.id, item.tmpCode)"
+                      >{{ 'member.coupon.review' | lang }}</span
+                    >
+                  </ng-container>
+                  <!-- 1:已审核 -->
+                  <ng-container *ngSwitchCase="1">
+                    <span class="btn btn-default mx-2" style="color: #009ef7" (click)="onSendCoupnPopup(item)">
+                      {{ 'member.coupon.issueCoup' | lang }}
+                    </span>
+                    <span
+                      class="btn btn-light-info mx-2"
+                      (click)="onOpenWarningPopup('takeDown', item.id, item.tmpCode)"
+                      >{{ 'member.coupon.offShelf' | lang }}</span
+                    >
+                    <!-- 查看 -->
+                    <span class="btn btn-default mx-2" (click)="onAddCoupnPopup(item, 'check')">{{
+                      'common.review' | lang
+                    }}</span>
+                  </ng-container>
+                  <!-- 3:已发放 -->
+                  <ng-container *ngSwitchCase="3">
+                    <span class="btn btn-default mx-2" style="color: #009ef7" (click)="onSendCoupnPopup(item)">
+                      {{ 'member.coupon.issueCoup' | lang }}</span
+                    >
+                    <span
+                      class="btn btn-light-info mx-2"
+                      (click)="onOpenWarningPopup('takeDown', item.id, item.tmpCode)"
+                      >{{ 'member.coupon.offShelf' | lang }}</span
+                    >
+                    <!-- 查看 -->
+                    <span class="btn btn-default mx-2" (click)="onAddCoupnPopup(item, 'check')">{{
+                      'common.review' | lang
+                    }}</span>
+                  </ng-container>
+                  <!-- -1: 上架审核中，-2：下架审核中 ，2：审批失败，4：已下架，5：过期， -->
+                  <ng-container *ngSwitchDefault>
+                    <!-- 查看 -->
+                    <span class="btn btn-default mx-2" (click)="onAddCoupnPopup(item, 'check')">{{
+                      'common.review' | lang
+                    }}</span>
+                  </ng-container>
+                </ng-container>
+
+                <!-- 发放记录 -->
+                <span class="btn btn-default" (click)="onRecord(item)">{{ 'member.coupon.sendRecord' | lang }}</span>
+
+                <!-- 领取名单 -->
+                <span
+                  *ngIf="[CouponTypeEnum.NonStickyBonus, CouponTypeEnum.FreeSpin].includes(item.voucherType)"
+                  class="btn btn-default mx-2"
+                  (click)="toReceivePage(item)"
+                >
+                  {{ 'member.coupon.receiveList' | lang }}
+                </span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="getList()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="getList()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

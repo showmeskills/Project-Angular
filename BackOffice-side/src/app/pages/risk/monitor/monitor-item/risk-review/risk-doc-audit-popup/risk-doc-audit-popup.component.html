@@ -1,0 +1,269 @@
+<modal-title [title]="getTitle | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body">
+  <!-- 基本信息 -->
+  <div class="fz-16 lh-22 fw-bolder mb-4">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+  <div class="px-8 box">
+    <div class="py-4 d-flex box-items">
+      <!-- 名字 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.firstName' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          {{ infoData?.firstName || '-' }}
+        </div>
+      </div>
+      <!-- 姓氏 -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.lastName' | lang }}：</div>
+        <div class="fz-16 pt-2">
+          {{ infoData?.lastName || '-' }}
+        </div>
+      </div>
+    </div>
+    <div class="py-4 d-flex box-items">
+      <!-- 邮箱 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'auManage.sys.email' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ infoData?.email || '-' }}</div>
+      </div>
+      <!-- 出生日期 -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.dateofBirth' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ infoData?.birthday || '-' }}</div>
+      </div>
+    </div>
+    <div class="py-4 d-flex box-items">
+      <!-- 地址： -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.land' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ infoData?.address || '-' }}</div>
+      </div>
+      <!-- 邮政编码： -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ infoData?.zipCode || '-' }}</div>
+      </div>
+    </div>
+    <div class="py-4 d-flex box-items">
+      <!-- 城市 -->
+      <div class="item pr-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}：</div>
+        <div class="fz-16 pt-2">{{ infoData?.city || '-' }}</div>
+      </div>
+      <!-- UID -->
+      <div class="item px-4 flex-1">
+        <div class="fz-14 color-aaa">{{ 'UID' }}：</div>
+        <div class="fz-16 pt-2">{{ data?.uid }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 审核内容 -->
+  <div class="fz-16 lh-22 fw-bolder mt-8 mb-4">{{ 'member.kyc.model.auditContent' | lang }}</div>
+  <div class="px-8 box" [ngSwitch]="data.type">
+    <!-- ID -->
+    <ng-container *ngSwitchCase="KYCRiskTypeEnum.ID">
+      <div class="py-4 d-flex box-items">
+        <!-- 证件签发国/地区 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.documentIssuing' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.form?.country || '-' }}</div>
+        </div>
+        <!-- 选择发行文件 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.selectRelease' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            {{ lang.isLocal ? getIdText(data?.form?.idType) : data?.form?.idType || '-' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="py-4 box-items">
+        <!-- 发行文件照片 -->
+        <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.IssuePhoto' | lang }}：</div>
+        <div class="d-flex">
+          <!-- 行驶证/护照/签证 -->
+          <ng-container *ngIf="data?.form?.idType !== 'ID_CARD'; else idCardEuropeImg">
+            <div class="item pr-4 flex-1">
+              <ng-container
+                *ngTemplateOutlet="ImgPreviewTpl; context: { value: data?.form?.frontImage }"
+              ></ng-container>
+            </div>
+          </ng-container>
+          <!-- 身份证 -->
+          <ng-template #idCardEuropeImg>
+            <div class="item pr-4 flex-1">
+              <ng-container
+                *ngTemplateOutlet="ImgPreviewTpl; context: { value: data?.form?.frontImage }"
+              ></ng-container>
+            </div>
+            <div class="item px-4 flex-1">
+              <ng-container *ngTemplateOutlet="ImgPreviewTpl; context: { value: data?.form?.backImage }"></ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+    <!-- POA -->
+    <ng-container *ngSwitchCase="KYCRiskTypeEnum.POA">
+      <div class="py-4 d-flex box-items">
+        <!-- 居住地址 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.address' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.form?.address || '-' }}</div>
+        </div>
+        <!-- 邮政编码  -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+          <div class="fz-16 pt-2">
+            {{ data?.form?.postalCode || '-' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="py-4 box-items">
+        <!-- 居住证 -->
+        <div class="fz-14 color-aaa mb-4">{{ 'member.kyc.model.residenceCertificate' | lang }}：</div>
+        <ng-container *ngTemplateOutlet="ImgPreviewTpl; context: { value: data?.form?.screenshotProof }"></ng-container>
+      </div>
+    </ng-container>
+    <!-- 财富来源 -->
+    <ng-container *ngSwitchCase="KYCRiskTypeEnum.WealthSourceDocument">
+      <div class="py-4 box-items" *ngFor="let item of selectImagesList">
+        <div class="fz-14 color-aaa">{{ item.name | lang }}：</div>
+        <div class="d-flex flex-wrap">
+          <div class="item pr-4 mt-4 flex-1" [style.min-width.%]="25" *ngFor="let value of data.form?.[item.key]">
+            <ng-container *ngTemplateOutlet="ImgPreviewTpl; context: { value: value }"></ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!-- 支付方式 -->
+    <ng-container *ngSwitchCase="KYCRiskTypeEnum.PaymentMethod">
+      <div class="py-4 d-flex box-items">
+        <!-- 支付方式 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'risk.docRequest.payMentMethod' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.form?.paymentName || '-' }}</div>
+        </div>
+      </div>
+      <div class="py-4 box-items">
+        <!-- 截图 -->
+        <div class="fz-14 color-aaa mb-4">{{ 'risk.docRequest.screenshot' | lang }}：</div>
+        <ng-container *ngTemplateOutlet="ImgPreviewTpl; context: { value: data?.form?.screenshotProof }"></ng-container>
+      </div>
+    </ng-container>
+    <!-- 自定义 -->
+    <ng-container *ngSwitchCase="KYCRiskTypeEnum.Customize">
+      <div class="py-4 d-flex box-items">
+        <!-- 文件名称 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'risk.docRequest.docName' | lang }}：</div>
+          <div class="fz-16 pt-4" style="word-break: break-all">{{ data?.form?.customizeName || '-' }}</div>
+        </div>
+      </div>
+      <div class="py-4 box-items">
+        <!-- 截图 -->
+        <div class="fz-14 color-aaa mb-4">{{ 'risk.docRequest.screenshot' | lang }}：</div>
+        <ng-container *ngTemplateOutlet="ImgPreviewTpl; context: { value: data?.form?.customizeValue }"></ng-container>
+      </div>
+    </ng-container>
+    <!-- EDD -->
+    <ng-container *ngSwitchCase="KYCRiskTypeEnum.EDD">
+      <div class="py-4 d-flex box-items">
+        <!-- 月薪 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.monthlySalary' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.form?.monthlySalary | toFormatMoney }} {{ data?.form?.currency }}</div>
+        </div>
+        <!-- 雇佣状态 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'risk.employmentStatus' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.form?.employmentStatusDesc || '-' }}</div>
+        </div>
+      </div>
+
+      <div class="py-4 d-flex box-items">
+        <!-- 职业 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.occupation' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.form?.occupation || '-' }}</div>
+        </div>
+        <!-- 资金来源 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.sourcesFunds' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.form?.sourceOfFundsDesc || '-' }}</div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- 审核&审核详情 -->
+  <div class="px-8 mt-8 box">
+    <!-- 审核 -->
+    <ng-container *ngIf="data?.status === 'Pending'; else detailTel">
+      <form-row [label]="'risk.check' | lang" label-width="140">
+        <ng-template>
+          <div class="d-flex flex-wrap">
+            <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of auditList">
+              <input type="radio" name="audit" [value]="item.value" [(ngModel)]="auditValue" />
+              <span class="mr-4"></span>{{ item.lang | lang }}
+            </label>
+          </div>
+        </ng-template>
+      </form-row>
+      <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="auditValue === 'Rejected'" required>
+        <ng-template>
+          <input class="form-control w-100" type="text" [(ngModel)]="remark" />
+        </ng-template>
+      </form-row>
+    </ng-container>
+
+    <!-- 审核详情 -->
+    <ng-template #detailTel>
+      <div class="box-items py-4 d-flex">
+        <!-- 审核状态 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.approvalStatus' | lang }}：</div>
+          <div class="fz-16 pt-2" [ngSwitch]="data?.status">
+            <span class="text-success" *ngSwitchCase="KYCReviewTypeEnum.Finish">
+              {{ 'member.kyc.authenticationSucceeded' | lang }}
+            </span>
+            <span class="text-danger" *ngSwitchCase="KYCReviewTypeEnum.Rejected">
+              {{ 'member.kyc.authenticationFailed' | lang }}
+            </span>
+          </div>
+        </div>
+        <!-- 审核人 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.reviewer' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.auditUserName || '-' }}</div>
+        </div>
+        <!-- 完成时间 -->
+        <div class="item px-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.completeTime' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.auditTime | timeFormat }}</div>
+        </div>
+      </div>
+
+      <div class="box-items py-4 d-flex" *ngIf="data?.status === KYCReviewTypeEnum.Rejected">
+        <!-- 失败原因 -->
+        <div class="item pr-4 flex-1">
+          <div class="fz-14 color-aaa">{{ 'member.kyc.model.failReason' | lang }}：</div>
+          <div class="fz-16 pt-2">{{ data?.remark || '-' }}</div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<modal-footer
+  [confirmShow]="data?.status === KYCReviewTypeEnum.Pending"
+  (confirm)="confirm()"
+  (dismiss)="modal.dismiss()"
+></modal-footer>
+
+<!-- 预览图片模板 -->
+<ng-template #ImgPreviewTpl let-value="value">
+  <upload class="w-100" [style.height.px]="150" [readonly]="true" [value]="value"> </upload>
+</ng-template>

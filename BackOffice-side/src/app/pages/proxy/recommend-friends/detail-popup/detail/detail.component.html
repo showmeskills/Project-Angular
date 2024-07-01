@@ -1,0 +1,269 @@
+<div class="popup-header">
+  <modal-title type="drawer" (close)="modal.dismiss()">{{
+    (curTitle() | lang) + ' - ' + ('common.details' | lang)
+  }}</modal-title>
+</div>
+
+<div class="p-8">
+  <div class="header-item">
+    <div style="flex: 4">{{ data?.rewardDate | timeUTCFormat: 'YYYY-MM-DD' }}</div>
+    <div style="flex: 3" class="d-flex flex-ac">
+      <span class="text-primary">{{ data?.totalCount | toFormatMoney }}</span>
+      <svg-icon
+        class="svg-icon svg-icon-1x5 pb-1 ml-2"
+        src="./assets/images/svg/proxy/recommend-friends-5-1.svg"
+      ></svg-icon>
+    </div>
+    <div style="flex: 3" class="d-flex flex-ac">
+      {{ data?.rewardAmountUsdt | currencyValue: 'USDT' }}
+      <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+    </div>
+    <div style="flex: 1">
+      <svg-icon
+        class="svg-icon svg-icon-2x5 cursor-pointer"
+        src="./assets/images/svg/sports/competition/matched-expand.svg"
+      ></svg-icon>
+    </div>
+  </div>
+</div>
+
+<main class="p-8 pt-0 custom-scroll-y">
+  <table class="table mb-0">
+    <thead>
+      <ng-container [ngSwitch]="type">
+        <!-- 常规返佣 -->
+        <tr *ngSwitchCase="'regularRebate'">
+          <!-- 推荐人UID -->
+          <th>
+            <span class="cell">{{ 'marketing.recommendFriends.referrerUID' | lang }}</span>
+          </th>
+          <!-- 新首存 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'dashboard.info.newFirstDep' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 活跃下线 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'game.proxy.activeOffline' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 有效流水 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'dashboard.country.flow' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 提成 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'dashboard.alliance.commission' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+        <!-- CPA奖励 -->
+        <tr *ngSwitchCase="'cpaRewards'">
+          <!-- 排名 -->
+          <th>
+            <span class="cell">{{ 'dashboard.alliance.ranking' | lang }}</span>
+          </th>
+          <!-- 推荐人UID -->
+          <th>
+            <span class="cell">{{ 'marketing.recommendFriends.referrerUID' | lang }}</span>
+          </th>
+          <!-- 推荐返佣总额 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'marketing.recommendFriends.totalReferralRebate' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 解锁金额 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'system.merchants.unlockAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 推荐人数 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'marketing.recommendFriends.referrals' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+        <!-- 顶级推荐人 -->
+        <tr *ngSwitchCase="'topReferrer'">
+          <!-- 排名 -->
+          <th>
+            <span class="cell">{{ 'dashboard.plan.ranking' | lang }}</span>
+          </th>
+          <!-- 新首存 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'dashboard.info.newFirstDep' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 本次奖励 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer">
+                <span>{{ 'marketing.recommendFriends.thisReward' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+      </ng-container>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <ng-container [ngSwitch]="type">
+          <!-- 常规返佣 -->
+          <ng-container *ngSwitchCase="'regularRebate'">
+            <td>
+              <span class="cell"> {{ item.uid || '-' }} </span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ item.firstDepositUsdt | currencyValue: 'USDT' }}
+                <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+              </span>
+            </td>
+            <td>
+              <span class="cell"> {{ item.totalCount | toFormatMoney }} </span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ item.turnoverAmountUsdt | currencyValue: 'USDT' }}
+                <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ item.rewardAmountUsdt | currencyValue: 'USDT' }}
+                <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- CPA奖励 -->
+          <ng-container *ngSwitchCase="'cpaRewards'">
+            <td>
+              <span class="cell"> {{ item.ranking || '-' }} </span>
+            </td>
+            <td>
+              <span class="cell"> {{ item.uid || '-' }} </span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ item.referralRewardReceived | currencyValue: 'USDT' }}
+                <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ item.rewardAmountUsdt | currencyValue: 'USDT' }}
+                <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+              </span>
+            </td>
+            <td>
+              <span class="cell"> {{ item.totalReferrals | toFormatMoney }} </span>
+            </td>
+          </ng-container>
+          <!-- 顶级推荐人 -->
+          <ng-container *ngSwitchCase="'topReferrer'">
+            <td>
+              <span class="cell"> 9819883 </span>
+            </td>
+            <td>
+              <span class="cell"> 2 </span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ 1 | currencyValue: 'USDT' }}
+                <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+              </span>
+            </td>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+</main>
+
+<div class="d-flex flex-between pt-10 table-footer py-6 px-8">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+    ></app-paginator>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+.tab-currency {
+    display: flex;
+    height: 42px;
+    line-height: 42px;
+    margin: -20px -20px 10px;
+  
+    &-item {
+      border: 1px solid transparent;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #9899ac;
+      flex: 1;
+  
+      &.active {
+        color: #181c32;
+        border-bottom: 3px solid #009ef7;
+      }
+    }
+  }
+  
+  .form-icon-triangle {
+    transform: rotate(270deg);
+    height: 24px;
+  }
+  
+  .amount-limit {
+    .svg-icon.svg-icon-lg {
+      &::ng-deep svg {
+        width: 20px !important;
+        height: 20px !important;
+      }
+    }
+  
+    .svg-active {
+      color: #009ef7;
+    }
+  
+    .add,
+    .cut {
+      width: 17px;
+      height: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e5ebef;
+      border-radius: 3px;
+      color: #fff;
+      padding-bottom: 2px;
+  
+      &.active {
+        background: #009ef7;
+      }
+  
+      &:hover {
+        background: #009ef7;
+      }
+    }
+  
+    .form-icon-clear {
+      cursor: pointer;
+      padding: 0 6px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  

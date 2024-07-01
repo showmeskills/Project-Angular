@@ -1,0 +1,398 @@
+<!-- 人数 -->
+<div class="card p-6 mb-8" [appLoading]="vipLevelLoading">
+  <div class="d-flex flex-ac flex-between mb-5">
+    <div class="fz-20 fw-bolder">{{ 'member.management.numPerson' | lang }}</div>
+    <button class="btn btn-light-primary px-9" (click)="openLevelPopup()">{{ 'game.manage.look_det' | lang }}</button>
+  </div>
+  <div class="d-flex flex-ac custom-scroll-x people">
+    <div class="people-all">
+      <div class="d-flex flex-ac flex-between">
+        <div class="fz-20 vam fw-bolder">{{ 'common.all' | lang }}</div>
+        <div class="fz-18 vam din">100%</div>
+      </div>
+      <div class="fz-30">{{ vipUserCount | toFormatMoney }}</div>
+    </div>
+    <div class="people-item ordinary">
+      <div class="item-head">{{ vipLevelList[0]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[0]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[0]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+    <div class="people-item sliver">
+      <div class="item-head">{{ vipLevelList[1]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[1]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[1]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+    <div class="people-item gold">
+      <div class="item-head">{{ vipLevelList[2]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[2]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[2]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+    <div class="people-item platinum">
+      <div class="item-head">{{ vipLevelList[3]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[3]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[3]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+    <div class="people-item white-diamond">
+      <div class="item-head">{{ vipLevelList[4]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[4]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[4]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+    <div class="people-item yellow-diamond">
+      <div class="item-head">{{ vipLevelList[5]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[5]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[5]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+    <div class="people-item black-diamond">
+      <div class="item-head">{{ vipLevelList[6]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[6]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[6]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+    <div class="people-item svip">
+      <div class="item-head">{{ vipLevelList[7]?.vipGroupName || '-' }}</div>
+      <div class="item-main">
+        <div class="main-content">{{ vipLevelList[7]?.vipUserCount | toFormatMoney }}</div>
+        <div class="main-foot">{{ vipLevelList[7]?.vipUserRatio * 100 | currencyValue: false }}%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 福利一览/成长值配置 -->
+<div class="d-flex flex-wrap">
+  <!-- 福利一览 -->
+  <div
+    class="card p-6 mr-10 flex-1 mb-8 d-flex flex-column"
+    style="min-width: 760px; height: 700px"
+    [appLoading]="glanceLoading"
+  >
+    <div class="d-flex flex-ac flex-between mb-5">
+      <div class="fz-20 fw-bolder">{{ 'member.management.vipc.benefitsGlance' | lang }}</div>
+      <form-row [label]="'common.time' | lang" class="mr-4">
+        <ng-template>
+          <label class="form-control clear-input-wrap mb-0" [style.width.px]="240">
+            <input
+              [style.height.px]="40"
+              class="form-control text-center"
+              type="text"
+              placeholder=""
+              selectMode="date-range"
+              [owlDateTime]="tradePicker"
+              [owlDateTimeTrigger]="tradePicker"
+              formatLabel="yyyy-MM-dd"
+              rangeSeparator="-"
+              [(ngModel)]="time"
+              (dateTimeChange)="getGlanceData().subscribe()"
+            />
+
+            <svg-icon
+              (click)="onClear($event)"
+              class="cursor-pointer py-2 px-4 svg-icon svg-icon-1x"
+              [src]="'assets/images/svg/close.svg'"
+            ></svg-icon>
+          </label>
+
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+    </div>
+    <div class="flex-fill custom-scroll-y">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th style="width: 30%">
+              <span class="cell">{{ 'common.name' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.management.vipc.distributedUsers' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.management.vipc.receivedUsers' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.management.vipc.amountUsers' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of glanceList">
+            <td>
+              <span class="cell">{{ item?.bonusName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="text-success">{{ item?.issuedAmount | currencyValue: 'USDT' }}</span>
+                <span class="mx-1">/</span>
+                <span class="text-primary">{{ item?.issuedNumber | toFormatMoney }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="text-success">{{ item?.receivedAmount | currencyValue: 'USDT' }}</span>
+                <span class="mx-1">/</span>
+                <span class="text-primary">{{ item?.receivedNumber | toFormatMoney }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="text-success">{{ item?.usedAmount | currencyValue: 'USDT' }}</span>
+                <span class="mx-1">/</span>
+                <span class="text-primary">{{ item?.usedNumber | toFormatMoney }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!glanceList.length && !glanceLoading"></empty>
+    </div>
+  </div>
+
+  <!-- 成长值配置 -->
+  <div class="card p-6 mb-8" style="min-width: 580px; flex: 0 1 520px; height: 700px" [appLoading]="vipPointsLoading">
+    <div class="d-flex flex-ac flex-between mb-7">
+      <div class="fz-20 fw-bolder">{{ 'member.management.vipc.growthConfiguration' | lang }}</div>
+      <div class="d-flex flex-ac">
+        <!-- 是否修改 -->
+        <button class="btn btn-light-primary px-9 mr-4" (click)="onGrowthValueEdit()" [disabled]="!growthList.length">
+          <svg-icon class="mr-2" [src]="'./assets/images/svg/pen.svg'"></svg-icon>
+          <span>{{ (isGrowthEdit ? 'common.cancel' : 'common.modify') | lang }}</span>
+        </button>
+        <!-- <button class="btn btn-light-primary px-9" (click)="openLevelPopup()">Update</button> -->
+      </div>
+    </div>
+    <div class="flex-fill custom-scroll-y">
+      <table class="table mb-0" [class.growth-table]="isGrowthEdit">
+        <thead>
+          <tr>
+            <!-- 项目 -->
+            <th style="width: 33.33%">
+              <span class="cell">{{ 'member.management.vipc.item' | lang }}</span>
+            </th>
+            <!-- 成长值 -->
+            <th style="width: 33.33%">
+              <span class="cell">{{ 'member.management.vipc.points' | lang }}</span>
+            </th>
+            <!-- 每日限额 -->
+            <th style="width: 33.33%">
+              <span class="cell">{{ 'member.management.vipc.limitDay' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of isGrowthEdit ? growthEditList : growthList; let i = index">
+            <td>
+              <span class="cell">
+                {{ item?.pointsName || '-' }}
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <input
+                  *ngIf="isGrowthEdit; else pointsEditable"
+                  class="form-control fz-16 w-100 text-center"
+                  [style.height.px]="36"
+                  autocomplete="off"
+                  type="text"
+                  [(ngModel)]="growthEditList[i].points"
+                />
+
+                <ng-template #pointsEditable>
+                  {{ item.points | toFormatMoney }}
+                </ng-template>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <input
+                  *ngIf="isGrowthEdit; else moenyEditable"
+                  class="form-control fz-16 w-100 text-center"
+                  [style.height.px]="36"
+                  autocomplete="off"
+                  type="text"
+                  [(ngModel)]="growthEditList[i].dailyMaxPoints"
+                />
+
+                <ng-template #moenyEditable>
+                  {{ item.dailyMaxPoints | toFormatMoney }}
+                </ng-template>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!growthList.length && !vipPointsLoading"></empty>
+
+      <div class="btn-wrap flex-center mt-8" *ngIf="isGrowthEdit">
+        <button class="c-btn c-btn-default" (click)="isGrowthEdit = false">{{ 'common.cancel' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="growthEdit()">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 福利总览 -->
+<div class="card p-6 mb-8 benefits" [appLoading]="overviewLoading">
+  <div class="d-flex flex-ac flex-between mb-5">
+    <div class="fz-20 fw-bolder">{{ 'member.management.Benefits' | lang }}</div>
+    <div class="d-flex flex-ac">
+      <form-row [label]="'common.time' | lang" class="mr-8">
+        <ng-template>
+          <label class="form-control clear-input-wrap mb-0" [style.width.px]="240">
+            <input
+              [style.height.px]="40"
+              class="form-control text-center"
+              type="text"
+              placeholder=""
+              selectMode="date-range"
+              [owlDateTime]="tradePicker"
+              [owlDateTimeTrigger]="tradePicker"
+              formatLabel="yyyy-MM-dd"
+              rangeSeparator="-"
+              [(ngModel)]="overviewTime"
+              (dateTimeChange)="getVipOverview().subscribe()"
+            />
+
+            <svg-icon
+              (click)="onOverviewTimeClear($event)"
+              class="cursor-pointer py-2 px-4 svg-icon svg-icon-1x"
+              [src]="'assets/images/svg/close.svg'"
+            ></svg-icon>
+          </label>
+
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+      <span class="btn c-btn btn-light-primary px-9" (click)="openBonusPopup()">{{
+        'payment.currency.update' | lang
+      }}</span>
+    </div>
+  </div>
+  <div class="d-flex item-wrap">
+    <div class="item" *ngFor="let item of overviewList">
+      <div class="title d-flex flex-between">
+        <div>{{ item.name }}</div>
+        <div class="fz-18 color-aaa">{{ item.number | toFormatMoney }}</div>
+      </div>
+      <div class="item-text">
+        USDT<span class="ml-2 fz-20">{{ item.amount | currencyValue: 'USDT' }}</span>
+      </div>
+    </div>
+
+    <div class="item empty" *ngFor="let item of [1, 2, 3, 4, 5]"></div>
+  </div>
+  <!-- 空显示 -->
+  <empty *ngIf="!overviewList.length && !overviewLoading"></empty>
+</div>
+
+<!-- 福利领取状况 -->
+<div class="card p-6 welfare" [appLoading]="welfareLoading">
+  <div class="d-flex flex-ac mb-5">
+    <span class="fz-20 fw-bolder lh-28">{{ 'member.management.welfareStatus' | lang }}</span>
+    <div class="tab ml-8 text-nowrap">
+      <span (click)="selectWelfareStatus('All')" [class.active]="welfareStatus === 'All'">{{
+        'common.all' | lang
+      }}</span>
+      <span (click)="selectWelfareStatus('UnComplete')" [class.active]="welfareStatus === 'UnComplete'">{{
+        'member.management.undone' | lang
+      }}</span>
+    </div>
+  </div>
+
+  <div class="flex-fill">
+    <table class="table mb-0">
+      <thead sticky>
+        <tr>
+          <th>
+            <span class="cell">{{ 'member.management.memberUid' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.management.benefitName' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.management.IssuanceTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.management.pickTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.management.schedule' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of welfareList">
+          <td>
+            <span class="cell">{{ item.uid }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.name }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.createdTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.receiveTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span
+                class="label label-lg label-inline"
+                [ngClass]="item.receiveTime > 0 ? 'label-light-success' : 'label-light-warning'"
+              >
+                {{ item.receiveTime > 0 ? ('member.table.carryOut' | lang) : ('member.table.undone' | lang) }}
+              </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!welfareList.length && !welfareLoading"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="welfareList.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="getVipReceiveDetail(true).subscribe()"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        [isLoading]="welfareLoading"
+        (paginate)="getVipReceiveDetail().subscribe()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

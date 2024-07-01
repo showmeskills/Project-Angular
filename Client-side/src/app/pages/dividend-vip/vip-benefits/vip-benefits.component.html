@@ -1,0 +1,169 @@
+<div class="page-container">
+  <div class="web-container">
+    <div class="header-container">
+      <div *ngIf="isH5" (click)="toVipLevel()" class="h5-goback-icon onact96-not"></div>
+      <div class="page-header">
+        <p class="intro">{{ 'vip_title' | translate }}</p>
+        <img class="header-img" [src]="'assets/images/vip/web-vip-bg.png' | preferWebp" alt="" lazy="loading" />
+      </div>
+    </div>
+
+    <div class="main-container unity-padding-web unity-padding-h5-16">
+      <div class="container vip-intro-container">
+        <p class="top-title">MEMBERSHIP LEVEL AND</p>
+        <p class="top-title">BENEFITS INTRODUCTION</p>
+        <p class="intro-title">{{ 'member_level' | translate }}</p>
+        <div class="web-show">
+          <div class="vip-card-container" [appLoading]="loading">
+            <ng-container *ngFor="let card of vipList; let idx = index">
+              <ng-container *ngTemplateOutlet="cardTemplate; context: { card }"></ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <div class="h5-show">
+          <div class="vip-card-container" [appLoading]="loading">
+            <app-img-carousel [config]="cardSwiperOption" [itemsData]="vipList" *ngIf="!loading">
+              <ng-template #carouselItemTpl let-item>
+                <ng-container *ngTemplateOutlet="cardTemplate; context: { card: item }"></ng-container>
+              </ng-template>
+            </app-img-carousel>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-container unity-padding-web unity-padding-h5-16">
+      <div class="container text-container">
+        <p class="text-title onact96-not" (click)="toVipLevel()">
+          {{ 'view_vip' | translate }}
+        </p>
+        <p class="text-title-2">{{ 'rules' | translate }}</p>
+        <div class="context">
+          <p>1.{{ 'vip_rul_a' | translate }}</p>
+          <p>2.{{ 'vip_rul_b' | translate }}</p>
+          <p>3.{{ 'vip_rul_c' | translate }}</p>
+          <p>4.{{ 'vip_rul_d' | translate }}</p>
+          <p>5.{{ 'vip_rul_e' | translate }}</p>
+          <p>6.{{ 'vip_rul_f' | translate }}</p>
+          <p>7.{{ 'vip_rul_g' | translate }}</p>
+          <p>8.{{ 'vip_rul_h' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #cardTemplate let-card="card">
+  <div class="vip-card">
+    <img class="card-img" [src]="card.url" alt="" lazy="loading" />
+    <div class="card-info">
+      <p class="level">{{ 'customize_vip' + card.level | translate }}</p>
+      <div class="growth-value">
+        <div class="value-left">
+          <p class="title">{{ 'up_con' | translate }}</p>
+          <p class="text">{{ 'grow_val' | translate }}</p>
+          <p class="value">{{ card.pPoints | sliceSymbolStr }}</p>
+          <p class="value">{{ card.pPeriod }} {{ 'day' | translate }}</p>
+        </div>
+        <div class="value-right m-left-100">
+          <p class="title">{{ 'rele_con' | translate }}</p>
+          <p class="text">{{ 'grow_val' | translate }}</p>
+          <p class="value">{{ card.kPoints | sliceSymbolStr }}</p>
+          <p class="value">{{ card.kPeriod }} {{ 'day' | translate }}</p>
+        </div>
+      </div>
+      <div class="benefits-info">
+        <div class="grid-three-layout">
+          <p class="benefit-text border-left">{{ card.promotionBenefit.title }}</p>
+          <p class="benefit-text">{{ card.keepBenefit.title }}</p>
+          <p class="benefit-text border-right">{{ card.birthdayBenefit.title }}</p>
+        </div>
+        <div class="grid-three-layout">
+          <p class="benefit-value-text">{{ card.promotionBenefit.amount | sliceSymbolStr }} USDT</p>
+          <p class="benefit-value-text">{{ card.keepBenefit.amount | sliceSymbolStr }} USDT</p>
+          <p class="benefit-value-text">{{ card.birthdayBenefit.amount | sliceSymbolStr }} USDT</p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-text">{{ card.loginRedPackage.title }}</p>
+          <p class="benefit-text">{{ card.dayWithdrawLimitMoney.title }}</p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-value-text">{{ card.loginRedPackage.amount }} USDT</p>
+          <p class="benefit-value-text">{{ card.dayWithdrawLimitMoney.dayWithdrawLimitMoney }}</p>
+        </div>
+        <!-- 商户1救援金隐藏 -->
+        <!-- <div class="grid-one-layout">
+          <p class="benefit-text">{{ card.rescueMoney.title }}</p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-value-text text-color-6">
+            {{ card.rescueMoney.titleRatio }}
+          </p>
+          <p class="benefit-value-text">
+            {{ card.rescueMoney.amount }}
+          </p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-value-text text-color-6">
+            {{ card.rescueMoney.titleUp }}
+          </p>
+          <div class="benefit-value-text">{{ card.rescueMoney.amountMax | sliceSymbolStr }} USDT*</div>
+        </div> -->
+        <div class="grid-one-layout">
+          <p class="benefit-text">{{ card.depositBenefit.title }}</p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-value-text text-color-6">
+            {{ card.depositBenefit.titleRatio }}
+          </p>
+          <p class="benefit-value-text">
+            {{ card.depositBenefit.bonusRate }}
+          </p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-value-text text-color-6">
+            {{ card.depositBenefit.titleUp }}
+          </p>
+          <p class="benefit-value-text">{{ card.depositBenefit.bonusMax }} USDT*</p>
+        </div>
+        <div class="grid-one-layout">
+          <p class="benefit-text">{{ card.returnBouns.mainTitle }}</p>
+        </div>
+        <div class="grid-three-layout">
+          <p class="benefit-text">{{ card.returnBouns.subTitleSport }}</p>
+          <p class="benefit-text">{{ card.returnBouns.subTitleRealPeople }}</p>
+          <p class="benefit-text">{{ card.returnBouns.subTitleEntertain }}</p>
+        </div>
+        <div class="grid-three-layout">
+          <p class="benefit-value-text">{{ card.returnBouns.sportRate }}</p>
+          <p class="benefit-value-text">{{ card.returnBouns.realPeopleRate }}</p>
+          <p class="benefit-value-text">{{ card.returnBouns.entertainRate }}</p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-text">
+            {{ card.returnBouns.subTitleLottery }}
+          </p>
+          <p class="benefit-text">
+            {{ card.returnBouns.subTitleChess }}
+          </p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-value-text">
+            {{ card.returnBouns.lotteryRate }}
+          </p>
+          <p class="benefit-value-text">
+            {{ card.returnBouns.chessRate }}
+          </p>
+        </div>
+        <div class="grid-two-layout">
+          <p class="benefit-text border-bottom-left bottom-bg-color">
+            {{ card.returnBouns.singleTile }}
+          </p>
+          <p class="benefit-value-text border-bottom-right">
+            {{ card.returnBouns.dailyCashbackLimit | sliceSymbolStr }} USDT*
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

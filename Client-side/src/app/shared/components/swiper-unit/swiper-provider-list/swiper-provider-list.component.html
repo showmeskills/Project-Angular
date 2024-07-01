@@ -1,0 +1,12 @@
+<app-swiper-unit
+  (clickItem)="clickProviderItem($event)"
+  (clickTitle)="clickProviderTitle()"
+  [data]="providerList"
+  [title]="'game_pro' | translate"
+  [titleIcon]="'assets/images/home/sup.svg'"
+  [isProvider]="true"
+  [hasHover]="false"
+  [hasMask]="false"
+  [ratio]="1 / 0.4"
+  [titleHref]="'/' + providerHref"
+></app-swiper-unit>

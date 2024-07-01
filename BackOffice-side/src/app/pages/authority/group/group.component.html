@@ -1,0 +1,141 @@
+<div class="bg-fff rounded px-12 py-8 d-flex flex-row flex-wrap">
+  <form-row [label]="'auManage.role.gName' | lang">
+    <ng-template>
+      <input
+        [(ngModel)]="searchKW"
+        class="form-control"
+        type="text"
+        [placeholder]="'auManage.role.enterNameGroup' | lang"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-ac flex-between">
+      <div class="fz-20">{{ 'auManage.role.gList' | lang }}</div>
+      <button (click)="add()" type="button" class="btn btn-light-primary">
+        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-lg vam"></svg-icon>
+        <span class="vam">{{ 'game.provider.add' | lang }}</span>
+      </button>
+    </div>
+
+    <div class="pt-10">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>{{ 'auManage.role.gName' | lang }}</th>
+            <th>{{ 'auManage.role.gadmi' | lang }}</th>
+            <th>{{ 'auManage.role.ac' | lang }}</th>
+            <th>{{ 'auManage.role.zk' | lang }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <ng-container *ngFor="let item of list">
+            <tr [class.active]="item.expand">
+              <td>{{ item.name }}</td>
+              <td>{{ item.leaderName }}</td>
+              <td>
+                <span class="cell">
+                  <app-label type="default" class="label-light color-aaa cursor-pointer" (click)="onEdit(item)">{{
+                    'common.edit' | lang
+                  }}</app-label>
+                </span>
+              </td>
+              <td>
+                <span class="cell">
+                  <svg-icon
+                    (click)="onOpenExpand(item)"
+                    *ngIf="!item.expand"
+                    class="svg-icon svg-icon-2x5 cursor-pointer"
+                    [src]="'./assets/images/svg/sports/competition/matched-shrink.svg'"
+                  ></svg-icon>
+                  <svg-icon
+                    (click)="item.expand = !item.expand"
+                    *ngIf="!!item.expand"
+                    class="svg-icon svg-icon-2x5 cursor-pointer"
+                    [src]="'./assets/images/svg/sports/competition/matched-expand.svg'"
+                  ></svg-icon>
+                </span>
+              </td>
+            </tr>
+            <ng-container *ngIf="item.expand">
+              <ng-container *ngIf="groupUserList.length > 0; else noGroupUser">
+                <tr [class.active-child]="item.expand" *ngFor="let groupUser of groupUserList; let i = index">
+                  <td colspan="1">
+                    <span class="cell">{{ groupUser.userName }}</span>
+                  </td>
+                  <td colspan="2">
+                    <span class="cell" style="gap: 10px">
+                      <app-label type="primary" *ngFor="let role of groupUser.roles">{{
+                        role.roleName || '-'
+                      }}</app-label>
+                    </span>
+                  </td>
+                  <td colspan="1">
+                    <span class="cell">
+                      <svg-icon
+                        (click)="delGroupUser(groupUser.groupUserKey, i)"
+                        [src]="'./assets/images/svg/bar-close.svg'"
+                        class="svg-icon svg-icon-2x5 cursor-pointer"
+                      ></svg-icon>
+                    </span>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-template #noGroupUser>
+                <tr [class.active-child]="item.expand">
+                  <td colspan="4">
+                    <span class="cell">{{ 'auManage.role.noMember' | lang }}</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

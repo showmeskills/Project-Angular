@@ -1,0 +1,294 @@
+<div class="container">
+  <!--标题栏-->
+  <div class="title-row">
+    <div class="header-container">
+      <div class="header">
+        <i class="back-arrow onact96-not" (click)="handleBack()"></i>
+        <div class="title">{{ 'exch00' | translate }}</div>
+      </div>
+    </div>
+  </div>
+  <!--内容-->
+  <div class="page-container">
+    <div class="form-container">
+      <ng-container *ngIf="submitCallBack == 'success'; else formGroup">
+        <div class="success-ticket">
+          <span class="success-icon"></span>
+          <span class="txt-bold">{{ 'successful' | translate }}</span>
+          <span class="txt-small">{{ isExchange ? ('wil_spe00' | translate) : ('wil_get00' | translate) }}</span>
+          <span class="txt-amonut">20 USDT</span>
+          <div class="row">
+            <span>{{ 'redee00' | translate }}</span>
+            <span class="big-txt">0.00035319 BTC</span>
+          </div>
+          <div class="row">
+            <span>{{ 'price00' | translate }}</span>
+            <span>1 USDT = 0.00001766 BTC</span>
+          </div>
+          <div class="btn-group">
+            <button class="prev-btn success onact96-not" (click)="back()">{{ 'back' | translate }}</button>
+            <button class="submit-btn success">{{ 'vi_sta00' | translate }}</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #formGroup>
+        <!--花费-->
+        <div class="first-row">
+          <div class="label">
+            <span class="txt">{{ 'spend00' | translate }}</span>
+            <div class="details-row">
+              {{ 'available' | translate }}
+              <span class="mount">{{ isExchange ? selectBuyCurrency.balance : selectSellCurrency.balance }}</span>
+              <span class="currency-type">{{
+                isExchange ? selectBuyCurrency.currency : selectSellCurrency.currency
+              }}</span>
+            </div>
+          </div>
+          <!--input-->
+          <div class="input-group" [class.focus]="$any(iSell).isFocus" [class.error]="isInvalidAmount(sellAmount)">
+            <input
+              type="number"
+              class="number"
+              #iSell
+              [placeholder]="('please_enter' | translate) + (isExchange ? mockBuyMaxAmount : mockSellMaxAmount)"
+              [class.isFocus]="$any(iSell).isFocus"
+              [(ngModel)]="sellAmount"
+              (focus)="onFocus(iSell)"
+              (blur)="onBlur(iSell)"
+              (input)="onSellInput(iSell)"
+            />
+            <div class="tool-root">
+              <span class="txt">{{ 'max' | translate }}</span>
+              <span class="lin"></span>
+              <!--点选货币-->
+              <div
+                class="select-currency-root onact96"
+                (click)="handleOpenSell()"
+                (clickOutside)="hanbleOutsideSell($event)"
+              >
+                <img class="icon" src="{{ isExchange ? selectBuyCurrency.icon : selectSellCurrency.icon }}" alt="" />
+                <span class="currency-txt">{{
+                  isExchange ? selectBuyCurrency.currency : selectSellCurrency.currency
+                }}</span>
+                <i class="grey-down-arraw"></i>
+              </div>
+            </div>
+          </div>
+          <!-- 输入框下面的错误信息 -->
+          <div class="error-msg" *ngIf="isInvalidAmount(sellAmount)">{{ 'quca00' | translate }} 20</div>
+          <div class="drop-container" [class.open]="isOpenSell">
+            <div class="search-contanier">
+              <i class="search-icon"></i>
+              <input
+                #iSearch
+                class="search-input"
+                type="text"
+                [class.focus]="$any(iSearch).isFocus"
+                autofocus
+                (focus)="onFocus(iSearch)"
+                (blur)="onBlur(iSearch)"
+                [(ngModel)]="searchCurreny"
+                (input)="onSearchInput(iSearch)"
+              />
+              <i class="close-icon" *ngIf="!!iSearch.value && $any(iSearch).isFocus" (click)="handleClean(iSearch)"></i>
+            </div>
+            <ng-container *ngFor="let item of isExchange ? currencyInfor2 : currencyInfor1">
+              <div
+                class="select-row onact96"
+                [class.select]="item.isSelected"
+                (click)="handleSelect(item, isExchange ? 'buy' : 'sell', $event)"
+              >
+                <!--item-->
+                <img class="icon" src="{{ item.icon }}" alt="" />
+                <div class="infor">
+                  <span class="span-1">{{ item.currency }}</span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="exchange-icon onact96-not" (click)="handleExChange()"></div>
+        <!--到账-->
+        <div class="second-row">
+          <div class="label">
+            <span class="txt">{{ 't_t_acc00' | translate }}</span>
+          </div>
+          <!--input-->
+          <div class="input-group" [class.focus]="$any(iBuy).isFocus" [class.error]="isInvalidAmount(buyAmount)">
+            <input
+              #iBuy
+              type="text"
+              class="number"
+              [(ngModel)]="buyAmount"
+              [placeholder]="('please_enter' | translate) + (isExchange ? mockSellMaxAmount : mockBuyMaxAmount)"
+              [class.isFocus]="$any(iBuy).isFocus"
+              (focus)="onFocus(iBuy)"
+              (blur)="onBlur(iBuy)"
+              (input)="onBuyInput(iBuy)"
+            />
+            <div class="tool-root">
+              <span class="lin"></span>
+              <!--点选货币-->
+              <div
+                class="select-currency-root onact96"
+                (click)="handleOpenBuy()"
+                (clickOutside)="hanbleOutsideBuy($event)"
+              >
+                <img class="icon" src="{{ isExchange ? selectSellCurrency.icon : selectBuyCurrency.icon }}" alt="" />
+                <span class="currency-txt">
+                  {{ isExchange ? selectSellCurrency.currency : selectBuyCurrency.currency }}</span
+                >
+                <i class="grey-down-arraw"></i>
+              </div>
+            </div>
+          </div>
+          <!-- 输入框下面的错误信息 -->
+          <div class="error-msg" *ngIf="isInvalidAmount(buyAmount)">{{ 'quca00' | translate }} 20</div>
+          <div class="drop-container-buy" [class.open]="isOpenBuy">
+            <div class="search-contanier">
+              <i class="search-icon"></i>
+              <input
+                #iSearchBuy
+                class="search-input"
+                type="text"
+                [class.focus]="$any(iSearchBuy).isFocus"
+                autofocus
+                (focus)="onFocus(iSearchBuy)"
+                (blur)="onBlur(iSearchBuy)"
+                [(ngModel)]="searchCurreny"
+                (input)="onSearchInput(iSearchBuy)"
+              />
+              <i
+                class="close-icon onact96-not"
+                *ngIf="!!iSearch.value && $any(iSearchBuy).isFocus"
+                (click)="handleClean(iSearchBuy)"
+              ></i>
+            </div>
+            <ng-container *ngFor="let item of isExchange ? currencyInfor1 : currencyInfor2">
+              <div
+                class="select-row onact96"
+                [class.select]="item.isSelected"
+                (click)="handleSelect(item, isExchange ? 'sell' : 'buy', $event)"
+              >
+                <img class="icon" src="{{ item.icon }}" alt="" />
+                <div class="infor">
+                  <span class="span-1">{{ item.currency }}</span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <!--submit group-->
+        <ng-container *ngIf="stepType == 'first-step'">
+          <div class="submit-container">
+            <!-- 兑换按钮 -->
+            <customize-button
+              class="m-t"
+              width="100%"
+              type="primary"
+              size="large"
+              [disabled]="!canSubmit"
+              (onClick)="handleSubmit()"
+              >{{ canSubmit ? btnTxt.preView : btnTxt.disable }}</customize-button
+            >
+          </div>
+        </ng-container>
+        <!--预算兑换-->
+        <ng-container *ngIf="stepType == 'second-step'">
+          <div class="submit-container">
+            <div class="row-item" [class.disable]="submitCallBack == 'timeout'">
+              <span>{{ 'price00' | translate }}</span>
+              <p class="txt-small">
+                1 {{ isExchange ? selectSellCurrency.currency : selectBuyCurrency.currency }} = {{ currentRate }}
+                {{ isExchange ? selectBuyCurrency.currency : selectSellCurrency.currency }}
+              </p>
+            </div>
+            <div class="row-item p-b" [class.disable]="submitCallBack == 'timeout'">
+              <span>{{ isSpend() ? ('wil_spe00' | translate) : ('wil_get00' | translate) }}</span>
+              <p class="txt-bold">{{ realAmont }} {{ isSpend() ? baseCurrency : exchangeCurrency }}</p>
+            </div>
+            <div class="row-item p">
+              <!--条件允许兑换-->
+              <ng-container *ngIf="submitCallBack == 'isVaild'">
+                <span>{{ 'confi_time00' | translate }}</span>
+              </ng-container>
+              <!--余额不足-->
+              <ng-container *ngIf="submitCallBack == 'fail'">
+                <div class="error-notice">
+                  <span class="red-close-icon"></span>
+                  <span class="txt-notice">{{ 'insuf_bal00' | translate }}</span>
+                </div>
+              </ng-container>
+              <!--该报价已过期-->
+              <ng-container *ngIf="submitCallBack == 'timeout'">
+                <div class="red-txt">
+                  {{ 'quo_exp00' | translate }}
+                </div>
+              </ng-container>
+            </div>
+            <div class="btn-group">
+              <customize-button size="large" width="100%" (onClick)="backFormPage()"
+                >{{ 'back' | translate }}
+              </customize-button>
+              <customize-button
+                size="large"
+                type="primary"
+                width="100%"
+                *ngIf="submitCallBack == 'isVaild'"
+                (onClick)="submitExchange()"
+                >{{ 'exch00' | translate }}{{ isSending ? '（' + timer + '）' : '' }}</customize-button
+              >
+              <customize-button
+                size="large"
+                width="100%"
+                type="primary"
+                *ngIf="submitCallBack == 'timeout' || submitCallBack == 'fail'"
+                (onClick)="backFormPage()"
+              >
+                {{ 'retry00' | translate }}
+              </customize-button>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+    <!--常见问题-->
+    <div class="notice-cotainer">
+      <span class="header">{{ 'faq' | translate }}</span>
+      <div class="column-container">
+        <div class="col-1">
+          <div
+            class="expand-item onact96"
+            [class.expanded]="item.isExpanded"
+            *ngFor="let item of noticeConfig[0]"
+            (click)="item.isExpanded = !item.isExpanded"
+          >
+            <div class="expand-title-row" [class.margin-b]="item.isExpanded">
+              <span class="icon-expand" [class.expanded]="item.isExpanded"></span>
+              <span class="expand-title">{{ item.title }}</span>
+            </div>
+            <div class="ditails" [class.expanded]="item.isExpanded">
+              {{ item.details }}
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div
+            class="expand-item onact96"
+            [class.expanded]="item.isExpanded"
+            *ngFor="let item of noticeConfig[1]"
+            (click)="item.isExpanded = !item.isExpanded"
+          >
+            <div class="expand-title-row" [class.margin-b]="item.isExpanded">
+              <span class="icon-expand" [class.expanded]="item.isExpanded"></span>
+              <span class="expand-title">{{ item.title }}</span>
+            </div>
+            <div class="ditails" [class.expanded]="item.isExpanded">
+              {{ item.details }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

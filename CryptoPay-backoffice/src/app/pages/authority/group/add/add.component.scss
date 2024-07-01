@@ -1,0 +1,110 @@
+.card-body {
+  padding: 30px;
+}
+
+.form {
+  padding-top: 5px;
+
+  .row {
+    label {
+      flex: 0 0 250px;
+      font-size: 16px;
+
+      > span {
+        font-size: 18px;
+        font-family: Poppins, sans-serif;
+        font-weight: bold;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .row {
+    padding: 5px 0;
+  }
+}
+
+.btn-member {
+  background: #f1faff;
+  border-radius: 6px;
+  width: 112px;
+  color: #009ef7;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-wrap {
+  margin-top: 25px;
+}
+
+.select {
+  position: relative;
+
+  input[type="text"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    pointer-events: none;
+    width: auto;
+  }
+}
+
+.label.label-inline.label-lg {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.role {
+  .label.label-inline.label-lg {
+    padding: 9px 20px;
+    height: 42px;
+  }
+}
+
+.member {
+  .title-label {
+    line-height: 42px;
+  }
+
+  .label.label-inline.label-lg {
+    height: 34px;
+    padding: 9px 10px;
+  }
+
+  &-group {
+    min-height: 50px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    border: 1px dashed #e4e6ef;
+    border-radius: 4px;
+    padding: 0 10px;
+    flex-flow: row nowrap;
+
+    label {
+      margin-bottom: 0;
+      color: #181c32;
+      width: 130px;
+      flex: 0 0 130px;
+    }
+
+    .label-light {
+      color: #b6bbce;
+    }
+
+    .btn-cube {
+      width: 32px;
+
+      ::ng-deep svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}

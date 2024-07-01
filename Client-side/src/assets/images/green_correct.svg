@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="91.364" height="83.45">
+    <defs>
+        <linearGradient id="linear-gradient" x1="1" y1=".5" x2="0" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#33c984"/>
+            <stop offset="1" stop-color="#33c984" stop-opacity=".051"/>
+        </linearGradient>
+        <style>
+            .cls-2{fill:#33c984}.cls-3{fill:#fff}
+        </style>
+    </defs>
+    <g id="Group_3487" data-name="Group 3487" transform="translate(-911.672 -366.55)">
+        <g id="Group_3438" data-name="Group 3438" transform="translate(-3025 -3692)">
+            <circle id="Ellipse_263" data-name="Ellipse 263" cx="40" cy="40" r="40" transform="translate(3945 4062)" style="opacity:.999;fill:url(#linear-gradient)"/>
+            <circle id="Ellipse_264" data-name="Ellipse 264" class="cls-2" cx="29" cy="29" r="29" transform="translate(3956 4073)"/>
+            <g id="Group_3475" data-name="Group 3475" transform="translate(3025.879 3690.878)">
+                <path id="Rectangle_2031" data-name="Rectangle 2031" class="cls-3" transform="rotate(45 5.02 1372.324)" d="M0 0h6v30H0z"/>
+                <path id="Rectangle_2032" data-name="Rectangle 2032" class="cls-3" transform="rotate(135 392.657 408.444)" d="M0 0h6v18H0z"/>
+            </g>
+        </g>
+        <path id="Rectangle_2033" data-name="Rectangle 2033" class="cls-2" transform="rotate(45 24.785 1311.316)" d="M0 0h6v6H0z"/>
+        <path id="Rectangle_2034" data-name="Rectangle 2034" class="cls-2" transform="rotate(45 40.886 1397.985)" d="M0 0h3v3H0z"/>
+        <path id="Rectangle_2036" data-name="Rectangle 2036" class="cls-2" transform="rotate(45 -34.25 1307.485)" d="M0 0h4v4H0z"/>
+        <path id="Rectangle_2035" data-name="Rectangle 2035" class="cls-2" transform="rotate(45 -26.005 1424.278)" d="M0 0h5v5H0z"/>
+    </g>
+</svg>

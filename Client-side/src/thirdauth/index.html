@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <title>Auth</title>
+    <script id="init">
+      (() => {
+        // 作为弹窗时
+        const query = new URLSearchParams(location.search);
+        const code = query.get('code');
+        const state = query.get('state');
+        const tgAuthResult = window.location.hash.slice(1).split('=')[1];
+        const opener = window.opener;
+        if (opener) {
+          if (code && state) {
+            // Line 或 GooGle 登录返回
+            opener.postMessage({ code, state }, window.opener.location.href);
+            window.close();
+          } else if (tgAuthResult) {
+            // Tg 登录返回
+            opener.postMessage(JSON.parse(atob(tgAuthResult)), window.opener.location.href);
+            window.close();
+          }
+        }
+        // 作为iframes时候根据url触发跳转
+        const open = query.get('open');
+        const config = query.get('config');
+        if (open) {
+          document.addEventListener('click', () => {
+            window.top.postMessage('click', '*');
+            window.open(open, Math.random(), config);
+          });
+        }
+        // 作为iframes时候收到事件转发回给父窗口
+        window.addEventListener('message', e => {
+          window.top.postMessage(e.data, '*');
+        });
+        document.getElementById('init').remove();
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

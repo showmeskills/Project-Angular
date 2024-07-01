@@ -1,0 +1,90 @@
+.title {
+  white-space: nowrap;
+  font-size: 16px;
+  color: #969bad;
+}
+
+.containers {
+  &-tooltip-text {
+    font-size: 10px;
+  }
+
+  &-button {
+    width: 14px;
+    height: 14px;
+    color: #fff;
+    line-height: 14px;
+    background-color: #a1a5b7;
+    font-size: 12px;
+    border: none;
+    border-radius: 20px;
+    margin-left: 6px;
+    text-align: center;
+  }
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+
+  .btn-default {
+    color: #7e8299;
+  }
+}
+
+.edit {
+  padding: 7px 13px;
+  line-height: 20px;
+  font-size: 14px;
+  background-color: #f5f8fa;
+  cursor: pointer;
+  color: #7e8299;
+  transition: all 0.2s linear;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  &:hover {
+    color: #7e8299;
+    background-color: #e4e6ef;
+  }
+}
+
+.status {
+  width: 58px;
+  margin: auto;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: center;
+}
+
+.status_normal {
+  color: #50cd89;
+  background-color: #e8fff3;
+}
+
+.status_lock {
+  color: #ffc700;
+  background-color: #fff8dd;
+}
+
+.status_stop {
+  color: #f1416c;
+  background-color: #fff5f8;
+}
+
+.status_noActive {
+  color: #7239ea;
+  background-color: #f7f4fe;
+}
+
+::ng-deep {
+  .w-590-modal {
+    .modal-dialog {
+      max-width: 590px;
+    }
+  }
+}

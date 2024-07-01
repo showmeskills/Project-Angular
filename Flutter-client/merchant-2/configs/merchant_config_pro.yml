@@ -1,0 +1,32 @@
+# 本地配置
+# app 配置
+app_config:
+  # 切记保证商户包名和谷歌登录配置一致，否则会出现打包问题
+  bundle_id: com.prod2.platform_ionic
+  bundle_id_ios: com.platform.mrcat
+  display_name: Mr.Cat
+  # 安卓安装包名字
+  install_package_name: mrcat-android
+  install_package_name_ios: mrcat-ios
+  # app唤醒scheme
+  scheme_id: com.platform.mrcat
+  # shorebird appId
+  shorebird_id: 768af96b-957d-4529-a329-15a415204cb2
+
+# 商户配置
+merchant_config:
+  # 商户 id
+  tenant_id: 18
+  # line channel_id
+  line_id: 1660801299
+  # 谷歌配置文件路径，暂不支持分别指定 iOS 以及安卓配置路径
+  google_info_path: merchant-2/sources/pro/
+  # 对应 config.dart 文件中的 currentConfig 变量值
+  # 注意这里会覆盖掉之前的值，请确保该值填入后编译顺利
+  current_config: Pro.config
+  current_firebase_options: DefaultFirebaseOptions.currentPlatformPro
+  language_type: APP2
+  # sentry dsn
+  sentry_dsn: https:\/\/dacaf4619f3b35300ca5157cc8515997@sentry.athena25.com\/6
+  is_m1: false
+  colors: GGColorsM2

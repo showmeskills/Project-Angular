@@ -1,0 +1,9 @@
+@use 'sass/tools/triangle' as *;
+
+@include triangle(rgba(216, 216, 216, 1));
+
+:host {
+  background: #fff;
+  border-radius: 6px;
+  display: block;
+}

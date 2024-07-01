@@ -1,0 +1,83 @@
+<modal-title *ngIf="!isView" [title]="'game.detail.cancelBetTitle' | lang" (close)="modalRef.dismiss()"></modal-title>
+
+<div [class.p-12]="!isView">
+  <div class="lh-22 py-2 text-danger fz-16">{{ 'game.detail.cancelBetWarn' | lang }}</div>
+
+  <div class="section-wrap pt-4">
+    <div class="section-item">
+      <div class="section-text color-999">UID:</div>
+      <div class="section-text">{{ data.uid }}</div>
+    </div>
+    <div class="section-item">
+      <div class="section-text color-999">{{ 'game.detail.transOrder' | lang }}</div>
+      <div class="section-text">{{ data.orderNumber }}</div>
+    </div>
+    <div class="section-item">
+      <div class="section-text color-999">{{ 'game.detail.game_type' | lang }}</div>
+      <div class="section-text">{{ data.gameCategory }}</div>
+    </div>
+    <div class="section-item">
+      <div class="section-text color-999">{{ 'game.detail.three_id' | lang }}</div>
+      <div class="section-text">{{ data.wagerNumber }}</div>
+    </div>
+    <div class="section-item">
+      <div class="section-text color-999">{{ 'game.detail.game_maker' | lang }}</div>
+      <div class="section-text">{{ data.gameProvider }}</div>
+    </div>
+    <div class="section-item">
+      <div class="section-text color-999">{{ 'game.detail.trans_time' | lang }}</div>
+      <div class="section-text">{{ data.betTime }}</div>
+    </div>
+    <!-- 本金 -->
+    <div class="section-item">
+      <div class="section-text color-999">{{ 'game.detail.trans_net' | lang }}</div>
+      <div class="section-text">{{ data.principal | currencyValue: data.currency }}</div>
+    </div>
+    <div class="section-item">
+      <div class="section-text color-999">{{ 'game.detail.bet' | lang }}</div>
+      <div class="section-text">{{ data.bonus | currencyValue: data.currency }}</div>
+    </div>
+  </div>
+
+  <ng-container [formGroup]="formGroup">
+    <form-row name="remark" [label]="'common.remarks' | lang" label-width="140px">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="lh-22 py-4 fz-16 word-break">{{ control.value }}</div>
+        <textarea
+          class="form-control resize-none"
+          rows="5"
+          [formControl]="control"
+          [class.is-invalid]="invalid"
+          [placeholder]="'form.wordsGt' | lang: { n: 500 }"
+          *ngIf="!isView"
+        ></textarea>
+      </ng-template>
+    </form-row>
+
+    <form-row name="img" [label]="'risk.att' | lang" label-width="140px" [required]="!isView" class="mt-6">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <img-viewer
+          [showClear]="!isView"
+          [hidden]="!imgList?.length"
+          class="mb-8"
+          #viewer
+          [(list)]="imgList"
+        ></img-viewer>
+
+        <upload
+          type="TxReview"
+          desc="*.jpg,*.png,*.gif,*.bmp"
+          #upload
+          [style.width.px]="200"
+          [formControl]="control"
+          [class.is-invalid]="invalid"
+          [limit]="1024 * 5"
+          (change)="onUpload($event, upload, viewer)"
+          *ngIf="!isView"
+        ></upload>
+      </ng-template>
+    </form-row>
+  </ng-container>
+</div>
+
+<modal-footer *ngIf="!isView" dismissClose (confirm)="submit()"></modal-footer>

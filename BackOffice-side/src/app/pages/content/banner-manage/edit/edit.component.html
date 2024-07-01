@@ -1,0 +1,163 @@
+<main class="main">
+  <div class="edit-name">{{ isAdd ? ('content.ba.add' | lang) : ('content.info.edit' | lang) }}</div>
+
+  <form class="form" [formGroup]="formGroup" #form>
+    <lang-tab [(value)]="selectLang" formArrayName="lang" #langTab (languageChange)="updateLanguageForm()">
+      <ng-template let-i="i" let-current="current">
+        <form-row
+          name="title"
+          [label]="('content.ba.bTitle' | lang) + '（' + current?.name + '）'"
+          label-width="220"
+          [invalidFeedback]="{
+            required: ('content.ba.enterBaTitile' | lang) + '（' + current?.name + '）'
+          }"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid">
+            <input
+              [class.is-invalid]="invalid"
+              class="form-control"
+              [formControl]="langArrayForm.controls[i]['controls']['title']"
+              type="text"
+            />
+          </ng-template>
+        </form-row>
+
+        <form-row [label]="('content.ba.baPic' | lang) + '（' + current?.name + '）'" label-width="220">
+          <ng-template>
+            <div>
+              <div class="d-flex mr-20 mb-8">
+                <div class="fz-16 vam" style="line-height: 200px; min-width: 32px">banner：</div>
+
+                <div class="flex-1 ml-2">
+                  <upload
+                    type="Games"
+                    [style.width.px]="340"
+                    [style.height.px]="130"
+                    [formControl]="langArrayForm.controls[i]['controls']['bannerUrl']"
+                    [class.is-invalid]="validator.isControlInvalid('bannerUrl', langArrayForm.controls[i])"
+                    [showLimitText]="false"
+                    [desc]="'1200 x 516'"
+                  ></upload>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="validator.controlHasError('required', 'bannerUrl', langArrayForm.controls[i])"
+                  >
+                    {{ 'content.ba.upBa' | lang }}
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex mr-20 mb-8">
+                <div class="fz-16 tab-in-label">URL：</div>
+                <div>
+                  <input
+                    type="text"
+                    [style.width.px]="340"
+                    class="form-control"
+                    [formControl]="langArrayForm.controls[i]['controls']['imageUrl']"
+                    [class.is-invalid]="validator.isControlInvalid('imageUrl', langArrayForm.controls[i])"
+                  />
+                  <div class="is-invalid"></div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="validator.controlHasError('required', 'imageUrl', langArrayForm.controls[i])"
+                  >
+                    {{ 'content.ba.upUrl' | lang }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+
+    <!-- 状态 -->
+    <div class="w-100 d-flex py-2">
+      <label class="mr-0 mb-0 label-title"
+        >{{ 'content.info.faBuWay' | lang }} <span class="text-danger">*</span>：</label
+      >
+      <div class="flex-1">
+        <div class="d-flex flex-wrap h-100">
+          <label class="radio radio-lg">
+            <input type="radio" value="Immediately" formControlName="releaseType" />
+            <span></span>
+            {{ 'content.info.nowFaBu' | lang }}
+          </label>
+          <label class="radio radio-lg">
+            <input type="radio" value="Appointment" formControlName="releaseType" />
+            <span></span>
+            {{ 'content.info.yuYue' | lang }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="w-100 d-flex py-2" *ngIf="formGroup.value['releaseType'] === 'Appointment'">
+    <label class="mr-0 mb-0 label-title">{{ 'content.ba.st' | lang }}</label>
+    <div class="flex-1">
+      <div class="d-flex flex-ac">
+        <input
+          [style.width.px]="264"
+          class="form-control text-center"
+          type="text"
+          [class.time-invalid]="config.timeInvalid"
+          selectMode="single"
+          [min]="config.nowTime"
+          [owlDateTime]="startTimePicker"
+          [owlDateTimeTrigger]="startTimePicker"
+          rangeSeparator="-"
+          [placeholder]="'content.ba.selSt' | lang"
+          [(ngModel)]="config.startTime"
+          (dateTimeChange)="startTimeBack()"
+        />
+        <owl-date-time pickerType="both" class="fz-20" #startTimePicker></owl-date-time>
+      </div>
+      <div class="time-invalid-box" *ngIf="config.timeInvalid">{{ 'content.ba.selSt' | lang }}</div>
+    </div>
+  </div>
+  <div class="w-100 d-flex py-2">
+    <label class="mr-0 mb-0 label-title">{{ 'content.ba.et' | lang }}</label>
+    <div class="flex-1">
+      <div class="d-flex flex-ac">
+        <input
+          [style.width.px]="264"
+          class="form-control text-center"
+          type="text"
+          selectMode="single"
+          [min]="config.nowTime"
+          [owlDateTime]="endTimePicker"
+          [owlDateTimeTrigger]="endTimePicker"
+          rangeSeparator="-"
+          [(ngModel)]="config.endTime"
+          [placeholder]="'content.ba.selEnd' | lang"
+        />
+        <owl-date-time pickerType="both" class="fz-20" #endTimePicker></owl-date-time>
+      </div>
+    </div>
+  </div>
+
+  <!-- 支持显示语言 -->
+  <form-row [label]="'content.ba.supportLang' | lang" label-width="220">
+    <ng-template>
+      <div class="d-flex flex-wrap" selectChildren>
+        <label class="checkbox checkbox-lg mr-12 my-2 fz-16">
+          <input type="checkbox" selectGroup />
+          <span class="mr-4"></span>{{ 'common.all' | lang }}
+        </label>
+        <label class="checkbox checkbox-lg mr-8 fz-16" *ngFor="let lg of langList">
+          <input type="checkbox" [value]="lg.value" [(ngModel)]="lg.checked" />
+          <span class="mr-4"></span>{{ lg.value }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 按钮组 -->
+  <div class="btn-wrap pt-12 flex-center d-flex">
+    <button type="button" class="c-btn c-btn-default ml-0" (click)="onBack()">
+      {{ 'common.back' | lang }}
+    </button>
+    <button type="button" class="c-btn c-btn-primary" (click)="onSubmit(langTab)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</main>

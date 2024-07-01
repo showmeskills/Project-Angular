@@ -1,0 +1,31 @@
+<div class="contanier" [appLoading]="isLoading">
+  <p class="header">FAQ</p>
+  <ng-container *ngIf="articleList.length == 0; else selectedArticle">
+    <!-- <div class="link-row">
+      <span class="icon-video"></span>
+      视频教程
+    </div>
+    <div class="link-row">
+      <span class="icon-file"></span>
+      如何从xxxx提现数字货币
+    </div>
+    <div class="link-row">
+      <span class="icon-file"></span>
+      数字货币提现未到账？
+    </div>
+    <div class="link-row">
+      <span class="icon-file"></span>
+      如何找到我的转账ID（TxID?）
+    </div>
+    <div class="link-row">
+      <span class="icon-file"></span>
+      如何找回我的BEP-20代币？
+    </div> -->
+  </ng-container>
+  <ng-template #selectedArticle>
+    <div class="link-row onact96" *ngFor="let item of articleList" (click)="onGoTohelpCenter(item)">
+      <i class="icon-file"></i>
+      <span class="text-decoration" [title]="item.title">{{ item.title }}</span>
+    </div>
+  </ng-template>
+</div>

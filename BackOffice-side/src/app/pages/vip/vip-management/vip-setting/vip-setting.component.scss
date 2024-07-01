@@ -1,0 +1,96 @@
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.base {
+  padding: 10px 10px 0;
+  border-radius: 6px;
+  border: 1px solid #e3e6e9;
+
+  &-header {
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #e5e5e5;
+  }
+
+  &-row,
+  &-content,
+  &-content-wrap {
+    display: flex;
+  }
+
+  &-content,
+  &-content-wrap {
+    flex-flow: row wrap;
+  }
+
+  &-content-wrap {
+    padding-top: 5px;
+  }
+
+  &-row {
+    margin: 8px 0;
+    min-width: 0;
+    flex: 3 3 33.33333333%;
+  }
+
+  &-title {
+    // flex: 0 0 116px;
+    flex: 0 0 180px;
+  }
+}
+
+.level-table {
+  width: 100%;
+  margin-top: 12px;
+  table-layout: fixed;
+
+  thead th,
+  tbody td {
+    border: 0;
+    padding: 1px 3px;
+    line-height: 1;
+  }
+
+  thead th {
+    font-size: 14px;
+    padding: 7px 3px;
+  }
+
+  .cell {
+    line-height: 20px;
+  }
+
+  &::ng-deep {
+    input {
+    }
+  }
+
+  .form-control {
+    height: 30px;
+    border-radius: 0;
+  }
+}
+
+[prefix],
+[suffix] {
+  line-height: 30px;
+  color: rgba(#a1a5b7, 0.8);
+}
+
+form-wrap {
+  height: 30px;
+  border-radius: 0;
+
+  &::ng-deep {
+    label.form-field {
+      padding: 0 4px;
+    }
+
+    input {
+      padding: 0 2px;
+      height: 30px;
+      line-height: 30px;
+    }
+  }
+}

@@ -1,0 +1,364 @@
+<!-- <customize-button type="primary" (onClick)="onTest()">点我开发</customize-button>
+<customize-button type="default" (onClick)="onStop()">点我停止</customize-button> -->
+
+<ng-container *ngIf="!freeze">
+  <!-- 默认展示: 我的投注 所有投注 风云榜 最幸运 竞赛活动-->
+  <div class="container">
+    <div class="daily-races-header">
+      <div class="races-nav" [class.disabled]="disabledSwitch()">
+        <customize-button
+          *ngFor="let race of racesNav; let index = index"
+          radius="20px"
+          type="text"
+          size="medium"
+          type="default"
+          [class.btn-active]="racesIndex === index"
+          (onClick)="onSelectTable(race, index)"
+        >
+          <span class="btn-text" [class.btn-text-active]="racesIndex === index">{{ race.name }}</span>
+        </customize-button>
+      </div>
+      <div class="races-drop-down" *ngIf="!isH5 && racesNav.length">
+        <app-customize-select
+          width="56px"
+          [textKey]="'key'"
+          [valueKey]="'value'"
+          [options]="dropDown"
+          (valueChange)="onValueChange($event)"
+          [(value)]="dailyRacesService.pageSize"
+          [disabled]="disabledSwitch()"
+        >
+        </app-customize-select>
+      </div>
+    </div>
+    <div class="daily-races-list">
+      <ng-container [ngSwitch]="dailyRacesService.currentTable">
+        <ng-container *ngSwitchCase="'my_bet'">
+          <ng-container *ngTemplateOutlet="myBet"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'all_bet'">
+          <ng-container *ngTemplateOutlet="allBet"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'windy_list'">
+          <ng-container *ngTemplateOutlet="heroBets"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'luckiest'">
+          <ng-container *ngTemplateOutlet="luckiestBets"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'race_text'">
+          <ng-container *ngTemplateOutlet="dailyContest"></ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- 我的投注 -->
+  <ng-template #myBet>
+    <app-races-table-template
+      [tableHeader]="isH5 ? renderMyBetData().isH5Titles : renderMyBetData().titles"
+      [loading]="renderMyBetData().loading"
+      [tableData]="renderMyBetData().data"
+      [customizedData]="myBetData"
+      [columns]="isH5 ? 2 : 5"
+    ></app-races-table-template>
+    <ng-template #myBetData>
+      <div class="list-item-container">
+        <div
+          class="list-item"
+          [class.out-animation]="renderMyBetData().data.length > 10 && last"
+          *ngFor="let item of renderMyBetData().data; let index = index; let last = last"
+        >
+          <div>
+            <ng-container *ngTemplateOutlet="gameName; context: { item }"></ng-container>
+          </div>
+          <ng-container *ngIf="!isH5">
+            <div class="text-14">
+              {{ item.dateTime | date: 'MM-dd HH:mm' }}
+            </div>
+            <div>
+              <app-races-conversion-currency
+                [amount]="item?.betAmount || 0"
+                [currency]="item?.currency || 'USDT'"
+              ></app-races-conversion-currency>
+            </div>
+            <div class="text-14">{{ item?.odds ? item?.odds + 'x' : '-' }}</div>
+          </ng-container>
+          <div>
+            <app-races-conversion-currency
+              [amount]="item?.payAmount || 0"
+              [currency]="item?.currency || 'USDT'"
+            ></app-races-conversion-currency>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+
+  <!-- 所有投注 -->
+  <ng-template #allBet>
+    <app-races-table-template
+      [tableHeader]="isH5 ? renderAllBetData().isH5Titles : renderAllBetData().titles"
+      [loading]="renderAllBetData().loading"
+      [tableData]="renderAllBetData().data"
+      [customizedData]="allBetData"
+      [columns]="isH5 ? 2 : 5"
+    ></app-races-table-template>
+    <ng-template #allBetData>
+      <div class="list-item-container">
+        <div
+          class="list-item"
+          [class.out-animation]="renderAllBetData().data.length > 10 && last"
+          *ngFor="let item of renderAllBetData().data; let index = index; let last = last"
+        >
+          <div>
+            <ng-container *ngTemplateOutlet="gameName; context: { item }"></ng-container>
+          </div>
+          <ng-container *ngIf="!isH5">
+            <div>
+              <div class="user-name-container">
+                <img
+                  class="avatar"
+                  #img
+                  [src]="item.avatar | avatarDefault"
+                  lazy="loading"
+                  alt=""
+                  (error)="dailyRacesService.onImageError(img)"
+                />
+                <p class="text-14 ml-6 user-name">
+                  {{ item?.playerName || ('invisible' | translate) }}
+                </p>
+              </div>
+            </div>
+            <div>
+              <app-races-conversion-currency
+                [amount]="item?.betAmount || 0"
+                [currency]="item?.currency || 'USDT'"
+              ></app-races-conversion-currency>
+            </div>
+            <div class="text-14">{{ item?.odds ? item?.odds + 'x' : '-' }}</div>
+          </ng-container>
+          <div>
+            <app-races-conversion-currency
+              [amount]="item?.payAmount || 0"
+              [currency]="item?.currency || 'USDT'"
+            ></app-races-conversion-currency>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+
+  <!-- 风云榜 -->
+  <ng-template #heroBets>
+    <app-races-table-template
+      [tableHeader]="isH5 ? renderHeroBetData().isH5Titles : renderHeroBetData().titles"
+      [loading]="renderHeroBetData().loading"
+      [tableData]="renderHeroBetData().data"
+      [customizedData]="heroBetBata"
+      [columns]="isH5 ? 2 : 5"
+    ></app-races-table-template>
+    <ng-template #heroBetBata>
+      <div class="list-item-container">
+        <div
+          class="list-item"
+          [class.out-animation]="renderHeroBetData().data.length > 10 && last"
+          *ngFor="let item of renderHeroBetData().data; let index = index; let last = last"
+        >
+          <div>
+            <ng-container *ngTemplateOutlet="gameName; context: { item }"></ng-container>
+          </div>
+          <div *ngIf="!isH5">
+            <div class="user-name-container">
+              <img
+                class="avatar"
+                #img
+                [src]="item.avatar | avatarDefault"
+                lazy="loading"
+                alt=""
+                (error)="dailyRacesService.onImageError(img)"
+              />
+              <p class="text-14 ml-6 user-name">
+                {{ item?.playerName || ('invisible' | translate) }}
+              </p>
+            </div>
+          </div>
+          <div>
+            <app-races-conversion-currency
+              [amount]="item?.betAmount || 0"
+              [currency]="item?.currency || 'USDT'"
+            ></app-races-conversion-currency>
+          </div>
+          <div *ngIf="!isH5" class="text-14">{{ item?.odds ? item?.odds + 'x' : '-' }}</div>
+          <div *ngIf="!isH5">
+            <app-races-conversion-currency
+              [amount]="item?.payAmount || 0"
+              [currency]="item?.currency || 'USDT'"
+            ></app-races-conversion-currency>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+
+  <!-- 最幸运 -->
+  <ng-template #luckiestBets>
+    <app-races-table-template
+      [tableHeader]="isH5 ? renderLuckiestBetData().isH5Titles : renderLuckiestBetData().titles"
+      [loading]="renderLuckiestBetData().loading"
+      [tableData]="renderLuckiestBetData().data"
+      [customizedData]="luckiestBetData"
+      [columns]="isH5 ? 2 : 5"
+    ></app-races-table-template>
+
+    <ng-template #luckiestBetData>
+      <div class="list-item-container">
+        <div
+          class="list-item"
+          [class.out-animation]="renderLuckiestBetData().data.length > 10 && last"
+          *ngFor="let item of renderLuckiestBetData().data; let index = index; let last = last"
+        >
+          <div>
+            <ng-container *ngTemplateOutlet="gameName; context: { item }"></ng-container>
+          </div>
+          <div *ngIf="!isH5">
+            <div class="user-name-container">
+              <img
+                class="avatar"
+                #img
+                [src]="item.avatar | avatarDefault"
+                lazy="loading"
+                alt=""
+                (error)="dailyRacesService.onImageError(img)"
+              />
+              <p class="text-14 ml-6 user-name">
+                {{ item?.playerName || ('invisible' | translate) }}
+              </p>
+            </div>
+          </div>
+          <div *ngIf="!isH5">
+            <app-races-conversion-currency
+              [amount]="item?.betAmount || 0"
+              [currency]="item?.currency || 'USDT'"
+            ></app-races-conversion-currency>
+          </div>
+          <div class="text-14">{{ item?.odds ? item?.odds + 'x' : '-' }}</div>
+          <div *ngIf="!isH5">
+            <app-races-conversion-currency
+              [amount]="item?.payAmount || 0"
+              [currency]="item?.currency || 'USDT'"
+            ></app-races-conversion-currency>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+
+  <!-- 每日竞赛 -->
+  <ng-template #dailyContest>
+    <div class="top">
+      <div class="title-list">
+        <ng-container *ngFor="let item of dailyRacesService.topList; let idx = index">
+          <div>
+            <customize-button
+              class="mr-16"
+              type="text"
+              [icon]="item.icon"
+              [disabled]="dailyRacesService.isLoading"
+              (onClick)="onSelectAcivity(idx, item)"
+            >
+              <span [class.active]="dailyRacesService.selectedActivitIndex === idx">
+                {{ item.text }}
+              </span>
+            </customize-button>
+          </div>
+        </ng-container>
+      </div>
+      <div class="activity-date text-14">
+        <i class="icon-line-chart"></i>
+        <span class="ml-6" *ngIf="dailyRacesService.topList[dailyRacesService.selectedActivitIndex]?.endTime">
+          {{ 'end_time00' | translate }}:
+          {{ dailyRacesService.topList[dailyRacesService.selectedActivitIndex].endTime || 0 }}
+        </span>
+      </div>
+    </div>
+    <app-races-table-template
+      [tableHeader]="['1', '2', '3', '4']"
+      [customizedHeader]="dailyRacesHeader"
+      [customizedData]="dailyRacesData"
+      [tableData]="dailyRacesService.rankList"
+      [loading]="dailyRacesService.isLoading"
+      [columns]="4"
+      [skeletonLength]="dailyRacesLoadingLength"
+    ></app-races-table-template>
+    <ng-template #dailyRacesHeader>
+      <div class="daily-races-header">
+        <div class="header-item text-14" *ngFor="let item of dailyRacesTitle; let index = index">
+          <ng-container *ngIf="item.icon">
+            <app-tool-tip>
+              <i origin [class]="item.icon" class="mutual-opacity"></i>
+              <p tooltip>{{ item.toolTips }}</p>
+            </app-tool-tip>
+            <span class="ml-6">{{ item.text }}</span>
+          </ng-container>
+          <ng-container *ngIf="!item.icon">
+            {{ item.text }}
+          </ng-container>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #dailyRacesData>
+      <div class="list-item-container daily-races-container">
+        <div class="list-item" *ngFor="let item of dailyRacesService.rankList">
+          <div>
+            <ng-container *ngIf="item.rankNumber < 4">
+              <img
+                class="badge"
+                [src]="'assets/images/daily-races/' + (item?.rankNumber || 0) + '.svg'"
+                lazy="loading"
+                alt=""
+              />
+            </ng-container>
+            <ng-container *ngIf="item.rankNumber >= 4">
+              <p class="text-14 rank-number">{{ item?.rankNumber || 0 }}th</p>
+            </ng-container>
+          </div>
+          <div>
+            <div class="user-name-container">
+              <img
+                class="avatar"
+                [src]="item.avatar | avatarDefault"
+                lazy="loading"
+                alt=""
+                #img
+                (error)="dailyRacesService.onImageError(img)"
+              />
+              <p class="text-14 ml-6 user-name">
+                {{ item?.userName || item?.uid || '' }}
+              </p>
+            </div>
+          </div>
+          <div>
+            <p class="text-14">{{ item?.rankMoney || 0 | currencyValue: 'USDT' }}</p>
+            <img class="ml-6" [src]="'USDT' | currencyIcon" lazy="loading" alt="" />
+          </div>
+          <div>
+            <p class="text-14 green-color">{{ toParseInt(item?.bonusUsdtMoney || 0) }}</p>
+            <img class="ml-6" [src]="'USDT' | currencyIcon" lazy="loading" alt="" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+
+  <!-- 悬浮游戏名称 -->
+  <ng-template #gameName let-item="item" let-state="state">
+    <app-tool-tip class="inline-block" [arrow]="false">
+      <div origin class="mutual-opacity">
+        <p class="text-14 game-name">{{ item?.gameName || '' }}</p>
+      </div>
+      <div tooltip class="tool-tip">
+        <p class="tip-text">{{ item?.gameName || '' }}</p>
+      </div>
+    </app-tool-tip>
+  </ng-template>
+</ng-container>

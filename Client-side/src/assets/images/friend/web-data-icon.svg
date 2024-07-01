@@ -1,0 +1,10 @@
+<svg id="数据集" xmlns="http://www.w3.org/2000/svg" width="34" height="32" viewBox="0 0 34 32">
+    <defs>
+        <style>
+            .cls-1{fill:#f04e23}
+        </style>
+    </defs>
+    <path id="路径" class="cls-1" d="M0 0h13v13H0z" transform="translate(3 2)"/>
+    <path id="路径-2" data-name="路径" d="M0 0h13v13H0z" transform="translate(17 2)" style="opacity:.2;fill:#f04e23"/>
+    <path id="形状" class="cls-1" d="M14 13V0h13v13zM0 13V0h13v13z" transform="translate(3 16)"/>
+</svg>

@@ -1,0 +1,417 @@
+<div class="popup-header" [style]="curHeaderBg()">
+  <modal-title type="drawer" (close)="modal.dismiss()">{{ curTitle() | lang }}</modal-title>
+</div>
+
+<main class="px-8 custom-scroll-y">
+  <!-- 游戏排行榜/会员排行榜/国家排行榜/货币排行榜 -->
+  <ng-container *ngIf="['ganmeRank', 'memberRank', 'coutryRank', 'currencyRank'].includes(type); else generalTable">
+    <table class="table mb-0 rank-table">
+      <thead>
+        <tr>
+          <!-- 游戏/会员排行榜 - 名称/单量 -->
+          <ng-container *ngIf="['ganmeRank', 'memberRank'].includes(type)">
+            <th width="35%">
+              <span class="cell">{{ 'dashboard.info.name' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onRankSort('WagerCount')">
+                  <span>{{ 'dashboard.info.count' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="sortData.sort === 'WagerCount' && sortData.isAsc"></div>
+                    <div class="triangle-down" [class.active]="sortData.sort === 'WagerCount' && !sortData.isAsc"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+          </ng-container>
+          <!-- 国家/货币排行榜 - 国家,货币/交易量 -->
+          <ng-container *ngIf="['coutryRank', 'currencyRank'].includes(type)">
+            <th>
+              <span class="cell">{{
+                (type === 'coutryRank' ? 'dashboard.info.countries' : 'dashboard.info.currency') | lang
+              }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onRankSort('WagerCount')">
+                  <span>{{ 'dashboard.info.transVolum' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="sortData.sort === 'WagerCount' && sortData.isAsc"></div>
+                    <div class="triangle-down" [class.active]="sortData.sort === 'WagerCount' && !sortData.isAsc"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+          </ng-container>
+
+          <!-- 交易额 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('WagerTotal')">
+                <span>{{ 'dashboard.info.transAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.sort === 'WagerTotal' && sortData.isAsc"></div>
+                  <div class="triangle-down" [class.active]="sortData.sort === 'WagerTotal' && !sortData.isAsc"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+
+          <!-- 输赢 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('PayoutTotal')">
+                <span>{{ 'dashboard.info.winLose' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.sort === 'PayoutTotal' && sortData.isAsc"></div>
+                  <div class="triangle-down" [class.active]="sortData.sort === 'PayoutTotal' && !sortData.isAsc"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+
+          <!-- 国家/货币排行榜 - 用户数 -->
+          <th *ngIf="['coutryRank', 'currencyRank'].includes(type)">
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onRankSort('UserCount')">
+                <span>{{ 'dashboard.info.users' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.sort === 'UserCount' && sortData.isAsc"></div>
+                  <div class="triangle-down" [class.active]="sortData.sort === 'UserCount' && !sortData.isAsc"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <!-- 游戏/会员排行榜 - 名称/单量 -->
+          <ng-container *ngIf="['ganmeRank', 'memberRank'].includes(type)">
+            <!-- 名称 -->
+            <td>
+              <span class="cell"> {{ (type === 'ganmeRank' ? item.gameName : item.userName) || '-' }} </span>
+            </td>
+            <!-- 单量 -->
+            <td>
+              <span class="cell">{{ item.wagerCount | toFormatMoney }}</span>
+            </td>
+          </ng-container>
+
+          <!-- 国家/货币排行榜 - 国家,货币/交易量 -->
+          <ng-container *ngIf="['coutryRank', 'currencyRank'].includes(type)">
+            <td>
+              <span class="cell">
+                <!-- 国家 -->
+                <div *ngIf="type === 'coutryRank'" class="country-image">
+                  <i iconSize="20" [iconCountry]="item.country"></i>
+                </div>
+                <!-- 货币 -->
+                <img *ngIf="type === 'currencyRank'" [currencyIcon]="item.currency" currencySize="18" />
+              </span>
+            </td>
+            <!-- 交易量 -->
+            <td>
+              <span class="cell">{{ item.wagerCount | toFormatMoney }}</span>
+            </td>
+          </ng-container>
+
+          <!-- 交易额 -->
+          <td>
+            <span class="cell">{{ item.wagerTotal | currencyValue: 'USDT' }}</span>
+          </td>
+
+          <!-- 输赢 -->
+          <td>
+            <ng-container *win="item.payoutTotal; let value; prev as prev">
+              <span class="cell" [winColor]="value" [winColorReverse]="true">
+                {{ prev }}{{ value | currencyValue: 'USDT' }}
+              </span>
+            </ng-container>
+          </td>
+
+          <!-- 国家/货币排行榜 - 用户数 -->
+          <td *ngIf="['coutryRank', 'currencyRank'].includes(type)">
+            <span class="cell">{{ item.userCount | toFormatMoney }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <!-- 存款申诉/游戏申诉;代理审核;新首存/存款失败;活跃用户;新注册 -->
+  <ng-template #generalTable>
+    <table class="table mb-0">
+      <!-- 存款/游戏 申诉 -->
+      <ng-container *ngIf="['depositAppeal', 'gameAppeal'].includes(type)">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">单号</span>
+            </th>
+            <th>
+              <span class="cell">申诉内容</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort()">
+                  <span>申诉时间</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">状态</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">01000701</span>
+            </td>
+            <td>
+              <span class="cell">A29302930290001</span>
+            </td>
+            <td>
+              <span class="cell" *ngIf="type === 'depositAppeal'">
+                主账户：+100
+                <img [currencyIcon]="'USDT'" currencySize="18" />
+              </span>
+              <span class="cell" *ngIf="type === 'gameAppeal'"> 游戏申诉内容 </span>
+            </td>
+            <td>
+              <span class="cell">2020-12-12 23:59:59</span>
+            </td>
+            <td>
+              <!-- [ngSwitch]="item.status" -->
+              <span class="cell">
+                <!-- <app-label *ngSwitchCase="'Success'" type="success">{{
+                  (isDeposit ? 'member.detail.balance.depositSuccess' : 'member.detail.balance.withdrawSuccess') | lang
+                }}</app-label>
+                <app-label *ngSwitchCase="'Timeout'" type="warning">{{
+                  (isDeposit ? 'member.detail.balance.depositOverTime' : 'member.detail.balance.withdrawOverTime') | lang
+                }}</app-label>
+                <app-label *ngSwitchCase="'Fail'" type="danger">{{
+                  (isDeposit ? 'member.detail.balance.depositFail' : 'member.detail.balance.withdrawFail') | lang
+                }}</app-label>
+                <app-label *ngSwitchDefault type="default">{{ item.status }}</app-label> -->
+                <app-label type="warning">待处理></app-label>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+      <!-- 代理审核 -->
+      <ng-container *ngIf="type === 'agentReview'">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">审核活动</span>
+            </th>
+            <th>
+              <span class="cell">审核人</span>
+            </th>
+            <th>
+              <span class="cell">审核内容</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort()">
+                  <span>审核时间</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">每日竞赛$1000</span>
+            </td>
+            <td>
+              <span class="cell">sup001</span>
+            </td>
+            <td>
+              <span class="cell"> 开启活动 </span>
+            </td>
+            <td>
+              <span class="cell">2020-12-12 23:59:59</span>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+      <!-- 新首存/存款失败 -->
+      <ng-container *ngIf="['depositFailed', 'firstDeposit'].includes(type)">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">单号</span>
+            </th>
+            <th>
+              <span class="cell">存款金额</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort()">
+                  <span>存款时间</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">01000701</span>
+            </td>
+            <td>
+              <span class="cell">A29302930290001</span>
+            </td>
+            <td>
+              <span class="cell">
+                <img [currencyIcon]="'USDT'" currencySize="18" />
+                100.000.00
+              </span>
+            </td>
+            <td>
+              <span class="cell">2020-12-12 23:59:59</span>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+      <!-- 活跃用户 -->
+      <ng-container *ngIf="type === 'activeMembers'">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort()">
+                  <span>活跃用户数</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort()">
+                  <span>日期</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">123</span>
+            </td>
+            <td>
+              <span class="cell">2020-12-12 23:59:59</span>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+      <!-- 新注册 -->
+      <ng-container *ngIf="type === 'newRegister'">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">存款金额</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort()">
+                  <span>注册时间</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">01000701</span>
+            </td>
+            <td>
+              <span class="cell">
+                <img [currencyIcon]="'USDT'" currencySize="18" />
+                100.000.00
+              </span>
+            </td>
+            <td>
+              <span class="cell">2020-12-12 23:59:59</span>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+  </ng-template>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</main>
+
+<div
+  *ngIf="!['ganmeRank', 'memberRank', 'coutryRank', 'currencyRank'].includes(type)"
+  class="d-flex flex-between pt-10 table-footer py-6 px-8"
+>
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData(true)"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+    ></app-paginator>
+  </div>
+</div>

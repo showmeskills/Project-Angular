@@ -1,0 +1,77 @@
+:host {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.job {
+  background-image: url(src/assets/images/about-us/role.svg);
+  background-repeat: no-repeat;
+  background-position: right center;
+  height: 260px;
+  padding-right: 65%;
+  background-color: var(--bg-color-10);
+
+  @media (max-width: 1000px) {
+    padding-right: 50%;
+  }
+
+  @media (max-width: 767px) {
+    min-height: 410px;
+    height: auto;
+    background-position: center top;
+    padding: 220px 0 30px 0;
+  }
+
+  .job-left {
+    .text-one {
+      font-size: 24px;
+      line-height: 1.48;
+
+      @media (max-width: 767px) {
+        margin-top: 74px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.mt-top {
+  margin-top: 20px;
+}
+
+.footer {
+  display: flex;
+  margin-top: 20px;
+  padding-bottom: 50px;
+  justify-content: center;
+
+  @media (max-width: 767px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.job-detail {
+  margin-top: 50px;
+  text-align: left;
+  padding: 20px 15px;
+
+  @media (max-width: 767px) {
+    margin-top: unset;
+  }
+
+  .content {
+    min-height: 575px;
+
+    ::ng-deep {
+      p {
+        font-size: 16px;
+        line-height: 1.88;
+        text-align: left;
+        color: var(--text-color);
+      }
+    }
+  }
+}

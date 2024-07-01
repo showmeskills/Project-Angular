@@ -1,0 +1,230 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+:host {
+  width: 100%;
+  flex: 0;
+  font-size: 14px;
+
+  &.error {
+    .input-container {
+      border-color: var(--txt-err-color) !important;
+    }
+  }
+}
+
+.select-container {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  position: relative;
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .select-label {
+    font-size: 14px;
+    color: var(--text-color-20);
+    margin-bottom: 8px;
+    padding-left: 1px;
+  }
+
+  .input-container {
+    display: flex;
+    position: relative;
+    align-items: center;
+    height: 40px;
+    border: 1px solid var(--default-border-color);
+    border-radius: 4px;
+    background-color: #fff;
+    width: 150px;
+    cursor: pointer;
+    transition: border 0.2s;
+
+    &:host-context(.dark) & {
+      background-color: var(--container-bg-color);
+    }
+
+    .input-text {
+      white-space: nowrap;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      padding: 6px 13px;
+      font-size: 14px;
+      color: var(--text-color);
+      padding-right: 13px + 15px + 8px;
+
+      &.auto {
+        padding-right: 30px;
+      }
+
+      &.imitation-placeholder {
+        opacity: 0.5;
+      }
+    }
+
+    .icon-arrow-up,
+    .icon-arrow-down {
+      pointer-events: none;
+      font-size: 12px;
+      margin-right: 8px;
+      position: absolute;
+      right: 0;
+      transform: scale(0.7);
+    }
+
+    @media (max-width: 767px) {
+      width: 100%;
+
+      &:not(.fixed-height) {
+        height: 48px;
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .customize-options-container {
+    min-width: 100%;
+    height: auto;
+    font-size: 14px;
+    box-shadow: 1px 6px 6px 0 rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    border-radius: 4px;
+    max-height: 380px;
+    display: flex;
+
+    &.absolute {
+      position: absolute;
+      top: 100%;
+      z-index: 1;
+    }
+
+    &.fixed {
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+
+    ul {
+      width: 100%;
+
+      li.general {
+        padding: 0 16px;
+        white-space: nowrap;
+        height: 40px;
+        line-height: 40px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+
+        > i,
+        > img {
+          margin-right: 5px;
+        }
+
+        @media (any-hover: hover) {
+          &:hover {
+            background-color: #f9f9fa;
+          }
+        }
+
+        @media (any-hover: none) {
+          &:active {
+            background-color: #f9f9fa;
+          }
+        }
+
+        &.active {
+          color: var(--primary-color);
+        }
+      }
+    }
+
+    .select-icon {
+      max-height: 1em;
+      margin-right: 5px;
+    }
+
+    .filter-box {
+      margin: 4px;
+      border-radius: 4px;
+      border: 1px solid var(--default-border-color);
+      overflow: hidden;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+
+      > * + * {
+        margin-left: 4px;
+      }
+
+      &:focus-within {
+        border-color: var(--primary-color-85);
+      }
+
+      input {
+        width: 100%;
+        font-size: inherit;
+        padding: 0;
+        white-space: nowrap;
+        line-height: 40px;
+        border: none;
+        margin: 0;
+        outline: none;
+      }
+
+      i {
+        text-align: center;
+        font-size: 20px;
+        color: #b7bdc6;
+
+        &::before {
+          color: inherit;
+        }
+      }
+
+      .icon-clear-fill {
+        display: none;
+
+        &.active {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .dark .customize-options-container {
+    background-color: var(--container-bg-color);
+    color: #fff;
+    border: 1px solid #2f4553;
+    border-top: none;
+    ul {
+      li.general {
+        @media (any-hover: hover) {
+          &:hover {
+            background-color: #2f4553;
+          }
+        }
+
+        @media (any-hover: none) {
+          &:active {
+            background-color: #2f4553;
+          }
+        }
+      }
+    }
+    .filter-box {
+      input {
+        background-color: var(--container-bg-color);
+        color: #fff;
+      }
+    }
+  }
+}

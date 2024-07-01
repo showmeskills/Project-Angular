@@ -1,0 +1,25 @@
+<ng-container *ngIf="simple">
+  <i
+    *ngIf="checked"
+    (click)="toggle(false)"
+    class="mutual-opacity theme-simple-icon onact96-not"
+    [class]="simpleStyle === 'line' ? 'icon-sun-light' : 'icon-sun'"
+  ></i>
+  <i
+    *ngIf="!checked"
+    (click)="toggle(true)"
+    class="mutual-opacity theme-simple-icon onact96-not"
+    [class]="simpleStyle === 'line' ? 'icon-moon-light' : 'icon-moon'"
+  ></i>
+</ng-container>
+<div class="theme-slide" *ngIf="!simple" [class.checked]="checked">
+  <mat-slide-toggle
+    #toggler
+    [checked]="checked"
+    [disabled]="disabled"
+    [disableRipple]="true"
+    (change)="toggle($event.checked)"
+  ></mat-slide-toggle>
+  <i *ngIf="checked" class="theme-icon theme-dark icon-moon"></i>
+  <i *ngIf="!checked" class="theme-icon theme-light icon-sun"></i>
+</div>

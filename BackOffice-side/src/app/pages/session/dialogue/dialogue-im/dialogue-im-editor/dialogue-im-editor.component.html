@@ -1,0 +1,47 @@
+<!-- 聊天工具栏 -->
+<div class="im-tool-wrap h40 rounded-3 bg-f3 mb-4 d-flex flex-wrap flex-ac px-2">
+  <!-- 图片 -->
+  <div class="px-2 cursor-pointer" (click)="openUpload(SessionMsgTypeEnum.Image)">
+    <svg-icon [src]="'./assets/images/svg/im/pic.svg'" class="svg-icon svg-icon-20"></svg-icon>
+  </div>
+  <!-- 视频 -->
+  <div class="px-2 cursor-pointer" (click)="openUpload(SessionMsgTypeEnum.Video)">
+    <svg-icon [src]="'./assets/images/svg/video.svg'" class="svg-icon svg-icon-26 color-888"></svg-icon>
+  </div>
+  <!-- 文件 -->
+  <div class="px-2 cursor-pointer" (click)="openUpload(SessionMsgTypeEnum.File)">
+    <svg-icon [src]="'./assets/images/svg/im/file.svg'" class="svg-icon svg-icon-24"></svg-icon>
+  </div>
+  <!-- 表情 -->
+  <div class="px-2 cursor-pointer" (click)="showEmoji = !showEmoji">
+    <svg-icon [src]="'./assets/images/svg/im/face.svg'" class="im-tool-face svg-icon svg-icon-20"></svg-icon>
+  </div>
+</div>
+
+<!-- 聊天输入框 -->
+<div class="im-inp-wrap rounded-3 position-relative">
+  <div class="im-inp-label w-100 vam" (click)="setFocus()">
+    <div
+      id="im-edit-panel"
+      class="im-edit-panel p-5 w-100 custom-scroll-y"
+      contenteditable="true"
+      [style]="{ 'min-height': minH, 'max-height': maxH }"
+      (keydown)="onKeydown($event)"
+      (input)="onInput()"
+      (paste)="onPaste($event)"
+      (blur)="onBlur()"
+      (click)="onClick($event)"
+      #inputRef
+    ></div>
+
+    <!-- 发送按钮 -->
+    <div class="im-inp-send-wrap pr-4 pb-4" *ngIf="showSendBtn">
+      <span class="im-inp-send btn btn-primary fz-16 py-4 px-8" (click)="sendMsg($event)">
+        {{ 'session.send' | lang }}
+      </span>
+    </div>
+  </div>
+
+  <!-- 表情浮层 -->
+  <im-emoji (selectEmoji)="onSelectEmoji($event)" *ngIf="showEmoji"></im-emoji>
+</div>

@@ -1,0 +1,269 @@
+<div class="bg-fff rounded card-body d-flex flex-wrap">
+  <form-row [label]="'common.name' | lang" class="mr-8">
+    <ng-template>
+      <input
+        [style.width.px]="280"
+        [(ngModel)]="data.name"
+        class="form-control rounded-0 fz-16"
+        type="text"
+        [placeholder]="'payment.currency.enterCurrency' | lang"
+        (keyup)="$event.keyCode === 13 && loadData()"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.currency.currencyStatus' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="80">
+        <mat-select class="form-control rounded-0" [(ngModel)]="data.status" (selectionChange)="loadData()">
+          <mat-option *ngFor="let status of statusList" [value]="status.value">{{ status.name | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.currency.currency' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field [style.width.px]="120">
+        <mat-select class="form-control rounded-0" [(ngModel)]="data.curCurrencyType" (selectionChange)="loadData()">
+          <mat-option *ngFor="let item of currencyTypeList" [value]="item.value">{{ item.name | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="mt-5 list bg-fff rounded">
+  <!--  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>-->
+
+  <!--  <div class="tabs flex-1" *ngIf="tabList && tabList.length > 0" mat-tab-nav-bar [tabPanel]="tabPanel">-->
+  <!--    <div-->
+  <!--      class="tabs-item"-->
+  <!--      mat-tab-link-->
+  <!--      *ngFor="let item of tabList; let index = index"-->
+  <!--      [disableRipple]="true"-->
+  <!--      [active]="item.id === data.curCurrencyType"-->
+  <!--      [class.active]="item.id === data.curCurrencyType"-->
+  <!--      (click)="data.curCurrencyType = item.id"-->
+  <!--    >-->
+  <!--      <div class="tabs-item-name">{{ item.name | lang }}</div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+
+  <ng-container>
+    <ng-template #sortArrow let-value>
+      <span class="triangle d-inline-block">
+        <div class="triangle-up" [class.active]="value === 'asc'"></div>
+        <div class="triangle-down" [class.active]="value === 'desc'"></div>
+      </span>
+    </ng-template>
+
+    <!-- 表格 -->
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th [style.width.px]="78">
+            <span class="cell">{{ 'payment.currency.sort' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'payment.currency.currency' | lang }}</span>
+          </th>
+          <!-- 币种全称 -->
+          <!--          <th>-->
+          <!--            <span class="cell">{{ 'payment.currency.currencyFullName' | lang }}</span>-->
+          <!--          </th>-->
+          <!-- 实时汇率 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('realRate')">
+                <ng-container *ngTemplateOutlet="sortArrow; context: { $implicit: getSort('realRate') }"></ng-container>
+                <span>{{ 'payment.currency.liveExchangeRate' | lang }}</span>
+              </span>
+            </span>
+          </th>
+          <!-- 系统汇率 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('systemRate')">
+                <ng-container
+                  *ngTemplateOutlet="sortArrow; context: { $implicit: getSort('systemRate') }"
+                ></ng-container>
+                <span>{{ 'payment.currency.systemExchangeRate' | lang }}</span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">icon</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'payment.currency.withdrawRange' | lang }}</span>
+          </th>
+          <!-- 状态 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('isEnable')">
+                <ng-container *ngTemplateOutlet="sortArrow; context: { $implicit: getSort('isEnable') }"></ng-container>
+                <span>{{ 'common.status' | lang }}</span>
+              </span>
+            </span>
+          </th>
+          <!-- 操作 -->
+          <th>
+            <span class="cell">{{ 'payment.currency.operating' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="onDrop($event)">
+        <ng-template #sortIcon>
+          <span class="info-icon cursor-move">
+            <span class="icon-sort"></span>
+            <span class="icon-sort"></span>
+            <span class="icon-sort"></span>
+          </span>
+        </ng-template>
+
+        <tr
+          *ngFor="let item of list; let i = index"
+          cdkDrag
+          [cdkDragData]="item"
+          [cdkDragDisabled]="!enabledSortCurrency"
+        >
+          <td>
+            <span class="cell">
+              <span cdkDragHandle *ngIf="enabledSortCurrency">
+                <ng-container *ngTemplateOutlet="sortIcon; context: { $implicit: item, i }"></ng-container>
+              </span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.currency }}</span>
+          </td>
+          <!-- 币种全称 -->
+          <!--          <td>-->
+          <!--            <span class="cell">{{ item.name }}</span>-->
+          <!--          </td>-->
+          <td>
+            <span class="cell">
+              {{ item.realRate }}
+              <!--              <img class="ml-2" currencyIcon="USDT" alt="" />-->
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ getSystemRate(item) }}
+              <!--              <img class="ml-2" currencyIcon="USDT" alt="" />-->
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <img [currencySize]="'24px'" [currencyIcon]="item.currency" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.minWithdraw || 0 }} - {{ item.maxWithdraw || 0 }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="switch switch-success">
+                <label class="mx-auto">
+                  <input type="checkbox" (change)="updateStatus(item)" [(ngModel)]="item.isEnable" />
+                  <span></span>
+                </label>
+              </span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span
+                *ngIf="ls.isGB"
+                class="edit px-6"
+                (click)="router.navigate(['/pay/currency', item.tenantId, item.currency])"
+                >{{ 'common.edit' | lang }}</span
+              >
+              <!--              <span class="edit edit-danger px-6 ml-4" (click)="onDel(delWarning, item)">{{-->
+              <!--                'common.delete' | lang-->
+              <!--              }}</span>-->
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 分页 -->
+    <!--        <div class="d-flex flex-between pt-8 pb-12 pr-14">-->
+    <!--          <div></div>-->
+
+    <!--          <div *ngIf="paginator.total">-->
+    <!--            <app-paginator-->
+    <!--              class="paginator d-flex justify-content-between align-items-center flex-wrap"-->
+    <!--              [paginator]="paginator"-->
+    <!--              (paginate)="loadData()"-->
+    <!--              [isLoading]="isLoading"-->
+    <!--            ></app-paginator>-->
+    <!--          </div>-->
+    <!--        </div>-->
+  </ng-container>
+</div>
+
+<!-- 删除警告 -->
+<ng-template #delWarning let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'payment.currency.prompt' | lang }}</div>
+
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'payment.currency.confirmToDelete' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 替换排序警告 -->
+<ng-template #sortWarning let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'payment.currency.prompt' | lang }}</div>
+
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body">
+      <p class="fz-16 mt-24 mb-24">{{ 'payment.currency.IfThereIsCurrentl' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

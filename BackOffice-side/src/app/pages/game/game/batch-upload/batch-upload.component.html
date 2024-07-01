@@ -1,0 +1,42 @@
+<modal-title
+  [title]="('common.upload' | lang) + (isFile ? ('common.file' | lang) : ('common.image' | lang))"
+  (close)="modal.dismiss()"
+></modal-title>
+
+<div class="batch-upload-content">
+  <pp-progress
+    [percentage]="(index / total) * 100"
+    [strokeWidth]="11"
+    [showText]="false"
+    [status]="isFinish ? 'success' : ''"
+  ></pp-progress>
+
+  <div class="d-flex mt-10">
+    <div class="flex-1"></div>
+    <div class="fz-16 color-999">
+      <span *ngIf="!isFinish">{{ 'common.uploading' | lang }}：{{ index }}/{{ total }}</span>
+      <span *ngIf="isFinish">{{ 'game.uploadSuccess' | lang }}：{{ index }}/{{ total }}</span>
+      <span class="ml-10">{{ 'common.fail' | lang }}：{{ failList?.length || updateFailList?.length || 0 }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="batch-upload-fail" *ngIf="failList?.length">
+  <div class="batch-upload-fail-title">
+    {{ isFile ? ('game.failGameID' | lang) : ('game.failGameFace' | lang) }}
+  </div>
+  <div class="batch-upload-fail-content">
+    <div *ngFor="let item of failList">
+      {{ isFile ? item : item?.file?.name }}
+    </div>
+  </div>
+</div>
+
+<div class="batch-upload-fail" *ngIf="updateFailList?.length">
+  <div class="batch-upload-fail-title">{{ 'game.failGameUpdated' | lang }}</div>
+  <div class="batch-upload-fail-content">
+    <div *ngFor="let item of updateFailList">{{ item }}</div>
+  </div>
+</div>
+
+<modal-footer *ngIf="isFinish" [dismissShow]="false" (confirm)="modal.close()"></modal-footer>

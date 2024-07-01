@@ -1,0 +1,25 @@
+<div class="main d-flex flex-wrap">
+  <!-- 交易概览 -->
+  <!-- <overview-trade class="mt-10 flex-1 mx-3" [style.min-width]="lang.isLocal ? '700px' : '100%'"></overview-trade>
+
+  <app-user-activity class="mt-10 flex-1 mx-3" [style.min-width]="lang.isLocal ? '600px' : '100%'"></app-user-activity> -->
+  <overview-trade class="mt-10 mx-3 flex-1"></overview-trade>
+
+  <app-user-activity class="mt-10 mx-3 flex-1"></app-user-activity>
+</div>
+
+<overview-trade-row style="margin: 20px -7.5px 0"></overview-trade-row>
+
+<div class="d-flex flex-wrap" style="margin: 0 -6px 0">
+  <!-- 红利优惠券 -->
+  <wallet [style.margin]="'12px 6px 0'"></wallet>
+
+  <!-- 红利详情 -->
+  <!--<dividend [style.margin]="'0 6px'"></dividend>-->
+
+  <!-- 资金历程 -->
+  <funding [all]="false" [style.margin]="'12px 6px 0'" [style.flex]="3"></funding>
+</div>
+
+<!-- 会员成长系统 -->
+<growth class="mt-8"></growth>

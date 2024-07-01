@@ -1,0 +1,205 @@
+<!-- tab -->
+<div class="tab">
+  <span
+    *ngFor="let item of tabList"
+    [class.btn-primary]="item.value === curTabValue"
+    class="btn c-btn btn-default text-nowrap mr-6"
+    (click)="onSelectTab(item.value)"
+  >
+    {{ item.lang | lang }}
+  </span>
+</div>
+
+<div class="card card-body mt-8">
+  <div class="d-flex flex-ac">
+    <!-- 待审核记录/历史记录 -->
+    <div class="fz-20 flex-1">
+      {{
+        (curTabValue === 1 ? 'member.activity.sencli16.pendingReviewList' : 'member.activity.sencli16.historyRecord')
+          | lang
+      }}
+    </div>
+
+    <div *ngIf="curTabValue === 1">
+      <!-- 驳回 -->
+      <span class="btn btn-light btn-hover-danger px-6 mr-6" (click)="onApproval(false)">{{
+        'bonus.activity.reject' | lang
+      }}</span>
+      <!-- 通过 -->
+      <span class="btn btn-light-primary px-6 mr-6" (click)="onApproval(true)">{{ 'bonus.activity.pass' | lang }}</span>
+      <!-- 全体通过 -->
+      <span class="btn btn-light-primary px-6" (click)="onAllPassed()">{{ 'bonus.activity.allApprove' | lang }}</span>
+    </div>
+  </div>
+
+  <table class="table mb-0 mt-2" selectChildren>
+    <thead>
+      <tr>
+        <th *ngIf="curTabValue === 1">
+          <span class="cell">
+            <label class="checkbox checkbox-lg">
+              <input type="checkbox" selectGroup />
+              <span></span>
+            </label>
+          </span>
+        </th>
+        <th>
+          <span class="cell">UID</span>
+        </th>
+        <!-- 活动名称 -->
+        <th>
+          <span class="cell">{{ 'member.detail.freeSpin.activityName' | lang }}</span>
+        </th>
+        <!-- 奖品名称 -->
+        <th>
+          <span class="cell">{{ 'member.detail.freeSpin.prizeName' | lang }}</span>
+        </th>
+        <!-- 奖品类型 -->
+        <th>
+          <span class="cell">{{ 'luckRoulette.drawRecord.prizeType' | lang }}</span>
+        </th>
+        <!-- 配置 -->
+        <th>
+          <span class="cell">{{ 'system.merchants.config' | lang }}</span>
+        </th>
+        <!-- 金额 -->
+        <th>
+          <span class="cell">{{ 'common.amount' | lang }}</span>
+        </th>
+        <!-- 提交时间 -->
+        <th>
+          <span class="cell">{{ 'member.kyc.model.submissionTime' | lang }}</span>
+        </th>
+        <!-- 提交人 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli16.submitter' | lang }}</span>
+        </th>
+        <!-- 审核时间 -->
+        <th *ngIf="curTabValue === 2">
+          <span class="cell">{{ 'finance.deposit.auditTime' | lang }}</span>
+        </th>
+        <!-- 审核人 -->
+        <th *ngIf="curTabValue === 2">
+          <span class="cell">{{ 'member.kyc.model.reviewer' | lang }}</span>
+        </th>
+        <!-- 状态 -->
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list; let i = index">
+        <td *ngIf="curTabValue === 1">
+          <span class="cell">
+            <label class="checkbox checkbox-lg">
+              <input type="checkbox" [(ngModel)]="item.checked" />
+              <span></span>
+            </label>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.tmpName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ getPrizeName(item?.prizeDetail?.prizeName) }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ prizeService.getPrizeName(prizeTypeList, item?.prizeDetail?.prizeType) }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item?.prizeDetail | prizeConfig }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.money | currencyValue: item.moneyType }}
+            <img class="ml-2" [currencyIcon]="item.moneyType" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createBy || '-' }}</span>
+        </td>
+        <td *ngIf="curTabValue === 2">
+          <span class="cell">{{ item.updateTime | timeFormat }}</span>
+        </td>
+        <td *ngIf="curTabValue === 2">
+          <span class="cell">{{ item.updateBy || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell" [ngSwitch]="item.releaseStatus">
+            <!-- 送审失败 -->
+            <app-label *ngSwitchCase="0" type="warning">
+              {{ 'member.coupon.toReviewFail' | lang }}
+            </app-label>
+            <!-- 待审核 -->
+            <app-label *ngSwitchCase="1" type="default">
+              {{ 'member.coupon.pendingReview' | lang }}
+            </app-label>
+            <!-- 审核拒绝 -->
+            <app-label *ngSwitchCase="2" type="danger">
+              {{ 'member.overview.newKyc.reviewRejected' | lang }}
+            </app-label>
+            <!-- 发放失败 -->
+            <app-label *ngSwitchCase="3" type="warning">
+              {{ 'member.giveOut.failedissue' | lang }}
+            </app-label>
+            <!-- 审核通过 -->
+            <app-label *ngSwitchCase="4" type="success">
+              {{ 'member.overview.userActivity.withdraw.passed' | lang }}
+            </app-label>
+            <!-- 已领取 -->
+            <app-label *ngSwitchCase="5" type="yellow">
+              {{ 'member.giveOut.received' | lang }}
+            </app-label>
+            <!-- 使用中 -->
+            <app-label *ngSwitchCase="6" type="info">
+              {{ 'member.giveOut.Using' | lang }}
+            </app-label>
+            <!-- 已使用 -->
+            <app-label *ngSwitchCase="7" type="yellow">
+              {{ 'member.giveOut.Used' | lang }}
+            </app-label>
+            <!-- 已失效 -->
+            <app-label *ngSwitchCase="8" type="warning">
+              {{ 'member.giveOut.expired' | lang }}
+            </app-label>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

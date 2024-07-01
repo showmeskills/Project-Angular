@@ -1,0 +1,31 @@
+<div class="rate-col" [class.disable]="!canBuy">
+  <div class="top-row onact96-not" (click)="handleBuy('1')">
+    <!--H5-->
+    <span class="mobile-bgm-up" [class.disable]="!canBuy"></span>
+    <div class="txt">
+      <!--大于-->
+      <i [class]="'orignal-icon-' + (card?.num != 'K' || !canBuy ? 'up' : 'equal')" [class.disable]="!canBuy"></i>
+      {{ !canBuy ? ('higher_equal' | translate) : card?.num != 'K' ? ('higher' | translate) : ('equal' | translate) }}
+    </div>
+    <ng-container *ngIf="canBuy">
+      <span>{{ card?.higher }}</span>
+      <span>{{ card?.nextUpBetRate }}X</span>
+    </ng-container>
+  </div>
+
+  <div class="botton-row onact96-not" (click)="handleBuy('0')">
+    <!--H5-->
+    <span class="mobile-bgm-down" [class.disable]="!canBuy"></span>
+    <div class="txt">
+      <!--等于-->
+      <!-- <i class="orignal-icon-equal"></i> -->
+      <!--小于-->
+      <i [class]="'orignal-icon-' + (card?.num != 'A' || !canBuy ? 'down' : 'equal')" [class.disable]="!canBuy"></i>
+      {{ !canBuy ? ('lower_equal' | translate) : card?.num != 'A' ? ('lower' | translate) : ('equal' | translate) }}
+    </div>
+    <ng-container *ngIf="canBuy">
+      <span>{{ card?.lower }}</span>
+      <span>{{ card?.nextLowBetRate }}X</span>
+    </ng-container>
+  </div>
+</div>

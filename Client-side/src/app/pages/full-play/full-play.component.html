@@ -1,0 +1,110 @@
+<div class="overlay" [appLoading]="loading" *ngIf="!url">
+  <ng-container *ngIf="!loading">
+    <ng-container *ngTemplateOutlet="errorTip"></ng-container>
+    <div class="setting animate__animated animate__fadeIn animate__slow" *ngIf="!maintenance && selectedPlayCoin">
+      <div class="selected-currency">
+        <label>{{ 'show_curr' | translate }}</label>
+        <div
+          class="coin-drop-down mutual-opacity onact96"
+          cdkOverlayOrigin
+          #origin="cdkOverlayOrigin"
+          [class.disabled]="currentGameWalletInfo.length === 1"
+          (click)="showCoinList = !showCoinList"
+          (clickOutside)="showCoinList = false"
+        >
+          <div>
+            <img [src]="selectedPlayCoin | usdChangeToUsdt | currencyIcon" />
+            <span>{{ selectedPlayCoin | usdChangeToUsdt }}</span>
+          </div>
+          <i
+            *ngIf="currentGameWalletInfo.length > 1"
+            [class]="showCoinList ? 'icon-arrow-up-simple' : 'icon-arrow-down-simple'"
+          ></i>
+        </div>
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayPositions]="positions"
+          [cdkConnectedOverlayOpen]="showCoinList"
+          [cdkConnectedOverlayOrigin]="origin"
+        >
+          <div class="select-coin-container">
+            <div class="select-coin-list">
+              <div
+                class="mutual-opacity onact96"
+                *ngFor="let item of provider?.currencyRatio ?? []"
+                (click)="selectedPlayCoin !== item.currency && onSelectPlayCoin(item.currency)"
+              >
+                <img [src]="item.currency | usdChangeToUsdt | currencyIcon" />
+                <span>{{ item.currency | usdChangeToUsdt }}</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <ng-container
+        *ngTemplateOutlet="
+          currencyTip;
+          context: {
+            ratio: provider?.currencyRatio ?? [] | filterByKeyValue: 'currency' : selectedPlayCoin : 'ratio'
+          }
+        "
+      >
+      </ng-container>
+    </div>
+    <div *ngIf="!watcher" class="btns">
+      <customize-button *ngIf="maintenance" type="primary" (onClick)="goHome()" (onReady)="buildGoHome()">
+        {{ 'return_to_home' | translate }}({{ goHomeTime || 0 }})
+      </customize-button>
+      <ng-container *ngIf="!maintenance">
+        <customize-button
+          type="primary"
+          (onClick)="playGame(true, true)"
+          [icon]="logined ? (needTransfer ? 'icon-duihuan' : 'icon-play-right') : 'icon-user-fill'"
+        >
+          {{
+            logined ? (needTransfer ? ('trans' | translate) : ('real_money' | translate)) : ('login_button' | translate)
+          }}
+        </customize-button>
+        <customize-button
+          *ngIf="(hasTry && !currentGameIsSport) || sportsHasTry"
+          [icon]="'icon-play-right'"
+          class="try-btn"
+          (onClick)="playGame(false, true)"
+        >
+          {{ 'trial_play' | translate }}
+        </customize-button>
+      </ng-container>
+    </div>
+    <div *ngIf="watcher" class="already-in"><i class="icon-info"></i>{{ 'already_in_game' | translate }}</div>
+  </ng-container>
+</div>
+
+<div *ngIf="url" #fullscreenDiv class="iframe-container">
+  <iframe [src]="url | safe" allow="fullscreen"></iframe>
+  <app-fullscreen
+    *ngIf="isH5 || currentGameIsSport"
+    [sportsFullscreenMode]="currentGameIsSport"
+    [ref]="fullscreenDiv"
+    (onClose)="reset()"
+    (switchCurrency)="switchCurrency()"
+  ></app-fullscreen>
+</div>
+
+<ng-template #currencyTip let-ratio="ratio">
+  <div *ngIf="showCurrencyTip" class="currency-tip">
+    <span>{{ 'game_currency_tip' | translate: ratio }}</span>
+    <app-tool-tip>
+      <i origin class="currency-tip-icon icon-warning mutual-opacity"></i>
+      <span tooltip class="currency-tip-text">
+        {{ 'game_currency_tip_d' | translate: ratio : selectedPlayCoin }}
+      </span>
+    </app-tool-tip>
+  </div>
+</ng-template>
+
+<!-- 错误提示 -->
+<ng-template #errorTip let-style="style">
+  <div *ngIf="errorText || maintenance" class="error-tip">
+    {{ errorText || ('game_main_desc_re' | translate) }}
+  </div>
+</ng-template>

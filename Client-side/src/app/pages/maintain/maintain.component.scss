@@ -1,0 +1,46 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  @include polyfills.flex-gap(20px, 'row nowrap');
+
+  img {
+    max-width: 85vw;
+    object-fit: contain;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    line-height: 2.14;
+    color: var(--text-color);
+    @include polyfills.flex-gap(20px, 'column nowrap');
+
+    ::ng-deep {
+      a {
+        text-decoration: none;
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  &.lottery,
+  &.sport {
+    .text {
+      width: 403px;
+      max-width: 85vw;
+    }
+  }
+
+  &.service {
+    .text {
+      width: 557px;
+      max-width: 85vw;
+    }
+  }
+}

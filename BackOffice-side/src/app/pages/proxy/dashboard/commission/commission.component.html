@@ -1,0 +1,49 @@
+<div class="d-flex flex-1 commission-wrap">
+  <div class="card p-4 mr-10 flex-1" *ngFor="let item of list">
+    <div class="d-flex flex-ac">
+      <!-- <span class="fz-20 flex-1">{{ item.date | date: 'yyyy年MM月' }}</span> -->
+      <span class="fz-20 flex-1">{{ formatDate(item.date) }}</span>
+
+      <span class="label label-lg px-6 label-inline label-light-warning">{{ 'dashboard.plan.processing' | lang }}</span>
+    </div>
+
+    <div class="commission">
+      <div class="commission-row">
+        <div>
+          <div>{{ item.efficient }}{{ 'dashboard.plan.people' | lang }}</div>
+          <div>{{ 'dashboard.plan.effectiveAgency' | lang }}</div>
+        </div>
+        <div>
+          <div>{{ item.audit }}{{ 'dashboard.plan.people' | lang }}</div>
+          <div>{{ 'dashboard.plan.audited' | lang }}</div>
+        </div>
+      </div>
+      <div class="commission-row">
+        <div>
+          <div>{{ item.just }}{{ 'dashboard.plan.people' | lang }}</div>
+          <div>{{ 'dashboard.plan.positiveCommission' | lang }}</div>
+        </div>
+        <div>
+          <div>{{ item.burden }}{{ 'dashboard.plan.people' | lang }}</div>
+          <!-- 负佣金 -->
+          <div>{{ 'dashboard.plan.negativeCommission' | lang }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center pt-6 pb-3">
+      <span class="fz-16 fw-bolder">{{ 'dashboard.plan.realCommission' | lang }}: </span>
+      <span class="fz-14 ml-4">${{ item.commission || 0 | currencyValue: 'USDT' }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="more">
+  <div class="more-line">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <p class="txt">{{ 'dashboard.plan.viewAll' | lang }}</p>
+</div>

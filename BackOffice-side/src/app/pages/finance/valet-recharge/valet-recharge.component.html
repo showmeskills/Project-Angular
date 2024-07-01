@@ -1,0 +1,281 @@
+<div class="rounded-3 d-block bg-fff p-12">
+  <div>
+    <div class="fz-20 fw-bolder mb-10 lh-1n">{{ 'budget.record.userInformation' | lang }}</div>
+
+    <form-row
+      [label]="'budget.record.uidAndName' | lang"
+      required
+      label-width="220"
+      name="user"
+      [contentStyle]="{ maxWidth: '270px' }"
+      [group]="formGroup"
+      [invalidFeedback]="{ required: 'budget.record.enterIdOrName' | lang }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          type="text"
+          autocomplete="off"
+          class="form-control rounded-0"
+          input-trim
+          [formControl]="control"
+          [class.is-invalid]="invalid"
+          [attrDisabled]="!!uid"
+        />
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="mt-14">
+    <div class="fz-20 fw-bolder mb-10 lh-1n">{{ 'budget.record.fiatCurrencyRecharge' | lang }}</div>
+    <div class="fz-16 fw-bolder mb-10">1.{{ 'budget.record.selectCurrency' | lang }}</div>
+
+    <form-row
+      [label]="'budget.record.topUpCurrency' | lang"
+      required
+      label-width="220"
+      [contentStyle]="{ maxWidth: '433px' }"
+      name="currency"
+      [group]="formGroup"
+      [invalidFeedback]="{ required: 'budget.record.selectTopUpCurrency' | lang }"
+    >
+      <ng-template let-invalid="invalid">
+        <div class="form-control custom-field" [class.is-invalid]="invalid" (click)="onOpen()">
+          <div class="flex-1 color-999" *ngIf="!formGroup.value.currency">
+            {{ 'budget.record.selectTopUpCurrency' | lang }}
+          </div>
+          <div class="flex-1" *ngIf="formGroup.value.currency">
+            <img [iconSrc]="formGroup.value.currency?.['icon']" />
+            <span class="vam currency-name">{{ formGroup.value.currency['code'] }}</span>
+            <span class="vam color-777">{{ formGroup.value.currency['description'] }}</span>
+          </div>
+
+          <div class="mat-select-arrow"></div>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <!-- 支付方式 -->
+  <ng-container>
+    <form-row [label]="'budget.record.payMethod' | lang" required>
+      <ng-template>
+        <!-- 空显示 -->
+        <div
+          class="container-empty"
+          *ngIf="!payChannel?.length"
+          [style.height.px]="120"
+          style="align-items: flex-start; margin-left: 112px; padding-top: 30px"
+        >
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt mt-0 lh-20">{{ 'budget.record.noPaymentMethod' | lang }}</div>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <div class="tab mt-4" *ngIf="payChannel?.length">
+      <div class="tab-hd">
+        <div class="mr-4 d-flex">
+          <div
+            class="tab-hd-item"
+            [class.active]="curTab === item.paymentMethodeCode"
+            *ngFor="let item of payChannel"
+            (click)="onTab(item)"
+          >
+            <span>{{ lang.isLocal ? item.paymentMethodLocal : item.paymentMethodEn }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-bd" [formGroup]="formGroup">
+        <!--      <div class="d-flex flex-wrap pt-2" *ngIf="payChannel?.length">-->
+        <!--        <label class="radio radio-lg mr-10 fz-16" *ngFor="let item of payChannel === undefined ? [] : payChannel">-->
+        <!--          <input-->
+        <!--            type="radio"-->
+        <!--            name="methodRadio"-->
+        <!--            formControlName="methodCode"-->
+        <!--            [value]="item.channelCode"-->
+        <!--            (ngModelChange)="onMethodChange()"-->
+        <!--          />-->
+        <!--          <span class="mr-4"></span>{{ item.channelName }}-->
+        <!--        </label>-->
+        <!--      </div>-->
+
+        <!--      &lt;!&ndash; 空显示 &ndash;&gt;-->
+        <!--      <div class="container-empty" *ngIf="!tabList?.length" [style.height.px]="120">-->
+        <!--        <div>-->
+        <!--          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>-->
+        <!--          <div class="txt">{{ 'common.emptyText' | lang }}</div>-->
+        <!--        </div>-->
+        <!--      </div>-->
+
+        <form-row
+          class="mt-2"
+          [label]="'budget.record.payChannel' | lang"
+          required
+          label-width="205"
+          [contentStyle]="{ maxWidth: '433px' }"
+          name="channel"
+          [group]="formGroup"
+          [invalidFeedback]="{ required: 'budget.record.selectPaymentChannel' | lang }"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <ng-container *ngFor="let item of payChannel">
+              <mat-form-field class="w-100" *ngIf="curTab === item.paymentMethodeCode">
+                <mat-select
+                  class="form-control rounded-0"
+                  [placeholder]="'budget.record.selectChannel' | lang"
+                  [formControl]="control"
+                  [class.is-invalid]="invalid"
+                  *search="let list$ of item.channelList; key: 'channelName'"
+                >
+                  <input searchInput type="search" />
+                  <mat-option [value]="sub.channelCode" *ngFor="let sub of list$ | async">{{
+                    sub.channelName
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </ng-container>
+          </ng-template>
+        </form-row>
+      </div>
+    </div>
+  </ng-container>
+  <!-- 支付方式结束 -->
+
+  <div class="fz-16 fw-bolder mb-10 mt-12">2. {{ 'budget.record.rechargeInformation' | lang }}</div>
+
+  <form-row
+    [label]="'budget.EnterAmount' | lang"
+    required
+    label-width="240"
+    [contentStyle]="{ maxWidth: '433px' }"
+    name="amount"
+    [group]="formGroup"
+    [invalidFeedback]="{ required: 'budget.enterRechargeAmount' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        autocomplete="off"
+        class="form-control rounded-0 w-100"
+        input-number
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row
+    [label]="'budget.record.accountName' | lang"
+    required
+    label-width="240"
+    [contentStyle]="{ maxWidth: '433px' }"
+    name="accountName"
+    [group]="formGroup"
+    [invalidFeedback]="{ required: 'budget.record.enterAccountName' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        autocomplete="off"
+        class="form-control rounded-0 w-100"
+        input-trim
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 功能说明：该功能适用于用户申请金额与实际存款金额不同，PSP无法原单修改上账金额，且同一种支付方式有多个渠道，用户无法在前台创建指定渠道的存款订单。 -->
+  <div class="mt-5 fz-16" style="color: orangered">
+    {{ 'budget.record.functionDescription' | lang }}
+  </div>
+
+  <div class="btn-wrap pt-14 flex-center d-flex pt-16">
+    <button type="button" class="c-btn c-btn-default ml-0" (click)="onBack()">{{ 'common.cancel' | lang }}</button>
+    <button type="button" class="c-btn c-btn-primary" (click)="onSubmitBefore(Warning)">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+
+  <!-- 二次确认警告 -->
+  <ng-template #Warning let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'budget.prompt' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'budget.record.confirmValetRecharge' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onSubmit(detail, c)">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- 详情 -->
+  <ng-template #detail let-data let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'budget.prompt' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="text-center">
+        <svg-icon [src]="'./assets/images/svg/success.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+        <div class="fz-16 mt-8">{{ 'budget.record.orderSucCreated' | lang }}</div>
+        <div class="fz-32 mt-2 lh-1n">
+          {{ formGroup.value.amount || 0 | toFormatMoney: { minimumDecimalPlaces: 2 } }}
+        </div>
+      </div>
+
+      <div class="mt-4 fz-16 w-100">
+        <div class="d-flex lh-50">
+          <div class="flex-1 color-999">{{ 'common.time' | lang }}：</div>
+          <div>{{ data.createTime | timeFormat }}</div>
+        </div>
+        <div class="d-flex lh-50">
+          <div class="flex-1 color-999">GoMoney{{ 'budget.record.orderNumber' | lang }}：</div>
+          <div>{{ data.thirdPartOrderNumber }}</div>
+        </div>
+        <div class="d-flex lh-50">
+          <div class="flex-1 color-999">{{ 'budget.currency' | lang }}：</div>
+          <div>{{ data.currency }}</div>
+        </div>
+        <div class="d-flex lh-50">
+          <div class="flex-1 color-999">{{ 'budget.record.payMethod' | lang }}：</div>
+          <div>{{ data.paymentMethod }}</div>
+        </div>
+        <div class="d-flex lh-50">
+          <div class="flex-1 color-999">{{ 'budget.record.payChannel' | lang }}：</div>
+          <div>{{ data.paymentChannel }}</div>
+        </div>
+        <div class="d-flex lh-50">
+          <div class="flex-1 color-999">{{ 'budget.record.accountName' | lang }}：</div>
+          <div>{{ data.accountName }}</div>
+        </div>
+        <div class="d-flex lh-50">
+          <div class="flex-1 color-999">{{ 'payment.merchantFunding.subChannelName' | lang }}：</div>
+          <div>{{ data.subChannelName }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </ng-template>
+</div>

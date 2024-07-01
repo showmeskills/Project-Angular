@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="header">
+    <i class="icon-back" (click)="close()"></i>
+    <div>{{ 'scan_qr' | translate }}</div>
+  </div>
+  <div class="file">
+    <i class="icon-png"></i>
+    <input type="file" (change)="onSelects($event)" [accept]="'.jpg, .png, .gif, .jpeg'" />
+  </div>
+  <ngx-scanner-qrcode #action="scanner" [config]="scannerConfig" (event)="onEvent($event)"></ngx-scanner-qrcode>
+</div>

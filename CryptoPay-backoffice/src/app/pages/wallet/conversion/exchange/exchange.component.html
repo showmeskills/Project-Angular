@@ -1,0 +1,171 @@
+<modal-title [title]="'wallet.conversion.exchange.title' | lang" (close)="modal.close()"></modal-title>
+
+<ng-template #field let-type="type" let-formGroup let-coinList="coinList" let-currentCoin="currentCoin">
+  <div [formGroup]="formGroup">
+    <form-row name="address" label-width="98" [label]="'wallet.conversion.exchange.address' | lang">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select
+            class="form-control rounded-0"
+            [class.is-invalid]="invalid"
+            [formControl]="control"
+            (selectionChange)="onSelect(type, 'address')"
+          >
+            <mat-option [value]="item.address" *ngFor="let item of hotList">{{ item.address }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row name="network" label-width="98" [label]="'wallet.conversion.exchange.network' | lang">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select
+            class="form-control rounded-0"
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+            (selectionchange)="onSelect(type)"
+          >
+            <ng-container *ngFor="let item of hotList">
+              <mat-option *ngIf="item.network === control.value" [value]="item.network">{{ item.network }}</mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row name="currency" label-width="98" [label]="'wallet.conversion.exchange.currency' | lang">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select class="form-control rounded-0" [formControl]="control" [class.is-invalid]="invalid">
+            <mat-option [value]="item.coin" *ngFor="let item of coinList" (selectionchange)="onSelect(type)">
+              {{ item.coin }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row
+      name="number"
+      label-width="98"
+      [label]="'wallet.conversion.exchange.quantity' | lang"
+      [hidden]="type === 'to' && !isPreview"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          class="form-control rounded-0"
+          type="text"
+          input-float
+          [decimal]="8"
+          [formControl]="control"
+          [class.is-invalid]="invalid"
+          [readonly]="type === 'to'"
+        />
+      </ng-template>
+    </form-row>
+  </div>
+</ng-template>
+
+<div class="px-16 pt-12 pb-2">
+  <div class="d-flex" [class.is-preview]="isPreview">
+    <div class="d-flex flex-1 fz-16">
+      <div class="color-999 pr-4">{{ 'wallet.conversion.exchange.from' | lang }}</div>
+
+      <div class="border-1-dashed rounded flex-1 pl-4 pr-8">
+        <div class="d-flex pt-8 pb-2">
+          <div class="flex-1 color-999">{{ 'wallet.conversion.exchange.hotUseBalance' | lang }}</div>
+          <div>{{ fromCurCoin.balance | currencyValue : fromCurCoin.coin }} {{ fromCurCoin.coin }}</div>
+        </div>
+
+        <ng-container
+          *ngTemplateOutlet="
+            field;
+            context: {
+              $implicit: from,
+              type: 'from',
+              coinList: fromCoinList,
+              currentCoin: fromCurCoin
+            }
+          "
+        ></ng-container>
+      </div>
+    </div>
+
+    <div class="d-flex flex-1 fz-16">
+      <div class="color-999 pl-6 pr-4">{{ 'wallet.conversion.exchange.to' | lang }}</div>
+
+      <div class="border-1-dashed rounded flex-1 pl-4 pr-8">
+        <div class="pt-18"></div>
+
+        <ng-container
+          *ngTemplateOutlet="field; context: { $implicit: to, type: 'to', coinList: toCoinList }"
+        ></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="exchange-wrap">
+    <ng-container *ngIf="isPreview">
+      <div class="exchange-info px-8" *ngIf="!isEnough">
+        <!-- 参考价格 -->
+        <div class="exchange-row">
+          <div class="fz-16 color-999">{{ 'wallet.conversion.exchange.proposedPrice' | lang }}</div>
+          <div class="d-flex exchange-value" *ngIf="previewData?.isFromTo">
+            <span>1</span>
+            {{ from.value.currency }} = {{ previewData?.positivePrice | currencyValue : to.value.currency }}
+            {{ to.value.currency }}
+          </div>
+          <!-- 后台没法做单位互换，这里单位互换：Orange/Roger -->
+          <div class="d-flex exchange-value" *ngIf="!previewData?.isFromTo">
+            <span>1</span>
+            {{ to.value.currency }} = {{ previewData?.positivePrice | currencyValue : from.value.currency }}
+            {{ from.value.currency }}
+          </div>
+        </div>
+
+        <!-- 您将得到 -->
+        <div class="exchange-row">
+          <div class="fz-16 color-999">{{ 'wallet.conversion.exchange.youWillGet' | lang }}</div>
+          <div class="d-flex exchange-value">
+            <span>{{ to.value.number }}</span>
+            {{ to.value.currency }}
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4">
+        <ng-container *ngIf="isEnough; else updatedTips">
+          <svg-icon [src]="'./assets/images/svg/close-solid.svg'" class="svg-icon svg-icon-2x vam"></svg-icon>
+          <span class="vam ml-3 fz-16 text-danger">{{ 'wallet.conversion.exchange.Insufficient' | lang }}</span>
+        </ng-container>
+
+        <ng-template #updatedTips>
+          <svg-icon [src]="'./assets/images/svg/sign-solid.svg'" class="svg-icon svg-icon-2x vam"></svg-icon>
+          <span class="vam ml-3 fz-16 text-success">{{
+            'wallet.conversion.exchange.tooltips' | lang : { s: countDown }
+          }}</span>
+        </ng-template>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<modal-footer
+  dismissKey="back"
+  [dismissText]="'wallet.conversion.exchange' | lang : (isPreview ? 'reselect' : 'back')"
+  [confirmText]="(confirmKey | lang) + (currentTime ? ' (' + currentTime + ')' : '')"
+  (dismiss)="onBack()"
+  (confirm)="onSubmit(exchangeTpl)"
+></modal-footer>
+
+<ng-template #exchangeTpl let-c="close" let-d="dismiss">
+  <modal-title [title]="'wallet.conversion.exchange.tips' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-8 text-center">
+    <svg-icon [src]="'./assets/images/svg/success.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+    <p class="fz-16 mt-8">{{ 'wallet.conversion.exchange.commitOrder' | lang }}</p>
+  </div>
+
+  <modal-footer (dismiss)="d()" (confirm)="c()"></modal-footer>
+</ng-template>

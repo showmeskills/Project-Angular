@@ -1,0 +1,28 @@
+@use 'sass/tools' as *;
+
+:host {
+  display: block;
+
+  .fee-config {
+    @include tab-line {
+      @include tabs('tabs', true) {
+        border: 0;
+      }
+    }
+  }
+
+  @include tabs('tabs-currency-type', true) {
+    &-item {
+      margin-right: 40px;
+    }
+  }
+}
+
+.label-title {
+  white-space: pre-line;
+}
+
+.fee-title {
+  flex: 0 0 120px;
+  min-width: 120px;
+}

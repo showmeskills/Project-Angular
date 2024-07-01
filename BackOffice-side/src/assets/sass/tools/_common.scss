@@ -1,0 +1,11 @@
+@mixin sticky-wrapper() {
+  .sticky-wrapper {
+    position: sticky;
+    top: 110px;
+    left: 0;
+    z-index: 91; /* 下面表格为90，这里需要盖住 */
+    // border-bottom: 1px solid rgba(22, 22, 22, 0.08);
+    box-shadow: 0 6px 6px -3px rgba(34, 34, 34, 0.05);
+    border-top: 0;
+  }
+}

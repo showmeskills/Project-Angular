@@ -1,0 +1,69 @@
+<!-- 头部 -->
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="theme-detail-header container">
+    <!-- 返回导航 -->
+    <div class="theme-detail-header-left mutual-opacity onact96-not" [class.disabled]="debounceBack" (click)="back()">
+      <i class="icon-back"></i>
+      <span class="title" *ngIf="!isH5">{{ themeTitle }}</span>
+      <span class="title" *ngIf="isH5 && type === 'Announcement'">{{ isListPage ? themeTitle : currentTitle }}</span>
+      <span class="title" *ngIf="isH5 && type === 'FAQ'">{{ h5FaqTitle || themeTitle }}</span>
+    </div>
+    <!-- web头部搜索 -->
+    <div class="search-bar-container" *ngIf="!isH5">
+      <app-search-bar [type]="type"></app-search-bar>
+    </div>
+  </div>
+</div>
+<div class="main-container inner-page unity-padding-web unity-padding-h5-16">
+  <!-- web主体 -->
+  <div class="theme-detail-body container" *ngIf="!isH5">
+    <div class="page-right-container">
+      <div class="page-right">
+        <ng-container [ngTemplateOutlet]="pageTemp"></ng-container>
+        <!-- 详情页 -->
+        <ng-container *ngIf="!isListPage">
+          <div class="page-detail">
+            <div class="page-detail-left" [appLoading]="detailLoading">
+              <ng-container *ngTemplateOutlet="detailPage"></ng-container>
+            </div>
+            <div class="page-detail-right" *ngIf="!detailLoading">
+              <p class="detail-right-title">{{ h5DialogTitle }}</p>
+              <div class="page-detail-list-item">
+                <p
+                  class="right-text mutual-opacity onact96-not"
+                  *ngFor="let item of rightList"
+                  (click)="toDetailPage(item)"
+                >
+                  {{ item.title }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="type === 'Announcement'" [ngTemplateOutlet]="webPaginator"></ng-container>
+    </div>
+
+    <div class="left-menu">
+      <ng-container [ngTemplateOutlet]="menuListTemp"></ng-container>
+    </div>
+  </div>
+  <!-- h5主体 -->
+  <div class="h5-theme-detail container" *ngIf="isH5">
+    <app-search-bar [type]="type"></app-search-bar>
+    <ng-container [ngTemplateOutlet]="h5ListPageTemp"></ng-container>
+    <ng-container *ngIf="!isListPage">
+      <div class="h5-details-container" [appLoading]="detailLoading">
+        <ng-container *ngTemplateOutlet="detailPage"></ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div class="fixed-icon onact96-not" (click)="showH5ContentDialog()" *ngIf="isH5 && !isListPage"></div>
+
+<ng-template #detailPage>
+  <p class="detail-left-title">{{ article?.title }}</p>
+  <p class="detail-left-date">{{ article?.releaseTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+  <div class="article-content" [innerHTML]="article?.content | toHtmlElement"></div>
+</ng-template>

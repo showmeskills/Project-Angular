@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <script src="https://casino.cur.a8r.games/public/sg.js"></script>
+    <script src="/thirdpartygame/play/lz-string.min.js"></script>
+    <style>
+      html,
+      body,
+      #game_wrapper,
+      #game_wrapper iframe {
+        padding: 0;
+        margin: 0;
+        width: 100% !important;
+        height: 100% !important;
+        background-color: black;
+        overflow: hidden;
+        border: 0;
+      }
+    </style>
+    <title>play</title>
+  </head>
+  <body>
+    <div id="game_wrapper"></div>
+    <script>
+      const query = new URLSearchParams(location.search);
+      const data = query.get('data');
+      if (data) {
+        const launch_options = JSON.parse(LZString.decompressFromBase64(data));
+        window.sg.launch(
+          {
+            target_element: 'game_wrapper',
+            ...launch_options,
+          },
+          () => {},
+          () => {}
+        );
+      }
+    </script>
+  </body>
+</html>

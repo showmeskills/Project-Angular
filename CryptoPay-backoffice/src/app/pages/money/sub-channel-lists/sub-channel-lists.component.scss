@@ -1,0 +1,60 @@
+@use 'sass/tools';
+
+@include tools.triangle;
+
+.title {
+  white-space: nowrap;
+  font-size: 16px;
+  color: #969bad;
+}
+
+.table {
+  .btn-default {
+    color: #7e8299;
+  }
+}
+
+.edit {
+  padding: 7px 13px;
+  line-height: 20px;
+  font-size: 14px;
+  background-color: #f5f8fa;
+  cursor: pointer;
+  color: #7e8299;
+  transition: all 0.2s linear;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  &:hover {
+    color: #7e8299;
+    background-color: #e4e6ef;
+  }
+}
+
+.status {
+  width: 58px;
+  margin: auto;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 900;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.status_normal {
+  color: #50cd89;
+  background-color: #e8fff3;
+}
+
+.status_lock {
+  color: #ffc700;
+  background-color: #fff8dd;
+}
+
+.status_stop {
+  color: #f1416c;
+  background-color: #fff5f8;
+}

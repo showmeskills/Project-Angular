@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="guide">
+    <app-withdraw-guide [orderSuccess]="true" [transferType]="'crypto'"></app-withdraw-guide>
+  </div>
+  <div class="contants">
+    <div class="left">
+      <div class="ticket-clounm">
+        <ng-container *ngIf="!submitData.withdrawCurrency">
+          <div class="ticket">
+            <div class="item-row">
+              <p class="title">{{ 'order' | translate }}</p>
+              <span class="value">{{ submitData?.orderId || '' }}</span>
+            </div>
+            <div class="item-row offset-t">
+              <p class="title">{{ 'number' | translate }}</p>
+              <div class="value amount-value">
+                <!-- <img [src]="submitData.currency | currencyIcon"> -->
+                <span
+                  >{{ 't_t_acc00' | translate }} {{ minus(submitData.amount, submitData.fee) }}
+                  {{ submitData.currency }}</span
+                >
+                <span>({{ 'network__fee' | translate }} {{ submitData.fee }} {{ submitData.currency }})</span>
+              </div>
+            </div>
+            <div class="item-row offset-t">
+              <p class="title">{{ 'wd_curr_add' | translate }}</p>
+              <span class="value">{{ submitData.address }}</span>
+            </div>
+            <div class="item-row offset-t">
+              <p class="title">{{ 'trans_network' | translate }}</p>
+              <span class="value">{{ submitData.network }}</span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="submitData.withdrawCurrency">
+          <ng-container *ngTemplateOutlet="fiatToCrypTo"></ng-container>
+        </ng-container>
+      </div>
+      <customize-button class="m-top" type="primary" size="large" width="100%" (onClick)="submit()">
+        {{ 'confirm_button' | translate }}</customize-button
+      >
+    </div>
+    <div class="tip">
+      <app-crypto-withdraw-tips Tag="DigitalCurrencyWithdrawal"></app-crypto-withdraw-tips>
+    </div>
+  </div>
+</div>
+
+<!-- 提法得虚 -->
+<ng-template #fiatToCrypTo>
+  <div class="ticket">
+    <div class="item-row">
+      <p class="title">{{ 'order' | translate }}</p>
+      <span class="value m-l-12">{{ submitData?.orderId || '' }}</span>
+    </div>
+    <div class="item-row offset-t">
+      <p class="title">{{ 'withdraw_money' | translate }}</p>
+      <span class="value m-l-12">{{ submitData.amount }} {{ submitData.currency }}</span>
+    </div>
+    <div class="item-row offset-t">
+      <p class="title">{{ 'total_receive' | translate }}</p>
+      <span class="value m-l-12"
+        >{{ 't_t_acc00' | translate }} {{ coinAmount | currencyValue: submitData.withdrawCurrency }}
+        {{ submitData.withdrawCurrency }} ({{ submitData.coinFee }} {{ submitData.withdrawCurrency }})</span
+      >
+    </div>
+    <div class="item-row offset-t">
+      <p class="title">{{ 'widthdraw_address' | translate }}</p>
+      <span class="value m-l-12">{{ submitData.address }}</span>
+    </div>
+  </div>
+</ng-template>

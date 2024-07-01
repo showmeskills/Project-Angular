@@ -1,0 +1,83 @@
+<div class="wrapper" [class.loading]="loading">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="wheel"
+      [isFast]="true"
+      [(isFastBet)]="isFastBet"
+      [(fairnessData)]="fairnessData"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+  <div class="mian">
+    <div class="mian-content">
+      <img class="mian-bg" src="assets/orignal/images/wheel/wheel_bg.svg" alt="" />
+      <div class="content">
+        <div class="wheel">
+          <div class="lucky-div-wrap">
+            <ul class="pie" #circleWheel>
+              <li
+                class="slice"
+                [class]="item.color"
+                *ngFor="let item of multiplier; let i = index"
+                [style]="
+                  'transform:rotate(' +
+                  i * (360 / multiplier.length) +
+                  'deg) skewY(' +
+                  -(90 - 360 / multiplier.length) +
+                  'deg)'
+                "
+              ></li>
+            </ul>
+
+            <div class="make">
+              <div *ngIf="type == 1"><img src="assets/orignal/images/wheel/wheel_logo.svg" alt="" /></div>
+              <!-- 旋转结束 -->
+              <div class="make-item" *ngIf="type == 3">0x</div>
+              <!-- 中奖 -->
+              <div class="ring-result" *ngIf="type == 2">
+                <p class="ring-coef" [class]="roteColor">{{ rate }}x</p>
+                <span class="currency"
+                  ><img width="20" height="20" [src]="currentCurrencyData?.icon" class="currency__icon" />
+                  <!---->
+                  <div class="currency__balances-wrap">
+                    <!---->
+                    <div class="currency__balances">
+                      <span class="currency__balances--balance" style="font-size: 18px">{{ winMoney }}</span>
+                    </div>
+                  </div></span
+                >
+              </div>
+            </div>
+            <div class="arrow" [class]="color"></div>
+          </div>
+        </div>
+        <div class="right-head">
+          <img src="assets/orignal/images/wheel/wheel_head.svg" alt="" />
+        </div>
+      </div>
+      <div class="footer">
+        <!-- isSelected -->
+        <div
+          class="payout"
+          [class.isSelected]="item.color == color && type != 1"
+          *ngFor="let item of bottomMultiplier; let i = index"
+          [class]="item.color"
+        >
+          <span>{{ item.multiplier }}×</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <orignal-bet
+    type="wheel"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [rate]="rate"
+    [operate]="operate"
+    [isDice]="true"
+    (rowSelect)="rowChange($event)"
+    (riskSelect)="riskChange($event)"
+  ></orignal-bet>
+</div>

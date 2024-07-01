@@ -1,0 +1,251 @@
+div {
+  display: flex;
+}
+
+.active {
+  // border: solid 1px #ff580e !important;
+}
+
+// kyc认证弹出款
+.kyc-dialog-withd {
+  width: 100% !important;
+  height: 100% !important;
+  margin-left: 0 !important;
+  border-radius: 4px !important;
+}
+
+.active,
+.country-selector-container {
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 261px;
+  position: relative;
+  border: solid 1px var(--default-border-color);
+  margin-left: 26.5px;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 24px;
+  color: var(--text-color-30);
+
+  &:host-context(.dark) & {
+    background-color: #0f212e;
+  }
+
+  &.active {
+    border-color: var(--primary-color);
+  }
+
+  &.disabled {
+    background-color: #eaecef;
+    cursor: not-allowed;
+  }
+
+  //kyc首页H5
+  &.kyc-h5 {
+    height: 40px;
+    width: 40px;
+  }
+
+  .kyc-2,
+  .country-label,
+  // 国家icon
+  .active {
+    padding-left: 11.5px;
+    width: 100%;
+    height: 45px;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &.kyc-h5 {
+      padding-left: 1.5px;
+    }
+
+    .country-row {
+      align-items: center;
+
+      .country-image {
+        width: 27px;
+        height: 27px;
+        margin-right: 10px;
+
+        &.kyc-h5 {
+          width: 34px;
+          height: 34px;
+        }
+
+        // 国旗居中
+        .icon-size {
+          transform: scale(calc(27 / 48)) !important;
+
+          &.w-34 {
+            transform: scale(calc(34 / 48)) !important;
+          }
+        }
+      }
+    }
+
+    .offset-right {
+      left: 393px !important;
+    }
+
+    .drop-dowm {
+      background-image: url(src/assets/images/kyc/defauit-down.png);
+      margin-right: 16.8px;
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      width: 20px;
+      height: 20px;
+
+      &.clicked,
+      &:hover {
+        background-image: url(src/assets/images/kyc/hover-down.png);
+      }
+    }
+  }
+
+  // 在dialog页面中位置
+  .dialog-page {
+    right: 0 !important;
+    left: -20px !important;
+    height: 369px !important;
+
+    @media (max-width: 767px) {
+      width: 101% !important;
+    }
+  }
+
+  //
+  .center {
+    left: -1px !important;
+  }
+
+  .country-option {
+    flex-direction: column;
+    background-color: var(--container-bg-color);
+    width: 443px;
+    height: 369px;
+    padding: 13px;
+    // border-radius: 10px;
+    position: absolute;
+    overflow: hidden;
+    z-index: 10;
+    box-shadow: 0 3px 10px 0 rgb(0 0 0 / 10%);
+    border-radius: 4px;
+    left: -185px;
+    top: 47px;
+
+    &.small {
+      height: 265px !important;
+    }
+
+    &.kyc-h5 {
+      width: 230px;
+      right: 0;
+    }
+
+    //搜索框
+    .search-contanier {
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding-bottom: 14px;
+
+      &.kyc-h5 {
+        padding-bottom: 13px;
+      }
+
+      &:hover,
+      &.focus {
+        border-color: var(--primary-color);
+      }
+
+      // 搜索icon
+      .search-icon {
+        background-size: 100%;
+        height: 17px;
+        background-repeat: no-repeat;
+        background-image: url(src/assets/images/kyc/search.png);
+        position: absolute;
+        width: 18px;
+        left: 13px;
+      }
+
+      //input
+      .search-input {
+        height: 44px;
+        border: 1px solid var(--primary-color);
+        border-radius: 4px;
+        width: 99%;
+        padding-left: 33px;
+        font-size: 12px;
+        padding-top: 4px;
+        outline: none;
+        caret-color: var(--primary-color);
+
+        &:host-context(.dark) & {
+          background-color: #2f4553;
+          color: #fff;
+        }
+      }
+
+      // 清除icon
+      .icon-clear {
+        font-size: 18px;
+        margin-right: 0.4rem;
+        cursor: pointer;
+        position: absolute;
+        right: 12px;
+        margin-top: 2px;
+        user-select: none;
+        &:hover::before {
+          color: var(--text-color-20);
+        }
+      }
+    }
+
+    // 选单
+    .select-container {
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+
+      app-scrollbar {
+        width: 100%;
+        position: relative;
+      }
+
+      .select-row {
+        width: 100%;
+        height: 100%;
+        flex-direction: row;
+        padding: 14px 0;
+        font-size: 14px;
+        color: #464e5f;
+        padding-left: 6px;
+        cursor: pointer;
+        user-select: none;
+        &:host-context(.dark) & {
+          color: #fff;
+        }
+
+        .fog-row {
+          align-items: center;
+
+          .country-image {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+
+            // 国旗居中
+            .icon-size {
+              transform: scale(calc(18 / 48)) !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

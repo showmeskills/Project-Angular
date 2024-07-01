@@ -1,0 +1,486 @@
+<modal-title [title]="'finance.withdrawConf.ruleConf' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="w-100 px-12 py-8">
+  <div class="d-flex flex-ac w-100">
+    <div class="flex-1 color-222 vam d-flex flex-ac">
+      <form-row [control]="form.controls.ruleNameLocal" [label]="'AP_' + num">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input
+            [style.width.px]="200"
+            [placeholder]="'finance.rule.name' | lang"
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+            type="text"
+            class="rule-remark ml-4 form-control"
+          />
+        </ng-template>
+      </form-row>
+    </div>
+  </div>
+
+  <div>
+    <!-- 备注 -->
+    <form-row [control]="form.controls.remark" [showLabel]="false">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <textarea
+          [formControl]="control"
+          [placeholder]="'finance.rule.note' | lang"
+          class="form-control resize-none w-100"
+          rows="3"
+        ></textarea>
+      </ng-template>
+    </form-row>
+
+    <!-- 状态 -->
+    <form-row [control]="form.controls.isEnabled" [label]="'common.enabledIs' | lang">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <label class="switch switch-success">
+          <input type="checkbox" [formControl]="control" />
+          <span></span>
+        </label>
+      </ng-template>
+    </form-row>
+
+    <!-- 支付类型 -->
+    <form-row [control]="form.controls.paymentCategory" [label]="'finance.rule.paymentType' | lang" label-width="146px">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <mat-form-field [style.width.px]="276">
+          <mat-select
+            [class.is-invalid]="invalid"
+            class="form-control"
+            [formControl]="control"
+            [placeholder]="'form.chooseTips' | lang : { label: 'finance.rule.paymentType' | lang }"
+          >
+            <mat-option [value]="PaymentTypeEnum.Deposit">{{ 'payment.method.deposit' | lang }}</mat-option>
+            <mat-option [value]="PaymentTypeEnum.Withdraw">{{ 'payment.method.withdrawal' | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 支付方式 -->
+    <form-row
+      [control]="form.controls.paymentMethodId"
+      [label]="'finance.rule.paymentMethod' | lang"
+      label-width="146px"
+    >
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <mat-form-field [style.width.px]="276">
+          <mat-select
+            class="form-control"
+            [class.is-invalid]="invalid"
+            [formControl]="control"
+            [placeholder]="'form.chooseTips' | lang : { label: 'finance.rule.paymentMethod' | lang }"
+            *search="let searchList$ of paymentMethodList; key: 'name'"
+          >
+            <!-- 搜索框 -->
+            <input class="fz-16" type="search" searchInput />
+
+            <mat-option *ngFor="let item of searchList$ | async" [value]="item.code">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="mt-6" [hidden]="dataLoading">
+      <!-- 条件 -->
+      <form-row [label]="'finance.withdrawConf.conditions' | lang">
+        <ng-template>
+          <div class="position-relative">
+            <button class="btn-cube sm" type="button" (click)="showEditCondition = true">
+              <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+            </button>
+
+            <select-group
+              [position]="true"
+              [select]="conditionSelectField"
+              [(show)]="showEditCondition"
+              [data]="conditionList"
+              [label]="'lang'"
+              [value]="'field'"
+              (confirm)="onConditionChange($event)"
+              [style.width.px]="360"
+              [style.top.px]="42"
+              [showSelectAll]="false"
+            ></select-group>
+
+            <!--
+              这里可以for一手，判断已选条件数组key 相等进行显示
+            -->
+            <div class="seconds-section" [class.guide-line]="conditionSelect.length">
+              <ng-container *ngFor="let condition of conditionSelect; index as i">
+                <!-- 交易币种 -->
+                <rule-wrap
+                  [formGroup]="form.controls.condition"
+                  [rule]="condition"
+                  *ngIf="condition.field === PSPConditionEnum.currency"
+                  (delete)="onConditionDelRule(i, condition)"
+                >
+                  <ng-template let-invalid="invalid" let-control="formControl">
+                    <mat-form-field class="w-100">
+                      <mat-select multiple class="form-control" [class.is-invalid]="invalid" [formControl]="control">
+                        <mat-option optionSticky (click)="control.setValue([])">{{ 'common.clear' | lang }}</mat-option>
+                        <mat-option *ngFor="let item of currencyList" [value]="item.code">{{ item.code }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </rule-wrap>
+
+                <!-- KYC等级 -->
+                <rule-wrap
+                  [formGroup]="form.controls.condition"
+                  [rule]="condition"
+                  *ngIf="condition.field === PSPConditionEnum.kycLevel"
+                  (delete)="onConditionDelRule(i, condition)"
+                >
+                  <ng-template let-invalid="invalid" let-control="formControl">
+                    <mat-form-field class="w-100">
+                      <mat-select multiple class="form-control" [class.is-invalid]="invalid" [formControl]="control">
+                        <mat-option optionSticky (click)="control.setValue([])">{{ 'common.clear' | lang }}</mat-option>
+                        <mat-option *ngFor="let item of kycLevelList" [value]="item.value">{{
+                          item.lang | lang
+                        }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </rule-wrap>
+
+                <!-- 首次存款 -->
+                <rule-wrap
+                  *ngIf="condition.field === PSPConditionEnum.firstDeposit"
+                  [formGroup]="form.controls.condition"
+                  [rule]="condition"
+                  (delete)="onConditionDelRule(i, condition)"
+                >
+                  <ng-template let-invalid="invalid" let-control="formControl">
+                    <mat-form-field class="w-100">
+                      <mat-select class="form-control" [class.is-invalid]="invalid" [formControl]="control">
+                        <mat-option *ngFor="let item of yesOrNo" [value]="item.value">
+                          {{ item.lang | lang }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </rule-wrap>
+
+                <!-- 首次使用该支付方式 -->
+                <rule-wrap
+                  *ngIf="condition.field === PSPConditionEnum.firstPayment"
+                  [formGroup]="form.controls.condition"
+                  [rule]="condition"
+                  (delete)="onConditionDelRule(i, condition)"
+                >
+                  <ng-template let-invalid="invalid" let-control="formControl">
+                    <mat-form-field class="w-100">
+                      <mat-select class="form-control" [class.is-invalid]="invalid" [formControl]="control">
+                        <mat-option *ngFor="let item of yesOrNo" [value]="item.value">
+                          {{ item.lang | lang }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </rule-wrap>
+
+                <!-- VIP等级 -->
+                <rule-wrap
+                  *ngIf="condition.field === PSPConditionEnum.vipLevel"
+                  [formGroup]="form.controls.condition"
+                  [rule]="condition"
+                  (delete)="onConditionDelRule(i, condition)"
+                >
+                  <ng-template>
+                    <div form-wrap>
+                      <label class="flex-1 d-flex flex-ac cursor-pointer">
+                        <span class="pr-4">{{ 'system.merchants.gtEq' | lang }}</span>
+                        <!-- vip等级>= -->
+                        <input
+                          class="text-center"
+                          form-full
+                          type="text"
+                          input-number
+                          [formControl]="
+                            form.controls.condition.controls[PSPConditionEnum.vipLevel].controls[
+                              PSPConditionEnum.vipLevelMorethen
+                            ]
+                          "
+                        />
+                      </label>
+                      <span class="px-4">~</span>
+                      <label class="flex-1 d-flex flex-ac cursor-pointer">
+                        <!-- vip等级<= -->
+                        <input
+                          class="text-center"
+                          form-full
+                          type="text"
+                          input-number
+                          [formControl]="
+                            form.controls.condition.controls[PSPConditionEnum.vipLevel].controls[
+                              PSPConditionEnum.vipLevelLessthen
+                            ]
+                          "
+                        />
+                        <span class="pl-4">{{ 'system.merchants.ltEq' | lang }}</span>
+                      </label>
+                    </div>
+                  </ng-template>
+                </rule-wrap>
+
+                <!-- 交易数量 -->
+                <ng-container *ngIf="PSPConditionEnum.txCount === condition.field">
+                  <ng-container *ngFor="let subCondition of condition.children">
+                    <rule-wrap
+                      [formGroup]="form.controls.condition.controls[PSPConditionEnum.txCount]"
+                      [rule]="subCondition"
+                      (delete)="deleteConditionList($event, condition, i)"
+                      *ngIf="
+                        form.controls.condition.controls[PSPConditionEnum.txCount].controls[subCondition.field]
+                          .status !== 'DISABLED'
+                      "
+                    >
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <label form-wrap [invalid]="invalid">
+                          <input form-full [formControl]="control" type="text" input-float />
+                          <span></span>
+                        </label>
+                      </ng-template>
+                    </rule-wrap>
+                  </ng-container>
+                </ng-container>
+
+                <!-- 交易金额 -->
+                <ng-container *ngIf="PSPConditionEnum.txAmount === condition.field">
+                  <ng-container *ngFor="let subCondition of condition.children">
+                    <rule-wrap
+                      [formGroup]="$any(form.controls.condition.controls.txAmount)"
+                      [rule]="subCondition"
+                      (delete)="deleteConditionList($event, condition, i)"
+                      *ngIf="
+                        form.controls.condition.controls[PSPConditionEnum.txAmount].controls[subCondition.field]
+                          .status !== 'DISABLED'
+                      "
+                    >
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <label form-wrap [invalid]="invalid">
+                          <input form-full [formControl]="control" type="text" input-float />
+                          <span>
+                            <mat-select
+                              [formControl]="formTxAmountCurrency[subCondition.field].control"
+                              [style.width.px]="76"
+                              class="currency-select"
+                            >
+                              <mat-option [value]="item.code" *ngFor="let item of currencyList">{{
+                                item.code
+                              }}</mat-option>
+                            </mat-select>
+                          </span>
+                        </label>
+                      </ng-template>
+                    </rule-wrap>
+                  </ng-container>
+                </ng-container>
+
+                <!-- 总计 -->
+                <ng-container *ngIf="PSPConditionEnum.total === condition.field">
+                  <ng-container *ngFor="let subCondition of condition.children">
+                    <ng-container
+                      *ngIf="
+                        ![PSPConditionEnum.totalTime, PSPConditionEnum.timeUnit].includes(subCondition.field) &&
+                        form.controls.condition.controls[PSPConditionEnum.total].controls[subCondition.field].status !==
+                          'DISABLED'
+                      "
+                    >
+                      <rule-wrap
+                        [formGroup]="$any(form.controls.condition.controls.total)"
+                        [rule]="subCondition"
+                        (delete)="deleteConditionList($event, condition, i)"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <label form-wrap [invalid]="invalid">
+                            <input form-full [formControl]="control" type="text" input-float />
+                            <!--                            <span>{{ subCondition.suffix || '' }}</span>-->
+                            <span *ngIf="formTotalTxAmountCurrency[subCondition.field]">
+                              <mat-select
+                                [formControl]="formTotalTxAmountCurrency[subCondition.field].control"
+                                [style.width.px]="76"
+                                class="currency-select"
+                              >
+                                <mat-option [value]="item.code" *ngFor="let item of currencyList">{{
+                                  item.code
+                                }}</mat-option>
+                              </mat-select>
+                            </span>
+                          </label>
+                        </ng-template>
+                      </rule-wrap>
+                    </ng-container>
+
+                    <!-- 时间 -->
+                    <rule-wrap
+                      *ngIf="
+                        [PSPConditionEnum.totalTime].includes(subCondition.field) &&
+                        form.controls.condition.controls.total.controls[PSPConditionEnum.totalTime].status !==
+                          'DISABLED'
+                      "
+                      [label]="'finance.rule.totalTime' | lang"
+                      [formGroup]="$any(form.controls.condition.controls.total)"
+                      [rule]="subCondition"
+                      (delete)="
+                        deleteConditionList($event, condition, i, [
+                          PSPConditionEnum.totalTime,
+                          PSPConditionEnum.timeUnit
+                        ])
+                      "
+                    >
+                      <ng-template>
+                        <div class="d-flex">
+                          <input
+                            class="form-control flex-1"
+                            [formControl]="form.controls.condition.controls.total.controls[PSPConditionEnum.totalTime]"
+                            placeholder=""
+                            type="text"
+                            input-number
+                          />
+
+                          <form-row
+                            [control]="totalControl.controls[PSPConditionEnum.timeUnit]"
+                            class="ml-4 py-0"
+                            [showLabel]="false"
+                          >
+                            <ng-template let-invalid="invalid" let-control="formControl">
+                              <mat-form-field class="w-100">
+                                <mat-select class="form-control" [formControl]="control">
+                                  <mat-option *ngFor="let item of timeUnitList" [value]="item.value">{{
+                                    item.lang | lang
+                                  }}</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </ng-template>
+                          </form-row>
+                        </div>
+                      </ng-template>
+                    </rule-wrap>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 操作 -->
+      <form-row [label]="'finance.withdrawConf.actions' | lang">
+        <ng-template>
+          <div class="position-relative">
+            <button class="btn-cube sm" type="button" (click)="actionAdd()">
+              <svg-icon
+                [src]="'./assets/images/svg/add.svg'"
+                class="svg-icon svg-icon-2x5"
+                [style.opacity]="0.75"
+              ></svg-icon>
+            </button>
+
+            <div class="seconds-section" [class.guide-line]="form.controls.actions.controls.length">
+              <div *ngFor="let channel of form.controls.actions.controls; index as i">
+                <!-- 首选/备选PSP -->
+                <rule-wrap
+                  class="w-100 py-2"
+                  [showDelete]="!channel.getRawValue().isFirst"
+                  [showLabel]="false"
+                  (delete)="deleteChannel(i)"
+                >
+                  <ng-template>
+                    <div class="d-flex w-100" style="gap: 0 40px">
+                      <!-- 首选PSP -->
+                      <form-row
+                        label-width="100px"
+                        class="flex-1 py-0"
+                        [label]="
+                          channel.getRawValue().isFirst
+                            ? ('finance.rule.firstPSP' | lang)
+                            : ('finance.rule.backupPSP' | lang) + i
+                        "
+                        [control]="channel.controls.channelId"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <mat-form-field class="w-100">
+                            <mat-select
+                              [formControl]="control"
+                              [class.is-invalid]="invalid"
+                              class="form-control"
+                              (selectionChange)="mainChannelChange(channel, i)"
+                              *search="let list of channelList; key: 'name'"
+                            >
+                              <input class="fz-16" type="text" searchInput />
+                              <mat-option *ngFor="let item of list | async" [value]="item.code">{{
+                                item.name
+                              }}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </ng-template>
+                      </form-row>
+
+                      <!-- 子渠道 -->
+                      <form-row
+                        class="flex-1 py-0"
+                        label-width="100px"
+                        [label]="'finance.rule.subChannel' | lang"
+                        [control]="channel.controls.channelAccountId"
+                      >
+                        <ng-template let-invalid="invalid" let-control="formControl">
+                          <mat-form-field class="w-100">
+                            <mat-select
+                              [formControl]="control"
+                              [class.is-invalid]="invalid"
+                              class="form-control"
+                              *search="let list of formSubChannelList[i]; key: 'name'"
+                              (click)="subChannelClick(channel)"
+                            >
+                              <input class="fz-16" type="text" searchInput />
+                              <mat-option *ngFor="let item of list | async" [value]="item.channelAccountId">{{
+                                item.channelAccountAlias
+                              }}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </ng-template>
+
+                        <div class="lh-20 fz-12 color-999" afterContent>
+                          <div class="d-flex" style="gap: 0 10" *ngFor="let item of getSubChannelContent(i)">
+                            <span>{{ item.currency || '-' }}</span>
+
+                            <div class="flex-1 min-w-0 d-flex flex-wrap">
+                              <ng-container *ngFor="let limit of item.limit">
+                                <span
+                                  class="pl-4 flex-1 d-flex flex-wrap text-nowrap"
+                                  *ngIf="limit.paymentCategory === PaymentTypeEnum.Deposit"
+                                  >{{ 'finance.rule.dpo' | lang }}: {{ limit.singleOrderMinimum || 'NA' }}~{{
+                                    limit.singleOrderMaximum || 'NA'
+                                  }}</span
+                                >
+                                <span
+                                  class="pl-4 flex-1 d-flex flex-wrap text-nowrap"
+                                  *ngIf="limit.paymentCategory === PaymentTypeEnum.Withdraw"
+                                >
+                                  {{ 'finance.rule.wtd' | lang }}: {{ limit.singleOrderMinimum || 'NA' }}~{{
+                                    limit.singleOrderMaximum || 'NA'
+                                  }}
+                                </span>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                      </form-row>
+                    </div>
+                  </ng-template>
+                </rule-wrap>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div [style.height.px]="104" [appLoading]="dataLoading" [hidden]="!dataLoading"></div>
+  </div>
+</div>
+
+<modal-footer [dismissClose] (confirm)="onSubmit()"></modal-footer>

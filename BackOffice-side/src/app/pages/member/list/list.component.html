@@ -1,0 +1,397 @@
+<div class="card hd sticky-header" *ngIf="!isSimple">
+  <div class="card-header px-7 py-12">
+    <div class="d-flex">
+      <div class="d-flex flex-wrap flex-1">
+        <!-- 信息搜索 -->
+        <form-row [label]="'member.list.infoSearch' | lang" class="mr-6">
+          <ng-template>
+            <input
+              class="form-control form-control-lg form-control-solid"
+              type="text"
+              [placeholder]="'member.list.searchPlace' | lang"
+              [style.width.px]="420"
+              [(ngModel)]="data.content"
+              (keyup)="$event.key === 'Enter' && loadData(true)"
+              [class.disabled]="expandAdvancedSearch"
+              [class.cursor-no-drop]="expandAdvancedSearch"
+              [attrDisabled]="expandAdvancedSearch"
+            />
+          </ng-template>
+        </form-row>
+
+        <!-- 代理ID搜索 -->
+        <form-row [label]="'member.list.affiliateId' | lang" class="mr-6">
+          <ng-template>
+            <input
+              class="form-control form-control-lg form-control-solid"
+              type="text"
+              [placeholder]="'member.list.affiliatePlace' | lang"
+              [(ngModel)]="data.superiorId"
+              (keyup)="$event.key === 'Enter' && loadData(true)"
+            />
+          </ng-template>
+        </form-row>
+
+        <!-- 注册时间 -->
+        <form-row class="mr-6" [label]="'member.table.regDate' | lang" [flag]="false">
+          <ng-template>
+            <input
+              class="text-center form-control w-100"
+              type="text"
+              [placeholder]="'member.table.regDate' | lang"
+              selectMode="date-range"
+              formatLabel="yyyy-MM-dd"
+              rangeSeparator="-"
+              [owlDateTime]="tradePicker"
+              [owlDateTimeTrigger]="tradePicker"
+              [(ngModel)]="data.registryTime"
+              (dateTimeChange)="loadData(true)"
+            />
+
+            <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+          </ng-template>
+        </form-row>
+
+        <!-- 用户类型 -->
+        <form-row class="mr-6" [label]="'member.table.userType' | lang">
+          <ng-template>
+            <mat-form-field [style.width.px]="180">
+              <mat-select class="form-control" [(ngModel)]="data.memberType" (selectionChange)="loadData(true)">
+                <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+                <mat-option [value]="MemberTypeEnum[MemberTypeEnum.TestUser]">{{
+                  'member.overview.accountTest' | lang
+                }}</mat-option>
+                <mat-option [value]="MemberTypeEnum[MemberTypeEnum.NormalUser]">{{
+                  'member.overview.accountNormal' | lang
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <!-- 用户状态 -->
+        <form-row class="mr-6" [label]="'member.model.userStatus' | lang">
+          <ng-template>
+            <mat-form-field>
+              <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+                <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+                <mat-option *ngFor="let item of statusList" [value]="item.categoryCode">{{
+                  item.categoryDescription
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <!-- VIP等级 -->
+        <div class="d-flex flex-ac mr-6 py-2">
+          <label class="form-title mr-6">{{ 'common.vipLevel' | lang }} </label>
+          <mat-form-field [style.width.px]="260">
+            <mat-select multiple class="form-control" [(ngModel)]="data.vipLevel" (openedChange)="onVip($event)">
+              <mat-select-trigger>
+                <span *ngIf="!data.vipLevel?.length || data.vipLevel.includes('')">
+                  {{ 'common.all' | lang }}
+                </span>
+                <ng-container *ngIf="data.vipLevel.length < vipLevelList.length">
+                  <ng-container *ngFor="let item of data.vipLevel; last as last">
+                    <span *ngIf="item !== ''">{{ item | vipName }}{{ !last ? ', ' : '' }}</span>
+                  </ng-container>
+                </ng-container>
+              </mat-select-trigger>
+              <mat-option value="" #allVipSelected (click)="toggleAllVip()">{{ 'common.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of vipLevelList" [value]="item.value" (click)="toggleVip()">{{
+                item.name
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- 未存款 -->
+        <form-row class="mr-6" [label]="'member.list.withoutDeposit' | lang">
+          <ng-template>
+            <mat-form-field [style.width.px]="110">
+              <mat-select class="form-control" [(ngModel)]="data.depositDays" (selectionChange)="loadData(true)">
+                <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+                <mat-option *ngFor="let item of depositTimeList" [value]="item.value">{{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <!-- 未登录 -->
+        <form-row class="mr-6" [label]="'member.list.withoutLogin' | lang">
+          <ng-template>
+            <mat-form-field [style.width.px]="110">
+              <mat-select class="form-control" [(ngModel)]="data.loginDays" (selectionChange)="loadData(true)">
+                <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+                <mat-option *ngFor="let item of loginTimeList" [value]="item.value">{{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <!-- 来源 -->
+        <div class="d-flex flex-ac mr-6 py-2">
+          <label class="form-title mr-6">{{ 'common.source' | lang }}</label>
+          <mat-form-field [style.width.px]="110">
+            <mat-select class="form-control" [(ngModel)]="data.source" (selectionChange)="loadData(true)">
+              <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of sourceList" [value]="item.categoryCode">{{
+                item.categoryDescription
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- 风控等级 -->
+        <form-row class="mr-6" [label]="'common.riskLevel' | lang">
+          <ng-template>
+            <mat-form-field [style.width.px]="110">
+              <mat-select class="form-control" [(ngModel)]="data.riskControl" (selectionChange)="loadData(true)">
+                <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+                <mat-option *ngFor="let item of riskControlList" [value]="item">{{ item }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <!--账户经理下拉 -->
+        <form-row class="mr-6" [label]="'auManage.sys.accountManager' | lang">
+          <ng-template>
+            <mat-form-field [style.width.px]="110">
+              <mat-select class="form-control" [(ngModel)]="data.accountId" (selectionChange)="loadData(true)">
+                <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+                <mat-option *ngFor="let item of accuntManagerList" [value]="item.id">{{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <!-- 高级搜索 -->
+        <div class="d-flex flex-ac mr-6 py-2 lh-42 cursor-pointer" (click)="onAdvancedSearch()">
+          <span class="color-999 fz-16">{{ 'common.searchAdvanced' | lang }}</span>
+          <span
+            class="mat-mdc-select-arrow mx-2 transition-linear-200"
+            [class.transform-rotateZ-180]="expandAdvancedSearch"
+          ></span>
+        </div>
+
+        <!-- 高级搜索展开 -->
+        <div
+          [@slideInOut]="expandAdvancedSearch ? 'in' : 'out'"
+          [formGroup]="advancedSearchGroup"
+          class="advance-search-wrap d-flex flex-wrap flex-ac w-100"
+          [style.gap]="'0 20px'"
+        >
+          <!-- IP批量搜索 -->
+          <form-row name="ip" class="flex-1" [label]="'member.list.batchSearchIP' | lang" [labelAutoDisable]="true">
+            <ng-template let-invalid="invalid" let-control="formControl" let-disabled="disabled">
+              <input
+                input-trim="input"
+                class="form-control"
+                [placeholder]="'member.list.multipleSearchTips' | lang"
+                type="text"
+                [formControl]="control"
+                (keyup)="$event.key === 'Enter' && loadData(true)"
+                [class.disabled]="disabled"
+                [class.cursor-no-drop]="disabled"
+                (input)="onCheckAdvance()"
+              />
+            </ng-template>
+          </form-row>
+
+          <!-- UID批量搜索 -->
+          <form-row name="uid" class="flex-1" [label]="'member.list.batchSearchUID' | lang" [labelAutoDisable]="true">
+            <ng-template let-invalid="invalid" let-control="formControl" let-disabled="disabled">
+              <input
+                input-trim="input"
+                class="form-control"
+                [placeholder]="'member.list.multipleSearchTips' | lang"
+                type="text"
+                [formControl]="control"
+                (keyup)="$event.key === 'Enter' && loadData(true)"
+                [class.disabled]="disabled"
+                [class.cursor-no-drop]="disabled"
+                (input)="onCheckAdvance()"
+              />
+            </ng-template>
+          </form-row>
+
+          <!-- 用户名批量搜索 -->
+          <form-row name="name" class="flex-1" [label]="'member.list.batchSearchName' | lang" [labelAutoDisable]="true">
+            <ng-template let-invalid="invalid" let-control="formControl" let-disabled="disabled">
+              <input
+                input-trim="input"
+                class="form-control"
+                [placeholder]="'member.list.multipleSearchTips' | lang"
+                type="text"
+                [formControl]="control"
+                (keyup)="$event.key === 'Enter' && loadData(true)"
+                [class.disabled]="disabled"
+                [class.cursor-no-drop]="disabled"
+                (input)="onCheckAdvance()"
+              />
+            </ng-template>
+          </form-row>
+        </div>
+
+        <div class="flex-ac py-2 card-toolbar flex-1 justify-content-end d-flex">
+          <button class="c-btn c-btn-default mr-6" (click)="reset()">{{ 'common.reset' | lang }}</button>
+          <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+        </div>
+      </div>
+
+      <!-- <div class="py-2 pl-4">
+        <label class="color-blue fz-12" style="line-height: 42px">高级筛选</label>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<!-- 会员列表 -->
+<div class="card mt-8 list sticky-card">
+  <div class="card-body p-12">
+    <div class="d-flex flex-ac flex-between pb-10" *ngIf="!isSimple">
+      <div class="fz-20 fw-bolder">{{ 'member.list.title' | lang }}</div>
+      <div>
+        <button type="button" class="ml-6 btn btn-light-primary py-3" (click)="onSetVip(true)">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/pen.svg'"></svg-icon>
+          <span class="vam">{{ 'member.list.setVip' | lang }}</span>
+        </button>
+        <button type="button" class="ml-6 btn btn-light-primary py-3" (click)="onSetVip(false)">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/del.svg'"></svg-icon>
+          <span class="vam">{{ 'member.list.removeSVIP' | lang }}</span>
+        </button>
+        <button type="button" class="ml-6 btn btn-light-primary py-3" (click)="ontMessage()">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/site_message_icon.svg'"></svg-icon>
+          <span class="vam">{{ 'member.list.bulk' | lang }}</span>
+        </button>
+        <!-- 在线消息禁用名单 -->
+        <button type="button" class="ml-6 btn btn-light-primary py-3" (click)="toBanList()">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/app_push_icon.svg'"></svg-icon>
+          <span class="vam">{{ 'member.list.banList' | lang }}</span>
+        </button>
+        <!-- 在线消息白名单 -->
+        <button type="button" class="ml-6 btn btn-light-primary py-3" (click)="toWhiteList()">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/app_push_icon.svg'"></svg-icon>
+          <span class="vam">{{ 'member.list.whiteList' | lang }}</span>
+        </button>
+        <button type="button" class="ml-6 btn btn-light-primary py-3" (click)="onSetAMLabel()">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/member_setting_icon.svg'"></svg-icon>
+          <span class="vam">{{ 'auManage.sys.settingManager' | lang }}</span>
+        </button>
+        <button type="button" class="ml-6 btn btn-light-primary py-3" (click)="onExport()">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/export.svg'"></svg-icon>
+          <span class="vam">{{ 'member.list.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <!--begin::Datatable-->
+      <list-table [data]="data" [list]="list" (sort)="onSort($event)" [isLoading]="isLoading"></list-table>
+
+      <div class="d-flex flex-between pt-30" *ngIf="!isSimple">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 添加或移除 SVIP的提示 -->
+<ng-template #svipWarning let-isInvite let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title">{{ 'member.list' | lang: (isInvite ? 'setVip' : 'removeSVIP') }}</div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="my-2 text-break text-wrap" *ngFor="let item of vipCheckList">
+      <ng-template #svipTipsTpl let-item svipTipsTpl>
+        <div class="py-2">
+          {{ 'member.list.invite' | lang: item.typeName }}({{ item.uids?.length || 0 }}): {{ item.uids?.join(', ') }}
+        </div>
+      </ng-template>
+
+      <!-- 邀请SVIP前检查 -->
+      <ng-container
+        *ngIf="isInvite"
+        [ngTemplateOutlet]="svipTipsTpl"
+        [ngTemplateOutletContext]="{ $implicit: item }"
+      ></ng-container>
+
+      <!-- 移除SVIP前检查 -->
+      <ng-container *ngIf="!isInvite">
+        <ng-container
+          *ngIf="['notExist', 'notSvip'].includes(item.typeName)"
+          [ngTemplateOutlet]="svipTipsTpl"
+          [ngTemplateOutletContext]="{ $implicit: item }"
+        ></ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.back' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</ng-template>
+
+<!-- 添加 AM 设置弹窗 -->
+<ng-template #amTmpPopup>
+  <div class="modal-content h-100">
+    <div class="modal-header px-10 py-9">
+      <div class="modal-title w-100 d-flex justify-content-between">
+        <span class="text-vertical fz-20">{{ 'auManage.sys.settingManager' | lang }}</span>
+        <svg-icon
+          (click)="onCloseAmTmpPopup()"
+          [src]="'./assets/images/svg/admin-close.svg'"
+          class="svg-icon cursor-pointer"
+        ></svg-icon>
+      </div>
+    </div>
+
+    <main class="modal-body custom-scroll-y">
+      <div class="d-flex flex-wrap" *ngIf="accuntManagerList.length">
+        <label
+          class="radio radio-lg radio-success mr-8 fz-16 col-md-5 mb-4"
+          *ngFor="let item of accuntManagerList; index as i"
+        >
+          <input type="radio" name="content" [value]="item.id" [(ngModel)]="accountId" />
+          <span class="mr-4"></span>
+          <div class="radio-text">{{ item.name }}</div>
+        </label>
+      </div>
+      <empty *ngIf="!accuntManagerList.length" [style.height.%]="100"></empty>
+    </main>
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="onCloseAmTmpPopup()">
+        {{ 'common.back' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onSubmitAM()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,204 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+//头部
+.theme-header {
+  padding: 19px 0px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: 767px) {
+    padding: 28px 0px;
+    justify-content: unset;
+  }
+
+  .theme-header-left {
+    display: flex;
+    align-items: center;
+
+    .icon-back {
+      font-size: 21px;
+      color: var(--text-color-20);
+    }
+
+    .theme-header-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-color);
+      margin-left: 12px;
+    }
+  }
+}
+
+//主体
+.theme-wrap {
+  padding-top: 48px;
+  padding-bottom: 120px;
+
+  @media (max-width: 767px) {
+    padding-top: 24px;
+    padding-bottom: 48px;
+  }
+
+  // 所有分类
+  .theme-wrap-top {
+    .top-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--text-color);
+
+      @media (max-width: 767px) {
+        margin-top: 48px;
+      }
+    }
+
+    .top-list {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      column-gap: 24px;
+      row-gap: 24px;
+
+      @media (min-width: 1031px) and (max-width: 1400px) {
+        grid-template-columns: auto auto auto;
+      }
+
+      @media (min-width: 768px) and (max-width: 1030px) {
+        grid-template-columns: auto auto;
+      }
+
+      .list-item {
+        width: 282px;
+        padding: 30px 32px 30px 24px;
+        border-radius: 4px;
+        background-image: url(src/assets/images/help-center/ads-bg.svg);
+        background-size: contain;
+        background-position: bottom;
+        cursor: pointer;
+        background-repeat: no-repeat;
+        user-select: none;
+
+        &:host-context(.dark) & {
+          background-image: url(src/assets/images/help-center/b-ads-bg.png);
+          background-size: auto;
+        }
+
+        .item-img {
+          width: 40px;
+          height: 40px;
+          padding: 8px;
+        }
+
+        .cate-name {
+          margin-top: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .cate-name-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-color);
+            width: 80%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .icon-arrow {
+            width: 18px;
+            height: 18px;
+            background-image: url(src/assets/images/help-center/right-arrow.svg);
+            background-repeat: no-repeat;
+          }
+        }
+
+        .cate-descr {
+          margin-top: 17px;
+          font-size: 14px;
+          color: #b7bdc6;
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    //h5 list
+    .h5-cate-list {
+      display: grid;
+      grid-template-columns: auto auto auto;
+      @include polyfills.flex-gap(17px, 'column nowrap');
+      margin-top: 24px;
+
+      @media (min-width: 371px) and (max-width: 575px) {
+        grid-template-columns: auto auto;
+      }
+
+      @media (max-width: 370px) {
+        grid-template-columns: auto;
+      }
+
+      li {
+        width: 163px;
+        height: 46px;
+        padding: 16px;
+        border-radius: 4px;
+        background-image: url(src/assets/images/help-center/h5-ads-bg.svg);
+        background-size: contain;
+        background-position: bottom;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &:host-context(.dark) & {
+          background-image: url(src/assets/images/help-center/b-h5-ads-bg.png);
+        }
+
+        .cate-name {
+          display: flex;
+          align-items: center;
+
+          > img {
+            width: 14px;
+            height: 14px;
+          }
+
+          .cate-name-title {
+            margin-left: 8px;
+            font-size: 14px;
+            color: var(--text-color);
+            width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        .icon-arrow {
+          width: 14px;
+          height: 14px;
+          background-image: url(src/assets/images/help-center/right-arrow.svg);
+          background-repeat: no-repeat;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .search-bar {
+    &:host-context(.dark) & {
+      background-color: var(--container-bg-color);
+    }
+
+    .ipt-key {
+      &:host-context(.dark) & {
+        background-color: var(--container-bg-color);
+        color: #557086;
+      }
+    }
+  }
+}

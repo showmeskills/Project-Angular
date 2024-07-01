@@ -1,0 +1,83 @@
+<div class="wrapper">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="tower"
+      [(fairnessData)]="fairnessData"
+      [(isAnimation)]="isAnimation"
+      [(isFastBet)]="isFastBet"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+  <div class="tower">
+    <div class="tower__board">
+      <div class="tower-board" [class]="isAnimation ? '' : 'tower-board--no-animation'">
+        <!-- --disabled(禁止按钮点击) --active（当前可选择项目） （自动投注时，--active下面一栏为2个状态都没有，可以选择的意思）  -->
+        <div
+          class="tower-board__row"
+          *ngFor="let item of coefficients; let index = index"
+          [class]="{
+            'tower-board__row--disabled': item.disabled,
+            'tower-board__row--active': item.active,
+            'tower-board__row--lose': item.rowlose,
+            'tower-board__row--win': item.rowwin
+          }"
+        >
+          <!-- --active（当前栏目已被选择后，倍数高亮显示） -->
+          <div class="tower-board__coefficient" [class]="item.rateActive ? 'tower-board__coefficient--active' : ''">
+            x{{ item.rate }}
+          </div>
+          <div class="tower-board__col-wrap" *ngFor="let cur of item.list; let i = index" (click)="setItem(index, i)">
+            <!-- --lose（当前按钮选择到炸弹）--win（当前按钮选择赢了） -->
+            <button class="tower-board__col" [class]="cur.winType ? 'tower-board__col--' + cur.winType : ''">
+              <img
+                *ngIf="cur.type == 2 || cur.type == 3"
+                src="assets/orignal/images/tower/line-bg.png"
+                alt=""
+                class="tower-board__col-lines"
+              />
+              <img
+                *ngIf="cur.type == 2"
+                src="assets/orignal/images/tower/dude.png"
+                alt=""
+                class="tower-board__col-img"
+              />
+              <img
+                *ngIf="cur.type == 3"
+                src="assets/orignal/images/tower/devil.png"
+                alt=""
+                class="tower-board__col-img"
+              />
+              <img
+                *ngIf="cur.type == 1"
+                src="assets/orignal/images/tower/col.png"
+                alt=""
+                class="tower-board__col-img tower-board__col-img--hide"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <orignal-bet
+    type="tower"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [rate]="rate"
+    [operate]="operate"
+    [isDice]="true"
+    [bombCounts]="bombCounts"
+    (bombCountsChange)="bombCountsChange($event)"
+    (autoClear)="autoClear()"
+    (autoSelect)="autoSelect()"
+    (toSubmit)="toSubmit($event)"
+  ></orignal-bet>
+
+  <div class="win-tip" *ngIf="isShowWinTip">
+    <div>{{ rate }}X</div>
+    <div><img class="currency-icon" [src]="currentCurrencyData?.icon" />{{ winMoney }}</div>
+  </div>
+</div>

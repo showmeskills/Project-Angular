@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.batch-wrap {
+  position: relative;
+  border: 1px solid #ebedf3;
+  border-radius: 4px;
+  margin: 20px 30px;
+}
+
+.batch-label {
+  position: absolute;
+  left: 18px;
+  top: 0;
+  transform: translateY(-50%);
+  padding: 0 10px;
+}
+
+.batch-remove {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  padding: 4px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover svg-icon {
+    color: var(--bs-primary) !important;
+  }
+}

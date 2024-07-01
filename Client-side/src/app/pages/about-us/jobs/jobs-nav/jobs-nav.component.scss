@@ -1,0 +1,41 @@
+:host {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-container {
+  display: block;
+  // background-color: #fff;
+  background-color: var(--page-bg-color);
+  overflow: hidden;
+  // padding: 0px 16px 0px 16px;
+
+  .nav-wrap {
+    padding: 21px 0px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-item {
+    font-size: 16px;
+    // color: #707a8a;
+    color: var(--text-color-20);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .active-nav {
+    font-weight: 600;
+    // color: #1e2329;
+    color: var(--text-color);
+  }
+
+  .icon-arrow-right-simple {
+    font-size: 14px;
+    margin: 0px 10px;
+  }
+}

@@ -1,0 +1,192 @@
+<div class="page-container">
+  <!-- 头部 -->
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container header-container">
+      <div class="left mutual-opacity onact96" (click)="goBack()">
+        <i *ngIf="isH5" class="icon-arrow-left-simple"></i>
+        <p class="text">{{ 'noti' | translate }}</p>
+      </div>
+      <div class="right">
+        <mat-checkbox
+          class="is-readed-msg"
+          [(ngModel)]="data.isHiddenReadedMsg"
+          (change)="onHiddenReadedMsg()"
+          *ngIf="!isH5"
+        >
+          <span class="max-box-text">{{ 'hide_read_noti' | translate }}</span>
+        </mat-checkbox>
+        <ng-container *ngFor="let item of iconLists; let idx = index">
+          <ng-container
+            *ngTemplateOutlet="
+              iconToolTips;
+              context: {
+                iconName: item.iconName,
+                idx,
+                text: (item.text | translate)
+              }
+            "
+          >
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- 信息 -->
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-16">
+    <div class="container body-container">
+      <!-- web -->
+      <div class="message-container" *ngIf="!isH5">
+        <div class="menu-list">
+          <div
+            class="item onact96 mutual-opacity"
+            *ngFor="let item of menuList; let i = index"
+            [class.active]="i == isActiveMenuItem"
+            (click)="onSelectMenuItem(i, item)"
+          >
+            <i [class]="item.icon" class="h-20-w-20"></i>
+            <p class="text">{{ item.name | translate }}</p>
+            <p [class.msg-number]="item.messages > 0" [class.empty-number]="item.messages == 0">
+              <ng-container *ngIf="item.messages > 0">
+                {{ item.messages > 99 ? '99+' : item.messages }}
+              </ng-container>
+              <ng-container *ngIf="item.messages == 0"> 0 </ng-container>
+            </p>
+          </div>
+        </div>
+        <div class="message-detail-section">
+          <!-- 信息内容 -->
+          <div class="message-detail-content" [appLoading]="loading">
+            <div class="detail-wrap">
+              <div
+                class="message-detail onact96"
+                [class.detail-active-bgc]="isCurrentMsg === idx && panelStatus"
+                *ngFor="let item of messageList; let idx = index"
+                (click)="openPanel(idx, item)"
+              >
+                <p class="dot" [class]="item.isReaded ? 'gray-dot' : 'green-dot'"></p>
+                <div
+                  class="content content-mt-26"
+                  [class]="panelStatus && isCurrentMsg === idx ? 'content-pt-pd-20' : 'content-pt-pd-10'"
+                >
+                  <div class="content-left">
+                    <div class="title">{{ item.title }}</div>
+                    <p class="date">{{ item.sendTime }}</p>
+                  </div>
+                  <div class="content-right">
+                    <div
+                      class="message"
+                      [class]="panelStatus && isCurrentMsg === idx ? 'open-panel-message' : 'no-open-panel'"
+                    >
+                      <div [innerHTML]="item.content | toHtmlElement"></div>
+                      <a
+                        class="link"
+                        *ngIf="['IDVerification', 'IDVerificationNoApproved']?.includes(item?.businessType || '')"
+                        (click)="openKycPage()"
+                      >
+                        {{ 'bring_me_there' | translate }}</a
+                      >
+                    </div>
+                    <i
+                      [class]="panelStatus && isCurrentMsg === idx ? 'icon-arrow-up-simple' : 'icon-arrow-down-simple'"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <app-empty *ngIf="messageList.length === 0 && !loading"></app-empty>
+            </div>
+            <app-paginator
+              [disabled]="loading"
+              [(page)]="paginator.page"
+              [total]="paginator.total"
+              [pageSize]="paginator.pageSize"
+              (onPageChange)="loadData()"
+            >
+            </app-paginator>
+          </div>
+        </div>
+      </div>
+      <!-- h5 信息 -->
+      <ng-container *ngIf="isH5 && !isShowSingleMsg">
+        <div class="h5-message-container">
+          <div class="h5-message-header">
+            <p
+              class="item onact96-not"
+              *ngFor="let item of h5MenuList; let i = index"
+              [class.active-item]="isActiveMenuItem === i"
+              (click)="onSelectMenuItem(i, item)"
+            >
+              {{ item.name | translate }} {{ '(' + item.msgNumber + ')' }}
+            </p>
+          </div>
+          <div class="h5-message-detail" [class]="messageList.length <= 0 ? 'h5-empty' : ''">
+            <div [appLoading]="loading">
+              <div class="h5-detail-content" *ngIf="messageList.length > 0">
+                <div class="h5-message-detail-container">
+                  <div class="h5-message-detail onact96" *ngFor="let item of messageList" (click)="openSingleMsg(item)">
+                    <i class="icon-email" [class]="data.isStartEdit ? 'icon-left' : ''"></i>
+                    <div class="content" [class.ml-20]="data.isStartEdit">
+                      <p class="title">{{ item.title }}</p>
+                      <p class="detail" [innerHTML]="item.content | toHtmlElement"></p>
+                      <p class="date">{{ item.sendTime }}</p>
+                    </div>
+                    <P class="dot" [class]="item.isReaded ? 'gray-dot' : 'green-dot'"></P>
+                  </div>
+                </div>
+                <app-paginator
+                  [disabled]="loading"
+                  [(page)]="paginator.page"
+                  [total]="paginator.total"
+                  [pageSize]="paginator.pageSize"
+                  (onPageChange)="loadData()"
+                >
+                </app-paginator>
+              </div>
+            </div>
+            <app-empty *ngIf="messageList.length == 0 && !loading"></app-empty>
+          </div>
+        </div>
+      </ng-container>
+      <!-- h5 信息详情页面 -->
+      <ng-container *ngIf="isH5 && isShowSingleMsg">
+        <div class="single-message" [appLoading]="loading">
+          <div class="single-title">{{ singleMsg.title || '' }}</div>
+          <div class="single-date">{{ singleMsg.sendTime }}</div>
+          <div class="single-content" [innerHTML]="singleMsg.content | toHtmlElement"></div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #iconToolTips let-iconName="iconName" let-text="text" let-idx="idx" let-show="show">
+  <div class="right-container">
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="iconTiShiOrigin"
+      [cdkConnectedOverlayPositions]="webToolTipPosition"
+      [cdkConnectedOverlayOpen]="isH5 ? false : activeToolIdx === idx"
+    >
+      <div class="cdk-tooltip-info-notification">
+        <p class="cdk-text">{{ text }}</p>
+        <div class="cdk-tooltip-info-arrow"></div>
+      </div>
+    </ng-template>
+    <i
+      #icon
+      [class]="iconName"
+      cdkOverlayOrigin
+      #iconTiShiOrigin="cdkOverlayOrigin"
+      (mouseenter)="onShowTool(idx)"
+      (mouseleave)="onShowTool(-1)"
+      class="onact96-not"
+      (click)="idx === 0 ? jumpToPage('settings') : idx === 1 ? onReadMsg() : onShowBoard(icon)"
+    ></i>
+    <div class="board" *ngIf="idx === 2 && isShowBoard">
+      <p class="text onact96-not" (click)="onDeleteMsg()">{{ 'clear_all' | translate }}</p>
+      <p class="text text-mt-10" (click)="onHiddenReadedMsg()" *ngIf="isH5">
+        {{ data.isHiddenReadedMsg ? ('show_hide_read_noti' | translate) : ('hide_read_noti' | translate) }}
+      </p>
+    </div>
+  </div>
+</ng-template>

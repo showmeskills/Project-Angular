@@ -1,0 +1,77 @@
+<div class="content-box unit">
+  <div class="content-head">
+    <!-- 标题 -->
+    <ng-container *ngIf="title; else titleSkeleton">
+      <a [href]="domain + titleHref" (click)="clickTitle.emit(); $event.preventDefault()">
+        <span class="title mutual-opacity onact96">
+          <img *ngIf="titleIcon" [src]="titleIcon" />
+          <span> {{ title }}</span>
+        </span>
+      </a>
+    </ng-container>
+    <ng-template #titleSkeleton>
+      <div class="title skeleton-loading" style="width: 30%; height: 100%"></div>
+    </ng-template>
+    <ng-container *ngIf="data && data.length > 0; else arrowSkeleton">
+      <div class="arrow-group">
+        <!-- 上一页 -->
+        <div class="control-left onact96" [class.disable]="imgCarousel.isBeginning" (click)="imgCarousel.slidePrev()">
+          <i class="icon-arrow-bold-left"></i>
+        </div>
+        <!-- 下一页 -->
+        <div class="control-right onact96" [class.disable]="imgCarousel.isEnd" (click)="imgCarousel.slideNext()">
+          <i class="icon-arrow-bold-right"></i>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #arrowSkeleton>
+      <div class="arrow-group skeleton-loading" style="width: 20%; height: 100%"></div>
+    </ng-template>
+  </div>
+  <ng-content select="[name=under-header]"></ng-content>
+  <div class="content-body" #contentBody>
+    <app-img-carousel #imgCarousel [config]="imgCarouselConfig" [itemsData]="renderData() | sliceArray: row || 0">
+      <ng-template #carouselItemTpl let-item let-index="index">
+        <ng-container [ngSwitch]="for">
+          <ng-container *ngSwitchCase="'game'">
+            <!-- 多行显示 -->
+            <ng-container *ngIf="row && row > 1; else singleItem">
+              <div class="item-group">
+                <ng-container *ngFor="let subItem of item; let i = index">
+                  <app-game-unit
+                    [ratio]="ratio"
+                    [isProvider]="isProvider"
+                    [item]="subItem"
+                    [hasHover]="hasHover"
+                    [hasMask]="hasMask"
+                    (clickItem)="clickItem.emit($event)"
+                    (afterClickItem)="afterClickItem.emit()"
+                    [style.margin-top]="i == 0 ? '' : imgCarousel.spaceBetween - 20 + 'px'"
+                    (clickOnDisabled)="imgCarousel.isEnd ? imgCarousel.slidePrev() : imgCarousel.slideNext()"
+                  ></app-game-unit>
+                </ng-container>
+              </div>
+            </ng-container>
+            <!-- 单行 -->
+            <ng-template #singleItem>
+              <app-game-unit
+                [ratio]="ratio"
+                [isProvider]="isProvider"
+                [item]="item"
+                [hasHover]="hasHover"
+                [hasMask]="hasMask"
+                (clickItem)="clickItem.emit($event)"
+                (afterClickItem)="afterClickItem.emit()"
+                (clickOnDisabled)="imgCarousel.isEnd ? imgCarousel.slidePrev() : imgCarousel.slideNext()"
+              ></app-game-unit>
+            </ng-template>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'sport'">
+            <app-sport-unit [item]="item" [index]="index"></app-sport-unit>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </app-img-carousel>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<ng-template #sortIcon>
+  <span class="info-icon cursor-move">
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+  </span>
+</ng-template>
+
+<ng-template #modalTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'game.provider.notice' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'content.ba.ifDel' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+        {{ 'common.cancel' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c({ value: true })">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #itemTpl let-d>
+  <div class="flex-1 d-flex flex-ac text-list">
+    <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+    <div class="flex-1">
+      <div>ID</div>
+      <div>{{ d?.id }}</div>
+    </div>
+    <div class="text-box">{{ d?.title }}</div>
+    <div class="textimg-box">
+      <img class="ml-6 mr-4 rounded" nz-image [src]="d?.bannerUrl" alt="" />
+    </div>
+    <div class="text-box">{{ 'auManage.role.oper' | lang }}：{{ d?.createdUserName }}</div>
+    <div class="flex-1">
+      <div>{{ 'content.article.startedTime' | lang }}</div>
+      <div>{{ d?.startTime | timeFormat: 'YYYY-MM-DD HH:mm' }}</div>
+    </div>
+    <div class="flex-1">
+      <div>{{ 'content.article.endTime' | lang }}</div>
+      <div *ngIf="d.endTime === 0">{{ 'content.ba.longTime' | lang }}</div>
+      <div *ngIf="d.endTime !== 0">
+        {{ d.endTime | timeFormat: 'YYYY-MM-DD HH:mm' }}
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <div
+      class="cursor-pointer"
+      (click)="
+        router.navigate(['/content/banner-manage/edit'], {
+          queryParams: { id: d.id, tenantId }
+        })
+      "
+    >
+      <div *ngIf="d.isPublish" class="text-nowrap label label-inline label-light-success">
+        {{ 'content.info.yiFaBu' | lang }}
+      </div>
+      <div *ngIf="!d.isPublish" class="text-nowrap label label-inline label-light-warning">
+        {{ 'content.ba.noFaBu' | lang }}
+      </div>
+    </div>
+
+    <button class="btn-cube sm p-0 ml-4" type="button" (click)="onDel(modalTpl, d)">
+      <svg-icon [src]="'./assets/images/svg/admin-del.svg'" class="svg-icon svg-icon-2x"></svg-icon>
+    </button>
+  </div>
+</ng-template>
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex">
+      <ul class="statusList">
+        <li [class.active]="bannerType === 'App'" (click)="onLoadTab('App')">APP</li>
+        <li [class.active]="bannerType === 'Web'" (click)="onLoadTab('Web')">Web/H5</li>
+      </ul>
+    </div>
+    <div class="mt-8" *ngFor="let title of list; let key = index">
+      <div class="d-flex">
+        <h2 class="fz-20 mb-0 flex-1 fw-bolder">{{ typeLang[title.bannerPageType] }}</h2>
+        <button
+          type="button"
+          class="btn btn-light-primary d-flex flex-center lh-1n"
+          (click)="
+            router.navigate(['/content/banner-manage/add'], {
+              queryParams: {
+                bannerPageType: title.bannerPageType,
+                clientType: bannerType,
+                tenantId: tenantId
+              }
+            })
+          "
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+          <span>{{ 'content.ba.add' | lang }}</span>
+        </button>
+      </div>
+      <div class="mt-8" style="padding: 0 18px" cdkDropListGroup>
+        <div
+          [cdkDropListData]="item"
+          *ngFor="let item of title.banners; let i = index"
+          cdkDropList
+          (cdkDropListDropped)="drop($event, i, title.banners)"
+        >
+          <div cdkDrag class="item" [cdkDragData]="item">
+            <ng-container *ngTemplateOutlet="itemTpl; context: { $implicit: item }"></ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

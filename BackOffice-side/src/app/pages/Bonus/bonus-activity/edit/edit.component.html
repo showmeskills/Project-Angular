@@ -1,0 +1,725 @@
+<div class="d-flex w-100 justify-content-between align-items-center header-btn">
+  <div class="fz-20">
+    {{ 'bonus.activity.viewGive.activityTitle' | lang }}：{{ tepStatus.title || ('member.activity.noActive' | lang) }}
+  </div>
+
+  <div class="d-flex">
+    <span
+      class="btn btn-light-primary ml-6"
+      *ngIf="tepStatus.type === '2'"
+      [class.active]="curTab === 1"
+      (click)="onSeletedTab(1)"
+    >
+      <svg-icon [src]="'./assets/images/svg/admin-sign-up.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+      <span>{{ 'bonus.activity.applyDetail' | lang }}</span>
+    </span>
+    <span
+      class="btn btn-light-primary ml-6"
+      *ngIf="tepStatus.type === '2'"
+      [class.active]="curTab === 2"
+      (click)="onSeletedTab(2)"
+    >
+      <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+      <span>{{ 'bonus.activity.uploadList' | lang }}</span>
+    </span>
+    <span
+      class="btn btn-light-primary ml-6"
+      *ngIf="tepStatus.type === '2'"
+      [class.active]="curTab === 3"
+      (click)="onSeletedTab(3)"
+    >
+      <svg-icon [src]="'./assets/images/svg/person-border.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+      <span>{{ 'bonus.activity.listAudit' | lang }}</span>
+    </span>
+    <span class="btn btn-light-primary ml-6" [class.active]="curTab === 4" (click)="onSeletedTab(4)">
+      {{ 'bonus.activity.checkRelease' | lang }}
+    </span>
+  </div>
+</div>
+
+<!-- 报名详情 -->
+<div *ngIf="curTab === 1" class="card mt-8">
+  <div class="modal-header fz-20">{{ 'bonus.activity.applyDetail' | lang }}</div>
+
+  <div class="pl-8 pr-8 mt-8 pb-8" style="border-bottom: 1px solid #ebedf3">
+    <div class="d-flex flex-ac flex-wrap">
+      <form-row [label]="'bonus.activity.time' | lang" class="mr-8" [contentWidth]="264">
+        <ng-template>
+          <input
+            class="text-center form-control w-100"
+            type="text"
+            [placeholder]="'bonus.activity.selTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="time"
+            (dateTimeChange)="getSignUp(true)"
+          />
+
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+
+      <form-row label="UID" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="uid"
+            (keyup)="$event.keyCode === 13 && getSignUp(true)"
+          />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'bonus.activity.viewGive.vipLevel' | lang" label-width="95" class="mr-8" [contentWidth]="264">
+        <ng-template>
+          <mat-form-field [style.width.px]="264">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="selectedVipList"
+              [placeholder]="'bonus.activity.selVipLevel' | lang"
+              multiple
+            >
+              <mat-option *ngFor="let item of vipList" [value]="item.value">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <div class="btn-wrap py-2 mt-4">
+        <button class="c-btn c-btn-default" (click)="onReset(); getSignUp(true)">
+          {{ 'bonus.activity.reset' | lang }}
+        </button>
+        <button class="c-btn c-btn-primary" (click)="getSignUp(true)">{{ 'bonus.activity.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="d-flex justify-content-end">
+      {{ 'bonus.activity.applyAmount' | lang }}{{ (paginator.total | toFormatMoney) || '-' }}
+    </div>
+
+    <!-- table -->
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'bonus.activity.viewGive.vipLevel' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'bonus.activity.viewGive.releaseTime' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of signUpList; let i = index">
+            <td>
+              <span class="cell blue" (click)="onCopy(item.uid)">{{ item.uid || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.vipLevel | vipName }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.creatTime | timeFormat }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!signUpList.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="signUpList.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="getSignUp()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="getSignUp()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 上传名单 -->
+<div *ngIf="curTab === 2" class="card mt-8">
+  <div class="modal-header fz-20">{{ 'bonus.activity.uploadList' | lang }}</div>
+  <div class="upload-name">
+    <div class="upload-name-left">
+      <upload
+        style="flex: 0 0 600px; height: 80px; margin-right: 40px"
+        mark="file"
+        desc="Excel/xlsx"
+        [customUpload]="customUpload"
+        [accept]="['Excel', 'xlsx']"
+        [showLimitText]="false"
+        [limit]="2048"
+      ></upload>
+      <span class="download" (click)="downloadTemplate()">{{ 'member.coupon.model.downloadForm' | lang }}</span>
+    </div>
+
+    <!-- <div class="button-box">
+      <button class="c-btn c-btn-default mr-4">删除</button>
+      <button class="c-btn c-btn-primary">查看</button>
+    </div> -->
+  </div>
+
+  <div class="modal-body">
+    <!-- <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-light-primary submit-btn">
+        <span class="vam">提交数据</span>
+      </button>
+    </div> -->
+    <div class="d-flex justify-content-end">
+      <button
+        type="button"
+        class="btn btn-light-default submit-btn mr-4"
+        style="width: 98px; background: #f5f8fa"
+        (click)="deleteImport()"
+      >
+        <span class="vam">{{ 'bonus.activity.delete' | lang }}</span>
+      </button>
+      <button type="button" class="btn btn-light-primary submit-btn" style="width: 98px" (click)="submitImport()">
+        <span class="vam">{{ 'bonus.activity.subAll' | lang }}</span>
+      </button>
+    </div>
+    <table class="table mb-0" selectChildren>
+      <thead>
+        <tr class="text-nowrap">
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" selectGroup />
+                <span></span>
+              </label>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'bonus.uploadList.activityNo' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'bonus.uploadList.userUID' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.amount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.currency' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of uploadPageList">
+          <td>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" [(ngModel)]="item.checked" />
+                <span></span>
+              </label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.bonusActivitesNo }}</span>
+          </td>
+          <td>
+            <span class="cell blue" (click)="onCopy(item.userNo)">{{ item.userNo }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ (item.money | toFormatMoney) || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.moneyType }}<img class="ml-2" [currencyIcon]="item.moneyType" /></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!uploadPageList.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="uploadPageList.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="getUploadPageData()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="getUploadPageData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 名单审核 -->
+<div *ngIf="curTab === 3" class="card mt-8">
+  <div class="modal-header fz-20">{{ 'bonus.activity.listAudit' | lang }}</div>
+  <div class="upload-name">
+    <div class="upload-name-left">
+      <!-- <upload style="flex: 0 0 600px; height: 80px; margin-right: 40px;" mark="file" desc="Excel/xlsx" [customUpload]="customUpload"  [accept]="['Excel' ,'xlsx']"  [showLimitText]="false"></upload> -->
+      <div class="uploadBox">
+        <div class="uploadBox-content">
+          <!-- <span>21.2 KB</span> -->
+          <span>{{
+            examinePageList.length > 0 ? ('bonus.activity.auditFile' | lang) : ('bonus.activity.noFileReview' | lang)
+          }}</span>
+        </div>
+      </div>
+      <span class="download" (click)="downloadTemplate()">{{ 'member.coupon.model.downloadForm' | lang }}</span>
+    </div>
+
+    <!-- <button class="c-btn c-btn-primary">
+      <svg-icon [src]="'./assets/images/svg/export.svg'"  class="svg-icon svg-icon-2x5"></svg-icon>
+      <span class="ml-2">下载</span>
+    </button> -->
+  </div>
+
+  <div class="modal-body">
+    <div class="d-flex justify-content-end">
+      <button
+        type="button"
+        class="btn btn-light-default submit-btn mr-4"
+        style="width: 98px; background: #f5f8fa"
+        (click)="deleteAudit()"
+      >
+        <span class="vam">{{ 'bonus.activity.reject' | lang }}</span>
+      </button>
+      <button
+        type="button"
+        class="btn btn-light-primary submit-btn mr-4"
+        style="width: 98px"
+        (click)="SelectedAuditPass()"
+      >
+        <span class="vam">{{ 'bonus.activity.pass' | lang }}</span>
+      </button>
+      <button
+        type="button"
+        class="btn btn-light-primary submit-btn"
+        style="width: 98px"
+        (click)="confirm(confirmCheck)"
+      >
+        <span class="vam">{{ 'bonus.activity.allApprove' | lang }}</span>
+      </button>
+    </div>
+    <table class="table mb-0" selectChildren>
+      <thead>
+        <tr class="text-nowrap">
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" selectGroup />
+                <span></span>
+              </label>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'bonus.uploadList.activityNo' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'bonus.uploadList.userUID' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.amount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'budget.currency' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of examinePageList">
+          <td>
+            <span class="cell">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" [(ngModel)]="item.checked" />
+                <span></span>
+              </label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.bonusActivitesNo }}</span>
+          </td>
+          <td>
+            <span class="cell blue" (click)="onCopy(item.userNo)">{{ item.userNo }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ (item.money | toFormatMoney) || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.moneyType }}<img class="ml-2" [currencyIcon]="item.moneyType" /></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!examinePageList.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="examinePageList.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="getExaminePageData()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="getExaminePageData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 发放查看 -->
+<div *ngIf="curTab === 4" class="card mt-8">
+  <div class="modal-header fz-20">{{ 'bonus.activity.viewGive.releaseView' | lang }}</div>
+
+  <div class="pl-8 pr-8 mt-8 pb-8" style="border-bottom: 1px solid #ebedf3">
+    <div class="d-flex flex-ac flex-wrap">
+      <!--   <form-row label="申请时间" label-width="106" class="mr-16">
+        <ng-template>
+          <div class="d-flex">
+            <input
+              class="form-control text-center"
+              type="text"
+              selectMode="rangeFrom"
+              placeholder="开始时间"
+              [style.width.px]="148"
+              [owlDateTime]="timeStart"
+              [owlDateTimeTrigger]="timeStart"
+              [(ngModel)]="time"
+            />
+            <owl-date-time class="fz-20" #timeStart></owl-date-time>
+
+            <div class="date-line lh-42"></div>
+
+            <input
+              class="form-control text-center"
+              type="text"
+              selectMode="rangeTo"
+              placeholder="结束时间"
+              [style.width.px]="148"
+              [owlDateTime]="timeEnd"
+              [owlDateTimeTrigger]="timeEnd"
+              [(ngModel)]="time"
+              (dateTimeChange)="getGiveOut(true)"
+            />
+            <owl-date-time class="fz-20" #timeEnd></owl-date-time>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <form-row label="UID" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="uid"
+            (keyup)="$event.keyCode === 13 && getGiveOut(true)"
+          />
+        </ng-template>
+      </form-row>
+
+      <form-row label="红利单号" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="oddNumbers"
+            (keyup)="$event.keyCode === 13 && getGiveOut(true)"
+          />
+        </ng-template>
+      </form-row> -->
+
+      <form-row [label]="'bonus.activity.viewGive.releaseTime' | lang" class="mr-8" [contentWidth]="264">
+        <ng-template>
+          <input
+            class="text-center form-control w-100"
+            type="text"
+            [placeholder]="'member.giveOut.deliveryTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="grantTime"
+            (dateTimeChange)="getGiveOut(true)"
+          />
+
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'member.giveOut.pickTime' | lang" class="mr-8" [contentWidth]="264">
+        <ng-template>
+          <input
+            class="text-center form-control w-100 disabled"
+            type="text"
+            [placeholder]="'bonus.activity.disableSelTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="applyTime"
+            (dateTimeChange)="getGiveOut(true)"
+          />
+
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+
+      <form-row label="UID" class="mr-8" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="uid"
+            (keyup)="$event.keyCode === 13 && getGiveOut(true)"
+          />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'bonus.activity.viewGive.bonusNum' | lang" class="mr-8" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="oddNumbers"
+            (keyup)="$event.keyCode === 13 && getGiveOut(true)"
+          />
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'bonus.activity.viewGive.vipLevel' | lang" label-width="95" class="mr-8" [contentWidth]="264">
+        <ng-template>
+          <mat-form-field [style.width.px]="264">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="selectedVipList"
+              [placeholder]="'bonus.activity.selVipLevel' | lang"
+              multiple
+            >
+              <mat-option *ngFor="let item of vipList" [value]="item.value">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'bonus.activity.status' | lang" label-width="95" class="mr-8" [contentWidth]="264">
+        <ng-template>
+          <mat-form-field>
+            <mat-select class="form-control" [(ngModel)]="releaseStatus" (selectionChange)="getGiveOut(true)">
+              <mat-option value="">{{ 'bonus.activity.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of releaseStatusList" [value]="item.value">
+                {{ item.lang | lang }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <div class="btn-wrap py-2 mt-4">
+        <button class="c-btn c-btn-default" (click)="onReset(); getGiveOut(true)">
+          {{ 'bonus.activity.reset' | lang }}
+        </button>
+        <button class="c-btn c-btn-primary" (click)="getGiveOut(true)">{{ 'bonus.activity.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <!-- <div class="d-flex justify-content-end">
+      总计金额：99999999.99999999 ¥
+    </div> -->
+
+    <!-- table -->
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <!-- <th><span class="cell">活动编号</span></th> -->
+            <th>
+              <span class="cell">{{ 'bonus.activity.viewGive.activityTitle' | lang }}</span>
+            </th>
+            <th><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'bonus.activity.viewGive.vipLevel' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'bonus.activity.viewGive.bonusNum' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.IssuanceType' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'budget.amount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'bonus.activity.viewGive.releaseTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.completeness' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of giveOutList; let i = index">
+            <!-- <td><span class="cell">{{ item.bonusActivitesNo || '-' }}</span></td> -->
+            <td>
+              <span class="cell">{{ bonusService.activityLang(item.bonusActivitesNo) | lang }}</span>
+            </td>
+            <td>
+              <span class="cell blue" (click)="onCopy(item.userNo)">{{ item.userNo || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.vipLevel | vipName }}</span>
+            </td>
+            <td>
+              <span class="cell blue" (click)="onCopy(item.bonusNo)">{{ item.bonusNo || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                {{
+                  item.releaseType === 1 ? ('member.coupon.model.cashCoup' | lang) : ('member.giveOut.coupon' | lang)
+                }}
+              </span>
+            </td>
+            <td>
+              <span class="cell"
+                >{{ (item.money | toFormatMoney) || '-' }}<img class="ml-2" [currencyIcon]="item.moneyType"
+              /></span>
+            </td>
+            <td>
+              <span class="cell">{{ item.releaseTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ getReleaseStatus(item.releaseStatus) | lang }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!giveOutList.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="giveOutList.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="getGiveOut()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="getGiveOut()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #confirmCheck let-d="dismiss" let-c="close">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'member.overview.userActivity.withdraw.passed' | lang }}</div>
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'bonus.activity.ifApproveAll' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'bonus.activity.no' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true); passImport()">
+        {{ 'bonus.activity.yes' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>

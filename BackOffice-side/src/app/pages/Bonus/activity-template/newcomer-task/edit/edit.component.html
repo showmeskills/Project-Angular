@@ -1,0 +1,163 @@
+<form-row class="my-8" [label]="'luckRoulette.depStu' | lang" label-width="120" required [class.disabled]="isReadonly">
+  <ng-template>
+    <div class="d-flex flex-ac">
+      <label class="mr-5">{{ 'member.activity.sencli2.minimumDeposit' | lang }}</label>
+      <form-wrap [style.width.px]="120">
+        <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="minimumDeposit" />
+        <span suffix class="color-aaa fz-14">USDT</span>
+      </form-wrap>
+    </div>
+  </ng-template>
+</form-row>
+
+<div class="mb-10">
+  <div class="d-flex flex-ac mb-3">
+    <div class="fz-20 mr-2">{{ 'member.activity.sencli3.welfare' | lang }}</div>
+    <div>({{ 'member.activity.sencli3.tips' | lang }})</div>
+  </div>
+  <div class="text-danger">*{{ 'member.activity.sencli3.limit' | lang }}。</div>
+</div>
+
+<div class="w-100 px-10 bonus-box">
+  <div class="bonus-item" *ngFor="let items of prizeList; let i = index">
+    <!-- 勾选/奖励次数 -->
+    <div class="d-flex flex-ac" [class.disabled]="isReadonly">
+      <label class="checkbox checkbox-lg h42">
+        <input type="checkbox" [(ngModel)]="items.isChoose" />
+        <span class="mr-5"></span>
+        <!-- <div class="fz-16 color-222 fw-bolder">{{ items.name }}</div> -->
+      </label>
+      <div class="d-flex flex-ac">
+        <div class="color-aaa">{{ 'member.activity.sencli2.numberRewards' | lang }}</div>
+        <form-wrap [style.width.px]="130" class="mx-8">
+          <div
+            class="d-flex flex-ac h26 pr-4"
+            style="border-right: 1px solid #e6edf1"
+            (click)="onPrizeTimesEdit('cut', i)"
+          >
+            <svg-icon [src]="'./assets/images/svg/sub.svg'" class="svg-icon svg-icon-xl text-primary"></svg-icon>
+          </div>
+          <input
+            class="form-control text-center color-222"
+            autocomplete="off"
+            type="text"
+            [(ngModel)]="items.number"
+            [disabled]="true"
+          />
+          <div
+            class="d-flex flex-ac h26 pl-4"
+            style="border-left: 1px solid #e6edf1"
+            (click)="onPrizeTimesEdit('add', i)"
+          >
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl text-primary"></svg-icon>
+          </div>
+        </form-wrap>
+        <div class="color-aaa">（{{ 'member.activity.sencliCommon.mostTimes' | lang: { n: 3 } }}）</div>
+      </div>
+      <label class="radio radio-lg radio-success ml-8 fz-16" *ngIf="items.isChoose">
+        <input
+          type="radio"
+          name="isDefault"
+          [value]="items.prizeCode"
+          [(ngModel)]="selectDefault"
+          [disabled]="!items.isChoose"
+        />
+        <span class="mr-4"></span>{{ 'member.activity.sencli3.isDefault' | lang }}
+      </label>
+    </div>
+    <!-- 多语言 -->
+    <lang-tab
+      class="my-4"
+      [(value)]="items.lang.languageCode"
+      (languageChange)="updateLanguage($event, items)"
+      [edit]="!isReadonly"
+    >
+      <ng-template let-i="i" let-current="current">
+        <!-- 福利名称 -->
+        <form-row class="mb-8" [class.disabled]="isReadonly" required label-width="200" [label]="'common.title' | lang">
+          <ng-template>
+            <input [(ngModel)]="items.lang.data[i].content.title" class="form-control" type="text" />
+          </ng-template>
+        </form-row>
+        <!-- 奖品简称 -->
+        <form-row
+          class="mb-8"
+          [class.disabled]="isReadonly"
+          required
+          label-width="200"
+          [label]="'member.activity.prizeCommon.prizeEditSimpleName' | lang"
+        >
+          <ng-template>
+            <input [(ngModel)]="items.lang.data[i].content.prizeName" class="form-control" type="text" />
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+    <!-- 设定 -->
+    <form-row class="mb-5" [label]="'member.management.setup' | lang" label-width="200" [class.disabled]="isReadonly">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap mb-5" *ngFor="let item of items.prizeItems; let j = index">
+          <div class="d-flex flex-ac">
+            <div class="fz-16 color-aaa mr-4 d-flex flex-ac">
+              <div [style.width.px]="32">
+                {{ j === 0 ? ('member.activity.sencli2.fisrt' | lang) : j + 1 + ('luckRoulette.times' | lang) }}
+              </div>
+              ：
+            </div>
+
+            <div class="fz-16 mr-4 d-flex" *ngIf="item.prizeId">
+              {{ item.prizeName }}
+              ({{ item | prizeConfig }})
+              <div class="text-danger ml-2" *ngIf="item.status !== 2">({{ getPrizeSatus(item.status) | lang }})</div>
+            </div>
+
+            <!-- 上限金额 -->
+            <div class="d-flex flex-ac mr-5" *ngIf="item?.amountType === 2">
+              （{{ 'member.activity.prizeCommon.capAmount' | lang }}：
+              {{ item.rateLimit }}
+              <img [currencyIcon]="item.currency" currencySize="20" class="mx-2" />
+              {{ item.currency }}）
+            </div>
+
+            <button type="button" class="btn btn-light-primary py-3" (click)="onPrizeEdit(i, j)">
+              <svg-icon
+                class="vam svg-icon lh-18"
+                [src]="item.prizeId ? './assets/images/svg/pen.svg' : './assets/images/svg/add.svg'"
+              ></svg-icon>
+              <span class="vam">{{
+                (item.prizeId ? 'auManage.role.chnage' : 'member.activity.sencli2.addPrize') | lang
+              }}</span>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+</div>
+
+<div class="pt-10 flex-center btn-wrap" *ngIf="!isReadonly; else showFooterBtnTpl">
+  <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'luckRoulette.lastStep' | lang }}</button>
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ 'luckRoulette.submit' | lang }}
+  </button>
+</div>
+
+<ng-template #showFooterBtnTpl>
+  <div class="pt-10 btn-wrap flex-center">
+    <button type="button" class="c-btn btn btn-light" (click)="jump('qualifications')">
+      {{ 'luckRoulette.lastStep' | lang }}
+    </button>
+    <button
+      type="button"
+      class="c-btn btn btn-primary"
+      (click)="router.navigate(['/bonus/activity-manage/NewUser' || ''])"
+    >
+      {{ 'common.back' | lang }}
+    </button>
+  </div>
+</ng-template>

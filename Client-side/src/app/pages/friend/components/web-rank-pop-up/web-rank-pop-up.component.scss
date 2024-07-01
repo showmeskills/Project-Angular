@@ -1,0 +1,206 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+::ng-deep {
+  .rank-dialog-container {
+    .mat-mdc-dialog-container {
+      border-radius: 18px;
+    }
+  }
+
+  .clearfix {
+    .empty {
+      margin: 0;
+      padding-top: 80px;
+    }
+  }
+}
+
+.usdt-img {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+.text-30 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #1e2329; // 设计表示页面不用切换白色
+
+  @media (max-width: 767px) {
+    font-size: 28px;
+  }
+}
+
+.h5-width {
+  @media (max-width: 767px) {
+    width: 150px;
+    line-height: 1.48;
+  }
+}
+
+.width-16 {
+  width: 16px;
+}
+
+.text-14-gray {
+  font-size: 14px;
+  color: #707a8a; // 设计表示页面不用切换白色
+
+  @media (max-width: 767px) {
+    color: #1e2329; // 设计表示页面不用切换白色
+  }
+}
+
+.text-14 {
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.font-active {
+  font-weight: 600;
+}
+
+.usdt {
+  display: flex;
+  align-items: center;
+  @include polyfills.flex-gap(10px, 'row nowrap');
+}
+
+.badge-uid {
+  display: flex;
+  align-items: center;
+}
+
+.m-left-50 {
+  margin-left: 50px;
+
+  @media (max-width: 767px) {
+    margin-left: 20px;
+  }
+}
+
+.rank-container {
+  width: 540px;
+  overflow: hidden;
+  border-radius: 18px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    border-radius: 0;
+  }
+}
+
+.rank-header {
+  padding: 30px;
+  background: url(src/assets/images/friend/top-recommender/top-recommender.jpg) no-repeat center;
+
+  @media (max-width: 767px) {
+    padding: 40px 20px 30px 20px;
+  }
+
+  .icon-close-simple {
+    font-size: 20px;
+    z-index: 3;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    color: var(--text-color);
+
+    &:host-context(.dark) & {
+      &::before {
+        color: #fff;
+      }
+    }
+  }
+
+  .header-text {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100px;
+    @include polyfills.flex-gap(12px, 'column nowrap');
+
+    @media (max-width: 767px) {
+      height: 110px;
+    }
+  }
+}
+
+.rank-list-container {
+  margin-top: -20px;
+
+  .rank-list {
+    width: 100%;
+    border-radius: 18px;
+    position: relative;
+    z-index: 3;
+    background-color: var(--page-bg-color);
+    padding: 15px 20px;
+    min-height: 550px;
+
+    @media (max-width: 767px) {
+      padding: 20px;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .list-container {
+      margin-top: 20px;
+      height: 420px;
+      overflow: hidden;
+      position: relative;
+
+      @media (max-width: 767px) {
+        min-height: 561px;
+        height: unset;
+        border-top: 1px solid var(--default-border-color);
+      }
+
+      .list-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+
+        @media (max-width: 767px) {
+          padding: 20px 0;
+        }
+
+        .avatar {
+          border-radius: 50%;
+        }
+
+        &:nth-child(odd) {
+          background-color: var(--bg-color-20);
+
+          @media (max-width: 767px) {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+  }
+
+  .list-top {
+    display: flex;
+
+    ::ng-deep {
+      customize-button {
+        margin-right: 20px !important;
+      }
+    }
+  }
+}
+
+.img-size-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}

@@ -1,0 +1,82 @@
+<div class="page-container">
+  <app-header-title-bar [title]="pagetitle" (clickTitle)="back()"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <ng-container [ngSwitch]="orderStep">
+        <!--解除绑定 表单验证-->
+        <ng-container *ngSwitchCase="1">
+          <div class="form-clonum">
+            <div class="form-group">
+              <app-customize-input
+                [type]="'password'"
+                [size]="'large'"
+                [label]="'password_text' | translate"
+                #iPwd
+                [error]="!!password && !$any(iPwd).isValidd"
+                (onChange)="onPasswordInput(iPwd)"
+                [(value)]="password"
+                (onFocus)="onFocus(iPwd)"
+                (onBlur)="onBlur(iPwd)"
+              >
+                <i
+                  class="onact96-not"
+                  right-content
+                  [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+                  (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+                ></i>
+              </app-customize-input>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg">
+                {{ 'enter_pwd' | translate }}
+              </div>
+            </div>
+            <div class="form-group" *ngIf="isBindMobile">
+              <!--otp验证-->
+              <app-verify-code
+                [otpType]="otpType"
+                [inputLabel]="'p_code' | translate"
+                [authStatus]="authStatus"
+                [phone]="phone"
+                [tips]="
+                  ('enter_phone' | translate) +
+                  userAccountInfor.areaCode +
+                  ' ' +
+                  userAccountInfor.mobile +
+                  ('ver_code' | translate)
+                "
+                (onChangeAuthStatus)="onfirstSendAuthcode()"
+                (verfityInputSuccess)="onOtpCode($event)"
+                (keyup.enter)="checkToSubmit()"
+              >
+              </app-verify-code>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg" *ngIf="!!showErrorText">
+                {{ showErrorText }}
+              </div>
+            </div>
+            <customize-button
+              class="unbound-btn"
+              width="100%"
+              type="primary"
+              size="large"
+              [disabled]="!canSubmit()"
+              (onClick)="handleSubmit(false)"
+              >{{ 'unbinding_button' | translate }}</customize-button
+            >
+          </div>
+        </ng-container>
+        <!--解除绑定 成功-->
+        <ng-container *ngSwitchCase="2">
+          <div class="form-clonum">
+            <div class="form-group">
+              <app-success-verification [header]="doneHeader" [successText]="successText"></app-success-verification>
+              <customize-button class="back-btn" type="primary" size="large" width="100%" (onClick)="handleback()">
+                {{ 'back' | translate }}</customize-button
+              >
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>

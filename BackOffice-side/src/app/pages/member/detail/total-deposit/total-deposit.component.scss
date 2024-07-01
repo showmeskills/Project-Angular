@@ -1,0 +1,55 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex-flow: column nowrap;
+
+  main {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.plane-item {
+  background: #f5faff;
+  border-radius: 6px;
+  height: 74px;
+  padding-left: 16px;
+  padding-right: 16px;
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  margin: 0 8px 16px;
+
+  &-wrap {
+    margin: 0 -8px;
+  }
+
+  cite {
+    font-style: normal;
+    font-size: 16px;
+    margin-top: 8px;
+  }
+
+  &.empty {
+    height: 0;
+    width: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.total {
+  gap: 16px;
+  .item {
+    width: auto;
+    height: 74px;
+    background: #f5faff;
+    border-radius: 6px;
+
+    justify-content: center;
+    align-items: flex-start;
+  }
+}

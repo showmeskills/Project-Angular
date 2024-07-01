@@ -1,0 +1,46 @@
+<div class="fz-20 lh-24 py-9 info-title mx-4">{{ 'session.memberInfo' | lang }}</div>
+
+<div class="dashed-top-eee mx-4 pb-4">
+  <div class="d-flex flex-ac flex-wrap pt-8 lh-30">
+    <img class="rounded-2" [src]="sessionService.curSession?.avatar" alt="" width="20" height="20" />
+    <!-- <svg-icon [src]="'./assets/images/svg/platform/mac-web.svg'" class="fz-0 svg-icon svg-icon-20"></svg-icon>-->
+
+    <span class="ml-8">{{ sessionService.curSession?.uid || '-' }}</span>
+    <span class="ml-8 flex-1 info-base-content">{{ sessionService.curSession?.name || '-' }}</span>
+  </div>
+  <!-- 主题分类 -->
+  <div class="category-wrap">
+    <ng-container *ngIf="sessionService.curTopicCategory && sessionService.curTopic">
+      <topic-label [pointer]="false" [data]="sessionService.curTopicCategory" />
+      <span class="color-999"> / </span>
+      <topic-label [pointer]="false" [data]="sessionService.curTopic" />
+    </ng-container>
+  </div>
+</div>
+
+<div class="tabs dashed-top-eee mx-4" *ngIf="tabList && tabList.length > 0">
+  <div
+    class="tabs-item"
+    *ngFor="let item of tabList; let index = index"
+    [class.active]="item.value === currentTab"
+    (click)="currentTab = item.value"
+  >
+    <div class="tabs-item-name">{{ item.lang | lang }}</div>
+  </div>
+</div>
+
+<div class="py-10 px-4 flex-1 min-h-0 custom-scroll-y" [ngSwitch]="currentTab">
+  <!-- 会员信息 -->
+  <div class="color-999" *ngSwitchCase="2">
+    <div class="lh-40 d-flex">
+      <div class="info-base-title">UID</div>
+      <div class="info-base-content">{{ sessionService.curSession?.uid || '-' }}</div>
+    </div>
+    <div class="lh-40 d-flex">
+      <div class="info-base-title">Name</div>
+      <div class="info-base-content">{{ sessionService.curSession?.name || '-' }}</div>
+    </div>
+  </div>
+
+  <empty *ngSwitchDefault [style.height.%]="100"></empty>
+</div>

@@ -1,0 +1,66 @@
+<div class="sow-docs" *ngIf="kycAdvanced">
+  <div class="sow-content">
+    <ng-container *ngFor="let item of kycAdvanced.document | keyvalue">
+      <ng-container *ngIf="item.key !== 'moneySources'">
+        <div class="sow-docs-title" *ngIf="item.value.length > 0">
+          <p class="icon-toast-success" *ngIf="kycAdvanced.status === 'Finish'"></p>
+          <p class="poa-id-title">
+            {{ (kycUtils.userDocuments[item.key] ? kycUtils.userDocuments[item.key].label : '') | translate }} :
+          </p>
+          <ng-template *ngTemplateOutlet="btnTemplate; context: { status: kycAdvanced.status }"></ng-template>
+        </div>
+        <div class="sow-details" *ngIf="item.value.length > 0">
+          <ng-container *ngFor="let img of item.value">
+            <p class="pic-name">{{ getPicName(img) }}</p>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<div class="sow-docs" *ngIf="sow">
+  <div class="sow-content">
+    <div class="sow-btn">
+      <p>{{ 'proof_wealth' | translate }}:</p>
+      <ng-template *ngTemplateOutlet="btnTemplate; context: { status: sow.status }"></ng-template>
+    </div>
+    <ng-container *ngIf="sow.document">
+      <ng-container *ngFor="let item of sow.document | keyvalue">
+        <div class="sow-docs-title" *ngIf="item.value.length > 0">
+          <p class="icon-toast-success" *ngIf="sow.status === 'Finish'"></p>
+          <p class="poa-id-title">
+            {{ (kycUtils.userDocuments[item.key] ? kycUtils.userDocuments[item.key].label : '') | translate }}:
+          </p>
+        </div>
+        <div class="sow-details" *ngIf="item.value.length > 0">
+          <ng-container *ngFor="let img of item.value">
+            <p class="pic-name">{{ getPicName(img) }}</p>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #btnTemplate let-status="status">
+  <div class="uplod-click">
+    <p
+      [class.success]="status === 'Finish'"
+      [class.pending]="status === 'Pending'"
+      [class.decent]="status === 'Normal' || status === 'Rejected'"
+    >
+      <ng-container *ngIf="status === 'Finish'"> ({{ 'app_approved' | translate }})</ng-container>
+      <ng-container *ngIf="status === 'Pending'"> ({{ 'pending_review' | translate }})</ng-container>
+      <ng-container *ngIf="status === 'Normal'"> ({{ 'click_upload' | translate }}) </ng-container>
+      <ng-container *ngIf="status === 'Rejected'"> ({{ 'app_declined' | translate }}) </ng-container>
+    </p>
+    <div
+      class="upload-btn mutual-opacity onact96"
+      *ngIf="status === 'Normal' || status === 'Rejected'"
+      (click)="handleUploadDocs()"
+    >
+      <i class="icon-exit"></i>
+    </div>
+  </div>
+</ng-template>

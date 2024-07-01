@@ -1,0 +1,267 @@
+<div class="card px-12 py-10 my-8">
+  <div class="d-flex flex-ac justify-content-between">
+    <span class="d-flex align-items-center"
+      >{{ 'member.detail.nonsticky.players' | lang }} {{ list?.exchangeQuantity }}</span
+    >
+    <span *ngIf="!this?.tmpCode" class="d-flex align-items-center"
+      >{{ 'member.detail.nonsticky.totalDeposit' | lang }} {{ list?.totalDepositAmount | currencyValue: 'USDT' }}
+      <img [currencyIcon]="'USDT'" currencySize="18" class="ml-2"
+    /></span>
+    <span class="d-flex align-items-center"
+      >{{ 'member.detail.nonsticky.lostReward' | lang }} {{ list?.totalLostAmount | currencyValue: 'USDT' }}
+      <img [currencyIcon]="'USDT'" currencySize="18" class="ml-2" />
+    </span>
+    <span *ngIf="this?.tmpCode"></span>
+  </div>
+</div>
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 活动名称 -->
+    <form-row
+      *ngIf="!this?.tmpCode"
+      [label]="'member.activity.sencliCommon.eventName' | lang"
+      class="mr-8"
+      [contentWidth]="200"
+    >
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.title"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row label="UID" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 发放时间 -->
+    <form-row [label]="'member.giveOut.IssuanceTime' | lang" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.giveOut.deliveryTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'member.giveOut.title' | lang }}</div>
+
+    <div>
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead sticky>
+        <tr>
+          <!-- 奖品名称 -->
+          <th *ngIf="!this?.tmpCode">
+            <span class="cell">{{ 'member.detail.nonsticky.prizeName' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">
+              <!-- <span class="cursor-pointer" (click)="onSort()"> -->
+              <span>UID</span>
+              <!-- <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="data.order === 'uid' && data.isAsc"></div>
+                  <div class="triangle-down" [class.active]="data.order === 'uid' && !data.isAsc"></div>
+                </span>
+              </span> -->
+            </span>
+          </th>
+          <!-- 奖品类型 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.drawRecord.prizeType' | lang }}</span>
+          </th>
+          <!-- 活动名称 -->
+          <th *ngIf="!this?.tmpCode">
+            <span class="cell">{{ 'member.activity.sencliCommon.eventName' | lang }}</span>
+          </th>
+          <!-- 金额 -->
+          <th>
+            <span class="cell">{{ 'common.amount' | lang }}</span>
+          </th>
+          <!-- 状态 -->
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+          <!-- 发放时间 -->
+          <th>
+            <span class="cell">{{ 'member.giveOut.IssuanceTime' | lang }}</span>
+          </th>
+          <!-- 持续时间 -->
+          <th>
+            <span class="cell">{{ 'member.detail.nonsticky.duration' | lang }}</span>
+          </th>
+          <!-- 存款金额 -->
+          <th *ngIf="!this?.tmpCode">
+            <span class="cell">{{ 'member.detail.nonsticky.depositAmount' | lang }}</span>
+          </th>
+          <!-- 是否损失奖金资金 -->
+          <th>
+            <span class="cell">{{ 'member.detail.nonsticky.lbf' | lang }}</span>
+          </th>
+          <!-- 已投注进度 -->
+          <th>
+            <span class="cell">{{ 'member.detail.nonsticky.wp' | lang }}</span>
+          </th>
+          <!-- 奖金流水金额 -->
+          <th>
+            <span class="cell">{{ 'member.detail.nonsticky.bta' | lang }}</span>
+          </th>
+          <!-- 下次次数/投注要求次数 -->
+          <th>
+            <span class="cell">{{ 'member.detail.nonsticky.nextCount' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list?.list; let i = index">
+          <!-- 奖品名称 -->
+          <td *ngIf="!this?.tmpCode">
+            <span class="cell">{{ item?.prizeName }}</span>
+          </td>
+          <!-- uid -->
+          <td>
+            <span class="cell blue" (click)="onCopy(item?.uid)">{{ item?.uid || '-' }}</span>
+          </td>
+          <!-- 奖品类型 -->
+          <td>
+            <span class="cell">{{ item?.prizeTypeDesc }}</span>
+          </td>
+          <!-- 活动名称 -->
+          <td *ngIf="!this?.tmpCode">
+            <span class="cell">{{ item?.activityName || '-' }}</span>
+          </td>
+          <!-- 金额 -->
+          <td>
+            <span class="cell"
+              >{{ item?.amount | currencyValue: item?.currency }}
+              <img [currencyIcon]="item?.currency" currencySize="18" class="ml-1"
+            /></span>
+          </td>
+          <!-- 状态 -->
+          <td>
+            <span class="cell">{{ item?.statusDesc || '-' }}</span>
+          </td>
+          <!-- 发放时间 -->
+          <td>
+            <span class="cell">{{ item?.sendTime | timeFormat }}</span>
+          </td>
+          <!-- 持续时间 -->
+          <td>
+            <div class="cell d-flex flex-column" *ngIf="item?.isActivated">
+              <span>{{ item?.beginTime | timeFormat }}</span>
+              <span>{{ item?.endTime | timeFormat }}</span>
+            </div>
+            <span class="cell" *ngIf="!item?.isActivated"
+              >{{ item?.durationDays || '-' }}{{ 'common.day' | lang }}</span
+            >
+          </td>
+          <!-- 存款金额 -->
+          <td *ngIf="!this?.tmpCode">
+            <span class="cell"
+              >{{ item?.depositAmount | currencyValue: item.currency }}
+              <img [currencyIcon]="item.currency" currencySize="18" class="ml-1"
+            /></span>
+          </td>
+          <!-- 是否损失奖金资金 -->
+          <td>
+            <span class="cell" *ngIf="item.lostAmount"
+              >{{ 'common.yes' | lang }}，{{ item?.lostAmount | currencyValue: item.currency }}
+              <img [currencyIcon]="item.currency" currencySize="18" class="ml-1"
+            /></span>
+            <span class="cell" *ngIf="!item.lostAmount">{{ 'common.no' | lang }}</span>
+          </td>
+          <!-- 已投注进度 -->
+          <td>
+            <span class="cell">{{ item?.betProgress }}%</span>
+          </td>
+          <!-- 奖金流水金额 -->
+          <td>
+            <span class="cell"
+              >{{ item?.currentBetTurnover | currencyValue: item.currency
+              }}<img [currencyIcon]="item.currency" currencySize="18" class="ml-1"
+            /></span>
+          </td>
+          <!-- 下次次数/投注要求次数 -->
+          <td>
+            <span class="cell">{{ item?.betCount || '-' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list?.list?.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list?.list?.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

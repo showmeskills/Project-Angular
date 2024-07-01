@@ -1,0 +1,30 @@
+<div class="page-container page">
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container top-nav">
+      <p class="page-title">{{ navTitle | translate }}</p>
+      <!-- <div class="nav-container">
+        <p class="nav-item mutual-opacity onact96-not" *ngFor="let item of navList" (click)="commingSoon()">
+          {{ item | translate }}
+        </p>
+      </div> -->
+      <p class="empty"></p>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <!-- <div class="main-container mid-container web-footer unity-padding-h5-16">
+    <img
+      class="mid-banner footer-banner"
+      *ngIf="!isH5"
+      src="assets/images/responsible-gambling/mid-bottom-bg.svg"
+      alt=""
+      lazy="loading"
+    />
+    <div class="container footer unity-padding-web">
+      <p class="footer-item mutual-opacity onact96-not" *ngFor="let item of footerList" (click)="commingSoon()">
+        {{ item | translate }}
+      </p>
+    </div>
+  </div> -->
+</div>

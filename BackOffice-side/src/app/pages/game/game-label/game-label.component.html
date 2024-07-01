@@ -1,0 +1,448 @@
+<ng-template #sortIcon>
+  <span class="info-icon cursor-move">
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+  </span>
+</ng-template>
+
+<div class="main">
+  <div class="name">{{ 'game.provider.game_label_list' | lang }}</div>
+  <div class="w-100 d-flex">
+    <label class="mr-0 mb-0 label-title">{{ 'game.provider.label_manage' | lang }}</label>
+    <div class="w-100 label-box">
+      <div class="item" *ngFor="let item of list" (click)="openAddEditPopup(editLabeldPopup, item.id)">
+        <img [src]="item.iconAddress + item.icon" width="18" height="18" />
+        <p>{{ item.name }}</p>
+      </div>
+      <div
+        class="d-flex flex-center px-8 btn btn-light btn-hover-primary mb-8 w-auto h-auto"
+        (click)="openAddEditPopup(editLabeldPopup, '')"
+      >
+        <svg-icon class="vam btn-icon" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        <span class="text-nowrap ml-2 vam fz-16">{{ 'game.provider.now_adds' | lang }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-100 d-flex mt-15 mb-5">
+    <label class="mr-0 mb-0 label-title">{{ 'game.provider.languageSorting' | lang }}</label>
+  </div>
+
+  <lang-tab class="mr-10 mb-4 w-100" [(value)]="languageCodes" (languageChange)="updateLanguage($event)">
+    <ng-template let-index="i" let-current="current">
+      <!-- 首页标签： -->
+      <div class="w-100 d-flex mt-15">
+        <label class="mr-0 mb-0 label-title">{{ 'game.provider.home_label' | lang }}</label>
+        <div
+          class="w-100 label-box hall-label-box"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event, 'front', index)"
+        >
+          <div
+            *ngFor="let item of contentList[index]?.frontPageList; let i = index"
+            cdkDrag
+            class="game-label-list-item"
+          >
+            <img [src]="item.iconAddress + item.icon" width="18" height="18" />
+            <p>{{ item.name }}</p>
+            <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-edit.svg'"
+              class="svg-icon svg-icon-2x"
+              (click)="onEdit(item, true, contentList[index]?.frontPageList)"
+            ></svg-icon>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-del.svg'"
+              class="svg-icon svg-icon-2x"
+              (click)="onDelLabel(i, 'front', index)"
+            ></svg-icon>
+          </div>
+          <div class="addHall" (click)="openAddLabelPopup(addLabelPoup, 'front', index)">
+            <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- 大厅横栏标签： -->
+      <div class="w-100 d-flex mt-15">
+        <label class="mr-0 mb-0 label-title">{{ 'game.provider.lobby_list_label' | lang }}</label>
+        <div
+          class="w-100 label-box hall-label-box"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event, 'hallBarl', index)"
+        >
+          <div
+            *ngFor="let item of contentList[index]?.hallBarLabelList; let i = index"
+            cdkDrag
+            class="game-label-list-item"
+          >
+            <img [src]="item.iconAddress + item.icon" width="18" height="18" />
+            <p>{{ item.name }}</p>
+            <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-del.svg'"
+              class="svg-icon svg-icon-2x"
+              (click)="onDelLabel(i, 'hallBarl', index)"
+            ></svg-icon>
+          </div>
+          <div class="addHall" (click)="openAddLabelPopup(addLabelPoup, 'hallBarl', index)">
+            <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- 大厅列表标签： -->
+      <div class="w-100 d-flex mt-15">
+        <label class="mr-0 mb-0 label-title">{{ 'game.provider.lobby_banner_label' | lang }}</label>
+        <div
+          class="w-100 label-box hall-label-box"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event, 'hall', index)"
+        >
+          <div
+            *ngFor="let item of contentList[index]?.hallLabelList; let i = index"
+            cdkDrag
+            class="game-label-list-item"
+          >
+            <img [src]="item.iconAddress + item.icon" width="18" height="18" />
+            <p>{{ item.name }}</p>
+            <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-edit.svg'"
+              class="svg-icon svg-icon-2x"
+              (click)="onEdit(item, false, contentList[index]?.hallLabelList)"
+            ></svg-icon>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-del.svg'"
+              class="svg-icon svg-icon-2x"
+              (click)="onDelLabel(i, 'hall', index)"
+            ></svg-icon>
+          </div>
+          <div class="addHall" (click)="openAddLabelPopup(addLabelPoup, 'hall', index)">
+            <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- 左侧菜单标签： -->
+      <div class="w-100 d-flex my-15">
+        <label class="mr-0 mb-0 label-title">{{ 'game.provider.menu_label' | lang }}</label>
+        <div
+          class="w-100 label-box hall-label-box"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListDropped)="drop($event, 'menu', index)"
+        >
+          <div
+            *ngFor="let item of contentList[index]?.menuLabelList; let i = index"
+            cdkDrag
+            class="game-label-list-item"
+          >
+            <img [src]="item.iconAddress + item.icon" width="18" height="18" [style.filter]="'grayscale(1)'" />
+            <p>{{ item.name }}</p>
+            <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-del.svg'"
+              class="svg-icon svg-icon-2x"
+              (click)="onDelLabel(i, 'menu', index)"
+            ></svg-icon>
+          </div>
+          <div class="addHall" (click)="openAddLabelPopup(addLabelPoup, 'menu', index)">
+            <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </lang-tab>
+
+  <div class="btn-wrap pt-12 flex-center d-flex">
+    <button class="c-btn c-btn-default ml-0" (click)="reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onOpenConfirmPopup(confirmPoup)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<!-- 编辑/新增 标签 -->
+<ng-template #editLabeldPopup>
+  <div class="modal-content editLabeldPopup">
+    <div class="modal-header">
+      <div class="modal-title">
+        {{ 'game.provider.label' | lang }}
+        {{ id || id === 0 ? ('game.provider.edit' | lang) : ('game.provider.now_adds' | lang) }}
+      </div>
+      <div class="c-btn-close" (click)="editLabeldPopupRef.close()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <form class="form" [formGroup]="formGroup" #form>
+        <div class="tab">
+          <div class="tab-hd">
+            <div class="mr-4 d-flex">
+              <div
+                class="tab-hd-item"
+                [class.active]="curTab === i"
+                *ngFor="let nav of langTabList; let i = index"
+                (click)="curTab = i"
+              >
+                {{ nav.name }}
+              </div>
+            </div>
+
+            <div class="edit position-relative">
+              <button class="btn-cube sm" type="button" (click)="showEditTab = true">
+                <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+              </button>
+
+              <select-group
+                [position]="true"
+                [select]="selectLang"
+                [(show)]="showEditTab"
+                [data]="langList"
+                label="name"
+                value="code"
+                (confirm)="onLanguage($event)"
+              ></select-group>
+            </div>
+          </div>
+
+          <div class="tab-bd pb-0" formArrayName="lang">
+            <div *ngFor="let lang of langArrayForm.controls; let i = index" [hidden]="curTab !== i" [formGroupName]="i">
+              <div class="w-100 d-flex py-2 mb-8">
+                <label class="mr-0 mb-0 label-title"
+                  >{{ 'game.provider.label_name' | lang }} （{{ curLang?.name }}）
+                  <span class="text-danger">*</span>：</label
+                >
+                <div class="flex-1">
+                  <input
+                    type="text"
+                    class="form-control"
+                    autocomplete="off"
+                    formControlName="name"
+                    [class.is-invalid]="validator.isControlInvalid('name', langArrayForm.controls[i])"
+                  />
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="validator.controlHasError('required', 'name', langArrayForm.controls[i])"
+                  >
+                    {{ 'game.provider.enter_label_name' | lang }}（{{ curLang?.name }}）
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 大厅标签ICON -->
+          <div class="d-flex flex-wrap mt-12">
+            <label class="mr-4 mb-0 ml-9" [ngStyle]="{ flex: '0 0 270px', whiteSpace: 'pre-wrap' }"
+              >{{ 'game.provider.lobby_icon' | lang }}
+              <!-- <span class="text-danger">*</span> -->
+              ：
+            </label>
+
+            <div class="upload">
+              <div class="text-center">
+                <upload
+                  style="width: 130px"
+                  formControlName="icon"
+                  desc="18x18"
+                  type="GameLabel"
+                  [limit]="10"
+                  [padding]="'10px'"
+                  [domain]="imgDomain"
+                  [class.is-invalid]="validator.isControlInvalid('icon')"
+                ></upload>
+
+                <!-- <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'icon')">您有图标icon尚未上传</div> -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 大厅标签ICON -->
+          <div class="d-flex flex-wrap mt-12">
+            <label class="mr-4 mb-0 ml-9" [ngStyle]="{ flex: '0 0 270px', whiteSpace: 'pre-wrap' }"
+              >{{ 'game.provider.left_menu_icon' | lang }}
+              <!-- <span class="text-danger">*</span> -->
+              ：
+            </label>
+
+            <div class="upload">
+              <div class="text-center">
+                <upload
+                  style="width: 130px"
+                  formControlName="menuIcon"
+                  desc="18x18"
+                  type="GameLabel"
+                  [limit]="10"
+                  [padding]="'10px'"
+                  [domain]="imgDomain"
+                  [class.is-invalid]="validator.isControlInvalid('menuIcon')"
+                ></upload>
+
+                <!-- <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'icon')">您有图标icon尚未上传</div> -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 游戏图片 -->
+          <div class="d-flex flex-wrap mt-12">
+            <label class="mr-4 mb-0 ml-9" [ngStyle]="{ flex: '0 0 270px', whiteSpace: 'pre-wrap' }"
+              >{{ 'game.provider.pic' | lang }}
+              ：
+            </label>
+
+            <div class="upload">
+              <div class="text-center">
+                <upload
+                  [style.width.px]="269"
+                  [style.height.px]="130"
+                  formControlName="image"
+                  desc="370x115"
+                  type="GameLabel"
+                  [limit]="100"
+                  [domain]="imgDomain"
+                ></upload>
+              </div>
+            </div>
+          </div>
+          <!-- 活动推荐图开关（新模版） -->
+          <div class="d-flex flex-wrap mt-12 align-items-center">
+            <label class="mr-4 mb-0 ml-9" [ngStyle]="{ flex: '0 0 270px', whiteSpace: 'pre-wrap' }"
+              >{{ 'game.provider.activityNewTemplate' | lang }}
+              ：
+            </label>
+
+            <label class="switch switch-success">
+              <input type="checkbox" formControlName="activitySwitch" />
+              <span></span>
+            </label>
+          </div>
+          <!-- 活动推荐图WEB（新模版） -->
+          <div class="d-flex flex-wrap mt-12" *ngIf="formGroup.value.activitySwitch">
+            <label class="mr-4 mb-0 ml-9" [ngStyle]="{ flex: '0 0 270px', whiteSpace: 'pre-wrap' }"
+              >{{ 'game.provider.webNewTemplate' | lang }}
+              ：
+            </label>
+
+            <div class="upload">
+              <div class="text-center">
+                <upload
+                  [style.width.px]="269"
+                  [style.height.px]="130"
+                  formControlName="webImage"
+                  desc="1920x277"
+                  type="GameLabel"
+                  [limit]="500"
+                ></upload>
+              </div>
+            </div>
+          </div>
+          <!-- 活动推荐图H5（新模版） -->
+          <div class="d-flex flex-wrap mt-12" *ngIf="formGroup.value.activitySwitch">
+            <label class="mr-4 mb-0 ml-9" [ngStyle]="{ flex: '0 0 270px', whiteSpace: 'pre-wrap' }"
+              >{{ 'game.provider.hFiveNewTemplate' | lang }}
+              ：
+            </label>
+            <div class="upload">
+              <div class="text-center">
+                <upload
+                  [style.width.px]="269"
+                  [style.height.px]="130"
+                  formControlName="hfiveImage"
+                  desc="370x277"
+                  type="GameLabel"
+                  [limit]="500"
+                ></upload>
+              </div>
+            </div>
+          </div>
+          <!-- 开启促销开关（新模版） -->
+          <div class="d-flex flex-wrap mt-12 align-items-center">
+            <label class="mr-4 mb-0 ml-9 d-flex" [ngStyle]="{ flex: '0 0 270px' }">
+              <span class="mr-2">{{ 'game.provider.openPromotion' | lang }}</span>
+              <div class="item-tips">
+                <svg-icon [src]="'./assets/images/svg/coupon-vector.svg'" class="svg-icon vector"></svg-icon>
+                <!-- 总共发送的优惠券数量 -->
+                <div class="tips-content">{{ 'game.provider.tips' | lang }}</div>
+                ：
+              </div>
+            </label>
+
+            <label class="switch switch-success">
+              <input type="checkbox" formControlName="promotionSwicth" />
+              <span></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="btn-wrap pt-12 flex-center d-flex">
+          <button class="c-btn c-btn-default ml-0" (click)="editLabeldPopupRef.close()">
+            {{ 'common.back' | lang }}
+          </button>
+          <button class="c-btn c-btn-primary" (click)="onLabelSubmit()">{{ 'game.provider.confirm' | lang }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 编辑/新增 标签 -->
+<ng-template #addLabelPoup>
+  <div class="modal-content addLabelPoup">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'game.provider.add' | lang }}</div>
+      <div class="c-btn-close" (click)="addLabelPoupRef.close()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="main">
+        <div class="item" *ngFor="let item of addLabelList">
+          <img [src]="item.iconAddress + item.icon" />
+          <span class="name">{{ item.name }}</span>
+          <label class="checkbox">
+            <input type="checkbox" [(ngModel)]="item.checked" />
+            <span></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-wrap pt-12 flex-center d-flex">
+        <button class="c-btn c-btn-default ml-0" (click)="addLabelPoupRef.close()">{{ 'common.back' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="onAddLabelSubmit()">
+          {{ 'game.provider.confirm' | lang }}
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 确认弹窗 -->
+<ng-template #confirmPoup>
+  <div class="modal-content confirmPoup">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'game.provider.notice' | lang }}</div>
+      <div class="c-btn-close" (click)="confirmPoupRef.close()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'game.provider.if_label_up' | lang }}</p>
+    </div>
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="confirmPoupRef.close()">
+        {{ 'common.cancel' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onConfirmSubmit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>

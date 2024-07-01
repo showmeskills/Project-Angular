@@ -1,0 +1,114 @@
+.head-title {
+  font-size: 20px;
+  color: #000;
+  font-weight: 700;
+}
+.head-btn-box {
+  margin-left: auto;
+}
+.border-wrap {
+  border: 1px solid #eff2f5;
+  border-radius: 6px;
+}
+
+.border-top {
+  border-top: 1px solid #eff2f5;
+}
+
+.border-left {
+  border-left: 1px solid #eff2f5;
+}
+
+::ng-deep {
+  .kyc-option-detail-modal {
+    .tab {
+      display: flex;
+      position: relative;
+
+      &-item {
+        padding: 8px 15px 0;
+        height: 48px;
+        line-height: 48px;
+        font-size: 16px;
+        color: #a1a5b7;
+        cursor: pointer;
+        position: relative;
+        border-bottom: 1px solid transparent;
+        &.active {
+          color: #009ef7;
+          transition: all 0.3s linear;
+          border-bottom: 1px solid #009ef7;
+        }
+      }
+
+      &-active {
+        position: absolute;
+        height: 2px;
+        background: #009ef7;
+        bottom: 0;
+        transition: all 0.3s ease-in;
+      }
+    }
+
+    .new-modal-header {
+      display: block;
+      padding-bottom: 0;
+    }
+    .new-title {
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-content {
+      margin: 0 30px;
+    }
+    .img-list {
+      .img-list-box {
+        flex: 1;
+        border: 1px solid #eff2f5;
+        text-align: center;
+        margin-right: 10px;
+        border-radius: 6px;
+        &:last-child {
+          margin-right: 0;
+        }
+        .img-box {
+          height: 100px;
+        }
+        .text-box {
+          height: 26px;
+          line-height: 26px;
+        }
+        &.active {
+          transition: all 0.3s linear;
+          border: 1px solid #009ef7;
+          .text-box {
+            color: #fff;
+            background: #009ef7;
+          }
+        }
+      }
+    }
+  }
+}
+.form-img-box {
+  height: 200px;
+  border-radius: 16px;
+  background-color: #f5f8fa;
+  align-items: center;
+  justify-content: center;
+  img {
+    max-width: 94%;
+    max-height: 94%;
+  }
+}
+
+.red-text {
+  color: #f1416c !important;
+}
+.green-text {
+  color: #50cd89 !important;
+}
+.yellow-text {
+  color: #ffc734 !important;
+}

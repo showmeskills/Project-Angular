@@ -1,0 +1,47 @@
+@mixin FZFlip($suffix: "fz-flip", $speed: 0.5s, $direction: "y") {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform $speed;
+
+  &.#{$suffix}-wrap {
+    @if $direction == "x" {
+      transform: rotateX(180deg);
+    }
+    @if $direction == "y" {
+      transform: rotateY(180deg);
+    }
+    @if $direction == "z" {
+      transform: rotateZ(180deg);
+    }
+    transition: transform $speed;
+  }
+
+  // 前板
+  .#{$suffix}-face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    backface-visibility: hidden;
+    transform: translateZ(0.1px); // fix safari.
+  }
+
+  // 背板
+  .#{$suffix}-back {
+    @if $direction == "x" {
+      transform: rotateX(180deg);
+    }
+    @if $direction == "y" {
+      transform: rotateY(180deg);
+    }
+    @if $direction == "z" {
+      transform: rotateZ(180deg);
+    }
+  }
+}
+
+.fz-flip {
+  width: 100%;
+  @include FZFlip();
+}

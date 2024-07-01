@@ -1,0 +1,111 @@
+.level-table {
+  .level-table-fisrt {
+    td {
+      .cell {
+        margin-top: 10px;
+      }
+      &:first-child {
+        .cell {
+          border-top-left-radius: 14px;
+          border-bottom-left-radius: 14px;
+        }
+      }
+      &:last-child {
+        .cell {
+          border-top-right-radius: 14px;
+          border-bottom-right-radius: 14px;
+        }
+      }
+    }
+
+    &.vip-0 {
+      td {
+        .cell {
+          margin-top: 0px;
+          background: #ececec;
+          color: #5f5f5f;
+        }
+      }
+    }
+    &.vip-1 {
+      td {
+        .cell {
+          background: #d4f8ff;
+          color: #007e9a;
+        }
+      }
+    }
+    &.vip-2 {
+      td {
+        .cell {
+          background: #fff2a1;
+          color: #ca7900;
+        }
+      }
+    }
+    &.vip-3 {
+      td {
+        .cell {
+          background: #d7e5ff;
+          color: #0048ca;
+        }
+      }
+    }
+    &.vip-4 {
+      td {
+        .cell {
+          background: #e7deff;
+          color: #3b00cf;
+        }
+      }
+    }
+    &.vip-5 {
+      td {
+        .cell {
+          background: #ffe6cc;
+          color: #d92700;
+        }
+      }
+    }
+    &.vip-6 {
+      td {
+        .cell {
+          background: #cecee1;
+          color: #040435;
+        }
+      }
+    }
+    &.vip-999999 {
+      td {
+        .cell {
+          background: #f1416d;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  td,
+  th {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+  }
+  thead　 {
+    tr {
+      th {
+        padding: 0px;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        padding: 0px;
+        .cell {
+          min-height: 40px;
+          line-height: 40px;
+        }
+      }
+    }
+  }
+}

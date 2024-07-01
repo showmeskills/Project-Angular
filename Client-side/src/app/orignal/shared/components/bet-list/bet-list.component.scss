@@ -1,0 +1,300 @@
+.game-body {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  position: relative;
+  width: auto;
+  height: auto;
+  padding: 0 16px 0px;
+
+  .game-input {
+    display: flex;
+    flex-direction: column;
+    width: 24%;
+
+    @media (max-width: 767px) {
+      width: 49%;
+      margin-bottom: 10px;
+    }
+
+    .input {
+      box-sizing: border-box;
+      margin-bottom: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      height: 76px !important;
+      position: relative;
+      justify-content: space-between;
+      background: var(--orignal-mian);
+      border: 1px solid var(--orignal-border-color);
+      border-radius: 8px;
+
+      &.active {
+        border-color: rgb(34, 129, 246);
+      }
+
+      .input__row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .currency-icon {
+          width: 21px;
+          height: 21px;
+          flex-shrink: 0;
+          display: block;
+          margin-right: 9px;
+          @media (max-width: 767px) {
+            margin-right: 5px;
+          }
+        }
+
+        input {
+          background-color: transparent;
+          border: none;
+          outline: none;
+          font-style: normal;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 22px;
+          color: var(--orignal-test-1);
+          width: 90px;
+          @media (max-width: 767px) {
+            font-size: 14px;
+            width: 100px;
+          }
+        }
+
+        .toggle {
+          background-color: unset;
+          display: flex;
+          align-items: center;
+          padding: 0;
+          border: none;
+          width: 100%;
+          // color: #93acd3;
+          cursor: pointer;
+          transition: color 0.1s ease-in-out;
+          justify-content: center;
+          user-select: none;
+          .toggle__label {
+            font-size: 13px;
+            line-height: 18px;
+            display: flex;
+            margin-right: 6px;
+
+            .toggle__title {
+              color: var(--orignal-test-1);
+            }
+          }
+
+          ::ng-deep {
+            .mdc-switch {
+              --mdc-switch-disabled-track-opacity: 1;
+            }
+            .mat-mdc-slide-toggle {
+              --mdc-switch-selected-handle-color: #fff;
+              --mdc-switch-selected-focus-handle-color: #fff;
+              --mdc-switch-selected-hover-handle-color: #fff;
+              --mdc-switch-selected-pressed-handle-color: #fff;
+              // selected-bg
+              --mdc-switch-selected-focus-state-layer-color: var(--orignal-primary-color);
+              --mdc-switch-selected-hover-state-layer-color: var(--orignal-primary-color);
+              --mdc-switch-selected-pressed-state-layer-color: var(--orignal-primary-color);
+              --mdc-switch-selected-focus-track-color: var(--orignal-primary-color);
+              --mdc-switch-selected-hover-track-color: var(--orignal-primary-color);
+              --mdc-switch-selected-pressed-track-color: var(--orignal-primary-color);
+              --mdc-switch-selected-track-color: var(--orignal-primary-color);
+              --mdc-switch-disabled-selected-track-color: var(--orignal-primary-color);
+
+              // unselected-bg
+              --mdc-switch-unselected-focus-state-layer-color: var(--orignal-test-2);
+              --mdc-switch-unselected-pressed-state-layer-color: var(--orignal-test-2);
+              --mdc-switch-unselected-hover-state-layer-color: var(--orignal-test-2);
+              --mdc-switch-unselected-track-color: var(--orignal-test-2);
+              --mdc-switch-unselected-hover-track-color: var(--orignal-test-2);
+              --mdc-switch-unselected-focus-track-color: var(--orignal-test-2);
+              --mdc-switch-unselected-pressed-track-color: var(--orignal-test-2);
+              --mdc-switch-disabled-unselected-track-color: var(--orignal-test-2);
+
+              // 圆宽、高
+              --mdc-switch-handle-height: 16px;
+              --mdc-switch-handle-width: 16px;
+              --mdc-switch-selected-icon-size: 16px;
+              --mdc-switch-state-layer-size: 16px;
+              --mdc-switch-unselected-icon-size: 16px;
+
+              // 背景border-radius
+              --mdc-switch-track-shape: 35px;
+              // 圆border-radius
+              --mdc-switch-handle-shape: 35px;
+
+              --mdc-switch-track-width: 36px;
+              --mdc-switch-track-height: 20px;
+              --mdc-switch-disabled-selected-handle-color: #fff;
+              --mdc-switch-disabled-unselected-handle-color: #fff;
+
+              --mdc-switch-unselected-hover-handle-color: #fff;
+              --mdc-switch-unselected-focus-handle-color: #fff;
+              --mdc-switch-unselected-pressed-handle-color: #fff;
+              --mdc-switch-handle-surface-color: #fff;
+              --mdc-switch-unselected-handle-color: #fff;
+              --mdc-switch-selected-icon-color: #fff;
+              --mdc-switch-disabled-selected-icon-color: #fff;
+              --mdc-switch-disabled-unselected-icon-color: #fff;
+              --mdc-switch-unselected-icon-color: #fff;
+
+              --mdc-switch-disabled-track-opacity: 1;
+
+              .mdc-switch .mdc-switch__icon {
+                fill: none !important;
+              }
+
+              .mdc-form-field > label {
+                padding-left: 0;
+              }
+
+              .mdc-switch--disabled {
+                // opacity: 0.38;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .btn-group {
+      display: flex;
+      margin-bottom: 5px;
+
+      button {
+        width: 33%;
+        padding: 5px;
+        font-weight: 700;
+        font-size: 12px;
+        color: var(--orignal-test-2);
+        background-color: var(--orignal-mian-hover);
+        border-radius: 7px;
+        border: none;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .double_btn {
+        margin: 0 5px !important;
+      }
+    }
+
+    .btn {
+      background: var(--orignal-primary-color-2);
+      border-radius: 10px;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+      padding: 14px;
+      height: 50px;
+      transition:
+        background-color 0.3s,
+        box-shadow 0.3s;
+      position: relative;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      white-space: nowrap;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      &:disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+
+      & > span {
+        opacity: 1;
+        color: #fff;
+
+        .circle {
+          display: inline-block;
+          background: url(src/assets/orignal/images/dice/circle.svg) no-repeat;
+          background-size: 100% 100%;
+          width: 14px;
+          height: 14px;
+          vertical-align: middle;
+          animation: changeright 6s linear infinite;
+        }
+      }
+
+      &.btn-gray {
+        background-color: #343f5a;
+      }
+
+      &.btn-red {
+        background: #ed1d49;
+      }
+
+      &.btn-green {
+        background: #1bb83d;
+      }
+
+      &.btn-yellow {
+        background-color: #ffb636;
+      }
+
+      .spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        z-index: 1;
+
+        &.spinner_md {
+          .spinner__bounce {
+            margin: 0 3px;
+            width: 8px;
+            height: 8px;
+          }
+        }
+
+        .spinner__bounce {
+          background-color: #fff;
+          border-radius: 100%;
+          display: inline-block;
+          -webkit-animation: bouncedelay 1.2s ease-in-out infinite both;
+          animation: bouncedelay 1.2s ease-in-out infinite both;
+
+          &:first-child {
+            -webkit-animation-delay: -0.32s;
+            animation-delay: -0.32s;
+          }
+
+          &:nth-child(2) {
+            -webkit-animation-delay: -0.16s;
+            animation-delay: -0.16s;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes bouncedelay {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes changeright {
+  100% {
+    transform: rotate(360deg);
+  }
+}

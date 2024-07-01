@@ -1,0 +1,67 @@
+<div class="contribute-header d-flex">
+  <span
+    *ngFor="let item of queryType"
+    class="contribute-btn"
+    [class.active]="item.value === current.queryType"
+    (click)="onChange('queryType', item.value)"
+    >{{ item.lang | lang }}</span
+  >
+
+  <mat-form-field class="ml-2" [style.width.px]="80">
+    <mat-select class="form-control" [(ngModel)]="current.type" [style.height.px]="34" (selectionChange)="loadData()">
+      <mat-option [value]="item.value" *ngFor="let item of type">{{ item.lang | lang }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class="contribute-body">
+  <apx-chart
+    class="d-flex"
+    style="width: 100%; height: 100%"
+    [series]="lineChartOptions.series"
+    [chart]="lineChartOptions.chart"
+    [xaxis]="lineChartOptions.xAxis"
+    [yaxis]="lineChartOptions.yAxis"
+    [grid]="lineChartOptions.grid"
+    [dataLabels]="lineChartOptions.dataLabels"
+    [stroke]="lineChartOptions.stroke"
+    [tooltip]="lineChartOptions.tooltip"
+    [fill]="lineChartOptions.fill"
+    #chart
+  ></apx-chart>
+</div>
+
+<div class="contribute-foot d-flex">
+  <!-- 黄色版块 筛选的总值 -->
+  <div class="flex-1">
+    <div class="d-inline-block vam" style="margin-top: -60px">
+      <div class="contribute-count-wrap">
+        <div class="contribute-count">
+          <div class="contribute-count-txt">
+            <svg-icon class="d-inline-block" [src]="'./assets/images/svg/graph.svg'"></svg-icon>
+            <span class="fz-16 ml-2">
+              <ng-container *ngFor="let item of dateType"
+                ><ng-container *ngIf="item.value === current.dateType">{{
+                  item.lang | lang
+                }}</ng-container></ng-container
+              ><ng-container *ngFor="let item of queryType"
+                ><ng-container *ngIf="item.value === current.queryType">{{ item.lang | lang }}</ng-container>
+              </ng-container>
+            </span>
+          </div>
+          <div class="fz-28 mt-2">{{ data.today | toFormatMoney }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pr-12">
+    <span
+      *ngFor="let item of dateType"
+      class="contribute-btn"
+      [class.active]="item.value === current.dateType"
+      (click)="onChange('dateType', item.value)"
+      >{{ item.lang | lang }}</span
+    >
+  </div>
+</div>

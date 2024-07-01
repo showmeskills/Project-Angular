@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" viewBox="0 0 66 66">
+    <g data-name="组 8528">
+        <g data-name="组 8294">
+            <g data-name="椭圆 499" style="stroke:#707070;stroke-dasharray:1 5;fill:none">
+                <circle cx="33" cy="33" r="33" style="stroke:none"/>
+                <circle cx="33" cy="33" r="32.5" style="fill:none"/>
+            </g>
+        </g>
+        <g data-name="组 8529">
+            <path data-name="路径 16068" d="M24 44a5 5 0 0 0 5-5v-1H19v1a5 5 0 0 0 5 5z" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke:#f06642;fill:none" transform="translate(9 9)"/>
+            <path data-name="矩形 9988" style="fill:rgba(255,255,255,.01)" d="M0 0h48v48H0z" transform="translate(9 9)"/>
+            <path data-name="路径 16066" d="M24 4a14 14 0 0 0-14 14v20h28V18A14 14 0 0 0 24 4z" style="fill:none" transform="translate(9 9)"/>
+            <path data-name="路径 16067" d="M10 38V18a14 14 0 0 1 28 0v20M4 38h40" style="stroke:#aeb4bc;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none" transform="translate(9 9)"/>
+        </g>
+    </g>
+</svg>

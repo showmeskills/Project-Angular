@@ -1,0 +1,51 @@
+:host {
+  display: flex;
+  flex-flow: row nowrap;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 16px;
+}
+
+.label-wrap {
+  line-height: 42px;
+  margin-bottom: 0;
+  display: flex;
+}
+
+.label-text {
+  display: flex;
+  color: #969bad;
+  flex-flow: row wrap;
+  min-width: 0;
+  word-break: break-word;
+  white-space: normal;
+
+  &.between {
+    justify-content: space-between;
+  }
+}
+
+.form-field {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.form-icon,
+.form-icon-clear {
+  width: 14px;
+  height: 14px;
+}
+
+.form-icon-clear {
+  transform: rotate(270deg);
+  height: 24px;
+}
+
+.text-required {
+  margin-left: 4px;
+}
+
+.label-disabled {
+  cursor: no-drop;
+  opacity: 0.6;
+}

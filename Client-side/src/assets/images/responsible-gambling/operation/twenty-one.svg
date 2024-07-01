@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+    <defs>
+        <clipPath id="d8dg88dfna">
+            <path data-name="矩形 9999" transform="translate(358 727)" style="fill:#fff;stroke:#707070" d="M0 0h28v28H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="蒙版组 2354" transform="translate(-358 -727)" style="clip-path:url(#d8dg88dfna)">
+        <g data-name="1c16a247-261a-466f-923a-405d8b844a7c" transform="translate(360.334 729.334)">
+            <path data-name="路径 16103" d="M11.666 22.581a10.918 10.918 0 0 0 10.915-10.915V1.645a.9.9 0 0 0-.895-.895H1.645a.9.9 0 0 0-.895.895v10.021a10.918 10.918 0 0 0 10.916 10.915z" style="stroke-width:1.5px;fill-rule:evenodd;fill:none;stroke:#fb6943"/>
+            <rect data-name="矩形 10000" width="8.017" height="4.438" rx="1" transform="translate(7.657 4.078)" style="stroke-width:.8px;fill:none;stroke:#fb6943"/>
+            <rect data-name="矩形 10001" width="2.863" height="4.295" rx="1" transform="rotate(-33 34.07 -13.546)" style="fill:#fb6943"/>
+            <rect data-name="矩形 10002" width="2.863" height="4.295" rx="1" transform="rotate(-147 7.374 8.678)" style="fill:#fb6943"/>
+            <rect data-name="矩形 10003" width="2.863" height="4.295" rx="1" transform="rotate(-90 8.445 5.369)" style="fill:#fb6943"/>
+            <rect data-name="矩形 10004" width="2.863" height="4.295" rx="1" transform="rotate(-90 14.887 -1.074)" style="fill:#fb6943"/>
+        </g>
+    </g>
+</svg>

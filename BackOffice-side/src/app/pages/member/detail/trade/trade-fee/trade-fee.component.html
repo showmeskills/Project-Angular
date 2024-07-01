@@ -1,0 +1,94 @@
+<div class="card card-body mt-10">
+  <div class="fz-20 fw-bolder">{{ 'member.overview.feeTable.feeRecord' | lang }}</div>
+  <table class="table mt-0">
+    <thead sticky>
+      <tr>
+        <th>
+          <span class="cell">{{ 'common.time' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.overview.feeTable.changeFee' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.overview.feeTable.changeFeeDetail' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.overview.feeTable.orderNumber' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.overview.feeTable.remainingFee' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.overview.feeTable.remainingFeeToal' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.createTime | timeFormat }}</span>
+        </td>
+        <td>
+          <ng-container *win="item.handlingFee; let value; prev as prev">
+            <span class="cell" [winColor]="value" [winColorReverse]="true">
+              {{ prev }}{{ value | currencyValue: item.currency }}
+              <img class="ml-2" [currencyIcon]="item.currency" currencySize="18" />
+            </span>
+          </ng-container>
+        </td>
+        <td>
+          <span class="cell">{{ item.feeChangeReason || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.orderNum || '-' }}
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.laveHandlingFee | currencyValue: item.currency }}
+            <img class="ml-2" [currencyIcon]="item.currency" currencySize="18" />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ item.usdtLaveHandlingFee | currencyValue: 'USDT' }}
+            <img class="ml-2" [currencyIcon]="'USDT'" currencySize="18" />
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-10 table-footer py-6 px-8">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

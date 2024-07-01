@@ -1,0 +1,48 @@
+// Form controls
+.mat-column-select {
+  overflow: initial;
+}
+.mat-column-checkbox {
+  flex: 0 0 70px;
+}
+
+.mat-column-vinCode {
+  flex: 1 0 60px;
+}
+
+.example-radio-group {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.example-radio-button {
+  margin: 5px;
+}
+
+// Tabs
+.demo-tab-group {
+  border: 1px solid #e8e8e8;
+}
+
+.demo-tab-content {
+  padding: 16px;
+}
+
+.material-icons {
+  font-size: 18px !important;
+}
+
+// Form fields
+.mat-form-field-fluid {
+  display: block !important;
+}
+
+// Tabs
+.mat-mdc-form-field-infix {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #000 !important;
+  }
+}

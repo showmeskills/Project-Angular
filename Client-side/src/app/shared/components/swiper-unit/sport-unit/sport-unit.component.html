@@ -1,0 +1,68 @@
+<ng-container *ngIf="item; else skeleton">
+  <div
+    class="sport-item"
+    (click)="jumpTo('play/OBSport-1', item)"
+    [style.backgroundImage]="'url(' + backgrounds[index % backgrounds.length] + ')'"
+  >
+    <div class="league-name">{{ item.tournament }}</div>
+    <div class="detail">
+      <div class="team">
+        <div class="team-logo">
+          <img [src]="item.homeLogo" (error)="onImageError($event)" alt="" />
+        </div>
+        <div class="team-name">{{ item.homeName }}</div>
+      </div>
+      <div class="info">
+        <!-- 中文都叫全场独赢，英文=> 1X2 ，篮球 => MoneyLine -->
+        <div class="info-tip" *ngIf="item.sportId == 1 && item.matchType == 2">
+          {{ 'ob_handicap_name_1' | translate }}
+        </div>
+        <div class="info-tip" *ngIf="item.sportId == 2 && item.matchType == 2">
+          {{ 'ob_handicap_name_2' | translate }}
+        </div>
+
+        <div class="live">
+          <div>{{ item.matchStageName }}</div>
+          <ng-container *ngIf="item.matchType == 1; else liveInfo">
+            <div class="date">{{ item.matchTime | date: 'MM/dd HH:mm' }}</div>
+          </ng-container>
+          <ng-template #liveInfo>
+            <div class="date">{{ item.remainingTime }}</div>
+          </ng-template>
+        </div>
+
+        <div class="rate-container">
+          <div class="rate">
+            <ng-container *ngIf="item.homeOdds; else lock">
+              {{ item.homeOdds | decimalDigit: 2 : true }}
+            </ng-container>
+            <ng-template #lock> - </ng-template>
+          </div>
+          <div class="rate" *ngIf="item.sportId == 1">
+            <ng-container *ngIf="item.drawOdds; else lock">
+              {{ item.drawOdds | decimalDigit: 2 : true }}
+            </ng-container>
+            <ng-template #lock> - </ng-template>
+          </div>
+          <div class="rate">
+            <ng-container *ngIf="item.awayOdds; else lock">
+              {{ item.awayOdds | decimalDigit: 2 : true }}
+            </ng-container>
+            <ng-template #lock>
+              <i class="icon-lock"> - </i>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="team">
+        <div class="team-logo">
+          <img [src]="item.awayLogo" (error)="onImageError($event)" alt="" />
+        </div>
+        <div class="team-name">{{ item.awayName }}</div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-template #skeleton>
+  <div class="item-box skeleton-loading" [style.padding-top]="100 / ratio + '%'"></div>
+</ng-template>

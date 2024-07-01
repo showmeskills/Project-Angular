@@ -1,0 +1,85 @@
+.role-transfer {
+  &-main {
+    display: flex;
+    width: 100%;
+  }
+}
+
+.btn-footer {
+  height: 62px;
+  border-top: 1px solid #f5f8fa;
+}
+
+.empty {
+  color: #a1a5b7;
+  justify-content: center;
+}
+
+.hd {
+  height: 70px;
+  line-height: 70px;
+  padding: 20px 25px;
+  border-bottom: 1px solid #eff2f5;
+}
+
+.block-left,
+.block-right {
+  border: 1px solid #eff2f5;
+  flex: 1 1 100%;
+}
+
+.btn-vertical {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 12px;
+  justify-content: center;
+  white-space: nowrap;
+
+  button {
+    width: 56px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f8fa;
+    color: #373a49;
+    font-size: 14px;
+    margin: 0.8rem 0;
+    border-radius: 6px;
+    border: none;
+    transition: background-color 0.3s ease;
+
+    i {
+      color: #373a49;
+      display: inline-block;
+      padding-top: 2px;
+      padding-left: 2px;
+    }
+
+    &.btn-remove {
+      i {
+        transform: rotate(180deg);
+      }
+    }
+
+    &:hover {
+      background-color: #e4e6ef;
+    }
+  }
+}
+
+.selected-txt {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  color: #5e6278;
+  font-size: 14px;
+  padding: 0 10px;
+  justify-content: space-between;
+}
+
+.checkbox-list .item {
+  height: 40px;
+}

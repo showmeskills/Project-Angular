@@ -1,0 +1,75 @@
+<modal-title [title]="'member.detail.balance.creditTitle' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="p-8">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'member.detail.balance.activityAmount' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.detail.balance.picUpTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.detail.balance.creditBalance' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'member.detail.balance.activityTitle' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">
+            <img class="vam mr-2" currencyIcon="USDT" src="" alt="" />
+            <span class="vam">{{ item.amount | currencyValue: 'USDT' }}</span>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.receiveTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.balance | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.title || '-' }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between table-footer py-6 px-8">
+    <div>
+      <!-- <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>
+
+<modal-footer [dismissShow]="false" confirmClose></modal-footer>

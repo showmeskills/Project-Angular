@@ -1,0 +1,390 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <form-row label="UID" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'common.currency' | lang" class="mr-10">
+      <ng-template>
+        <mat-form-field [style.width.px]="110">
+          <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.code" *ngFor="let item of currencyList">{{ item.code }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="d-flex flex-ac mr-8">
+      <form-row [label]="'system.statistics.statisticTime' | lang" class="mr-4" [contentWidth]="264">
+        <ng-template>
+          <input
+            class="text-center form-control w-100"
+            type="text"
+            [placeholder]="'system.statistics.selectStatisticsTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="data.time"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+      <div class="btn btn-primary" (click)="reStatistics()">{{ 'system.statistics.recounting' | lang }}</div>
+    </div>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'system.statistics.memberBonus' | lang }}</div>
+
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 导出 -->
+      <button
+        type="button"
+        class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        (click)="onExport()"
+      >
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <div class="member-bonus">
+      <div class="table1">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <!-- UID -->
+              <th>
+                <span class="cell">UID</span>
+              </th>
+              <!-- 币种 -->
+              <th>
+                <span class="cell">{{ 'common.currency' | lang }}</span>
+              </th>
+              <!-- 已发放现金券 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_1' | lang }}</span>
+              </th>
+              <!-- 已发放现金券(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_1' | lang }}(U)</span>
+              </th>
+              <!-- 已领取现金券 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_2' | lang }}</span>
+              </th>
+              <!-- 已领取现金券(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_2' | lang }}(U)</span>
+              </th>
+              <!-- 已领取抵用券 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_3' | lang }}</span>
+              </th>
+              <!-- 已领取抵用券(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_3' | lang }}(U)</span>
+              </th>
+              <!-- 已发放抵用卷 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_4' | lang }}</span>
+              </th>
+              <!-- 已发放抵用卷(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_4' | lang }}(U)</span>
+              </th>
+              <!-- 已发放SVIP券 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_5' | lang }}</span>
+              </th>
+              <!-- 已发放SVIP券(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_5' | lang }}(U)</span>
+              </th>
+              <!-- 已领取SVIP券 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_6' | lang }}</span>
+              </th>
+              <!-- 已领取SVIP券(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_6' | lang }}(U)</span>
+              </th>
+              <!-- 已发放返水-->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_7' | lang }}</span>
+              </th>
+              <!-- 已发放返水(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_7' | lang }}(U)</span>
+              </th>
+              <!-- 已领取返水 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_8' | lang }}</span>
+              </th>
+              <!-- 已领取返水(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_8' | lang }}(U)</span>
+              </th>
+              <!-- 佣金返还 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_9' | lang }}</span>
+              </th>
+              <!-- 佣金返还(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_9' | lang }}(U)</span>
+              </th>
+              <!-- 推荐返还 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_10' | lang }}</span>
+              </th>
+              <!-- 推荐返还(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_10' | lang }}(U)</span>
+              </th>
+              <!-- 联盟佣金 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_11' | lang }}</span>
+              </th>
+              <!-- 联盟佣金(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_11' | lang }}(U)</span>
+              </th>
+              <!-- 联盟佣金(日) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_12' | lang }}</span>
+              </th>
+              <!-- 联盟佣金(日)(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_12' | lang }}(U)</span>
+              </th>
+              <!-- 联盟佣金(月) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_13' | lang }}</span>
+              </th>
+              <!-- 联盟佣金(月)(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_13' | lang }}(U)</span>
+              </th>
+              <!-- 预付佣金 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_14' | lang }}</span>
+              </th>
+              <!-- 预付佣金(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_14' | lang }}(U)</span>
+              </th>
+              <!-- 顶级推荐人佣金 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_15' | lang }}</span>
+              </th>
+              <!-- 顶级推荐人佣金(U) -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_15' | lang }}(U)</span>
+              </th>
+              <!-- 统计时间 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_16' | lang }}</span>
+              </th>
+              <!-- 修改时间 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_17' | lang }}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of list; let i = index">
+              <!-- <td>
+                <span class="cell">{{ subHeaderService.getMerchantName(item.tenantId) }}</span>
+              </td> -->
+              <td>
+                <span class="cell">{{ item.uid }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.cashBonusGrantAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.cashBonusGrantUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.cashBonusReceiveAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.cashBonusReceiveUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.couponBonusReceiveAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.couponBonusReceiveUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.couponBonusGrantAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.couponBonusGrantUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.svipBonusGrantAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.svipBonusGrantUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.svipBonusReceiveAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.svipBonusReceiveUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.backWaterGrantAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.backWaterGrantUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.backWaterReceiveAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.backWaterReceiveUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentCommissionAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentCommissionUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentRecommendAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentRecommendUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentAllianceAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentAllianceUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentAllianceDayAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentAllianceDayUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentAllianceMonthAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.agentAllianceMonthUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <!-- 预付佣金 -->
+              <td>
+                <span class="cell">{{ item.agentAdvanceAmount | currencyValue: item.currency }}</span>
+              </td>
+              <!-- 预付佣金usdt -->
+              <td>
+                <span class="cell">{{ item.agentAdvanceUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <!-- 顶级推荐人佣金 -->
+              <td>
+                <span class="cell">{{ item.agentTopRecommenderAmount | currencyValue: item.currency }}</span>
+              </td>
+              <!-- 顶级推荐人佣金usdt -->
+              <td>
+                <span class="cell">{{ item.agentTopRecommenderUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <!-- 统计时间-->
+              <td>
+                <span class="cell">{{ item.statDate | timeFormat: 'yyyy-MM-DD' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.modifiedTime | timeFormat }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- <div class="table2">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>
+                <span class="cell">商户</span>
+              </th>
+              <th>
+                <span class="cell">UID</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of list; let i = index">
+              <td>
+                <span class="cell">1</span>
+              </td>
+              <td>
+                <span class="cell">1</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+    </div>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

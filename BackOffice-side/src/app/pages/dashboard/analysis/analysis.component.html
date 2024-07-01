@@ -1,0 +1,720 @@
+<div class="bg-fff rounded d-flex flex-wrap">
+  <section class="often-section">
+    <div class="fz-20 fw-bolder mt-5 ml-8">{{ 'dashboard.commonFunction.title' | lang }}</div>
+
+    <div class="often-wrap">
+      <a class="often text-center" *ngFor="let item of oftenList; index as i" [routerLink]="[item.to]">
+        <div class="often-icon-wrap">
+          <img class="often-icon" [src]="'./assets/images/dashboard/often' + (i + 1) + '.svg'" alt="" />
+        </div>
+        <div class="color-222 often-label">{{ item.langPath | lang }}</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="flex-2">
+    <div class="fz-20 fw-bolder mt-5 lh-28 mb-10">
+      <span>{{ 'dashboard.realTimeSummary' | lang }}</span>
+      <span class="ml-4 color-999 fz-12"
+        >{{ 'dashboard.updateOn' | lang }} {{ transactionLive.time | timeFormat }}</span
+      >
+    </div>
+
+    <div class="live-wrap">
+      <div class="live mr-5 pt-4 px-6" style="min-width: 480px">
+        <div class="d-flex">
+          <span class="flex-1">
+            <span class="vam">{{ 'dashboard.transactionSummarySingle' | lang }}</span>
+            <svg-icon class="ml-3 svg-icon" src="./assets/images/svg/question.svg"></svg-icon>
+          </span>
+          <span class="color-999 ml-8">{{ 'dashboard.yesterday' | lang }}</span>
+        </div>
+        <div class="d-flex flex-btc mt-1 mb-2">
+          <span class="fz-28 fw-bolder lh-40">
+            {{ transactionLive.wagerTotal | toFormatNumberDecimal | toFormatMoney }} /
+            {{ transactionLive.wagerCount | toFormatMoney }}
+          </span>
+          <span class="color-999">{{ transactionLive.prevWagerTotal | toFormatNumberDecimal | toFormatMoney }}</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="flex-1 text-nowrap d-flex">
+            <span class="color-999">{{ 'dashboard.compareYesterday' | lang }}</span>
+            <span
+              [class]="(transactionLive.wagerTotalRise && (transactionLive.wagerTotalRise > 0 ? 'up' : 'down')) || ''"
+            >
+              <span class="text ml-5 mr-3">{{ transactionLive.wagerTotalRise || 0 | numberSign }}%</span>
+              <span class="triangle"></span>
+            </span>
+          </div>
+          <div class="text-nowrap color-999">
+            <span>{{ 'dashboard.todayMerchantWin' | lang }}</span>
+            <span class="ml-2">{{ transactionLive.payoutTotal | toFormatNumberDecimal | toFormatMoney }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主账户资产 -->
+      <div class="live mr-5 pt-4 px-6">
+        <div class="d-flex">
+          <span class="flex-1">
+            <span class="vam">{{ 'dashboard.mainMoney' | lang }}</span>
+            <svg-icon class="ml-3 svg-icon" src="./assets/images/svg/question.svg"></svg-icon>
+          </span>
+          <span class="color-999 ml-8">{{ 'dashboard.yesterday' | lang }}</span>
+        </div>
+        <div class="d-flex flex-btc mt-1 mb-2">
+          <span class="fz-28 fw-bolder lh-40"> NaN </span>
+          <span class="color-999">NaN</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="color-999">{{ 'dashboard.compareYesterday' | lang }}</span>
+          <span class="up">
+            <span class="text ml-5 mr-3">NaN%</span>
+            <span class="triangle"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 存款概况 -->
+      <div class="live live-more mr-5 pt-4 px-6">
+        <div class="d-flex flex-wrap">
+          <div class="flex-1">
+            <div>
+              <span class="vam">{{ 'dashboard.depositInfo' | lang }}</span>
+              <svg-icon class="ml-3 svg-icon" src="./assets/images/svg/question.svg"></svg-icon>
+            </div>
+            <div class="live-more-data">
+              <span class="fz-28 fw-bolder lh-40">
+                {{ transactionLive.depositTotal | toFormatNumberDecimal | toFormatMoney }}
+              </span>
+              <span class="color-999 fz-18"> / {{ transactionLive.depositCount | toFormatMoney }}</span>
+            </div>
+          </div>
+          <div class="flex-1 text-right">
+            <div class="color-999 ml-8 flex-1">{{ 'dashboard.confirmed' | lang }}</div>
+            <div class="color-999 ml-8 flex-1 fz-16 live-more-data pt-3">NaN <span class="fz-14">/ NaN</span></div>
+          </div>
+          <div class="flex-1 text-right">
+            <div class="color-999 ml-8 flex-1">{{ 'dashboard.yesterday' | lang }}</div>
+            <div class="color-999 ml-8 flex-1 fz-16 live-more-data pt-3">
+              {{ transactionLive.prevDepositTotal | toFormatNumberDecimal | toFormatMoney }}
+              <span class="fz-14">/ {{ transactionLive.prevDepositCount | toFormatMoney }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-ac">
+          <span class="color-999">{{ 'dashboard.compareYesterday' | lang }}</span>
+          <span
+            [class]="(transactionLive.depositTotalRise && (transactionLive.depositTotalRise > 0 ? 'up' : 'down')) || ''"
+          >
+            <span class="text ml-5 mr-3">{{ transactionLive.depositTotalRise || 0 | numberSign }}%</span>
+            <span class="triangle"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 今日新增会员数 -->
+      <div class="live mr-5 pt-4 px-6">
+        <div class="d-flex">
+          <span class="flex-1">
+            <span class="vam">{{ 'dashboard.todayAddMember' | lang }}</span>
+            <svg-icon class="ml-3 svg-icon" src="./assets/images/svg/question.svg"></svg-icon>
+          </span>
+          <span class="color-999 ml-8">{{ 'dashboard.firstDeposit' | lang }}</span>
+        </div>
+        <div class="d-flex flex-btc mt-1 mb-2">
+          <span class="fz-28 fw-bolder lh-40">{{ transactionLive.registerCount | toFormatMoney }}</span>
+          <span class="color-999">{{ transactionLive.depositFirstCount | toFormatMoney }}</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="color-999">{{ 'dashboard.compareYesterday' | lang }}</span>
+          <span
+            [class]="
+              (transactionLive.registerCountRise && (transactionLive.registerCountRise > 0 ? 'up' : 'down')) || ''
+            "
+          >
+            <span class="text ml-5 mr-3">{{ transactionLive.registerCountRise || 0 | numberSign }}%</span>
+            <span class="triangle"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 子账户资产 -->
+      <div class="live mr-5 pt-4 px-6">
+        <div class="d-flex">
+          <span class="flex-1">
+            <span class="vam">{{ 'dashboard.subAccount' | lang }}</span>
+            <svg-icon class="ml-3 svg-icon" src="./assets/images/svg/question.svg"></svg-icon>
+          </span>
+          <span class="color-999 ml-8">{{ 'dashboard.yesterday' | lang }}</span>
+        </div>
+        <div class="d-flex flex-btc mt-1 mb-2">
+          <span class="fz-28 fw-bolder lh-40">NaN</span>
+          <span class="color-999">NaN</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="color-999">{{ 'dashboard.compareYesterday' | lang }}</span>
+          <span
+            [class]="
+              (transactionLive.registerCountRise && (transactionLive.registerCountRise > 0 ? 'up' : 'down')) || ''
+            "
+          >
+            <span class="text ml-5 mr-3">NaN%</span>
+            <span class="triangle"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 提款概况 -->
+      <div class="live live-more mr-5 pt-4 px-6">
+        <div class="d-flex flex-wrap">
+          <div class="flex-1">
+            <div>
+              <span class="vam">{{ 'dashboard.withdrawOver' | lang }}</span>
+              <svg-icon class="ml-3 svg-icon" src="./assets/images/svg/question.svg"></svg-icon>
+            </div>
+            <div class="live-more-data">
+              <span class="fz-28 fw-bolder lh-40">
+                {{ transactionLive.withdrawTotal | toFormatNumberDecimal | toFormatMoney }}
+              </span>
+              <span class="color-999 fz-18"> / {{ transactionLive.withdrawCount | toFormatMoney }}</span>
+            </div>
+          </div>
+          <div class="flex-1 text-right">
+            <div class="color-999 ml-8 flex-1">{{ 'dashboard.confirmed' | lang }}</div>
+            <div class="color-999 ml-8 flex-1 fz-16 live-more-data pt-3">NaN <span class="fz-14">/ NaN</span></div>
+          </div>
+          <div class="flex-1 text-right">
+            <div class="color-999 ml-8 flex-1">{{ 'dashboard.yesterday' | lang }}</div>
+            <div class="color-999 ml-8 flex-1 fz-16 live-more-data pt-3">
+              {{ transactionLive.prevWithdrawTotal | toFormatNumberDecimal | toFormatMoney }}
+              <span class="fz-14">/ {{ transactionLive.prevWithdrawCount | toFormatMoney }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-ac">
+          <span class="color-999">{{ 'dashboard.compareYesterday' | lang }}</span>
+          <span
+            [class]="
+              (transactionLive.withdrawTotalRise && (transactionLive.withdrawTotalRise > 0 ? 'up' : 'down')) || ''
+            "
+          >
+            <span class="text ml-5 mr-3">{{ transactionLive.withdrawTotalRise || 0 | numberSign }}%</span>
+            <span class="triangle"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="live mr-5 px-6 py-0 my-0 w-0 h-0" *ngFor="let _ of [1, 2, 3, 4, 5]"></div>
+    </div>
+  </section>
+
+  <section class="min-w-0">
+    <div class="fz-20 fw-bolder mt-5 lh-28 mb-10 px-6">{{ 'dashboard.monitor' | lang }}</div>
+
+    <div class="monitor-wrap">
+      <div class="monitor mr-5 pt-4 px-6">
+        <div class="fz-28 lh-32">{{ appealStat?.depositCount | toFormatMoney }}</div>
+        <div class="color-999 fz-12">{{ 'dashboard.depositAComplaint' | lang }}</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="d-flex flex-wrap" style="margin-left: -20px">
+  <div class="bg-fff rounded p-8 flex-1 pb-4 ml-8 mt-10" style="min-width: 400px">
+    <div class="d-flex">
+      <div class="fz-20 fw-bolder flex-1">{{ 'dashboard.productRank.title' | lang }}</div>
+    </div>
+
+    <table class="w-100 fz-12 mt-4 table-panel">
+      <thead>
+        <tr class="lh-30">
+          <th class="text-center color-999 text-center fw-normal">{{ 'dashboard.productRank.name' | lang }}</th>
+          <th class="color-999 text-center fw-normal">{{ 'dashboard.productRank.count' | lang }}</th>
+          <th class="text-center color-999 fw-normal">{{ 'dashboard.productRank.flow' | lang }}</th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('gameRankType', 1, 'getGameRank')"
+          >
+            <span [class.text-primary]="data.gameRankType === 1"
+              >{{ 'dashboard.productRank.winOrLoss' | lang }} <span *ngIf="data.gameRankType === 1" class="arrow"></span
+            ></span>
+          </th>
+          <th class="text-center color-999 fw-normal">{{ 'dashboard.productRank.soloPlayer' | lang }}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="lh-30" *ngFor="let item of productRankList; let i = index">
+          <td class="text-center">NaN</td>
+          <td class="text-center">NaN</td>
+          <td class="text-center">NaN</td>
+          <td class="text-center">NaN</td>
+          <td class="text-center">NaN</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div
+      class="container-empty"
+      [style.height.px]="240"
+      *ngIf="!productRankList.length && (appService.loading$ | async) === false"
+    >
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-fff rounded p-8 flex-1 pb-4 ml-8 mt-10" style="min-width: 400px">
+    <div class="d-flex">
+      <div class="fz-20 fw-bolder flex-1">{{ 'dashboard.gameRank.title' | lang }}</div>
+
+      <div class="transaction">
+        <mat-form-field [style.width.px]="langService.isLocal ? 80 : 140">
+          <mat-select
+            [(ngModel)]="data.gameRankType"
+            (selectionChange)="onRankChange('gameRankType', $event.value, 'getGameRank')"
+          >
+            <mat-option [value]="item.value" *ngFor="let item of gameRankTypeList; index as i">{{
+              'dashboard.gameRank.type' | lang: i
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="d-flex ml-6">
+          <div
+            class="filter-day cursor-pointer px-3"
+            [class.active]="data.gameDay === item"
+            *ngFor="let item of dayList"
+            (click)="onRankChange('gameDay', item, 'getGameRank')"
+          >
+            {{ item }}{{ 'dashboard.gameRank.day' | lang }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="w-100 fz-12 mt-4 table-panel">
+      <thead>
+        <tr class="lh-30">
+          <th class="text-center color-999 text-center fw-normal">{{ 'dashboard.gameRank.rank' | lang }}</th>
+          <th class="color-999 text-center fw-normal">{{ 'dashboard.gameRank.name' | lang }}</th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('gameRankType', 3, 'getGameRank')"
+          >
+            <span [class.text-primary]="data.gameRankType === 3"
+              >{{ 'dashboard.gameRank.count' | lang }} <span *ngIf="data.gameRankType === 3" class="arrow"></span
+            ></span>
+          </th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('gameRankType', 2, 'getGameRank')"
+          >
+            <span [class.text-primary]="data.gameRankType === 2"
+              >{{ 'dashboard.gameRank.flow' | lang }} <span *ngIf="data.gameRankType === 2" class="arrow"></span
+            ></span>
+          </th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('gameRankType', 1, 'getGameRank')"
+          >
+            <span [class.text-primary]="data.gameRankType === 1"
+              >{{ 'dashboard.gameRank.winOrLoss' | lang }} <span *ngIf="data.gameRankType === 1" class="arrow"></span
+            ></span>
+          </th>
+          <th class="text-center color-999 fw-normal">
+            <span>{{ 'dashboard.gameRank.soloPlayer' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="lh-30" *ngFor="let item of gameRankList; let i = index">
+          <td [ngSwitch]="i" class="text-center color-999">
+            <svg-icon *ngSwitchCase="0" src="./assets/images/dashboard/gold.svg"></svg-icon>
+            <svg-icon *ngSwitchCase="1" src="./assets/images/dashboard/silver.svg"></svg-icon>
+            <svg-icon *ngSwitchCase="2" src="./assets/images/dashboard/bronze.svg"></svg-icon>
+            <ng-container *ngSwitchDefault>{{ i + 1 }}</ng-container>
+          </td>
+          <td class="text-center">
+            <!--            <img class="rounded-circle" iconSrc="http://via.placeholder.com/16x16" src="" alt="" />-->
+            {{ item.gameName || '-' }}
+          </td>
+          <td class="text-center">{{ item.orderQuantity | toFormatMoney }}</td>
+          <td class="text-center" [winColor]="item.activeFlowAmount">
+            {{ item.activeFlowAmount | toFormatNumberDecimal | toFormatMoney }}
+          </td>
+          <td class="text-center" [winColor]="item.payoutAmount">
+            {{ item.payoutAmount | toFormatNumberDecimal | toFormatMoney }}
+          </td>
+          <!--          <td class="text-center" [winColor]="item.transactionAmount">-->
+          <!--            {{ item.transactionAmount | toFormatNumberDecimal | toFormatMoney }}-->
+          <!--          </td>-->
+          <td class="text-center">NaN</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div
+      class="container-empty"
+      [style.height.px]="240"
+      *ngIf="!gameRankList.length && (appService.loading$ | async) === false"
+    >
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-fff rounded p-8 flex-1 pb-4 ml-8 mt-10" style="min-width: 400px">
+    <div class="d-flex">
+      <div class="fz-20 fw-bolder flex-1">{{ 'dashboard.vipRank.title' | lang }}</div>
+
+      <div class="transaction">
+        <mat-form-field [style.width.px]="langService.isLocal ? 80 : 140">
+          <mat-select
+            [(ngModel)]="data.userRankType"
+            (selectionChange)="onRankChange('userRankType', $event.value, 'getUserRank')"
+          >
+            <mat-option [value]="item.value" *ngFor="let item of userRankTypeList; index as i">{{
+              'dashboard.vipRank.type' | lang: i
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="d-flex ml-6">
+          <div
+            class="filter-day cursor-pointer px-3"
+            [class.active]="data.personDay === item"
+            *ngFor="let item of dayList"
+            (click)="onRankChange('personDay', item, 'getUserRank')"
+          >
+            {{ item }}{{ 'dashboard.gameRank.day' | lang }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="w-100 fz-12 mt-4 table-panel">
+      <thead>
+        <tr class="lh-30">
+          <th class="text-center color-999 fw-normal">{{ 'dashboard.vipRank.rank' | lang }}</th>
+          <th class="color-999 text-center fw-normal">{{ 'dashboard.vipRank.uid' | lang }}</th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('userRankType', 0, 'getUserRank')"
+          >
+            <span [class.text-primary]="data.userRankType === 0"
+              >{{ 'dashboard.vipRank.count' | lang }} <span *ngIf="data.userRankType === 0" class="arrow"></span
+            ></span>
+          </th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('userRankType', 1, 'getUserRank')"
+          >
+            <span [class.text-primary]="data.userRankType === 1"
+              >{{ 'dashboard.vipRank.flow' | lang }} <span *ngIf="data.userRankType === 1" class="arrow"></span
+            ></span>
+          </th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('userRankType', 2, 'getUserRank')"
+          >
+            <span [class.text-primary]="data.userRankType === 2"
+              >{{ 'dashboard.vipRank.winOrLoss' | lang }} <span *ngIf="data.userRankType === 2" class="arrow"></span
+            ></span>
+          </th>
+          <!--          <th class="text-center color-999 fw-normal">-->
+          <!--            <span>总金额</span>-->
+          <!--          </th>-->
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="lh-30" *ngFor="let item of userRankList; let i = index">
+          <td [ngSwitch]="i" class="text-center color-999">
+            <svg-icon *ngSwitchCase="0" src="./assets/images/dashboard/gold.svg"></svg-icon>
+            <svg-icon *ngSwitchCase="1" src="./assets/images/dashboard/silver.svg"></svg-icon>
+            <svg-icon *ngSwitchCase="2" src="./assets/images/dashboard/bronze.svg"></svg-icon>
+            <ng-container *ngSwitchDefault>{{ i + 1 }}</ng-container>
+          </td>
+          <td class="text-center">
+            <!--            <img class="rounded-circle" iconSrc="http://via.placeholder.com/16x16" src="" alt="" />-->
+            {{ item.uId || '-' }}
+          </td>
+          <td class="text-center">{{ item.wagerCount | toFormatMoney }}</td>
+          <td class="text-center" [winColor]="item.activeFlowTotal">
+            {{ item.activeFlowTotal | toFormatNumberDecimal | toFormatMoney }}
+          </td>
+          <td class="text-center" [winColor]="item.payoutTotal">
+            {{ item.payoutTotal | toFormatNumberDecimal | toFormatMoney }}
+          </td>
+          <!--          <td class="text-center" [winColor]="item.wagerTotal">-->
+          <!--            {{ item.wagerTotal | toFormatNumberDecimal | toFormatMoney }}-->
+          <!--          </td>-->
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div
+      class="container-empty"
+      [style.height.px]="240"
+      *ngIf="!userRankList.length && (appService.loading$ | async) === false"
+    >
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-fff rounded p-8 flex-1 pb-4 ml-8 mt-10" style="min-width: 400px">
+    <div class="d-flex">
+      <div class="fz-20 fw-bolder flex-1">{{ 'dashboard.country.title' | lang }}</div>
+    </div>
+
+    <table class="w-100 fz-12 mt-4 table-panel">
+      <thead>
+        <tr class="lh-30">
+          <th class="text-center color-999 fw-normal">{{ 'dashboard.country.name' | lang }}</th>
+          <th class="color-999 text-center fw-normal">{{ 'dashboard.country.count' | lang }}</th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('userRankType', 1, 'getUserRank')"
+          >
+            <span [class.text-primary]="data.userRankType === 1"
+              >{{ 'dashboard.country.flow' | lang }} <span *ngIf="data.userRankType === 1" class="arrow"></span
+            ></span>
+          </th>
+          <th
+            class="text-center color-999 fw-normal cursor-pointer"
+            (click)="onRankChange('userRankType', 2, 'getUserRank')"
+          >
+            <span [class.text-primary]="data.userRankType === 2"
+              >{{ 'dashboard.country.winOrLoss' | lang }} <span *ngIf="data.userRankType === 2" class="arrow"></span
+            ></span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="lh-30" *ngFor="let item of countryRankList; let i = index">
+          <td [ngSwitch]="i" class="text-center color-999">NaN</td>
+          <td class="text-center">NaN</td>
+          <td class="text-center" [winColor]="item.activeFlowTotal">NaN</td>
+          <td class="text-center" [winColor]="item.payoutTotal">NaN</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div
+      class="container-empty"
+      [style.height.px]="240"
+      *ngIf="!countryRankList.length && (appService.loading$ | async) === false"
+    >
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap" style="margin-left: -20px">
+  <div class="bg-fff rounded p-8 flex-1 ml-8 mt-10" style="min-width: 400px">
+    <div class="d-flex flex-bt w-100">
+      <div class="fz-20 fw-bolder">
+        {{ 'dashboard.transaction.title' | lang }}
+        <svg-icon
+          [ngbTooltip]="curLangService.get('transaction.tooltip') | async"
+          placement="right"
+          class="ml-3"
+          src="./assets/images/svg/question.svg"
+        ></svg-icon>
+      </div>
+
+      <div class="transaction">
+        <mat-form-field [style.width.px]="92">
+          <mat-select [(ngModel)]="data.generalizeType" (selectionChange)="updateGeneralize()">
+            <mat-option [value]="item.value" *ngFor="let item of generalizeTypeList">{{
+              'dashboard.transaction.type' | lang: item.value
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="d-flex ml-6">
+          <div
+            class="filter-day cursor-pointer px-3"
+            [class.active]="data.generalizeDay === item"
+            *ngFor="let item of dayList"
+            (click)="onGeneralizeDay(item)"
+          >
+            {{ item }}{{ 'dashboard.transaction.day' | lang }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="py-4">
+      <span class="color-999 fz-12">
+        {{ data.generalizeDay }}{{ 'dashboard.transaction.dayReduce' | lang
+        }}{{ 'dashboard.transaction.type' | lang: curGeneralizeType.value }}：
+      </span>
+      <span class="fz-26 ml-4 mr-3">{{ generalize | reduceTotal: data.generalizeType | currencyValue: 'USDT' }}</span>
+      <span class="fz-16 color-999" *ngIf="['activeFlowAmount', 'transactionAmount'].includes(curGeneralizeType.value)"
+        >USDT</span
+      >
+      <span class="fz-16 color-999" *ngIf="curGeneralizeType.value === 'orderQuantity'">{{
+        'dashboard.transaction.count' | lang
+      }}</span>
+    </div>
+
+    <div class="chart-wrap">
+      <apx-chart
+        class="d-flex"
+        style="width: 100%; height: 100%"
+        [series]="lineChartOptions.series"
+        [chart]="lineChartOptions.chart"
+        [xaxis]="lineChartOptions.xAxis"
+        [yaxis]="lineChartOptions.yAxis"
+        [grid]="lineChartOptions.grid"
+        [dataLabels]="lineChartOptions.dataLabels"
+        [stroke]="lineChartOptions.stroke"
+        [fill]="lineChartOptions.fill"
+        [tooltip]="lineChartOptions.tooltip"
+        #generalizeChart
+      ></apx-chart>
+    </div>
+  </div>
+
+  <div class="ml-8 bg-fff rounded p-8 flex-1 mt-10" style="min-width: 400px">
+    <div class="d-flex flex-bt w-100">
+      <div class="fz-20 fw-bolder">
+        {{ 'dashboard.memberTrend.title' | lang }}
+        <svg-icon
+          placement="right"
+          [ngbTooltip]="curLangService.get('memberTrend.tooltip') | async"
+          class="ml-3"
+          src="./assets/images/svg/question.svg"
+        ></svg-icon>
+      </div>
+
+      <div class="transaction">
+        <mat-form-field [style.width.px]="langService.isLocal ? 86 : 140">
+          <mat-select [(ngModel)]="data.userTrendType" (selectionChange)="updateUserTrend()">
+            <mat-option [value]="item.value" *ngFor="let item of VIPList">{{
+              'dashboard.memberTrend.type' | lang: item.value
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="d-flex ml-6">
+          <div
+            class="filter-day cursor-pointer px-3"
+            [class.active]="data.userTrendDay === item"
+            *ngFor="let item of dayList"
+            (click)="onUserDay(item)"
+          >
+            {{ item }}{{ 'dashboard.memberTrend.day' | lang }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="py-4">
+      <span class="color-999 fz-12">
+        {{ data.userTrendDay }}{{ 'dashboard.memberTrend.dayReduce' | lang
+        }}{{ 'dashboard.memberTrend.type' | lang: curUserTrendType.value }}：
+      </span>
+      <span class="fz-26 ml-4 mr-3">{{ userTrend | slice: -data.userTrendDay | reduceTotal: data.userTrendType }}</span>
+      <span class="color-999 fz-16">{{ 'dashboard.memberTrend.people' | lang }}</span>
+    </div>
+
+    <div class="chart-wrap">
+      <apx-chart
+        class="d-flex"
+        style="width: 100%; height: 100%"
+        [series]="lineChartOptionsUser.series"
+        [chart]="lineChartOptionsUser.chart"
+        [xaxis]="lineChartOptionsUser.xAxis"
+        [yaxis]="lineChartOptionsUser.yAxis"
+        [grid]="lineChartOptionsUser.grid"
+        [dataLabels]="lineChartOptionsUser.dataLabels"
+        [stroke]="lineChartOptionsUser.stroke"
+        [fill]="lineChartOptionsUser.fill"
+        [tooltip]="lineChartOptionsUser.tooltip"
+        #userTrendChart
+      ></apx-chart>
+    </div>
+  </div>
+
+  <div class="ml-8 bg-fff rounded p-8 flex-1 mt-10" style="min-width: 400px">
+    <div class="d-flex flex-bt w-100">
+      <div class="fz-20 fw-bolder">
+        {{ 'dashboard.source.type' | lang: curSourceType.value }}{{ 'dashboard.source.title' | lang }}
+        <svg-icon
+          placement="right"
+          [ngbTooltip]="curLangService.get('source.tooltip') | async"
+          class="ml-3"
+          src="./assets/images/svg/question.svg"
+        ></svg-icon>
+      </div>
+
+      <div class="transaction">
+        <mat-form-field [style.width.px]="langService.isLocal ? 86 : 140">
+          <mat-select [(ngModel)]="data.sourceType" (selectionChange)="updateSource()">
+            <mat-option [value]="item.value" *ngFor="let item of sourceList">
+              {{ 'dashboard.source.type' | lang: item.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="d-flex ml-6">
+          <div
+            class="filter-day cursor-pointer px-3"
+            [class.active]="data.sourceDay === item"
+            *ngFor="let item of dayList"
+            (click)="onSourceDay(item)"
+          >
+            {{ item }}{{ 'dashboard.source.day' | lang }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="py-4">
+      <span class="color-999 fz-12">
+        {{ data.sourceDay }}{{ 'dashboard.source.dayReduce' | lang
+        }}{{ 'dashboard.source.type' | lang: curSourceType.value }}：
+      </span>
+      <span class="fz-26 ml-4 mr-3">{{ source | reduceTotal: data.sourceType }}</span>
+      <span class="color-999 fz-16">{{ 'dashboard.source.people' | lang }}</span>
+    </div>
+
+    <div class="mt-8">
+      <apx-chart
+        class="d-flex circle-chart"
+        [series]="circleChartOptions.series"
+        [chart]="circleChartOptions.chart"
+        [dataLabels]="circleChartOptions.dataLabels"
+        [responsive]="circleChartOptions.responsive"
+        [labels]="circleChartOptions.labels"
+        [legend]="circleChartOptions.legend"
+        [colors]="circleChartOptions.colors"
+        [plotOptions]="circleChartOptions.plotOptions"
+        [tooltip]="circleChartOptions.tooltip"
+        [states]="circleChartOptions.states"
+        #sourceChart
+      ></apx-chart>
+    </div>
+  </div>
+</div>

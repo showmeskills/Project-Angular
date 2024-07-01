@@ -1,0 +1,4 @@
+<img [src]="imgSrc" alt="" />
+<ng-container *ngIf="ldpiSrc && hdpiSrc && !ready">
+  <img class="hide_load" [src]="hdpiSrc" (load)="ready = true" alt="" />
+</ng-container>

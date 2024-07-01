@@ -1,0 +1,167 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12">
+  <!-- 类型 -->
+  <form-row [label]="'member.overview.correspondence.category' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of categoryList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 问题 -->
+  <form-row [label]="'member.overview.correspondence.problem' | lang" class="mr-8" [contentWidth]="280">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.problem"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 时间 -->
+  <form-row [label]="'common.date' | lang" class="mr-8" [contentWidth]="250">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 列表 -->
+<div class="card card-body mt-12">
+  <div class="d-flex flex-ac justify-content-between">
+    <!-- 通讯记录 -->
+    <div class="fz-20">{{ 'member.overview.correspondence.title' | lang }}</div>
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 新增通讯记录 -->
+      <button
+        type="button"
+        class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        (click)="openCorrespondenceEdit()"
+      >
+        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'member.overview.correspondence.addCorrespondence' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 类型 -->
+          <th>
+            <span class="cell">{{ 'member.overview.correspondence.category' | lang }}</span>
+          </th>
+          <!-- 日期 -->
+          <th>
+            <span class="cell">{{ 'common.date' | lang }}</span>
+          </th>
+          <!-- 最后编辑 -->
+          <th>
+            <span class="cell">{{ 'member.overview.correspondence.lastEditor' | lang }}</span>
+          </th>
+          <!-- 问题 -->
+          <th style="width: 35%">
+            <span class="cell">{{ 'member.overview.correspondence.problem' | lang }}</span>
+          </th>
+          <!-- 操作 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.actAction' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ getCategoryLang(item.boardType) | lang }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ +item.messageBoardTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.lastEditName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <div class="problem">{{ getProblemLang(item?.info) }}</div>
+            </span>
+          </td>
+          <!-- 操作 -->
+          <td>
+            <span class="cell">
+              <!-- 编辑 -->
+              <div class="primary operation-btn" (click)="openCorrespondenceEdit(item)">
+                {{ 'luckRoulette.edit' | lang }}
+              </div>
+
+              <!-- 删除 -->
+              <div class="primary operation-btn" (click)="openCorrespondenceDelete(item)">
+                {{ 'bonus.activity.delete' | lang }}
+              </div>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

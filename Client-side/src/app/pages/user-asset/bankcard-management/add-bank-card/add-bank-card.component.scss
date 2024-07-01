@@ -1,0 +1,237 @@
+div {
+  display: flex;
+}
+
+.main-container {
+  height: 510px;
+  width: 450px;
+  flex-direction: column;
+
+  &:host-context(.dark) & {
+    background-color: var(--bg-color-20);
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid var(--default-border-color);
+    height: 50px;
+    position: relative;
+    padding: 20px 24px;
+
+    //标题
+    .title {
+      // color: #1e2329;
+      color: var(--text-color);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    //关闭icon
+    .icon-close {
+      position: absolute;
+      right: 0;
+      margin-right: 24px;
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  .form-container {
+    flex-direction: column;
+    padding: 33px 24px 0 24px;
+
+    @media (max-width: 767px) {
+      overflow-y: auto;
+      max-height: 80vh;
+    }
+  }
+
+  .required {
+    color: #ff7172;
+  }
+
+  .input-row {
+    color: var(--text-color-20);
+    font-size: 14px;
+    flex-direction: column;
+    //margin-bottom: 10px;
+
+    .label-red {
+      &::after {
+        content: '*';
+        color: #ff7172;
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .no-pointer {
+      pointer-events: none;
+    }
+  }
+}
+
+//选择栏
+.select {
+  height: 40px;
+  margin-top: 8px;
+  //margin-bottom: 7px;
+  border-radius: 4px;
+  border: solid 1px var(--default-border-color);
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding-left: 14px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  &.disable {
+    background-color: #eaecef;
+    pointer-events: none;
+
+    span {
+      color: #b8c0c7;
+    }
+  }
+
+  &:hover {
+    .drop-dowm {
+      background-image: url(src/assets/images/kyc/hover-down.png);
+    }
+  }
+
+  .selected-row {
+    flex-direction: row;
+    align-items: center;
+    color: #1e2329;
+
+    &:host-context(.dark) & {
+      color: #fff;
+    }
+
+    .txt {
+      color: #1e2329;
+      font-size: 14px;
+    }
+
+    .value {
+      color: #b7bdc6;
+      margin-left: 8px;
+    }
+
+    .icon-horse,
+    .icon-aIon {
+      height: 27px;
+      width: 27px;
+      background-size: 27px 27px;
+      background-repeat: no-repeat;
+      margin-right: 8px;
+    }
+
+    .icon-horse {
+      background-image: url(src/assets/images/wallet/horse.png);
+    }
+
+    .icon-aIon {
+      background-image: url(src/assets/images/wallet/aion.png);
+    }
+  }
+
+  .drop-dowm {
+    background-image: url(src/assets/images/kyc/defauit-down.png);
+    margin-right: 12px;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+
+    &.clicked {
+      background-image: url(src/assets/images/kyc/hover-down.png);
+    }
+  }
+
+  .placeholder-txt-color {
+    color: #b7bdc6;
+  }
+}
+
+//货币icon组
+.icon-gourp {
+  .offset-right {
+    margin-right: 24px;
+    color: #2f2f2f;
+    font-size: 14px;
+    align-items: center;
+
+    .icon-btc,
+    .icon-eth,
+    .icon-usdt,
+    .icon-usdc,
+    .icon-trx {
+      height: 24px;
+      width: 24px;
+      background-size: 24px 24px;
+      background-repeat: no-repeat;
+      margin-right: 8px;
+    }
+
+    .icon-btc {
+      background-image: url(src/assets/images/wallet/btc.png);
+    }
+
+    .icon-eth {
+      background-image: url(src/assets/images/wallet/eth.png);
+    }
+
+    .icon-usdt {
+      background-image: url(src/assets/images/wallet/usdt.png);
+    }
+
+    .icon-usdc {
+      background-image: url(src/assets/images/wallet/usdc.png);
+    }
+
+    .icon-trx {
+      background-image: url(src/assets/images/wallet/trx.png);
+    }
+  }
+}
+
+.m-auto {
+  margin: auto;
+}
+
+.currency-input,
+.bank-input {
+  width: 100%;
+
+  &.disabled {
+    pointer-events: none;
+
+    .select {
+      opacity: 0.6;
+    }
+  }
+}
+
+.verify-loading-icon {
+  margin-right: 12px;
+  & + i {
+    display: none;
+  }
+}

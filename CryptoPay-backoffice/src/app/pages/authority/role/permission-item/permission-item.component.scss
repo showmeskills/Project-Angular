@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  font-size: 16px;
+
+  &.is-open > .expansion-wrap > .expansion-header {
+    > .arrow {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.arrow {
+  transition: all 0.2s linear;
+  transform-origin: center center;
+}
+
+.expansion {
+  &-wrap {
+    width: 100%;
+  }
+
+  &-header {
+    height: 42px;
+    padding: 0 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed #e4e6ef;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+      border-radius: 4px;
+    }
+  }
+
+  &-item {
+    padding-left: 32px;
+    border-top: 1px dashed #e4e6ef;
+
+    .expansion-header {
+      border-top: 0;
+    }
+
+    &-header {
+      display: flex;
+      flex-flow: row wrap;
+      white-space: nowrap;
+      align-items: flex-start;
+      padding-right: 30px;
+      min-width: 220px;
+    }
+  }
+}
+
+.item-list {
+  margin-left: 40px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.checkbox {
+  font-size: 16px;
+  color: #181c32;
+}

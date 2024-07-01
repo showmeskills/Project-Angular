@@ -1,0 +1,31 @@
+# 本地配置
+# app 配置
+app_config:
+  # 切记保证商户包名和谷歌登录配置一致，否则会出现打包问题
+  bundle_id: com.gogaming.sit2
+  bundle_id_ios: com.gogaming.sit2
+  display_name: gogaming-sit2
+  # 安卓安装包名字
+  install_package_name: gogaming_app-sit2
+  install_package_name_ios: gogaming_app-sit2
+  # app唤醒scheme
+  scheme_id: com.gogaming.sit2
+  # shorebird appId
+  shorebird_id: d1a95457-52b5-40ea-a550-a0506dc03a40
+
+# 商户配置
+merchant_config:
+  # 商户 id
+  tenant_id: 21
+  # line channel_id
+  line_id: 1660797606
+  # 谷歌配置文件路径，暂不支持分别指定 iOS 以及安卓配置路径
+  google_info_path: merchant-2/sources/sit/
+  # 对应 config.dart 文件中的 currentConfig 变量值
+  # 注意这里会覆盖掉之前的值，请确保该值填入后编译顺利
+  current_config: SitM2.config
+  language_type: APP2
+  # sentry dsn
+  sentry_dsn: https:\/\/dacaf4619f3b35300ca5157cc8515997@sentry.athena25.com\/6
+  is_m1: false
+  colors: GGColorsM2

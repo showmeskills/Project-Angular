@@ -1,0 +1,41 @@
+<!-- start: Paginator -->
+<div class="d-flex flex-wrap">
+  <ng-pagination
+    [collectionSize]="paginator.total"
+    [(page)]="paginator.page"
+    [maxSize]="maxSize"
+    [rotate]="true"
+    [disabled]="isLoading !== undefined ? isLoading : (appService.loading$ | async)"
+    [boundaryLinks]="true"
+    [pageSize]="paginator.pageSize"
+    (pageChange)="pageChange($event)"
+  >
+  </ng-pagination>
+</div>
+<div class="d-flex align-items-center py-3">
+  <!-- begin: loading -->
+  <!-- <div class="d-flex align-items-center" *ngIf="isLoading">
+    <div class="mr-2 text-muted">加载中...</div>
+    <div class="spinner spinner-primary mr-10"></div>
+  </div> -->
+  <!-- end: loading -->
+
+  <!-- begin: pageSize -->
+  <ng-template *ngIf="!simple">
+    <select
+      class="form-control form-control-sm fw-bold mr-4 border-0 bg-light false"
+      style="width: 75px"
+      [(ngModel)]="paginator.pageSize"
+      (change)="sizeChange()"
+    >
+      <option class="btn" *ngFor="let ps of pageSizes">
+        {{ ps }}
+      </option>
+    </select>
+    <span class="react-bootstrap-table-pagin ation-total">
+      &nbsp;当前显示第 {{ paginator.page }} 页,每页&nbsp;{{ paginator.pageSize }}条,共&nbsp;{{ paginator.total }}条记录
+    </span>
+  </ng-template>
+  <!-- end: pageSize -->
+</div>
+<!-- end: Paginator -->

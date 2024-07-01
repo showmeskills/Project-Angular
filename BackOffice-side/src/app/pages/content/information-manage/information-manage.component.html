@@ -1,0 +1,84 @@
+<ng-template #sortIcon>
+  <span class="info-icon cursor-move">
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+  </span>
+</ng-template>
+
+<ng-template #modalTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">提示</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">确认是否删除该主题</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">取消</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c({ value: true })">确认</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #itemTpl let-d>
+  <div class="flex-1 d-flex flex-ac">
+    <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+    <img class="ml-6 mr-4 rounded" [src]="d.iconAddress + d.icon" alt="" width="25" height="25" />
+    <span>{{ d.title }}</span>
+  </div>
+
+  <div class="d-flex">
+    <button class="btn-cube sm p-0" type="button" (click)="router.navigate(['/content/information-manage', d.id])">
+      <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+    </button>
+    <button class="btn-cube sm p-0 ml-4" type="button" (click)="onDel(modalTpl, d)">
+      <svg-icon [src]="'./assets/images/svg/admin-del.svg'" class="svg-icon svg-icon-2x"></svg-icon>
+    </button>
+  </div>
+</ng-template>
+
+<div class="d-flex flex-wrap align-items-start" style="margin: 0 -10px">
+  <div class="flex-1 mx-4" *ngFor="let tabParent of categoryList.slice(0, -1); let ii = index; let last = last">
+    <div class="card mt-8" *ngFor="let tab of [tabParent].concat(last ? categoryList.slice(-1) : []); let key = index">
+      <div class="card-body">
+        <div class="d-flex">
+          <h2 class="fz-20 mb-0 flex-1 fw-bolder">{{ lang.isLocal ? tab.value : tab.key }}</h2>
+
+          <button
+            type="button"
+            class="btn btn-light-primary d-flex flex-center lh-1n"
+            (click)="router.navigate(['/content/information-manage/add'])"
+          >
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+            <span>{{ 'game.manage.add' | lang }}</span>
+          </button>
+        </div>
+
+        <div class="mt-5" cdkDropListGroup>
+          <div
+            [cdkDropListData]="item.children"
+            *ngFor="let item of list[key + ii]; let i = index"
+            cdkDropList
+            (cdkDropListDropped)="drop($event, i, list[key + ii])"
+          >
+            <div cdkDrag class="item" [cdkDragData]="item">
+              <ng-container *ngTemplateOutlet="itemTpl; context: { $implicit: item }"></ng-container>
+            </div>
+
+            <div cdkDrag class="item item-child" *ngFor="let child of item.children" [cdkDragData]="child">
+              <ng-container *ngTemplateOutlet="itemTpl; context: { $implicit: child }"></ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

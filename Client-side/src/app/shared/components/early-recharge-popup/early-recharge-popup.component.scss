@@ -1,0 +1,43 @@
+:host {
+  background-color: transparent !important;
+  display: flex;
+  height: 100%;
+}
+
+.standard-popup {
+  width: 435px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  pointer-events: all;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.background-img {
+  max-width: 100%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.btn-img {
+  width: 120px;
+  height: 120px;
+  margin-top: -55px;
+
+  @media (max-width: 767px) {
+    width: 90px;
+    height: 90px;
+    margin-top: -44px;
+  }
+}
+
+::ng-deep {
+  .early-recharge-popup {
+    pointer-events: none;
+  }
+}

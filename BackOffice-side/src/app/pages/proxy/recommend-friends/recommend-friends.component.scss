@@ -1,0 +1,126 @@
+.form-icon-triangle {
+  transform: rotate(270deg);
+}
+
+.tab {
+  color: #7e8299;
+  display: flex;
+  height: 100%;
+
+  &-wrap {
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  &-item {
+    font-size: 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    z-index: 1;
+    display: inline-block;
+    height: 100%;
+    line-height: 55px;
+    padding: 0 10px;
+
+    &.active {
+      color: #009ef7;
+      border-bottom: 2px solid #009ef7;
+    }
+  }
+}
+
+.triangle {
+  margin-left: 5px;
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 4px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+  &:active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+  &:active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.deposit-register-table {
+  thead　 {
+    tr {
+      th {
+        padding: 8px 5px;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        padding: 1px 5px;
+        .cell {
+          min-height: 40px;
+        }
+      }
+    }
+  }
+}
+
+.bonus-setting-options {
+  cursor: pointer;
+  word-break: keep-all;
+  padding: 5px 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  color: #969bad;
+
+  &.active {
+    border: 1px solid #1890ff;
+    box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.016);
+    color: #009ef7;
+  }
+}
+
+.addUploadBtn {
+  cursor: pointer;
+  width: 188px;
+  height: 218px;
+  border-radius: 9px;
+  background: #f5f8fa;
+  border: 1px dashed #009ef7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .svg-icon {
+    color: #009ef7;
+  }
+}

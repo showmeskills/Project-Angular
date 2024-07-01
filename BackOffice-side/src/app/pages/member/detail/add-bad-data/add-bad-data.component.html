@@ -1,0 +1,94 @@
+<modal-title (close)="modal.dismiss()">{{ 'member.detail.addBadData' | lang }}</modal-title>
+
+<div class="p-10">
+  <!-- IP -->
+  <ng-template #everyDayTpl>
+    <div class="d-flex flex-wrap">
+      <label class="radio radio-lg lh-32 my-2 fz-16">
+        <input type="radio" name="timeRange" value="IP" [(ngModel)]="data.type" />
+        <span class="mr-4"></span>IP
+      </label>
+    </div>
+  </ng-template>
+  <form-row label-width="180" [label]="everyDayTpl">
+    <ng-template>
+      <input
+        class="form-control w-100"
+        type="text"
+        [placeholder]="'member.detail.addBadData' | lang"
+        [(ngModel)]="data.ip"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 电子邮箱 -->
+  <ng-template #everyYearTpl>
+    <div class="d-flex flex-wrap">
+      <label class="radio radio-lg lh-32 my-2 fz-16">
+        <input type="radio" name="timeRange" value="Email" [(ngModel)]="data.type" />
+        <span class="mr-4"></span>{{ 'member.detail.email' | lang }}
+      </label>
+    </div>
+  </ng-template>
+  <form-row label-width="180" [label]="everyYearTpl">
+    <ng-template>
+      <input
+        class="form-control w-100"
+        type="text"
+        [placeholder]="'member.detail.emailTips' | lang"
+        [(ngModel)]="data.email"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 设备指纹 -->
+  <ng-template #FingerprintTpl>
+    <div class="d-flex flex-wrap">
+      <label class="radio radio-lg lh-32 my-2 fz-16">
+        <input
+          type="radio"
+          name="timeRange"
+          value="Fingerprint"
+          [disabled]="!data.fingerprint"
+          [(ngModel)]="data.type"
+        />
+        <span class="mr-4"></span>{{ 'risk.deviceFingerprint' | lang }}
+      </label>
+    </div>
+  </ng-template>
+  <form-row label-width="180" [label]="FingerprintTpl">
+    <ng-template>
+      <div>{{ data.fingerprint || '-' }}</div>
+    </ng-template>
+  </form-row>
+
+  <!-- 评论 -->
+  <form-row [label]="'member.detail.comment' | lang" label-width="180" required>
+    <ng-template>
+      <textarea
+        [style.height.px]="290"
+        type="text"
+        class="form-control resize-none"
+        autocomplete="off"
+        [(ngModel)]="data.comment"
+        input-trim
+      ></textarea>
+    </ng-template>
+  </form-row>
+
+  <!-- <form-row [label]="'member.detail.brand' | lang" label-width="150" required>
+    <ng-template>
+      <div class="d-flex flex-wrap lh-38">
+        <label
+          class="radio radio-lg radio-success mr-8 fz-16"
+          *ngFor="let item of subHeaderService.merchantListAll; let i = index"
+        >
+          <input type="radio" name="brand" [value]="+item.value" [(ngModel)]="data.brand" />
+          <span class="mr-2"></span>{{ item.name }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row> -->
+</div>
+
+<modal-footer (dismiss)="modal.dismiss()" (confirm)="onSubmit()"></modal-footer>

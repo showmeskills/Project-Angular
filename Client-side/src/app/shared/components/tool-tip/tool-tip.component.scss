@@ -1,0 +1,125 @@
+.tooltip-origin {
+  display: flex;
+  user-select: none;
+}
+
+.tooltip-container {
+  padding: 5px;
+  &.arrow {
+    padding: 10px;
+  }
+}
+
+.tooltip-block {
+  display: block;
+}
+
+.tooltip-none {
+  display: none;
+}
+
+.tooltip-content {
+  // background-color: #717a8a;
+  background-color: var(--tooltip-bg-color);
+  word-break: break-all;
+  font-size: 12px;
+  padding: 10px;
+  line-height: 1.4;
+  position: relative;
+  overflow: visible;
+  // color: #fff;
+  color: var(--bg-color-20);
+  border-radius: 4px;
+  max-width: 250px;
+
+  &.arrow {
+    &::before {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border: 5px solid transparent;
+      position: absolute;
+    }
+  }
+
+  &.light {
+    background-color: var(--tooltip-light-bg-color);
+    color: var(--tooltip-light-text-color);
+  }
+}
+
+::ng-deep {
+  .tooltip-overlay-up .tooltip-content {
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.16);
+
+    &.arrow {
+      &::before {
+        left: 50%;
+        margin-left: -5px;
+        bottom: -10px;
+        // border-top: 5px solid #717a8a;
+        border-top: 5px solid var(--tooltip-bg-color);
+      }
+      &.light {
+        &::before {
+          border-top-color: var(--tooltip-light-bg-color);
+        }
+      }
+    }
+  }
+
+  .tooltip-overlay-down .tooltip-content {
+    box-shadow: 0 -1px 6px 0 rgba(0, 0, 0, 0.16);
+    &.arrow {
+      &::before {
+        left: 50%;
+        margin-left: -5px;
+        top: -10px;
+        // border-bottom: 5px solid #717a8a;
+        border-bottom: 5px solid var(--tooltip-bg-color);
+      }
+      &.light {
+        &::before {
+          border-bottom-color: var(--tooltip-light-bg-color);
+        }
+      }
+    }
+  }
+
+  .tooltip-overlay-left .tooltip-content {
+    box-shadow: 1px 0 6px 0 rgba(0, 0, 0, 0.16);
+    &.arrow {
+      &::before {
+        top: 50%;
+        margin-top: -5px;
+        right: -10px;
+        // border-left: 5px solid #717a8a;
+        border-left: 5px solid var(--tooltip-bg-color);
+      }
+      &.light {
+        &::before {
+          border-left-color: var(--tooltip-light-bg-color);
+        }
+      }
+    }
+  }
+
+  .tooltip-overlay-right .tooltip-content {
+    box-shadow: -1px 0 6px 0 rgba(0, 0, 0, 0.16);
+    &.arrow {
+      &::before {
+        top: 50%;
+        margin-top: -5px;
+        left: -10px;
+        // border-right: 5px solid #717a8a;
+        border-right: 5px solid var(--tooltip-bg-color);
+      }
+      &.light {
+        &::before {
+          border-right-color: var(--tooltip-light-bg-color);
+        }
+      }
+    }
+  }
+}

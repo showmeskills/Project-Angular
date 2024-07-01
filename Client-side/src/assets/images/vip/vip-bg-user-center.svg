@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="357" height="172" viewBox="0 0 357 172">
+    <defs>
+        <linearGradient id="rzi3d6oi7a" x1=".09" y1=".024" x2=".881" y2=".985" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fbfbfb" stop-opacity=".502"/>
+            <stop offset="1" stop-color="#dfceb0" stop-opacity=".149"/>
+        </linearGradient>
+        <linearGradient id="l1hulrwg2b" x1=".91" y1=".024" x2=".119" y2=".985" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#e2cead" stop-opacity=".502"/>
+            <stop offset="1" stop-color="#dfceb0" stop-opacity=".129"/>
+        </linearGradient>
+    </defs>
+    <g data-name="组 8435" transform="translate(12575 11827)">
+        <rect data-name="矩形 9731" width="357" height="172" rx="4" transform="translate(-12575 -11827)" style="fill:#eee2d2"/>
+        <path data-name="路径 13743" d="M142.719 0H118.33a4 4 0 0 0-4 4v164a4 4 0 0 0 4 4h238.647c2.21 0-212.049-172-214.258-172z" transform="translate(-12689.329 -11827)" style="opacity:.5;mix-blend-mode:overlay;isolation:isolate;fill:url(#rzi3d6oi7a)"/>
+        <path data-name="路径 13742" d="M272.112 0H353a4 4 0 0 1 4 4v164a4 4 0 0 1-4 4H114.353C112.143 172 269.9 0 272.112 0z" transform="translate(-12575.329 -11827)" style="fill:url(#l1hulrwg2b)"/>
+    </g>
+</svg>

@@ -1,0 +1,226 @@
+<div class="card py-8 pr-4 pl-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <form-row [label]="'member.giveOut.IssuanceTime' | lang" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <!-- 请选择发放时间 -->
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.giveOut.deliveryTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.grantTime"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <!-- 领取时间 -->
+    <form-row [label]="'member.giveOut.pickTime' | lang" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <!-- 选择领取时间暂时关闭 -->
+        <input
+          class="text-center form-control w-100 disabled"
+          type="text"
+          [placeholder]="'member.giveOut.tmporarilyClosed' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.applyTime"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <form-row label="UID" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'member.giveOut.bonusNumber' | lang" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.oddNumbers"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- VIP等级 -->
+    <form-row [label]="'member.giveOut.vipLevel' | lang" label-width="95" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <mat-form-field [style.width.px]="264">
+          <!-- 请选择VIP等级 -->
+          <mat-select
+            class="form-control"
+            [(ngModel)]="data.selectedVipList"
+            [placeholder]="'member.giveOut.selectVIP' | lang"
+            multiple
+          >
+            <mat-option *ngFor="let item of vipList" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 活动状态 -->
+    <form-row [label]="'member.giveOut.activeStatus' | lang" label-width="110" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.releaseStatus" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of releaseStatusList" [value]="item.value">{{ item.name | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2 mt-4">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 tableList">
+  <div class="card-body">
+    <div class="d-flex flex-ac">
+      <div class="fz-20 d-flex flex-ac flex-1">
+        {{ 'member.giveOut.title' | lang }}
+        <svg-icon
+          class="svg-icon svg-icon-xl text-primary ml-4 refresh"
+          [src]="'./assets/images/svg/refresh.svg'"
+          (click)="loadData()"
+        ></svg-icon>
+      </div>
+
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出本页 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'content.mu.curExport' | lang }}</span>
+      </button>
+    </div>
+
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <!-- 活动标题 -->
+            <th>
+              <span class="cell">{{ 'member.giveOut.eventTitle' | lang }}</span>
+            </th>
+            <th><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.vipLevel' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.bonusNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.IssuanceType' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.amount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.IssuanceTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.completeness' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.activitesName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell blue" (click)="onCopy(item.userNo)">{{ item.userNo || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.vipLevel | vipName }}</span>
+            </td>
+            <td>
+              <span class="cell blue" (click)="onCopy(item.bonusNo)">{{ item.bonusNo || '-' }}</span>
+            </td>
+            <td>
+              <!-- '现金劵' : '抵用卷' -->
+              <span class="cell">{{
+                item.releaseType === 1 ? ('member.giveOut.cashCoupon' | lang) : ('member.giveOut.coupon' | lang)
+              }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ item.money | currencyValue: item.moneyType }}
+                <img class="ml-2" [currencyIcon]="item.moneyType"
+              /></span>
+            </td>
+            <td>
+              <span class="cell">{{ item.releaseTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ getReleaseStatus(item.releaseStatus) | lang }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="76">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

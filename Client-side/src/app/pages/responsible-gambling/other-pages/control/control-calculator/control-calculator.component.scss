@@ -1,0 +1,255 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.calculator-container {
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
+
+.text-50 {
+  font-size: 50px;
+  color: var(--text-color);
+}
+
+.m-top-50 {
+  margin-top: 50px;
+}
+
+.text-color-16 {
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.text-color-20 {
+  font-size: 20px;
+  color: var(--text-color);
+}
+
+.currency-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.top-info {
+  padding: 10px 20px 10px 14px;
+  background-color: var(--bg-color-10);
+  position: relative;
+  margin-top: 30px;
+
+  &::after {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--primary-color);
+  }
+}
+
+.calcu-temp-container {
+  padding-top: 30px;
+  padding-bottom: 50px;
+  border-bottom: 1px solid var(--default-border-color);
+}
+
+.flex-layout {
+  display: flex;
+  align-items: center;
+  @include polyfills.flex-gap(10px, 'row nowrap');
+
+  .cycle-number {
+    padding: 4px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 8px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+  }
+}
+
+.calculate-area {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  @media (max-width: 1090px) {
+    display: block;
+  }
+
+  .input-area {
+    display: flex;
+    width: 65%;
+    flex-wrap: wrap;
+    margin-top: -20px;
+    margin-left: -30px;
+
+    @media (max-width: 1090px) {
+      display: block;
+      width: 100%;
+    }
+
+    .input-column {
+      margin-top: 20px;
+      margin-left: 30px;
+      width: 40%;
+
+      @media (max-width: 1090px) {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.m-top-h5-20 {
+  @media (max-width: 1090px) {
+    margin-top: 20px;
+  }
+}
+
+.result-area {
+  width: 35%;
+  overflow: hidden;
+
+  @media (max-width: 1090px) {
+    width: 100%;
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .footer-input-area {
+    width: 26%;
+
+    @media (max-width: 1090px) {
+      width: 100%;
+    }
+  }
+
+  .foot-button {
+    display: flex;
+  }
+}
+
+.result-container {
+  .list {
+    display: flex;
+    @include polyfills.flex-gap(100px, 'row nowrap');
+
+    @media (max-width: 767px) {
+      display: block;
+    }
+  }
+
+  .icome-list,
+  .payment-list {
+    width: 50%;
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
+  }
+
+  .list-item {
+    display: flex;
+    flex-direction: column;
+    margin-top: -10px;
+
+    .item {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .currency-icon {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+
+  .process-bar {
+    width: 70%;
+    height: 40px;
+    display: flex;
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
+
+    .payment,
+    .game,
+    .balance {
+      height: 40px;
+      position: relative;
+    }
+
+    .tips {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .line {
+        height: 40px;
+        width: 2px;
+      }
+    }
+  }
+
+  .bottom {
+    padding: 10px 20px 10px 14px;
+    background-color: var(--bg-color-10);
+    position: relative;
+    margin-top: 150px;
+
+    &::after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background-color: var(--primary-color);
+    }
+
+    .bottom-text {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page {
+      color: var(--primary-color);
+      font-size: 16px;
+    }
+  }
+}
+
+.payment {
+  background-color: #fadf50;
+}
+
+.game {
+  background-color: #e9a944;
+}
+
+.balance {
+  background-color: #38785c;
+}
+
+.recalculate {
+  display: flex;
+  justify-content: center;
+}

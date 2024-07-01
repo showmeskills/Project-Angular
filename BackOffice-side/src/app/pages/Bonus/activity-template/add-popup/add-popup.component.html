@@ -1,0 +1,55 @@
+<div class="modal-content">
+  <modal-title
+    [title]="(isArea ? 'member.activity.sencliCommon.addArea' : 'member.activity.sencliCommon.addCurrency') | lang"
+    (close)="modal.dismiss()"
+  ></modal-title>
+
+  <div class="modal-body custom-scroll-y" [style.height.px]="400">
+    <!-- 地区 -->
+    <ng-container *ngIf="isArea; else currency">
+      <ng-container *ngFor="let items of countryList" selectChildren>
+        <div class="fz-18 mb-5 d-flex">
+          {{ langService.isLocal ? items.continentName : items.continentCode }}
+
+          <label class="checkbox checkbox-lg ml-2 fz-16">
+            <input type="checkbox" selectGroup />
+            <span class="mr-4"></span>
+          </label>
+        </div>
+
+        <div class="d-flex flex-ac flex-wrap mb-10" style="gap: 20px">
+          <label
+            class="checkbox checkbox-lg h42 px-5"
+            style="background: #f5f8fa; border-radius: 6px"
+            *ngFor="let item of items.countries"
+          >
+            <input type="checkbox" [(ngModel)]="item.checked" />
+            <i class="mr-2" [iconCountry]="item.countryEnName"></i>
+            {{ langService.isLocal ? item.countryName : item.countryEnName }}
+            <span class="ml-5"></span>
+          </label>
+        </div>
+      </ng-container>
+    </ng-container>
+    <!-- 币种 -->
+    <ng-template #currency>
+      <ng-container *ngFor="let items of currencyList; index as i">
+        <div class="fz-18 mb-5">{{ 'member.activity.sencliCommon.currencyTypeList' | lang: i }}</div>
+        <div class="d-flex flex-ac flex-wrap mb-10" style="gap: 20px">
+          <label
+            class="checkbox checkbox-lg px-5 h42"
+            style="background: #f5f8fa; border-radius: 6px"
+            *ngFor="let item of items.list"
+          >
+            <input type="checkbox" [(ngModel)]="item.checked" />
+            <img [src]="item.icon | host" width="18" height="18" class="mr-4" />
+            {{ item.code }}
+            <span class="ml-5"></span>
+          </label>
+        </div>
+      </ng-container>
+    </ng-template>
+  </div>
+
+  <modal-footer (confirm)="onConfirm()" (dismiss)="modal.dismiss()"></modal-footer>
+</div>

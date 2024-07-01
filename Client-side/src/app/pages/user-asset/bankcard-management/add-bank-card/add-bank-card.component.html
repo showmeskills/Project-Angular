@@ -1,0 +1,94 @@
+<div class="main-container">
+  <div class="header-row">
+    <span class="title">{{ 'add_bc' | translate }} </span>
+    <i class="icon-close mutual-opacity onact96-not" (click)="close()"></i>
+  </div>
+  <div class="form-container">
+    <!-- 输入框 -->
+    <app-customize-form-group [column]="true">
+      <div class="input-row currency-input">
+        <div class="label">
+          {{ 'curr' | translate }}
+          <p class="required">*</p>
+        </div>
+        <div class="select onact96" (click)="handleSelectCurrencyType()">
+          <!--已选择-->
+          <ng-container *ngIf="selectedCurrency != null; else default">
+            <div class="selected-row">
+              <i class="icon-{{ selectedCurrency.class }}"></i>
+              <span>{{ selectedCurrency.currency | uppercase }}</span>
+              <span class="value">{{ selectedCurrency.name }}</span>
+            </div>
+          </ng-container>
+          <!--初始：未选时-->
+          <ng-template #default>
+            <span class="placeholder-txt-color">{{ 'select_cur' | translate }}</span>
+          </ng-template>
+          <i class="drop-dowm" [class.clicked]="isOpen"></i>
+        </div>
+        <!-- 错误提示  -->
+        <!-- <div class="notice-container error-msg" *ngIf="!selectedCurrency">
+          {{'please_select'|translate}}
+        </div> -->
+      </div>
+      <app-customize-input [label]="'acc_name' | translate" [width]="'100%'" [value]="name" [disabled]="true">
+      </app-customize-input>
+      <!-- 卡号 -->
+      <app-customize-input
+        [width]="'100%'"
+        [error]="userBankCard && !bankCardIsValid ? ('num_error' | translate) : false"
+        [required]="true"
+        [label]="'card_num' | translate"
+        [(value)]="userBankCard"
+        type="text"
+        [trim]="false"
+        [placeholder]="'enter_card_num' | translate"
+        (onChange)="onBankCardInput()"
+        (keyup.enter)="save()"
+        [onChangeDebounceTime]="100"
+        [disabled]="!selectedCurrency?.currency"
+      >
+      </app-customize-input>
+      <div class="input-row bank-input" [class.disabled]="!selectedCurrency?.currency || verifyLoading">
+        <!-- 银行名称 -->
+        <div class="label">
+          {{ 'bn' | translate }}
+          <p class="required">*</p>
+        </div>
+        <div class="select onact96" (click)="showBankOptions()">
+          <!--已选择-->
+          <ng-container *ngIf="selectedBank != null; else bankDefault">
+            <div class="selected-row">
+              <span>{{ selectedBank.bankNameLocal }}</span>
+            </div>
+          </ng-container>
+          <!--初始：未选时-->
+          <ng-template #bankDefault>
+            <span class="placeholder-txt-color">{{ 'select_bname' | translate }}</span>
+          </ng-template>
+          <i class="verify-loading-icon animation-icon-loading-dot" *ngIf="verifyLoading"><i></i><i></i><i></i></i>
+          <i class="drop-dowm" [class.clicked]="isBankOpen"></i>
+        </div>
+        <!-- 输入框下面的错误信息 -->
+        <!-- <div class="error-msg" *ngIf="iBank.value.length === 0 && $any(iBank).isFocus">
+          银行名称不能为空
+        </div> -->
+        <!-- 银行卡号 错误提示  -->
+        <!-- <div class="notice-container error-msg" *ngIf="!selectedBank">
+          {{'select_bname'|translate}}
+        </div> -->
+      </div>
+    </app-customize-form-group>
+  </div>
+  <!--  添加银行卡按钮 -->
+  <customize-button
+    class="m-auto"
+    size="medium"
+    type="primary"
+    width="80%"
+    [disabled]="!canSubmit()"
+    (onClick)="save()"
+  >
+    {{ 'add_bc' | translate }}
+  </customize-button>
+</div>

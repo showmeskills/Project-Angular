@@ -1,0 +1,372 @@
+.landing-page {
+  display: grid;
+  grid-template-columns: minmax(12px, 1fr) minmax(0, 1200px) minmax(12px, 1fr);
+  background-color: var(--main-page-bg);
+
+  & > * {
+    grid-column: 2;
+  }
+
+  .full-bleed {
+    grid-column: 1 / -1;
+  }
+}
+
+// banner
+
+.banner {
+  display: grid;
+  background-color: var(--container-bg-color);
+  height: 260px;
+  grid-template-columns: minmax(12px, 1fr) minmax(0, 1200px) minmax(12px, 1fr);
+  position: relative;
+}
+
+.banner .content-box {
+  grid-column: 2;
+  display: flex;
+}
+
+.banner .content-box .left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 1;
+}
+
+.banner .content-box .left p {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 21px;
+  color: var(--text-color);
+}
+
+.banner .content-box .left .register {
+  background-color: var(--primary-color);
+  color: #fff;
+  border-radius: 18px;
+  max-width: 266px;
+  width: 100%;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.banner .content-box .left .top-bg-1 {
+  position: absolute;
+  height: calc(100% + 52px);
+  top: -52px;
+  // z-index: 1;
+  left: 50%;
+  transform: translateX(-65%);
+  z-index: -1;
+  opacity: 0.05;
+  &:host-context(.dark) & {
+    opacity: 1;
+  }
+}
+
+.banner .content-box .left .register:hover {
+  background-color: var(--primary-color-80);
+}
+
+.banner .content-box .left .or {
+  display: flex;
+  gap: 9px;
+  color: var(--text-color-20);
+  align-items: center;
+  font-size: 12px;
+}
+
+.banner .content-box .left .or .line {
+  width: 70px;
+  height: 1px;
+  background-color: var(--text-color-20);
+}
+
+.banner .content-box .left .contracts {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.banner .content-box .left .contracts .contract-item {
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 62px;
+  height: 28px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  background-color: var(--bg-color-10);
+  &:host-context(.dark) & {
+    background-color: var(--main-page-bg);
+  }
+}
+
+.banner .content-box .left .contracts .contract-item:hover {
+  background-color: var(--container-bg-color);
+}
+
+.banner .content-box .left .contracts .contract-item img {
+  width: 14px;
+  height: 14px;
+}
+
+.banner .content-box .right {
+  flex: 1;
+  z-index: 1;
+  position: relative;
+  margin-left: 30px;
+}
+
+.banner .content-box .right .top-right {
+  position: absolute;
+  height: 100%;
+  left: 0;
+}
+
+.banner .content-box .right .top-bg-2 {
+  position: absolute;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.5;
+  &:host-context(.dark) & {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner {
+    height: 411px;
+  }
+
+  .banner .content-box {
+    flex-direction: column;
+  }
+
+  .banner .content-box .left {
+    padding-top: 32px;
+    padding-bottom: 30px;
+    position: relative;
+  }
+
+  .banner .content-box .right {
+    flex-shrink: 0;
+  }
+}
+
+// center
+
+.center-info {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.center-info .center-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.center-info .center-item .title {
+  display: flex;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 18px;
+  color: var(--text-color);
+  margin-bottom: 15px;
+  gap: 8px;
+  overflow-x: clip;
+  overflow-y: inherit;
+}
+
+.center-info .center-item .title img {
+  width: 18px;
+  height: 18px;
+  margin-bottom: 0;
+  transform: translateX(-100%);
+  filter: drop-shadow(18px 0 var(--text-color-20));
+}
+
+.center-info .center-item img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2.4375/1;
+  margin-bottom: 16px;
+}
+
+.center-info .center-item .sub-title {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.center-info .center-item .desc {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-color-20);
+  margin-bottom: 16px;
+}
+
+.center-info .center-item .btn {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 14px;
+  color: #fff;
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  width: 100%;
+  height: 54px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.center-info .center-item .btn:hover {
+  background-color: var(--primary-color-80);
+}
+
+@media (max-width: 768px) {
+  .center-info {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+// more
+
+.more {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--container-bg-color);
+  margin-top: 24px;
+  height: 90px;
+}
+
+.more .btn {
+  cursor: pointer;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--text-color-20);
+  border-radius: 5px;
+  transition: all 0.3s;
+  margin-left: 30px;
+  background-color: var(--bg-color-10);
+  &:host-context(.dark) & {
+    background-color: var(--main-page-bg);
+  }
+}
+
+.more .btn:hover {
+  opacity: 0.8;
+}
+
+.more img {
+  position: absolute;
+  height: 100%;
+  right: 0px;
+}
+
+@media (max-width: 768px) {
+  .more img {
+    left: -16px;
+  }
+}
+
+// cypto
+
+.cypto {
+  display: grid;
+  background-color: var(--container-bg-color);
+  margin-top: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  height: 90px;
+  align-items: center;
+  padding: 0 30px;
+  margin-bottom: 60px;
+}
+
+.cypto .title {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--text-color);
+  justify-self: flex-start;
+}
+
+.cypto .cypto-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-self: center;
+}
+
+.cypto .cypto-icons img {
+  width: 24px;
+  height: 24px;
+}
+
+.cypto .btn {
+  cursor: pointer;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--text-color-20);
+  border-radius: 5px;
+  transition: all 0.3s;
+  margin-left: 30px;
+  justify-self: flex-end;
+  background-color: var(--bg-color-10);
+  &:host-context(.dark) & {
+    background-color: var(--main-page-bg);
+  }
+}
+
+.cypto .btn:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .cypto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    height: auto;
+    padding: 16px 0;
+    margin-bottom: 66px;
+  }
+
+  .cypto * {
+    justify-self: center;
+  }
+
+  .cypto .btn {
+    margin-left: 0;
+  }
+}

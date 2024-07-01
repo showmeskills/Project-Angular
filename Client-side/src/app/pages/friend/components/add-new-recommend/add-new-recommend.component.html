@@ -1,0 +1,63 @@
+<div class="new-recommend-container">
+  <div class="recommend-header">
+    <span class="text-16 font-weight">{{ 'friends_add' | translate }}</span>
+    <i class="icon-close-simple mutual-opacity onact96-not" (click)="close()"></i>
+  </div>
+  <div class="recommend-content m-top-10">
+    <p class="text-12 font-weight">{{ 'add_rec_br' | translate }}{{ myPercent }}‰</p>
+    <div class="m-top-10">
+      <app-customize-input
+        class="m-top-10"
+        [width]="'100%'"
+        [size]="'large'"
+        [label]="'remark' | translate"
+        [(value)]="remark"
+        [max]="20"
+        [placeholder]="'input_c_l' | translate : '1-20'"
+      >
+        <p class="text-gray-14" right-content>{{ remark.length || 0 }}/20</p>
+      </app-customize-input>
+    </div>
+    <div class="content-bar">
+      <p class="text-12">{{ 'add_rec_sr' | translate }}</p>
+      <div class="bar-container">
+        <div class="bar-container-active" [style.width]="width + '%'"></div>
+        <div class="bar-container-items">
+          <div [class]="'items-percent-' + idx" *ngIf="percent" [style.left]="width + '%'">{{ friendPercent }}‰</div>
+          <p
+            class="item mutual-opacity onact96-not"
+            *ngFor="let item of percentList; let i = index"
+            (click)="onClickItem(i)"
+            [class]="item.completed ? 'active-2' : item.active ? 'active' : ''"
+          ></p>
+        </div>
+      </div>
+    </div>
+    <div class="content-percent">
+      <p class="text-12">
+        {{ 'friend' | translate }} <span>{{ friendPercent }}‰</span>
+      </p>
+      <p class="text-12" *ngIf="isAgentLogon">
+        {{ 'friends_mi' | translate }} <span class="text-12 font-weight">{{ myPercent }}‰</span>
+      </p>
+    </div>
+    <div class="content-check-box">
+      <mat-checkbox [(ngModel)]="checkedBox">
+        <span class="text12 m-left-5">{{ 'add_rec_sd' | translate }}</span>
+      </mat-checkbox>
+    </div>
+    <div class="content-btns">
+      <customize-button width="100%" size="medium" (onClick)="close()">{{ 'cancels' | translate }}</customize-button>
+      <customize-button
+        width="100%"
+        size="medium"
+        [disabled]="canSubmit()"
+        [loading]="loading"
+        type="primary"
+        (onClick)="postCreateLink()"
+      >
+        {{ 'save_btn' | translate }}</customize-button
+      >
+    </div>
+  </div>
+</div>

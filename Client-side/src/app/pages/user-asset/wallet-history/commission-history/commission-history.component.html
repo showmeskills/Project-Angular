@@ -1,0 +1,170 @@
+<div class="container">
+  <div class="content-box">
+    <ng-container *ngIf="!isH5; else H5page">
+      <div class="search-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [(value)]="selectedTimeValue"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [label]="'scope' | translate"
+            [options]="timeOptions"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="returnType"
+            [label]="'type' | translate"
+            [options]="returnTypeList"
+            [valueKey]="'code'"
+            [textKey]="'description'"
+          >
+          </app-customize-select>
+          <div class="form-group-align">
+            <customize-button size="small" type="text" (onClick)="reset()" [plain]="true">
+              {{ 'reset' | translate }}
+            </customize-button>
+            <customize-button size="small" type="text" (onClick)="onSearch()" [plain]="true" [active]="true">
+              {{ 'filter' | translate }}
+            </customize-button>
+          </div>
+        </app-customize-form-group>
+      </div>
+
+      <div class="data-list" [appLoading]="loading">
+        <table *ngIf="commissionList.length > 0">
+          <thead>
+            <th>{{ 'dates' | translate }}</th>
+            <th>{{ 'amount' | translate }}</th>
+            <th>{{ 'type' | translate }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of commissionList; let i = index">
+              <td>{{ item.createTime | mdate : 'YYYY-MM-DD' }}</td>
+              <td>
+                <div class="currency-row">
+                  <span class="text">{{ item.amount | currencyValue : 'USDT' }}</span>
+                  <img class="img-icon" [src]="'USDT' | currencyIcon" />
+                  <ng-container *ngTemplateOutlet="toolTipTemplate; context: { item: item }"></ng-container>
+                </div>
+              </td>
+              <td>{{ returnTypeList | filterByKeyValue : 'code' : item.returnType : 'description' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <app-empty *ngIf="commissionList.length == 0 && !loading" [text]="'no_record' | translate"></app-empty>
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+      </div>
+    </ng-container>
+
+    <ng-template #H5page>
+      <div class="search-h5-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [width]="'40vw'"
+            [(value)]="selectedTimeValue"
+            [fixedHeight]="true"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [label]="'scope' | translate"
+            [options]="timeOptions"
+            (onSelect)="onSearch()"
+          >
+          </app-customize-select>
+          <div class="form-group-align margin-left-auto">
+            <i class="search-h5-bar-filter icon-filter mutual-opacity onact96-not" (click)="openh5Filter()"></i>
+          </div>
+        </app-customize-form-group>
+      </div>
+
+      <ul class="data-h5-list" *ngIf="commissionList.length > 0" [appLoading]="loading">
+        <li class="item" *ngFor="let item of commissionList; let i = index">
+          <div class="group first">
+            <span>{{ returnTypeList | filterByKeyValue : 'code' : item.returnType : 'description' }}</span>
+          </div>
+          <div class="group">
+            <span>{{ 'dates' | translate }}：</span>
+            <p>{{ item.createTime | mdate : 'YYYY-MM-DD' }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'amount' | translate }}：</span>
+            <p class="currency-row">
+              <span class="text">{{ item.amount | currencyValue : 'USDT' }}</span>
+              <img class="img-icon" [src]="'USDT' | currencyIcon" />
+              <ng-container *ngTemplateOutlet="toolTipTemplate; context: { item: item }"></ng-container>
+            </p>
+          </div>
+        </li>
+      </ul>
+
+      <app-empty *ngIf="commissionList.length == 0 && !loading" [text]="'no_record' | translate"></app-empty>
+
+      <app-paginator
+        [(page)]="paginator.page"
+        [total]="paginator.total"
+        [pageSize]="paginator.pageSize"
+        [disabled]="loading"
+        [loading]="loading"
+        (onPageChange)="loadData()"
+      >
+      </app-paginator>
+    </ng-template>
+  </div>
+</div>
+
+<!-- h5选择选项弹窗模板 -->
+<ng-template #h5Filter>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="h5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <app-customize-select
+          [(value)]="returnType"
+          [label]="'type' | translate"
+          [options]="returnTypeList"
+          [valueKey]="'code'"
+          [textKey]="'description'"
+        >
+        </app-customize-select>
+      </app-customize-form-group>
+      <div class="popup-btn-group">
+        <customize-button width="100%" (onClick)="reset()">
+          {{ 'reset' | translate }}
+        </customize-button>
+        <customize-button
+          class="popup-btn-margin-left"
+          type="primary"
+          width="100%"
+          (onClick)="h5FilterPopup.close(); onSearch()"
+        >
+          {{ 'filter' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- toolTip 模块 -->
+<ng-template #toolTipTemplate let-item="item">
+  <app-tool-tip>
+    <i origin class="icon-warning mutual-opacity"></i>
+    <div tooltip class="tooltip-info">
+      <p class="tooltip-info-title">{{ 'amount_details' | translate }}</p>
+      <div class="tooltip-info-list">
+        <div *ngFor="let currency of item.multipleCurrency | keyvalue" class="tooltip-info-group">
+          <p class="tooltip-info-text">{{ currency.key }}</p>
+          <p class="tooltip-info-text">{{ currency.value | currencyValue : $any(currency.key) }}</p>
+        </div>
+      </div>
+    </div>
+  </app-tool-tip>
+</ng-template>

@@ -1,0 +1,286 @@
+<div class="card rounded p-8 d-flex flex-row flex-wrap">
+  <form-row [label]="'finance.deposit.tradeOrder' | lang" [contentWidth]="200">
+    <ng-template>
+      <input
+        [style.width.px]="200"
+        [(ngModel)]="data.orderNum"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+        class="form-control"
+        type="text"
+        [placeholder]="'finance.deposit.enterTradeOrder' | lang"
+        input-trim="input"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- UID -->
+  <form-row label="UID" [contentWidth]="200">
+    <ng-template>
+      <input
+        [style.width.px]="200"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+        class="form-control"
+        type="text"
+        [placeholder]="'finance.deposit.uid' | lang"
+        input-trim="input"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 订单状态 -->
+  <form-row [label]="'finance.deposit.orderStatus' | lang">
+    <ng-template>
+      <mat-form-field [style.width.px]="130">
+        <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.categoryCode" *ngFor="let item of statusList">{{ item.langText }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种分类 -->
+  <form-row [label]="'finance.deposit.currencyType' | lang">
+    <ng-template>
+      <mat-form-field [style.width.px]="130">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.isDigital"
+          (selectionChange)="data.currency = ''; loadData(true)"
+        >
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.value" *ngFor="let item of currencyTypeList">{{ item.name | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种 -->
+  <form-row [label]="'common.currency' | lang">
+    <ng-template>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+          <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+          <mat-option [value]="item.code" *ngFor="let item of isDigitalCurrencyList">{{ item.code }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 创建时间 -->
+  <form-row [label]="'finance.deposit.createTime' | lang" [contentWidth]="264">
+    <ng-template>
+      <input
+        [style.width.px]="210"
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'finance.deposit.enterCreateTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.createdTime"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <!-- 完成时间 -->
+  <form-row [label]="'finance.deposit.completeTime' | lang" [contentWidth]="264">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'finance.deposit.selectedCompleteTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.finishedTime"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card mt-8">
+  <div class="card-body">
+    <div class="d-flex flex-ac flex-between">
+      <div class="fz-20">{{ 'finance.deposit.records' | lang }}</div>
+
+      <div>
+        <!-- 导出全部 -->
+        <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+          <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+        </button>
+        <!-- 导出 -->
+        <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-2 lh-18">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'finance.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'finance.deposit.orderNum' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.ftd' | lang }}</span>
+            </th>
+            <th><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'member.giveOut.vipLevel' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.currency' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.paymentMethod' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell cursor-pointer flex-nowrap" (click)="onSort('Amount')">
+                <span>{{ 'finance.deposit.transactionAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="data.order === 'Amount' && data.isAsc"></div>
+                  <div class="triangle-down" [class.active]="data.order === 'Amount' && !data.isAsc"></div>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell cursor-pointer flex-nowrap" (click)="onSort('ReceiveAmount')">
+                <span>{{ 'finance.deposit.paidAmount' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="data.order === 'ReceiveAmount' && data.isAsc"></div>
+                  <div class="triangle-down" [class.active]="data.order === 'ReceiveAmount' && !data.isAsc"></div>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.applyTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.completeTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'finance.deposit.status' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.orderNum || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ (item.isFirstDeposit ? 'common.yes' : 'common.no') | lang }}</span>
+            </td>
+            <td>
+              <span class="cell jumpRoute" (click)="openUID(item)">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.vipLevel || 0 }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.currency || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.paymentMethod }}</span>
+            </td>
+            <td>
+              <span class="cell red">+{{ item.amount | currencyValue: item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.receiveAmount | currencyValue: item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createdTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.finishedTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <finance-status-label
+                  (click)="getDepositrecordDetail(item.id)"
+                  [pointer]="true"
+                  [status]="item.status"
+                ></finance-status-label>
+              </span>
+            </td>
+          </tr>
+          <!--          <tr class="count">-->
+          <!--            <td></td>-->
+          <!--            <td>总计</td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td>-->
+          <!--              <span class="red">+{{ list | reduceTotal: 'amount' }}</span>-->
+          <!--            </td>-->
+          <!--            <td>-->
+          <!--              <span>{{ list | reduceTotal: 'receiveAmount' }}</span>-->
+          <!--            </td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--            <td></td>-->
+          <!--          </tr>-->
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!list.length"></empty>
+
+      <div class="d-flex flex-between pt-10">
+        <div>
+          <mat-form-field [style.width.px]="76">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

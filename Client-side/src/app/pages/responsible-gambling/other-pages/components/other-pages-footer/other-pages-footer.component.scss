@@ -1,0 +1,52 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.bottom-container {
+  margin-bottom: -60px;
+
+  @media (min-width: 768px) {
+    background-color: #f9f9fa;
+
+    &:host-context(.dark) & {
+      background-color: #0a1620;
+    }
+  }
+
+  @media (max-width: 767px) {
+    margin-bottom: -10px;
+    background-color: transparent;
+  }
+
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    @include polyfills.flex-gap(80px, 'row nowrap');
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+
+  .left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
+  }
+
+  .buttom-img {
+    max-width: 400px;
+    flex: 1;
+
+    @media (max-width: 767px) {
+      max-width: unset;
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+}

@@ -1,0 +1,149 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <!-- 发送优惠券 -->
+    <div class="modal-title fw-bolder">{{ 'member.coupon.model.sendCoupon' | lang }}</div>
+
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <form-row [label]="'member.coupon.model.couponName' | lang" label-width="150">
+      <ng-template>
+        <div class="d-flex flex-ac justify-content-between">
+          {{ data?.voucherName || '-' }}
+          <div class="fz-14 text-danger text-right lh-1">
+            <div>
+              {{ 'member.coupon.model.sentTo' | lang }}{{ (data.sendCount | toFormatMoney) || '-'
+              }}{{ 'member.coupon.model.members' | lang }}
+            </div>
+            <div class="mt-2" *ngIf="amountLimitData?.isNeedLimit">
+              {{ 'member.coupon.model.sentToAmount' | lang }}
+              {{ amountLimitData?.availableAmount | currencyValue: data?.currency }}
+              {{ data?.currency }}
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+    <!-- 发送对象 -->
+    <form-row [label]="'member.coupon.model.sendObject' | lang" label-width="150" required>
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of sendList">
+            <input type="radio" name="send" [value]="item.value" [(ngModel)]="send" />
+            <span class="mr-4"></span>{{ item.name | lang }}
+          </label>
+        </div>
+        <!-- 选择会员 -->
+        <ng-container *ngIf="send === 1">
+          <div class="d-flex flex-ac">
+            <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 mr-8" (click)="onMemberPopup()">
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              <span class="vam">{{ 'member.coupon.model.chooseMember' | lang }}</span>
+            </button>
+            <!-- 已选择N个会员< -->
+            <div class="color-aaa">
+              {{ 'member.coupon.model.chosen' | lang }}{{ memberList.length }}{{ 'member.coupon.model.members' | lang }}
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap justify-content-between mt-6 pr-4 custom-scroll-y member">
+            <div
+              class="d-flex flex-ac justify-content-between pl-4 pr-4 member-item mb-4"
+              *ngFor="let item of memberList; let i = index"
+            >
+              <span>{{ item.name || '-' }}</span>
+              <div class="del-icon d-flex flex-ac justify-content-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="svg-icon svg-icon-2x"
+                  (click)="memberList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+
+            <!-- 占位 -->
+            <div [style.width.px]="168"></div>
+          </div>
+        </ng-container>
+        <!-- 按照会员渠道 -->
+        <ng-container *ngIf="send === 2">
+          <div class="d-flex flex-ac">
+            <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 mr-8" (click)="onMemberChannelPopup()">
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              <span class="vam">{{ 'member.coupon.model.chooseChannel' | lang }}</span>
+            </button>
+            <!-- 个会员渠道 -->
+            <div class="color-aaa">
+              {{ 'member.coupon.model.chosen' | lang }}{{ channelList.length
+              }}{{ 'member.coupon.model.memberChannels' | lang }}
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap justify-content-between mt-6 pr-4 custom-scroll-y member">
+            <div
+              class="d-flex flex-ac justify-content-between pl-4 pr-4 member-item mb-4"
+              *ngFor="let item of channelList; let i = index"
+            >
+              <span>{{ item.inviteCode || '-' }}</span>
+              <div class="del-icon d-flex flex-ac justify-content-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="svg-icon svg-icon-2x"
+                  (click)="channelList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+
+            <!-- 占位 -->
+            <div [style.width.px]="168"></div>
+          </div>
+        </ng-container>
+        <!-- 手动输入 -->
+        <ng-container *ngIf="send === 3">
+          <!-- 请输入用户UID(以符号 ; 做拼接) -->
+          <div class="color-aaa">{{ 'member.coupon.model.pleaseEnterInfo' | lang }}</div>
+          <textarea
+            [style.height.px]="320"
+            type="text"
+            class="form-control"
+            autocomplete="off"
+            [(ngModel)]="memberManualRemark"
+            input-trim
+          ></textarea>
+        </ng-container>
+        <!-- 上传名单 -->
+        <ng-container *ngIf="send === 4">
+          <div class="d-flex flex-ac">
+            <upload
+              class="mt-5 mb-5 mr-15"
+              [style.height.px]="50"
+              mark="file"
+              desc="Excel/xlsx"
+              [customUpload]="customUpload"
+              [accept]="['Excel', 'xlsx']"
+              [showLimitText]="false"
+              [limit]="2048"
+            ></upload>
+            <!-- 下载模板表格 -->
+            <span class="download" (click)="downloadTemplate()">{{ 'member.coupon.model.downloadForm' | lang }}</span>
+          </div>
+          <textarea
+            [style.height.px]="280"
+            type="text"
+            class="form-control"
+            autocomplete="off"
+            [(ngModel)]="memberManualUpload"
+          ></textarea>
+        </ng-container>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">{{ 'common.cancel' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="sendCoupon()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>

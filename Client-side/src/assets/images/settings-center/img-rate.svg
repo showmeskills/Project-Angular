@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <linearGradient id="h0axglb75b" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fb6943"/>
+            <stop offset="1" stop-color="#f74c28"/>
+        </linearGradient>
+        <clipPath id="wp2f9rc3za">
+            <path data-name="矩形 8553" transform="translate(5 27)" style="fill:#fff" d="M0 0h22v22H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="组 2373" transform="translate(-5 -27)" style="clip-path:url(#wp2f9rc3za)">
+        <g data-name="组 8486">
+            <path data-name="路径 13927" d="M340.941 65.808a.47.47 0 0 1-.461-.461v-1.91a.47.47 0 0 1 .461-.461h6.642a.47.47 0 0 1 .461.461v1.888a.47.47 0 0 1-.461.461h-6.642z" transform="translate(-328.256 -34.069)" style="fill:#76808f"/>
+            <path data-name="路径 13928" d="M151.494 135.68h-2.742v1.529a.64.64 0 0 1-.641.641H139.8a.648.648 0 0 1-.641-.641v-1.517h-2.742a.741.741 0 0 0-.742.742v15.094a.741.741 0 0 0 .742.742h15.094c.326 0 .708-.09.708-.753v-15.095a.739.739 0 0 0-.725-.742zm-2.956 6.564-5.339 5.327a.7.7 0 0 1-1 0l-2.855-2.855a.707.707 0 1 1 1-1l2.36 2.338 4.822-4.822a.725.725 0 0 1 1.225.506.689.689 0 0 1-.213.506z" transform="translate(-127.952 -105.177)" style="fill:url(#h0axglb75b)"/>
+        </g>
+    </g>
+</svg>

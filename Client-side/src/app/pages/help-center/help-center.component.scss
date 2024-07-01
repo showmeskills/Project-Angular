@@ -1,0 +1,130 @@
+:host {
+  ::ng-deep {
+    // 文章设置
+
+    .article-content {
+      $hf: 2em, 1.5em, 1.17em, 1em, 0.83em, 0.67em;
+      $hm: 0.67em, 0.86em, 1em, 1.33em, 1.67em, 2.33em;
+
+      ::ng-deep {
+        @each $h in $hf {
+          h#{index($hf, $h)} {
+            font: normal normal bold #{$h} / 1.714 Microsoft YaHei;
+          }
+        }
+
+        @each $h in $hm {
+          h#{index($hm, $h)} {
+            margin: #{$h} 0;
+            background-color: transparent !important;
+          }
+        }
+
+        img {
+          max-width: 100% !important;
+          height: auto !important;
+        }
+
+        i,
+        em {
+          font-style: italic;
+        }
+
+        p,
+        span {
+          // word-break: break-all;
+          margin: 5px 0px;
+          color: var(--text-color) !important;
+          line-height: normal;
+
+          :host-context(.dark) & {
+            background-color: transparent !important;
+          }
+        }
+
+        ul,
+        ol {
+          padding-left: 30px;
+        }
+
+        ol {
+          list-style-type: decimal;
+        }
+
+        ul {
+          list-style-type: disc;
+        }
+
+        strong {
+          font-weight: bold;
+          color: var(--text-color) !important;
+          background: transparent !important;
+        }
+
+        a {
+          &:link {
+            color: var(--primary-color);
+          }
+
+          &:visited {
+            color: var(--primary-color);
+          }
+        }
+
+        font-family: sans-serif;
+      }
+    }
+
+    // 页面底部文章链接
+    .footer-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--text-color);
+      margin-bottom: 40px;
+    }
+
+    .release-detail {
+      cursor: pointer;
+      margin-bottom: 34px;
+      user-select: none;
+      .release-title {
+        line-height: 1.5;
+        font-size: 14px;
+        color: var(--text-color);
+        word-wrap: break-word;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .release-date {
+        font-size: 12px;
+        color: #707a8a;
+        margin-left: 10px;
+      }
+    }
+
+    .article-title {
+      font-size: 14px;
+      color: var(--text-color);
+      cursor: pointer;
+      line-height: 1.5;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-bottom: 35px;
+      user-select: none;
+
+      @media (max-width: 767px) {
+        overflow: unset;
+        white-space: unset;
+        word-wrap: break-word;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+<div class="hotkey">
+  <div class="title">
+    <span>{{ 'insufficient_balance' | translate }}</span>
+    <i class="orignal-icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="wrapper">
+    <div class="intro">
+      {{ 'insufficient_content' | translate }}
+    </div>
+    <div class="floor">
+      <div class="button onact96">
+        <div (click)="open()">{{ 'go_top_up' | translate }}</div>
+      </div>
+      <div class="button onact96">
+        <div (click)="close()">{{ 'adjust_bets' | translate }}</div>
+      </div>
+    </div>
+  </div>
+</div>

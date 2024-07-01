@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="61" height="88" viewBox="0 0 61 88">
+    <defs>
+        <clipPath id="clip-path">
+            <path id="路径_5242" d="M21723.109 14010.912v78.111h30.148v-78.111z" class="cls-1" transform="translate(-21723.109 -14010.912)"/>
+        </clipPath>
+        <style>
+            .cls-1{fill:#ff580e}.cls-5{fill:#707a8a}
+        </style>
+    </defs>
+    <g id="组_3412" transform="translate(-21772.602 -14003.945)">
+        <path id="路径_5240" fill="#e1e8f0" d="M21681.455 14011.911h60.354v14.347l-22.246 22.313v4.156l22.246 22.31v14.792h-60.354v-14.792l21.6-22.31v-4.156l-21.6-22.312z" transform="translate(91.545 -2.95)"/>
+        <g id="蒙版组_6" clip-path="url(#clip-path)" transform="translate(21803.096 14008.962)">
+            <path id="路径_5243" d="M21681.455 14011.911h60.354v14.347l-22.246 22.313v4.156l22.246 22.31v14.792h-60.354v-14.792l21.6-22.31v-4.156l-21.6-22.312z" class="cls-1" transform="translate(-21711.563 -14011.911)"/>
+        </g>
+        <path id="路径_5241" fill="#fc7032" d="M21700.674 14049.04h26.158v2.979l-10.02 9.119v22.292l6.531 7.092h14.15v9.458h-48.166v-9.458h14.311l7.434-7.092v-22.292l-10.4-9.119z" transform="translate(90.051 -13.144)"/>
+        <path id="矩形_2145" d="M0 0H61V5H0z" class="cls-5" transform="translate(21772.602 14086.945)"/>
+        <path id="矩形_2146" d="M0 0H61V5H0z" class="cls-5" transform="translate(21772.602 14003.945)"/>
+    </g>
+</svg>

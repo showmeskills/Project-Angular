@@ -1,0 +1,101 @@
+:host {
+  .mat-accordion {
+    width: 100%;
+  }
+
+  .mat-expansion-panel-spacing {
+    margin: 0;
+  }
+
+  .mat-slide-toggle-bar {
+    height: 23px;
+    width: 44px;
+  }
+
+  .mat-slide-toggle-thumb-container {
+    top: 1px;
+  }
+
+  .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb-container {
+    transform: translate3d(22px, 0, 0);
+  }
+
+  .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+    background-color: #3699ff;
+  }
+
+  .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+    background-color: white;
+  }
+}
+
+// 重置mat-expansion样式
+.mat-expansion-panel {
+  .mat-expansion-panel-header {
+    border-bottom: 1px dashed #e4e6ef;
+    padding-left: 28px;
+  }
+
+  &::ng-deep {
+    .mat-expansion-panel-body {
+      padding: 0;
+    }
+
+    .mat-expansion-indicator::after {
+      border-width: 0 1px 1px 0;
+      color: #9899ac;
+    }
+  }
+
+  &:not([class*='mat-elevation-z']) {
+    box-shadow: none;
+  }
+
+  .mat-mdc-list-base {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    .mat-list-item {
+      height: auto;
+      min-height: 42px;
+      padding-left: 24px;
+      border-bottom: 1px dashed #e4e6ef;
+
+      &::ng-deep {
+        .mat-list-item-content {
+          padding: 5px 0;
+        }
+      }
+    }
+  }
+}
+
+.checkbox {
+  margin-right: 10px;
+}
+
+.checkbox.checkbox-lg {
+  font-size: 16px;
+  color: #181c32;
+
+  > span {
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+}
+
+.allchecked {
+  height: 42px;
+  border-bottom: 1px dashed #e4e6ef;
+}
+
+.countriesList {
+  padding: 0 10px 20px 56px;
+  overflow: hidden;
+  .countries {
+    float: left;
+    margin-top: 15px;
+  }
+}

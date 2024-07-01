@@ -1,0 +1,133 @@
+<div class="modal-content">
+  <modal-title [title]="'member.coupon.model.chooseMember' | lang" (close)="modal.dismiss()"></modal-title>
+  <div class="modal-body">
+    <div class="d-flex flex-ac">
+      <form-row [label]="'common.search' | lang" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <form-wrap>
+            <input
+              class="form-control w-100"
+              type="text"
+              [(ngModel)]="uid"
+              [placeholder]="'member.coupon.model.uidUser' | lang"
+              (keyup)="$event.keyCode === 13 && getList(true)"
+            />
+            <svg-icon
+              suffix
+              *ngIf="uid"
+              class="svg-icon svg-icon-1x"
+              [src]="'assets/images/svg/close.svg'"
+              (click)="onClear()"
+            ></svg-icon>
+          </form-wrap>
+        </ng-template>
+      </form-row>
+
+      <!-- VIP等级 -->
+      <form-row [label]="'common.vipLevel' | lang" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <mat-form-field>
+            <mat-select class="form-control" [(ngModel)]="vipLevel" (selectionChange)="getList(true)">
+              <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of vipLevelList" [value]="item.value">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </div>
+    <div class="flex-fill">
+      <table class="table mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th class="w-10px pe-2">
+              <span class="cell">
+                <label class="checkbox">
+                  <input type="checkbox" selectGroup />
+                  <span></span>
+                </label>
+              </span>
+            </th>
+            <th><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'common.userName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <!-- (click)="onSort('vip')" -->
+                <span class="cursor-pointer">
+                  <span>{{ 'common.vipLevel' | lang }}</span>
+                  <!-- <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span> -->
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">
+                <label class="checkbox">
+                  <input type="checkbox" [(ngModel)]="item.checked" />
+                  <span></span>
+                </label>
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.name }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.vipGrade | vipName }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- <div class="d-flex flex-ac" style="border-top: 1px dashed #ebedf3; height: 55px">
+        <div class="color-aaa mr-8">{{ 'member.coupon.model.chosen' | lang }}0{{ 'member.coupon.model.a' | lang }}</div>
+        <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 lh-20">
+          {{ 'member.coupon.model.cancelSelection' | lang }}
+        </button>
+      </div> -->
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between table-footer pt-5" *ngIf="list.length > 0">
+        <div>
+          <!-- <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="getList()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field> -->
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="getList()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>
+</div>

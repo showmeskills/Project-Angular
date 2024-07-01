@@ -1,0 +1,213 @@
+<!-- 头部 -->
+<modal-title (close)="modal.dismiss()">
+  <div class="d-flex flex-ac">
+    <span class="flex-1">{{ title }}</span>
+
+    <!-- 子钱包余额：钱包详情按钮 -->
+    <span class="btn btn-light-primary px-6 mr-4" *ngIf="isGameBalance" (click)="onWalletDetail(walletDetailTpl)">
+      <svg-icon [src]="'./assets/images/svg/detail.svg'" class="svg-icon"></svg-icon>
+      <span class="vam">{{ 'member.detail.balance.walletDetail' | lang }}</span>
+    </span>
+
+    <!-- 剩余手续费：清零手续费按钮 -->
+    <span class="btn btn-light-primary px-6 mr-4" *ngIf="isRemainingFee" (click)="onClearingFee()">
+      <svg-icon [src]="'./assets/images/svg/del.svg'" class="svg-icon"></svg-icon>
+      <span class="vam">{{ 'member.detail.balance.clearingFee' | lang }}</span>
+    </span>
+  </div>
+</modal-title>
+
+<!-- 子钱包余额详情 -->
+<div *ngIf="type === 'gameWallet'">
+  <mat-tab-group [(selectedIndex)]="tabIndex">
+    <mat-tab label="{{ item.walletName + ('member.detail.balance.wallet' | lang) }}" *ngFor="let item of list">
+    </mat-tab>
+  </mat-tab-group>
+  <!-- 内容 -->
+  <div class="custom-scroll-y balance-wrap">
+    <div class="balance-item" *ngFor="let code of list[tabIndex].code">
+      <div class="d-flex flex-ac">
+        <img [currencyIcon]="code" currencySize="18" class="mr-4" />
+        <span>{{ code }}</span>
+      </div>
+      <div class="money">{{ list[tabIndex].value[code] | currencyValue: code }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- 冻结金额详情 -->
+<div *ngIf="type === 'freezeAmount'">
+  <mat-tab-group class="full-tab" [(selectedIndex)]="tabIndex" (selectedTabChange)="selectIsDigital()">
+    <mat-tab [label]="'member.detail.balance.category' | lang: item.key" *ngFor="let item of tabList"></mat-tab>
+  </mat-tab-group>
+  <!-- 内容 -->
+  <div class="px-8">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'member.detail.balance.order' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.detail.balance.freezeReason' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.amount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.operate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.orderNum || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{
+              (item.freezeType === 'TransferFailed'
+                ? 'member.detail.balance.transferFail'
+                : 'member.detail.balance.transactionFrezze'
+              ) | lang
+            }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.freezeAmount | currencyValue: item.currency }}
+              <img class="vam ml-2" [currencyIcon]="item.currency" src="" alt="" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <div
+                *ngIf="item.freezeType === 'TransferFailed'; else noTransferFailed"
+                class="cursor-pointer text-primary"
+                (click)="clearTransfer(item.orderNum)"
+              >
+                {{ 'member.detail.balance.cancelTransfer' | lang }}
+              </div>
+              <ng-template #noTransferFailed>-</ng-template>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-between table-footer py-6 px-8">
+      <div></div>
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="gerFreezeList()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 信用等，剩余手续费，余额，提款流水要求，NGR：金额详情 -->
+<div *ngIf="!['gameWallet', 'freezeAmount'].includes(type)">
+  <mat-tab-group class="full-tab" [(selectedIndex)]="tabIndex">
+    <mat-tab [label]="'member.detail.balance.category' | lang: item.key" *ngFor="let item of tabList"></mat-tab>
+  </mat-tab-group>
+
+  <div class="custom-scroll-y balance-wrap">
+    <div class="balance-item mt-4" *ngFor="let item of mapSearch">
+      <div class="d-flex align-items-center">
+        <img [currencyIcon]="item.code" currencySize="18" class="mr-4" />
+        <span>{{ item.code }}</span>
+      </div>
+      <div class="d-flex align-items-center h-100" *ngIf="item.code === 'LED'">
+        <div>
+          {{ 'member.detail.balance.totalUnlockable' | lang }}:
+          {{ (ledData?.ledUnlockableAmount | currencyValue: 'LED') || 0 }}
+        </div>
+        <svg-icon
+          [ngbPopover]="customPopoverHtml"
+          triggers="mouseenter:mouseleave"
+          class="svg-icon svg-icon-sm ml-2 mb-1"
+          [src]="'./assets/images/svg/sigh.svg'"
+        ></svg-icon>
+      </div>
+      <div class="money">{{ item.value | currencyValue: item.code }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- 按钮 -->
+<div class="modal-footer btn-wrap">
+  <button class="c-btn c-btn-primary" (click)="modal.dismiss()">{{ 'common.confirm' | lang }}</button>
+
+  <!-- 子钱包余额：一键回收 -->
+  <button class="c-btn c-btn-primary" (click)="onRecycle()" *ngIf="isGameBalance">
+    {{ 'member.detail.balance.onekeyRecycle' | lang }}
+  </button>
+</div>
+
+<ng-template #customPopoverHtml>
+  <!-- 可解锁金额 -->
+  <div [style.width.px]="230">
+    <div class="d-flex justify-content-between">
+      <span>{{ 'member.detail.balance.totalUnlockable' | lang }}：</span>
+      <span>{{ (ledData?.ledUnlockableAmount | currencyValue: 'LED') || 0 }}</span>
+    </div>
+    <!-- 已领取总金额 -->
+    <div class="d-flex justify-content-between mt-2">
+      <span>{{ 'member.detail.balance.unlockAmount' | lang }}：</span>
+      <span>{{ (ledData?.ledLockedAmount | currencyValue: 'LED') || 0 }}</span>
+    </div>
+    <!-- 已领取总金额 -->
+    <div class="d-flex justify-content-between mt-2">
+      <span>{{ 'member.detail.balance.totalAmount' | lang }}：</span>
+      <span>{{ (ledData?.ledReceiveAmount | currencyValue: 'LED') || 0 }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 子钱包详情 -->
+<ng-template #walletDetailTpl let-c="close" let-d="dismiss">
+  <modal-title (close)="d()">
+    <div class="d-flex flex-ac">
+      <span class="flex-1">{{ title }}</span>
+      <div class="d-flex flex-ac">
+        <span class="color-999 fz-16 mr-4">{{ 'member.detail.balance.showCurrency' | lang }}</span>
+        <mat-select
+          class="form-control mr-4"
+          [(ngModel)]="subWalletDetailCurrency"
+          (selectionChange)="onWalletDetailCurrency()"
+        >
+          <mat-option class="fz-14" *ngFor="let item of ['USDT', 'CNY']" [value]="item">{{ item }}</mat-option>
+        </mat-select>
+      </div>
+    </div>
+  </modal-title>
+
+  <div>
+    <div class="lh-52 d-flex flex-ac">
+      <span class="color-999 flex-1 text-center">{{ 'member.detail.balance.subWallet' | lang }}</span>
+      <span class="color-999 flex-1 text-center">{{ 'common.balance' | lang }}</span>
+    </div>
+    <div class="bt-1">
+      <div class="lh-52 fz-16 d-flex flex-ac" *ngFor="let item of subWalletDetailList">
+        <span class="flex-1 text-center">{{ item.category }}</span>
+        <span class="flex-1 text-center">{{ item.amount | currencyValue: true }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="c-btn btn btn-primary" (click)="c()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</ng-template>

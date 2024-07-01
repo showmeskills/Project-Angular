@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="66">
+    <defs>
+        <style>
+            .cls-2{fill:#656565}
+        </style>
+    </defs>
+    <g id="注册提示" transform="translate(-163 -823)">
+        <g id="Rectangle_71" data-name="Rectangle 71" style="fill:#fff;stroke:#fff">
+            <path style="stroke:none" d="M0 0h56v66H0z" transform="translate(163 823)"/>
+            <path style="fill:none" d="M.5.5h55v65H.5z" transform="translate(163 823)"/>
+        </g>
+        <g id="Group_10" data-name="Group 10" transform="translate(-756.979 469)">
+            <g id="Group_9" data-name="Group 9" transform="translate(668.979 314.9)">
+                <path id="Path_13" data-name="Path 13" class="cls-2" d="M282.593 107.439h-23.169a5.431 5.431 0 0 1-5.424-5.423V54.224a5.431 5.431 0 0 1 5.424-5.424h23.169a5.431 5.431 0 0 1 5.424 5.424v47.792a5.427 5.427 0 0 1-5.424 5.423zM259.424 51.3a2.919 2.919 0 0 0-2.914 2.914v47.792a2.919 2.919 0 0 0 2.914 2.914h23.169a2.919 2.919 0 0 0 2.914-2.914V54.218a2.919 2.919 0 0 0-2.914-2.914z" transform="translate(0 -5.34)"/>
+                <path id="Path_14" data-name="Path 14" d="M384.733 266.141h-14.8a2.439 2.439 0 0 1-2.434-2.434v-25.773a2.439 2.439 0 0 1 2.434-2.434h14.8a2.439 2.439 0 0 1 2.434 2.434v25.773a2.443 2.443 0 0 1-2.434 2.434z" transform="translate(-106.325 -180.237)" style="fill:#ffc8ba"/>
+                <path id="Path_15" data-name="Path 15" class="cls-2" d="M294.6 51.5H261v-2.66a5.744 5.744 0 0 1 5.74-5.74h22.119a5.744 5.744 0 0 1 5.74 5.74zm-31.09-2.51h28.58v-.15a3.232 3.232 0 0 0-3.23-3.23h-22.126a3.232 3.232 0 0 0-3.23 3.23v.152z" transform="translate(-6.558)"/>
+                <path id="Path_16" data-name="Path 16" class="cls-2" d="M487.4 838.976a2.251 2.251 0 1 0 2.251-2.276 2.263 2.263 0 0 0-2.251 2.276z" transform="translate(-218.645 -743.432)"/>
+                <path id="Path_17" data-name="Path 17" class="cls-2" d="M276.2 760.6h30.761v2.51H276.2z" transform="translate(-20.797 -672.142)"/>
+            </g>
+            <path id="Path_18" data-name="Path 18" d="M76 64a12 12 0 1 0 12 12 12 12 0 0 0-12-12zm-.857 6.214a.215.215 0 0 1 .214-.214h1.286a.215.215 0 0 1 .214.214V77.5a.215.215 0 0 1-.214.214h-1.286a.215.215 0 0 1-.214-.214zM76 82a1.286 1.286 0 1 1 1.286-1.286A1.286 1.286 0 0 1 76 82z" transform="translate(884 329)" style="fill:#f04e23"/>
+        </g>
+    </g>
+</svg>

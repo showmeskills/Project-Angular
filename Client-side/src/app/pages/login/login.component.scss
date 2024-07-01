@@ -1,0 +1,524 @@
+@use 'sass:math';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: flex-start;
+  margin-top: 100px;
+  padding: 20px 0;
+  font-size: 32px;
+  margin-left: (math.div(572, 1920) * 100%);
+
+  @media (max-width: 1024px) {
+    margin-left: 0;
+    align-self: center;
+  }
+
+  .container-left {
+    display: flex;
+    flex-direction: column;
+    margin-right: 128px;
+    width: 388px;
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
+
+    .column-1 {
+      .page-header {
+        font-size: 32px;
+        color: var(--text-color);
+        font-weight: 900;
+        line-height: 1.31;
+        padding-bottom: 22px;
+      }
+
+      .header-desc {
+        color: var(--text-color-20);
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      .main-title {
+        max-width: 600px;
+        font-size: 32px;
+        color: var(--text-color);
+      }
+    }
+
+    .column-2 {
+      padding-top: 42px;
+
+      // 用户名、手机号 切换按钮
+      .tabs {
+        display: inline-flex;
+        .tab {
+          flex-shrink: 0;
+          display: flex;
+          height: 40px;
+          font-size: 16px;
+          color: #707a8a;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          padding: 0 10px;
+          white-space: nowrap;
+          user-select: none;
+          &:not(:last-child) {
+            margin-right: 10px;
+          }
+
+          &:host-context(.dark) & {
+            color: var(--text-color-20);
+          }
+
+          &.active {
+            border-radius: 4px;
+            background-color: var(--bg-color-10);
+            color: #1e2329;
+
+            &:host-context(.dark) & {
+              color: #fff;
+              background-color: var(--primary-color);
+            }
+          }
+        }
+      }
+    }
+
+    .form-other-login {
+      display: flex;
+      flex-direction: column;
+
+      .login-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        span {
+          font-size: 16px;
+          line-height: 16px;
+          color: #707a8a;
+        }
+
+        .line {
+          height: 1px;
+          width: 40%;
+          background-color: #707070;
+        }
+      }
+
+      .login-bottom {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 20px 0;
+
+        i {
+          display: inline-block;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #f8f8f8;
+
+          img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+
+    .form-footer {
+      display: flex;
+      flex-direction: column;
+
+      .footer-1,
+      .footer-2 {
+        display: flex;
+        align-items: center;
+        color: var(--text-color);
+        font-size: 14px;
+        line-height: 1;
+        justify-content: space-between;
+      }
+
+      .footer-1 {
+        justify-content: space-between;
+      }
+
+      .footer-2 {
+        padding-top: 25px;
+      }
+
+      .footer-3 {
+        margin-top: 36px;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        line-height: 1;
+
+        .line {
+          opacity: 0.2;
+          height: 1px;
+          flex-grow: 1;
+          background-color: var(--text-color-20);
+        }
+
+        .text {
+          margin: 0 8px;
+          color: var(--text-color-20);
+        }
+      }
+
+      .footer-4 {
+        margin-top: 25px;
+        display: flex;
+
+        > * + * {
+          margin-left: 6px;
+        }
+
+        .item {
+          display: flex;
+          justify-content: center;
+          border-radius: 4px;
+          background-color: var(--bg-color-10);
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// 自适应
+@media (max-width: 767px) {
+  .container {
+    width: 100%;
+    margin-top: 55px;
+    padding: 0 18px 50px;
+    display: block;
+    font-size: 24px;
+
+    .container-left {
+      .column-1 {
+        .page-header {
+          font-size: 24px;
+          line-height: 33px;
+          padding-bottom: 16px;
+        }
+      }
+
+      .column-2 {
+        padding-top: 33px;
+
+        .tabs {
+          .tab {
+            font-size: 14px;
+            height: 36px;
+            border-radius: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  // gap: 25px;
+  margin: 25px 0;
+
+  > * + * {
+    margin-top: 25px;
+  }
+
+  .phone-box {
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    // gap: 8px;
+
+    .error-msg {
+      color: var(--txt-err-color);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    label {
+      margin-bottom: 8px;
+      color: var(--text-color-20);
+      font-size: inherit;
+      line-height: 1;
+    }
+
+    .phone-select {
+      display: flex;
+      // gap: 16px;
+
+      .select-row {
+        display: flex;
+        flex-direction: row;
+        margin-right: 8px;
+
+        .btn-disable {
+          background-color: var(--default-border-color) !important;
+          border-color: var(--default-border-color) !important;
+          color: #b8c0c7 !important;
+
+          :host-context(.dark) & {
+            color: #fff;
+          }
+
+          .drop-dowm {
+            width: 0;
+            height: 0;
+            border-width: 6px;
+            border-style: solid dashed dashed dashed;
+            border-color: #b8c0c7 transparent transparent transparent;
+            border-top-color: #b8c0c7;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            user-select: none;
+          }
+        }
+
+        .select-btn {
+          &:host-context(.dark) & {
+            border-color: #2f4553;
+            background-color: #0f212e;
+            color: #fff;
+
+            &:hover {
+              border-color: var(--primary-color);
+            }
+
+            &.disabled {
+              background-color: var(--default-border-color);
+              border: none;
+            }
+          }
+
+          &:hover {
+            border-color: var(--primary-color);
+          }
+
+          &.disabled {
+            background-color: var(--default-border-color);
+            border: none;
+          }
+        }
+
+        .select-btn,
+        .btn-disable {
+          height: 48px;
+          width: 96px;
+          background-color: #fff;
+          font-size: 14px;
+          color: #333333;
+          border-radius: 4px;
+          border: 1px solid #d5d8dc;
+          display: flex;
+          align-items: center;
+          position: relative;
+
+          .fog-row {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+
+            .country-image {
+              width: 22px;
+              height: 22px;
+              margin-right: 6px;
+            }
+          }
+
+          .drop-dowm {
+            width: 0;
+            height: 0;
+            border-width: 6px;
+            border-style: solid dashed dashed dashed;
+            border-color: #707a8a transparent transparent transparent;
+            border-top-color: #707a8a;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            user-select: none;
+          }
+        }
+      }
+
+      app-customize-input {
+        flex: 1;
+      }
+    }
+  }
+}
+
+.column-2 {
+  .form-group {
+    // 规则验证浮动框
+    .valid-pop-container {
+      position: relative;
+      z-index: 3;
+
+      .valid-pop {
+        padding: 10px 15px;
+        border-radius: 4px;
+        background-color: #5e6673;
+        color: #fff;
+        font-size: 14px;
+        flex-direction: column;
+        position: absolute;
+        top: 8px;
+        right: 62px;
+
+        i {
+          margin-left: 10px;
+          font-size: 12px;
+        }
+
+        p {
+          display: flex;
+          align-items: center;
+        }
+
+        p:not(:last-child) {
+          margin-bottom: 14px;
+        }
+      }
+    }
+
+    //输入框错误信息
+    .error-msg {
+      color: var(--txt-err-color);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    //密码强度
+    .pwd-strength-container {
+      display: flex;
+      margin-top: 6px;
+      position: relative;
+      flex-direction: column;
+
+      .pwd-strength {
+        display: flex;
+        height: 4px;
+        background-color: #e8e8e8;
+
+        span {
+          flex: 1;
+
+          &:not(:last-child) {
+            margin-right: 3px;
+          }
+        }
+
+        .lv1 {
+          background-color: #ff4d4d;
+        }
+
+        .lv2 {
+          background-color: #ff944d;
+        }
+
+        .lv3 {
+          background-color: #ffc44d;
+        }
+
+        .lv4 {
+          background-color: #15bf7b;
+        }
+      }
+
+      //文字提示
+      .strength-tip {
+        color: #474d57;
+        font-size: 14px;
+        position: absolute;
+        right: 0;
+        top: 4px;
+        line-height: 20px;
+
+        &:host-context(.dark) & {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+//推荐人
+.ref {
+  label {
+    display: flex;
+    font-size: 14px;
+    color: var(--text-color-20);
+    margin-bottom: 8px;
+  }
+
+  .icon-arrow-down {
+    display: flex;
+    font-size: 12px;
+    margin-top: 2px;
+    transform: scale(math.div(10, 12)) !important;
+
+    &.up {
+      transform: scale(math.div(10, 12)) rotate(180deg) !important;
+    }
+  }
+}
+
+.referee-input {
+  &.hidden {
+    display: none;
+  }
+
+  &.referee-input {
+    margin-top: 8px;
+  }
+}
+
+.agree {
+  font-size: 14px;
+  color: #474d57;
+  display: flex;
+  align-items: center;
+
+  &:host-context(.dark) & {
+    color: #fff;
+  }
+
+  a {
+    margin-left: 2px;
+  }
+}
+
+.error-msg {
+  color: var(--txt-err-color);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.popup-footer {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--secondary-color);
+}

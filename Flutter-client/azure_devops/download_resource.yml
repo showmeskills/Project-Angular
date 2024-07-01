@@ -1,0 +1,24 @@
+steps:
+  - task: DownloadSecureFile@1
+    name: appIcon
+    displayName: 'Download Icon'
+    inputs:
+      secureFile: 'app-icon-$(merchantNumber).png'
+
+  - task: DownloadSecureFile@1
+    name: appForegroundIcon
+    displayName: 'Download Foreground Icon'
+    inputs:
+      secureFile: 'app-icon-foreground-$(merchantNumber).png'
+
+  - task: DownloadSecureFile@1
+    name: splashImage
+    displayName: 'Download Splash'
+    inputs:
+      secureFile: 'splash-$(merchantNumber).jpeg'
+
+  - task: DownloadSecureFile@1
+    name: appLogoIcon
+    displayName: 'Download App Logo Icon'
+    inputs:
+      secureFile: 'app-logo-$(merchantNumber).png'

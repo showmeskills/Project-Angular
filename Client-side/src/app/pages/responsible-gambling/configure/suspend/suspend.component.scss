@@ -1,0 +1,134 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.record-nav {
+  display: flex;
+  align-items: center;
+  @include polyfills.flex-gap(24px, 'row nowrap');
+  margin: 30px 0;
+}
+
+.content-box {
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .m-top-20 {
+    margin-top: 20px;
+  }
+
+  .select-time {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    @include polyfills.flex-gap(24px, 'row wrap');
+    margin-top: 20px;
+
+    .customize-time {
+      font-size: 14px;
+      color: var(--btn-bg-color);
+    }
+  }
+
+  .password {
+    margin-top: 20px;
+    max-width: 388px;
+
+    @media (max-width: 767px) {
+      max-width: 100%;
+    }
+  }
+
+  .title-12 {
+    font-size: 12px;
+    color: #cf304a;
+  }
+
+  .submit {
+    margin-top: 20px;
+    display: flex;
+    @include polyfills.flex-gap(20px, 'row nowrap');
+
+    @media (max-width: 767px) {
+      justify-content: center;
+    }
+  }
+}
+
+::ng-deep {
+  .time-selector-container {
+    padding: 20px;
+    width: 484px;
+    border-radius: 10px;
+
+    @media (max-width: 767px) {
+      width: 100vw;
+      border-radius: 30px 30px 0 0;
+    }
+
+    .time-selector-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        font-size: 24px;
+        color: var(--text-color);
+      }
+
+      .icon-close-simple {
+        font-size: 14px;
+      }
+    }
+
+    .title-16 {
+      margin-top: 20px;
+      font-size: 16px;
+      color: var(--text-color-20);
+    }
+
+    .date-picker-range {
+      display: flex;
+      align-items: center;
+      @include polyfills.flex-gap(16px, 'row nowrap');
+      margin-top: 50px;
+
+      @media (max-width: 767px) {
+        @include polyfills.flex-gap-unset('row nowrap');
+        @include polyfills.flex-gap(10px, 'row nowrap');
+      }
+
+      .label-text {
+        font-size: 14px;
+        color: var(--text-color-20);
+        margin-bottom: 6px;
+      }
+
+      .text-14 {
+        font-size: 14px;
+        color: var(--text-color-20);
+        margin-top: 6px;
+      }
+
+      .start,
+      .end {
+        display: flex;
+        flex-direction: column;
+        width: 44%;
+      }
+
+      app-datepicker {
+        width: 100%;
+      }
+    }
+
+    .dialog-sumbit {
+      margin-top: 24px;
+    }
+  }
+
+  .options-container {
+    z-index: 7;
+  }
+}

@@ -1,0 +1,123 @@
+@use 'sass:math';
+
+/**
+注意：
+1. 这套 mixin 借助 margin 来实现，所以建议不用在 flex box 和 flex item 上设置任何 margin，
+如果需要，在里面或者外面再用一层 wrapper 套起来，在 wrapper 上设置 margin。
+
+2. 另外还有做自适应的需求，在不同屏幕宽度下可能需要设置不同的 flex-flow，可以用下面的 mixin 清除前面的 flex gap：
+举例：
+  @include polyfills.flex-gap(12px, 'row nowrap');
+        @media screen and (max-width: 800px) {
+          flex-flow: column nowrap;
+          @include polyfills.flex-gap-unset('row nowrap');
+          @include polyfills.flex-gap(12px, 'column nowrap');
+    }
+*/
+@mixin _flex-gap($gap, $row: true) {
+  $margin: math.div($gap, 2);
+  $transform: -$margin;
+
+  @if $row {
+    margin-left: $transform;
+    margin-right: $transform;
+  }
+
+  @else {
+    margin-top: $transform;
+    margin-bottom: $transform;
+  }
+
+  >::ng-deep {
+    * {
+      @if $row {
+        margin-left: $margin;
+        margin-right: $margin;
+      }
+
+      @else {
+        margin-top: $margin;
+        margin-bottom: $margin;
+      }
+    }
+  }
+}
+
+@mixin flex-gap($gap, $flex-flow: 'row nowrap') {
+  @if $flex-flow=='row nowrap'or $flex-flow=='row-reverse nowrap' {
+    @include _flex-gap($gap, true);
+  }
+
+  @else if $flex-flow=='column nowrap'or $flex-flow=='column-reverse nowrap' {
+    @include _flex-gap($gap, false);
+  }
+
+  @else if $flex-flow=='row wrap'or $flex-flow=='row-reverse wrap' {
+    @include _flex-gap($gap, true);
+    @include _flex-gap($gap, false);
+  }
+
+  @else if $flex-flow=='column wrap'or $flex-flow=='column-reverse wrap' {
+    @include _flex-gap($gap, true);
+    @include _flex-gap($gap, false);
+  }
+
+  @else {
+    @error "The second paramater $flex-flow is set to be '#{$flex-flow}', which is illegal.";
+  }
+}
+
+@mixin _flex-gap-unset($row: true) {
+  $margin: 0;
+  $transform: 0;
+
+  @if $row {
+    margin-left: $transform;
+    margin-right: $transform;
+  }
+
+  @else {
+    margin-top: $transform;
+    margin-bottom: $transform;
+  }
+
+  ::ng-deep {
+    >* {
+      @if $row {
+        margin-left: $margin;
+        margin-right: $margin;
+      }
+
+      @else {
+        margin-top: $margin;
+        margin-bottom: $margin;
+      }
+    }
+  }
+
+}
+
+// unset flex-gap, used in @media screen width rules
+@mixin flex-gap-unset($flex-flow: 'row nowrap') {
+  @if $flex-flow=='row nowrap'or $flex-flow=='row-reverse nowrap' {
+    @include _flex-gap-unset(true);
+  }
+
+  @else if $flex-flow=='column nowrap'or $flex-flow=='column-reverse nowrap' {
+    @include _flex-gap-unset(false);
+  }
+
+  @else if $flex-flow=='row wrap'or $flex-flow=='row-reverse wrap' {
+    @include _flex-gap-unset(true);
+    @include _flex-gap-unset(false);
+  }
+
+  @else if $flex-flow=='column wrap'or $flex-flow=='column-reverse wrap' {
+    @include _flex-gap-unset(true);
+    @include _flex-gap-unset(false);
+  }
+
+  @else {
+    @error "The second paramater $flex-flow is set to be '#{$flex-flow}', which is illegal.";
+  }
+}

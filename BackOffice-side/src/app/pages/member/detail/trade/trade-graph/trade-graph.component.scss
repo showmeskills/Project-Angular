@@ -1,0 +1,33 @@
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+  background: #ffffff;
+  padding: 16px 20px 24px;
+  border-radius: 10px;
+}
+
+.type-btn {
+  border: 1px solid #e5e5e5;
+  color: #999;
+
+  &:hover,
+  &.active {
+    background: #3699ff;
+    border-color: #3699ff;
+    color: #fff;
+    transition: all 0.2s ease-in;
+  }
+}
+
+.type-btn {
+  border: 1px solid #e5e5e5;
+  color: #999;
+
+  &:hover,
+  &.active {
+    background: #3699ff;
+    border-color: #3699ff;
+    color: #fff;
+    transition: all 0.2s ease-in;
+  }
+}

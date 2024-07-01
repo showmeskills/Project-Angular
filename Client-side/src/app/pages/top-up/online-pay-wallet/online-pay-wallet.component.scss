@@ -1,0 +1,201 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+div {
+  display: flex;
+}
+
+:host {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+}
+
+.container {
+  flex-direction: row;
+  padding-top: 48px;
+  padding-bottom: 80px;
+  justify-content: space-between;
+  @include polyfills.flex-gap(20px, 'row nowrap');
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    @include polyfills.flex-gap-unset('row nowrap');
+    @include polyfills.flex-gap(30px, 'column nowrap');
+  }
+
+  //-----------居左
+  .left {
+    width: 370px;
+    flex-direction: column;
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
+
+    //继续btn
+    .small {
+      border-radius: 3px;
+      height: 40px;
+    }
+
+    .card-1 {
+      width: 370px;
+      height: 148px;
+      border-radius: 16px;
+      color: #fff;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 16px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/wallet/orange-bg.png);
+
+      @media (max-width: 767px) {
+        width: 100%;
+        background-position: center;
+      }
+
+      .amount-row {
+        font-size: 24px;
+        align-items: center;
+        display: flex;
+        padding-bottom: 12px;
+
+        .copy {
+          border-radius: 2px;
+          border: solid 1px #fff;
+          cursor: pointer;
+          font-size: 12px;
+          width: 40px;
+          height: 18px;
+          align-items: center;
+          justify-content: center;
+          display: flex;
+          margin-left: 6px;
+        }
+      }
+
+      .span-1 {
+        padding-bottom: 20px;
+      }
+
+      .span-2 {
+        padding-bottom: 6px;
+      }
+
+      .span-1,
+      .span-2 {
+        font-size: 12px;
+      }
+
+      .span-3 {
+        font-size: 14px;
+      }
+    }
+
+    .card-2 {
+      width: 370px;
+      height: 210px;
+      border-radius: 16px;
+      align-items: center;
+      justify-content: center;
+      background-color: #fafafa;
+      flex-direction: column;
+      margin: 16px 0 40px;
+
+      @media (max-width: 767px) {
+        width: 100%;
+      }
+
+      .gray-txt {
+        font-size: 12px;
+        color: #707a8a;
+      }
+
+      .time-txt {
+        font-size: 24px;
+        font-weight: 500;
+        color: #1e2329;
+        padding-top: 5px;
+      }
+
+      .status-row {
+        padding: 12px 0 38px;
+        font-size: 20px;
+
+        &.yellow {
+          color: #f79e1b;
+        }
+
+        &.green {
+          color: #2cb114;
+        }
+
+        &.red {
+          color: #ea3404;
+        }
+
+        .success-icon,
+        .fail-icon {
+          width: 20px;
+          height: 20px;
+          background-size: 100%;
+          background-repeat: no-repeat;
+          margin-left: 8px;
+        }
+
+        .panding-icon {
+        }
+
+        .success-icon {
+          background-image: url(src/assets/images/kyc/green-correct.svg);
+        }
+
+        .fail-icon {
+          background-image: url(src/assets/svg/red-close.svg);
+        }
+      }
+    }
+  }
+
+  //----------居右：重要提示标题
+  .right {
+    flex-direction: column;
+    line-height: 1.45;
+    max-width: 350px;
+    min-width: 280px;
+
+    @media (max-width: 767px) {
+      max-width: none;
+      width: 100%;
+    }
+
+    .title {
+      font-size: 24px;
+      color: #000;
+      font-weight: bold;
+      padding-bottom: 20px;
+
+      @media (max-width: 767px) {
+        font-size: 20px;
+        font-weight: normal;
+        color: #1e2329;
+      }
+    }
+
+    .link-txt {
+      color: var(--primary-color);
+    }
+
+    span {
+      padding-bottom: 19px;
+      font-size: 14px;
+      color: #707a8a;
+
+      @media (max-width: 767px) {
+        font-size: 12px;
+      }
+    }
+  }
+}

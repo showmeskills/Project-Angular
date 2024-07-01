@@ -1,0 +1,27 @@
+<div class="container">
+  <i [class]="data?.status == 'success' ? 'important-icon-1' : 'important-icon-2'"></i>
+  <p>{{ data?.status == 'success' ? ('successful' | translate) : ('failed' | translate) }}</p>
+  <p>{{ data?.status == 'success' ? ('succ_trans' | translate) : ('trans_fail' | translate) }}</p>
+  <p>{{ data?.amount }} {{ data?.curreny }}</p>
+  <div class="from-wallet">
+    <p>{{ 'from' | translate }}</p>
+    <p>{{ data?.fromWallet }}</p>
+  </div>
+  <div class="to-wallet">
+    <p>{{ 'to' | translate }}</p>
+    <p>{{ data?.toWallet }}</p>
+  </div>
+  <div class="date">
+    <p>{{ 'date' | translate }}</p>
+    <p>{{ data?.date ?? '' | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+  </div>
+  <div class="order-id" *ngIf="data?.status == 'success'">
+    <p>{{ 'order' | translate }}</p>
+    <p>{{ data?.orderId || '' }}</p>
+  </div>
+  <div class="btn-group">
+    <customize-button size="large" type="primary" width="100%" (onClick)="close()"
+      >{{ 'return' | translate }}
+    </customize-button>
+  </div>
+</div>

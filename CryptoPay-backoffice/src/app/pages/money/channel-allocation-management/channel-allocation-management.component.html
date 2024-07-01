@@ -1,0 +1,326 @@
+<ng-template #popover>
+  <div class="tooltip-integral" (click)="$event.stopPropagation()" *ngIf="!isLoadingIntegral">
+    <div class="d-flex text-nowrap flex-btc">
+      <div>Default：{{ tipData.default | toFormatMoney }}</div>
+      <div class="ml-6">
+        {{ 'payment.channelAllocationManagement.totalPoints' | lang }}：{{ tipData.total | toFormatMoney }}
+      </div>
+    </div>
+
+    <mat-accordion>
+      <!-- Default -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="d-flex flex-ac w-100">
+              <span class="flex-1 color-222 vam ml-2">FeeRange：</span>
+              <span class="color-222 vam ml-4">{{ tipData.feeRange?.point | toFormatMoney }}</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2"
+            >{{ 'payment.channelAllocationManagement.totalDepositAmount' | lang }}：</span
+          >
+          <span class="color-222 vam ml-4">{{
+            tipData.feeRange?.detail?.depositAmount | currencyValue : curExpandItem.currency
+          }}</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2">{{ 'payment.channelAllocationManagement.depositFee' | lang }}：</span>
+          <span class="color-222 vam ml-4">{{
+            tipData.feeRange?.detail?.feeAmount | currencyValue : curExpandItem.currency
+          }}</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2">{{ 'payment.channelAllocationManagement.feeRate' | lang }}：</span>
+          <span class="color-222 vam ml-4">{{ (tipData.feeRange?.detail?.feePercent | bigNumber).toFixed(4) }}</span>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Every Single Order 每单笔订单 -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="d-flex flex-ac w-100">
+              <span class="flex-1 color-222 vam ml-2">Every Single Order：</span>
+              <span class="color-222 vam ml-4">{{ tipData.everySingleOrder?.point | toFormatMoney }}</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2">{{ 'payment.channelAllocationManagement.newOrder' | lang }}：</span>
+          <span class="color-222 vam ml-4">{{ tipData.everySingleOrder?.orderQty | toFormatMoney }}</span>
+        </div>
+        <div class="d-flex flex-ac" *ngFor="let item of tipData.everySingleOrder?.detail | keyvalue">
+          <span class="flex-1 color-222 vam ml-2">
+            <span>{{ item.key }}{{ 'payment.channelAllocationManagement.minute' | lang }}：</span>
+          </span>
+          <span class="color-222 vam ml-4">{{ item.value }}</span>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Order In Period -->
+      <mat-expansion-panel hideToggle [expanded]="false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="d-flex flex-ac w-100" style="padding-right: 8px">
+              <span class="flex-1 color-222 vam ml-2">Order In Period：</span>
+              <span class="color-222 vam ml-4">{{ tipData.orderInPeriod?.point | toFormatMoney }}</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+
+      <!-- Pre Day Order 前一天每个时段订单分配情况 -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="d-flex flex-ac w-100">
+              <span class="flex-1 color-222 vam ml-2">Pre Day Order：</span>
+              <span class="color-222 vam ml-4">{{ tipData.preDayOrder?.point | toFormatMoney }}</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2"
+            >{{ 'payment.channelAllocationManagement.orderTheDayBefore' | lang }}：</span
+          >
+          <span class="color-222 vam ml-4"
+            >{{ tipData.preDayOrder?.detail?.length || 0
+            }}{{ 'payment.channelAllocationManagement.minute' | lang }}</span
+          >
+        </div>
+        <div class="d-flex flex-ac" *ngFor="let item of tipData.preDayOrder?.detail">
+          <span class="flex-1 color-222 vam ml-2">{{ item.begin }} - {{ item.end }}：</span>
+          <span class="color-222 vam ml-4">{{ item.orderQty || 0 | toFormatMoney }}{{ 'common.pen' | lang }}</span>
+        </div>
+      </mat-expansion-panel>
+      <!--      <mat-expansion-panel hideToggle [expanded]="false">-->
+      <!--        <mat-expansion-panel-header>-->
+      <!--          <mat-panel-title>-->
+      <!--            <div class="d-flex flex-ac w-100" style="padding-right: 8px">-->
+      <!--              <span class="flex-1 color-222 vam ml-2">Amount Range Level：</span>-->
+      <!--              <span class="color-222 vam ml-4">{{ tipData.AmountRangeLevel?.point | toFormatMoney }}</span>-->
+      <!--            </div>-->
+      <!--          </mat-panel-title>-->
+      <!--        </mat-expansion-panel-header>-->
+      <!--      </mat-expansion-panel>-->
+
+      <!-- Single Day Limit Threshold 单日限额阈值 -->
+      <mat-expansion-panel [expanded]="false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="d-flex flex-ac w-100" style="padding-right: 8px">
+              <span class="flex-1 color-222 vam ml-2">Single Day Limit Threshold：</span>
+              <span class="color-222 vam ml-4">{{ tipData.singleDayLimitThreshold?.point | toFormatMoney }}</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2"
+            >{{ 'payment.channelAllocationManagement.singleDepositLimit' | lang }}：</span
+          >
+          <span class="color-222 vam ml-4">{{
+            tipData.singleDayLimitThreshold?.detail?.depositAmount || 0 | toFormatMoney
+          }}</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2"
+            >{{ 'payment.channelAllocationManagement.dailyLimitThreShold' | lang }}：</span
+          >
+          <span class="color-222 vam ml-4">{{
+            tipData.singleDayLimitThreshold?.detail?.threshold || 0 | toFormatMoney
+          }}</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2">{{ 'payment.channelAllocationManagement.percentage' | lang }}：</span>
+          <span class="color-222 vam ml-4">{{ tipData.singleDayLimitThreshold?.detail?.unit * 100 || 0 }}%</span>
+        </div>
+        <div class="d-flex flex-ac">
+          <span class="flex-1 color-222 vam ml-2"
+            >{{ 'payment.channelAllocationManagement.amountPoints' | lang }}：</span
+          >
+          <span class="color-222 vam ml-4">{{ tipData.singleDayLimitThreshold?.detail?.value || 0 }}</span>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--    <span class="d-block text-center" *ngIf="!tipList?.length">无</span>-->
+  </div>
+
+  <ng-container *ngIf="isLoadingIntegral">{{ 'payment.channelAllocationManagement.loading' | lang }}</ng-container>
+</ng-template>
+
+<div class="card px-12 py-8">
+  <table class="table mb-0">
+    <thead theadAffix>
+      <tr>
+        <th><span class="cell"></span></th>
+        <th>
+          <span class="cell">{{ 'payment.paymentMethod.channel' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.subChannelName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.currency' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.channelAllocationManagement.balanceLimit' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.channelAllocationManagement.realTimeBalance' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.channelAllocationManagement.availableBalance' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.channelAllocationManagement.allocation' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.channelAllocationManagement.margin' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.channelAllocationManagement.priority' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.channelAllocationManagement.allocationLog' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <ng-container *ngFor="let item of list">
+        <tr>
+          <td>
+            <span class="cell">
+              <svg-icon
+                (click)="item.expand = !item.expand"
+                *ngIf="!item.expand"
+                class="text-primary cursor-pointer user-select-none"
+                [src]="'./assets/images/svg/add.svg'"
+              ></svg-icon>
+              <svg-icon
+                (click)="item.expand = !item.expand"
+                *ngIf="!!item.expand"
+                class="text-primary cursor-pointer user-select-none svg-icon svg-icon-2x"
+                [src]="'./assets/images/svg/sub.svg'"
+              ></svg-icon>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.channelId }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.channelAccountAlias }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <ng-container *ngIf="item.minimumAmount === -1 && item.maximumAmount === -1; else show">-</ng-container>
+              <ng-template #show
+                >{{ item.minimumAmount | toFormatMoney }} ~ {{ item.maximumAmount | toFormatMoney }}</ng-template
+              >
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.realBalance | currencyValue : item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.availableBalance | currencyValue : item.currency }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.withdrawCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.singleDayMargin === -1 ? '-' : (item.singleDayMargin | toFormatMoney) }}</span>
+          </td>
+          <td>
+            <span class="cell mx-auto priority">
+              <app-label class="px-3 rounded-0" type="danger">{{ item.withdrawPriority }}</app-label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="btn btn-light btn-hover-light-default px-6 text-nowrap" (click)="onView(item)">{{
+                'common.review' | lang
+              }}</span>
+            </span>
+          </td>
+        </tr>
+
+        <ng-container *ngIf="item.expand && item.details?.length">
+          <tr class="info-row" *ngFor="let child of item.details">
+            <td><span class="cell"></span></td>
+            <td>
+              <span class="cell">{{ child.paymentMethodId }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.channelAccountAlias }}</span>
+            </td>
+            <td><span class="cell">-</span></td>
+            <td><span class="cell">-</span></td>
+            <td><span class="cell">-</span></td>
+            <td><span class="cell">-</span></td>
+            <td>
+              <span class="cell">{{ child.depositCount }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ child.singleDayMargin === -1 ? '-' : child.singleDayMargin }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <app-label
+                  class="px-3 rounded-0 cursor-pointer"
+                  type="success"
+                  [autoClose]="'outside'"
+                  [ngbPopover]="popover"
+                  (click)="loadTip(item, child)"
+                  >{{ child.depositPriority }} （+{{ child.point }}）</app-label
+                >
+              </span>
+            </td>
+            <td><span class="cell"></span></td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-30">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="isLoading"
+        [simple]="true"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

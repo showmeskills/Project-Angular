@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <div class="modal-title">{{ 'game.provider.chooseGameProvider' | lang }}</div>
+
+  <div class="c-btn-close" (click)="modal.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<div>
+  <div class="modal-body p-8 align-items-stretch">
+    <div class="search-bar">
+      <div class="input-icon">
+        <input type="search" class="form-control" [(ngModel)]="kw" />
+        <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+      </div>
+    </div>
+
+    <div class="list-wrap custom-scroll-y mt-8" [style.max-height.px]="248">
+      <label
+        class="item"
+        *ngFor="let item of list"
+        [hidden]="!hasSearchKW(item)"
+        [class.active]="item['checked']"
+        (click)="onConfirm(item)"
+      >
+        <div class="ml-8">
+          <div class="mt-2">{{ item.name }}({{ item.providerCatId }})</div>
+        </div>
+      </label>
+
+      <div *ngIf="list && list.length && isSearchEmpty" class="item empty flex-center">
+        {{ 'components.NoCurrentSearch' | lang }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,177 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+
+  @media (max-width: 767px) {
+    padding-top: 15px;
+  }
+
+  //切换按钮
+  .tabs {
+    margin-top: 34px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--default-border-color);
+    display: flex;
+
+    @media (max-width: 767px) {
+      margin-bottom: 10px;
+      padding-left: 25px;
+    }
+
+    .tab {
+      display: flex;
+      height: 40px;
+      min-width: 40px;
+      margin-right: 17px;
+      padding-bottom: 8px;
+      font-size: 16px;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: #474d57;
+      border-bottom: 2px solid transparent;
+      user-select: none;
+      &:host-context(.dark) & {
+        color: #b1bad3;
+      }
+
+      &.active {
+        color: #1e2329;
+        border-bottom: 2px solid var(--primary-color);
+
+        &:host-context(.dark) & {
+          color: #fff;
+        }
+      }
+
+      @media (max-width: 767px) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  //登录历史 tab
+  .login-tab {
+    min-height: 360px;
+    flex-direction: column;
+
+    @media (max-width: 767px) {
+      min-height: 270px;
+    }
+  }
+
+  //安全操作记录 tab
+  .security-tab {
+    min-height: 360px + 90px;
+    flex-direction: column;
+
+    @media (max-width: 767px) {
+      min-height: 290px;
+    }
+  }
+
+  //表格样式
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 24px;
+
+    thead {
+      background-color: #f9f9fa;
+
+      th {
+        text-align: left;
+        padding: 17px;
+        color: #848e9c;
+        font-size: 12px;
+        line-height: 17px;
+
+        &:host-context(.dark) & {
+          background-color: #2f4553;
+        }
+      }
+    }
+
+    tr {
+      border-bottom: 1px solid var(--default-border-color);
+
+      @media (any-hover: hover) {
+        &:hover {
+          background-color: #f5f5f5;
+
+          &:host-context(.dark) & {
+            background-color: #2f4553;
+          }
+        }
+      }
+
+      @media (max-width: 767px) {
+        display: flex;
+        flex-direction: column;
+        padding: 13px 16px;
+        @include polyfills.flex-gap(14px, 'column nowrap');
+
+        td {
+          padding: 0;
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+    }
+
+    td {
+      white-space: nowrap;
+      text-align: left;
+      padding: 17px;
+      color: #212833;
+      font-size: 14px;
+
+      &:host-context(.dark) & {
+        color: #fff;
+      }
+    }
+  }
+
+  .has-data-label {
+    @media (max-width: 767px) {
+      &::before {
+        content: attr(data-label);
+        color: #848e9c;
+      }
+    }
+  }
+
+  .log-status {
+    color: #00c087 !important;
+
+    &.failed {
+      color: #f23051 !important;
+    }
+  }
+}
+
+.flex-layout {
+  display: flex;
+  @include polyfills.flex-gap(10px, 'row nowrap');
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  @include polyfills.flex-gap(16px, 'row wrap');
+  align-items: flex-end;
+}
+
+.search-bar-filter {
+  margin-left: auto;
+  padding: 0 16px;
+  color: #717a8a;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 175%;
+}

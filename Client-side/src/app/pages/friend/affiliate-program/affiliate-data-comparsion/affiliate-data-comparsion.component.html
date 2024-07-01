@@ -1,0 +1,99 @@
+<div class="sub-theme-container">
+  <div class="sub-theme-header">
+    <div class="sub-theme-left">
+      <i class="header-icon"></i>
+      <span class="header-title">{{ 'first_deposit_guid' | translate }}</span>
+    </div>
+  </div>
+  <app-table-component
+    [tableHeader]="firstDepositList.header"
+    [tableBodyTmp]="tableDataTmp"
+    [h5DataTemp]="h5DataTmp"
+    [loading]="loading"
+    (onLoadData)="getFirstDepositList($event)"
+    [dataLen]="firstDepositList.list.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="false"
+    [infoTips]="'sent_cc' | translate"
+  ></app-table-component>
+</div>
+
+<!-- 表格模版 -->
+<ng-template #tableDataTmp>
+  <tr *ngFor="let item of firstDepositList.list">
+    <td>{{ item?.uid || '' }}</td>
+    <td>
+      {{ item?.inviteCode || '' }} {{ (item?.flowReturnRateUpper || 0) * 1000 }}‰/
+      {{ (item?.flowReturnRateLower || 0) * 1000 }}‰
+    </td>
+    <td>{{ item?.regTime ? (item.regTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}</td>
+    <td>{{ item?.ftdTime ? (item.ftdTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}</td>
+    <td>
+      {{ item?.ftdAmount || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      {{ item?.tradeAmount || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td [class.positive-income]="item.totalWinLoss > 0" [class.negative-income]="item.totalWinLoss < 0">
+      {{ item.totalWinLoss > 0 ? '+' : '' }}{{ item?.totalWinLoss || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+  </tr>
+</ng-template>
+<!-- h5数据 -->
+<ng-template #h5DataTmp>
+  <div class="h5-agent-table-data" *ngFor="let item of firstDepositList.list">
+    <div class="group">
+      <p class="group-text">{{ 'degrade_uid' | translate }}</p>
+      <p class="group-text">{{ item?.uid || '' }}</p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'invite_code' | translate }}</p>
+      <p class="group-text">
+        {{ item?.inviteCode || '' }} {{ (item?.flowReturnRateUpper || 0) * 1000 }}‰/
+        {{ (item?.flowReturnRateLower || 0) * 1000 }}‰
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'reg_time' | translate }}</p>
+      <p class="group-text">
+        {{ item?.regTime ? (item.regTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'first_despot_date' | translate }}</p>
+      <p class="group-text">
+        {{ item?.ftdTime ? (item.ftdTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'first_deposit_amount' | translate }}</p>
+      <p class="group-text">
+        {{ item?.ftdAmount || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'agent_amount' | translate }}</p>
+      <p class="group-text">
+        {{ item?.tradeAmount || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'total_win00' | translate }}</p>
+      <p
+        class="group-text"
+        [class.positive-income]="item.totalWinLoss > 0"
+        [class.negative-income]="item.totalWinLoss < 0"
+      >
+        {{ item.totalWinLoss > 0 ? '+' : '' }}{{ item?.totalWinLoss || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+  </div>
+</ng-template>

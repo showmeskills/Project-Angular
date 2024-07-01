@@ -1,0 +1,17 @@
+<div
+  class="scroll-box"
+  (scroll)="scrollVerticalDistance($event)"
+  [class.auto-thumb]="autoThumb"
+  [class.mobile]="isMobile"
+  [class.scroll]="isScroll"
+  #scrollBox
+  cdkScrollable
+  [class.disabled]="disabled"
+>
+  <div #content class="scroll-content">
+    <ng-content></ng-content>
+  </div>
+  <div class="scrollbar" #scrollbar [class.drag]="isdrag">
+    <div class="scrollbar-thumb" #thumb></div>
+  </div>
+</div>

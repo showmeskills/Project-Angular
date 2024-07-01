@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cashier</title>
+  <script type=text/javascript src='https://static.paymentiq.io/cashier/cashier.js'></script>
+  <style>
+    html,
+    body {
+      margin: 0px;
+      overflow: hidden;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='cashier'></div>
+  <script>
+    var height = 0;
+    var timer;
+    var ob;
+    window.onload = function () {
+      window.addEventListener("WebViewSDKReady", function (event) {
+        console.log('WebViewSDKReady');
+        var CashierInstance = new _PaymentIQCashier('#cashier', {
+          merchantId: config.merchantId,
+          userId: config.uid,
+          sessionId: config.token,
+          environment: config.environment,
+          method: config.method,
+          defaultLoader: config.defaultLoader,
+          customLogoFileName: '',
+          gtm: '',
+          locale: 'en',
+          allowMobilePopup: 'true',
+          containerWidth: '100%',
+          containerMinHeight: '400px',
+          accountDelete: 'true',
+          allowCancelPendingWithdrawal: 'false',
+          amountFirst: 'false',
+          autoOpenFirstPaymentMethod: 'true',
+          autoProcess: 'false',
+          displayLogoOrName: 'both',
+          globalSubmit: 'true',
+          layout: 'vertical',
+          listRadio: 'false',
+          listType: 'list',
+          logoFullWidth: 'true',
+          logoSize: '120',
+          mode: 'gambling',
+          predefinedAmounts: [30, 50, 100, 200],
+          predefinedValues: 'true',
+          receiptAmountDisplayStyle: 'symbol',
+          receiptAmountTransactionStyle: 'TxAmount',
+          receiptExcludeKeys: [],
+          showReceipt: 'true',
+          scrollToOffset: 0,
+          scrollToPm: 'nearest',
+          showCookiesWarning: 'false',
+          selectlastusedtxmethod: 'false',
+          showAccounts: 'list-first',
+          showAmountLimits: 'true',
+          showBonusCode: 'false',
+          showFee: 'true',
+          showFooter: 'false',
+          showHeader: 'false',
+          showListHeaders: 'true',
+          showTermsConditions: 'false',
+          showTransactionOverview: 'true',
+          singlePageFlow: 'true',
+          storeAccount: 'true',
+          tabs: 'false',
+          theme: {
+            input: {
+              height: '46px',
+              color: style.text_main_color,
+            },
+            inputbackground: {
+              color: 'transparent',
+            },
+            labels: {
+              color: style.text_second_color,
+            },
+            loader: {
+              color: 'transparent',
+            },
+            buttons: {
+              color: style.highlight_color,
+            },
+            cashierbackground: {
+              color: isDarkMode ? style.background_color : '',
+            },
+            headings: {
+              color: style.text_second_color,
+            },
+          },
+        }, (api) => {
+          api.on({
+            cashierInitLoad: () => console.log('Cashier init load'),
+            update: data => console.log('The passed in data was set', data),
+            success: data => {
+              console.log('Transaction was completed successfully', data);
+            },
+            failure: data => {
+              console.log('Transaction failed', data);
+            },
+            isLoading: data => console.log('Data is loading', data),
+            doneLoading: data => {
+              console.log('Data has been successfully downloaded', data)
+              WebViewSDK.actionApp({ method: 'doneLoading' });
+            },
+            pending: data => console.log('Transaction is pending', data),
+            unresolved: data => console.log('Transaction is unresolved', data),
+            newProviderWindow: data => console.log('A new window / iframe has opened', data),
+            paymentMethodSelect: data => console.log('Payment method was selected', data),
+            paymentMethodPageEntered: data => console.log('New payment method page was opened', data),
+            navigate: data => console.log('Path navigation triggered', data),
+            cancelledPendingWD: data => console.log('A pending withdrawal has been cancelled', data),
+            cancelled: data => console.log('Transaction has been cancelled by user', data),
+            onLoadError: data => { 
+              console.log('Cashier could not load properly', data);
+              WebViewSDK.actionApp({ method: 'onLoadError' });
+             },
+            transactionInit: data => console.log('A new transaction has been initiated', data),
+          })
+          // api.set({
+          //   config: {
+          //     amount: 10
+          //   }          
+          // })
+          api.css(`
+          .route-container{
+            overflow:hidden;
+          }
+          .dropdown-container{
+            border: 1px solid ${style.border_color} !important;
+          }
+          .seperator-line {
+            background: ${style.border_color} !important;
+          }
+          .input-wrapper {
+            input{
+              border: 1px solid ${style.border_color} !important;
+            }
+          }
+          .dropdown-content .dropdown-item {
+            background: ${style.pop_background_color} !important;
+          }
+          .dropdown-content .dropdown-item.selected{
+            background: ${style.border_color} !important;
+          }
+          .dropdown-content .dropdown-item.selected, .dropdown-content .dropdown-item:hover{
+            background: ${style.border_color} !important;
+          }
+          .set-amount .input-container .input-wrapper input{
+            border: 1px solid ${style.border_color} !important;
+          }
+          .set-amount .predefinedvalues button {
+            background: ${style.border_color} !important;
+          }
+          .set-amount .predefinedvalues button.active {
+            background: ${style.highlight_color} !important;
+          }
+          #hosted-field-single-iframe .hosted-input-container .input-container input{
+            border-color: ${style.border_color} !important;
+          }
+          .submit-button-container .transaction-overview{
+            border-top: 1px solid ${style.border_color} !important;
+            border-bottom: 1px solid ${style.border_color} !important;
+          }
+          .input, #frmCCNum, #bankBic{
+            border: 1px solid ${style.border_color} !important;
+          }
+          #cashier label.label-input {
+            color: ${style.text_second_color} !important;
+          }
+          .credit-card-inputs-wrapper .inputs-container .creditCardField .creditCardField, 
+          .hosted-input-container .input-container input {
+            border-color: ${style.border_color} !important;
+          }
+          .single-page-flow-container{
+            padding:0 !important;
+          }
+          .payment-method-details{
+            padding:var(--main-container-top-down) 0 !important;
+          }
+          .seperator-middle{
+            color: ${style.text_second_color} !important;
+          }
+          .main-container h3 h4{
+            color: ${style.text_second_color} !important;
+          }
+          .status-label{
+            color: ${style.text_second_color} !important;
+          }
+          .receipt .details-container .success-message{
+            border-bottom: 1px solid ${style.border_color} !important;
+          }
+          #cashier h1 h2 h3 h4 h5 h6{
+            color: ${style.text_main_color} !important;
+          }
+          --border-color: ${style.border_color} !important;
+        `)
+        }
+        )
+        if (window.ResizeObserver) {
+          ob = new ResizeObserver(checkAndNotify);
+          ob.observe(document.body);
+        } else {
+          timer = setTimeout(checkAndNotify, 200);
+        }
+        function checkAndNotify() {
+          // var curr = document.body.scrollHeight;
+          // var container = document.getElementById('app-container');
+          var curr = Math.max(
+            // document.documentElement.clientHeight,
+            document.body.scrollHeight,
+            // document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            // document.documentElement.offsetHeight,
+          )
+          // var ratio = window.devicePixelRatio;
+          // if (ratio != 0) {
+          //   curr = curr / ratio;
+          // }
+          console.log(curr);
+          if (curr !== height) {
+            height = curr;
+            WebViewSDK.actionApp({ method: 'onHeightChange', args: { height: height } });
+          }
+        }
+      });
+    }
+
+    window.onbeforeunload = function () {
+      ob && ob.disconnect();
+      timer && clearTimeout(timer);
+    };
+
+  </script>
+</body>
+
+</html>

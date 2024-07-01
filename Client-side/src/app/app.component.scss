@@ -1,0 +1,50 @@
+:host {
+  padding-top: var(--root-padding-top);
+  padding-left: var(--root-padding-left);
+  padding-right: var(--root-padding-right);
+  padding-bottom: var(--root-padding-bottom);
+}
+
+.version {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  color: #00ff00;
+  z-index: 99999999;
+  pointer-events: none;
+}
+
+.network-tip {
+  position: fixed;
+  width: 360px;
+  min-height: 56px;
+  max-width: 80vw;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--container-bg-color);
+  color: var(--text-color);
+  z-index: 99999999;
+  padding: 15px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  line-height: 1.4;
+  .animation-icon-loading-dot {
+    display: inline-block;
+    padding-left: 2px;
+    vertical-align: text-bottom;
+    opacity: 0.5;
+    font-size: 70%;
+    i {
+      animation-duration: 1.5s;
+    }
+  }
+}
+
+.oo_trigger_change_oo {
+  z-index: random();
+}

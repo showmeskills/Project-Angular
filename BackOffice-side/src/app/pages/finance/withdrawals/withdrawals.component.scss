@@ -1,0 +1,170 @@
+:host {
+  .title {
+    white-space: nowrap;
+    font-size: 16px;
+    color: #969bad;
+  }
+
+  .field-input {
+    margin-left: 15px;
+  }
+
+  input[type='checkbox'] {
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+  }
+
+  .color-aaa {
+    color: #a1a5b7;
+  }
+}
+
+.card-body {
+  padding: 30px;
+}
+
+.label.label-lg {
+  height: 34px;
+
+  &.label-light-danger {
+    background: #fff5f8;
+    color: #f1416c;
+  }
+
+  &.label-light-warning {
+    background: #fff8dd;
+    color: #ffc700;
+  }
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 4px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle {
+  margin-left: 5px;
+}
+
+.status-title {
+  display: flex;
+  justify-content: center;
+}
+
+.red {
+  color: #f1416c;
+}
+
+.count {
+  background-color: #f5f8fa;
+}
+
+@mixin status($bg, $color) {
+  display: inline-block;
+  min-width: 70px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  border-radius: 6px;
+  background-color: $bg;
+  color: $color;
+  font-size: 14px;
+  padding-left: 6px;
+  padding-right: 6px;
+  white-space: nowrap;
+}
+
+.complete {
+  @include status(#e8fff3, #50cd89);
+}
+
+.fail {
+  @include status(#fff5f8, #f1416c);
+}
+
+.in-progress {
+  @include status(#fff8dd, #ffc700);
+}
+
+.submitted {
+  @include status(#f1faff, #009ef7);
+}
+
+.cancel {
+  @include status(#f5f8fa, #7e8299);
+}
+
+.select-checkbox {
+  width: 140px;
+}
+
+.order-status {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pr {
+  position: relative;
+}
+
+.select-list {
+  position: absolute;
+  z-index: 1;
+  width: 140px;
+  background: white;
+  top: 40px;
+  left: 80px;
+}
+
+.orderStatusCheckedName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.datePicker-box {
+  display: flex;
+  background-color: #f3f6f9;
+  border-radius: 0.42rem;
+  margin-left: 15px;
+  align-items: center;
+}
+
+.green {
+  color: #50cd89;
+}
+
+form-row {
+  margin-right: 40px;
+}
+
+.jumpRoute {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: #009ef7;
+  }
+}

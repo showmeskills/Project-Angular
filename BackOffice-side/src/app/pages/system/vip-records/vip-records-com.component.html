@@ -1,0 +1,15 @@
+<div class="d-flex flex-wrap" style="gap: 15px" *ngIf="tabs && tabs.length > 0">
+  <button
+    *ngFor="let item of tabs; let index = index"
+    class="c-btn btn fz-16"
+    [class.btn-white]="item.path !== curTabPath"
+    [class.btn-primary]="item.path === curTabPath"
+    (click)="changeTab(item)"
+  >
+    {{ item.data?.['lang'] | lang }}
+  </button>
+</div>
+
+<div class="mt-6">
+  <router-outlet></router-outlet>
+</div>

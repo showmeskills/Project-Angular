@@ -1,0 +1,113 @@
+<div class="my-10" [class.disabled]="isReadonly">
+  <!-- 签到类型 -->
+  <form-row [label]="'common.type' | lang" label-width="200" required>
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-16 fz-16" *ngFor="let item of typeList">
+          <input
+            type="radio"
+            name="registerSignIn"
+            [value]="item.value"
+            [(ngModel)]="typeValue"
+            (ngModelChange)="prizeInfo = null"
+          />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 注册签到 -->
+  <ng-container *ngIf="typeValue === 1">
+    <!-- 注册签到奖励 -->
+    <form-row [label]="'member.activity.sencli15.registerSignInRewards' | lang" label-width="200" required>
+      <ng-template>
+        <div class="color-aaa">{{ 'member.activity.sencli15.registerSignInTips' | lang }}</div>
+        <!-- 奖品选择 -->
+        <ng-container *ngTemplateOutlet="PrizeSelectTpl"></ng-container>
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- 每日签到 -->
+  <ng-container *ngIf="typeValue === 2">
+    <!-- 每日签到奖励 -->
+    <form-row [label]="'member.activity.sencli15.loginSignInRewards' | lang" label-width="200" required>
+      <ng-template>
+        <div class="color-aaa">{{ 'member.activity.sencli15.loginSignInTips' | lang }}</div>
+        <!-- 奖品选择 -->
+        <ng-container *ngTemplateOutlet="PrizeSelectTpl"></ng-container>
+      </ng-template>
+    </form-row>
+  </ng-container>
+</div>
+
+<!-- 奖品选择模板 -->
+<ng-template #PrizeSelectTpl>
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 奖品信息 -->
+    <div class="mr-5" *ngIf="prizeInfo?.id">
+      <!-- 奖品名称 -->
+      {{ prizeInfo?.prizeName }}
+      <!-- 奖品配置 -->
+      （{{ prizeInfo | prizeConfig }}）
+      <!-- 奖品状态为【待审核/已下架】要显示出来 -->
+      <div class="text-danger" *ngIf="prizeInfo?.status !== 2">（{{ getPrizeSatus(prizeInfo?.status) | lang }}）</div>
+
+      <!-- 奖品金额类型为比例：上限金额 + 币种 -->
+      <ng-container *ngIf="prizeInfo?.amountType === 2">
+        （{{ 'member.activity.prizeCommon.capAmount' | lang }}：{{ prizeInfo?.rateLimit
+        }}<img [currencyIcon]="prizeInfo?.currency" currencySize="20" class="mx-2" /> {{ prizeInfo?.currency }}）
+      </ng-container>
+
+      <!-- 奖品类型 -->
+      （{{ prizeService.getPrizeName(prizeTypeList, prizeInfo?.prizeType) }}）
+      <!-- 奖品卷码 -->
+      （{{ prizeInfo?.prizeCode || '-' }}）
+    </div>
+
+    <!-- 奖品：新增/编辑 -->
+    <button type="button" class="btn btn-light-primary py-3 mr-5" (click)="onOpenSelectPrize()">
+      <svg-icon
+        class="vam svg-icon lh-18"
+        [src]="prizeInfo?.id ? './assets/images/svg/pen.svg' : './assets/images/svg/add.svg'"
+      ></svg-icon>
+      <span class="vam">{{
+        (prizeInfo?.id ? 'auManage.role.chnage' : 'member.activity.sencli2.addPrize') | lang
+      }}</span>
+    </button>
+
+    <!-- 奖品：删除 -->
+    <svg-icon
+      *ngIf="prizeInfo"
+      class="vam svg-icon svg-icon-3x lh-18 cursor-pointer"
+      [src]="'./assets/images/svg/bonus-delete.svg'"
+      (click)="prizeInfo = null"
+    ></svg-icon>
+  </div>
+</ng-template>
+
+<div class="text-danger">*{{ 'member.activity.sencli15.prizeSelectLimitTips' | lang }}。</div>
+
+<div class="pt-10 flex-center btn-wrap" *ngIf="!isReadonly; else showFooterBtnTpl">
+  <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'luckRoulette.lastStep' | lang }}</button>
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ 'luckRoulette.submit' | lang }}
+  </button>
+</div>
+
+<ng-template #showFooterBtnTpl>
+  <div class="pt-10 btn-wrap flex-center">
+    <button type="button" class="c-btn btn btn-light" (click)="jump('qualifications')">
+      {{ 'luckRoulette.lastStep' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="toList()">
+      {{ 'common.back' | lang }}
+    </button>
+  </div>
+</ng-template>

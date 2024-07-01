@@ -1,0 +1,45 @@
+:host {
+  .table th .cell, .table td .cell {
+		min-height: 28px;
+  }
+
+	.table thead {
+		background: #F5F8FA;
+	}
+}
+
+.triangle {
+	margin-left: 5px;
+}
+
+.triangle-up {
+	width: 0;
+	height: 0;
+	border-left: 3px solid transparent;
+	border-right: 3px solid transparent;
+	border-bottom: 4px solid #a1a5b7;
+	margin-top: 4px;
+
+	&.active {
+		border-bottom: 4px solid #3699ff;
+	}
+	&:active {
+		border-top: 4px solid #3699ff;
+	}
+}
+
+.triangle-down {
+	margin-top: 2px;
+	width: 0;
+	height: 0;
+	border-left: 3px solid transparent;
+	border-right: 3px solid transparent;
+	border-top: 4px solid #a1a5b7;
+
+	&.active {
+		border-top: 4px solid #3699ff;
+	}
+	&:active {
+		border-top: 4px solid #3699ff;
+	}
+}

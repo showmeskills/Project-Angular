@@ -1,0 +1,30 @@
+<div class="popup-common standard-popup">
+  <div class="title">{{ 'bind_p_tit' | translate }}</div>
+  <div class="content">
+    <pre class="description">{{ 'bind_p_tip' | translate }}</pre>
+    <div class="icon">
+      <ng-container *ngFor="let item of options">
+        <ng-container *ngTemplateOutlet="bindIcon; context: { item: item }"></ng-container>
+      </ng-container>
+    </div>
+  </div>
+  <div class="footer">
+    <customize-button class="btn-gb" width="100%" type="default" size="medium" (onClick)="cancel()">
+      {{ 'bind_p_n' | translate }}
+    </customize-button>
+    <customize-button class="ml-10" width="100%" type="primary" size="medium" (onClick)="confirm()">
+      {{ 'bind_p_g' | translate }}
+    </customize-button>
+  </div>
+
+  <ng-template #bindIcon let-item="item">
+    <div class="option" (click)="handleSelect(item)">
+      <div class="round" [class.round-grey]="item.selected">
+        <img src="assets/svg/{{ item.path }}.svg" class="option-icon" />
+      </div>
+      <div class="text">{{ item.text }}</div>
+      <div class="tip" [class.show]="item.type == 'google'">{{ 'recommend' | translate }}</div>
+      <img src="assets/svg/bind-selected.svg" class="selected-icon" *ngIf="item.selected" />
+    </div>
+  </ng-template>
+</div>

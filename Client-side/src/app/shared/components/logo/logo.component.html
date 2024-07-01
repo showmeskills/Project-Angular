@@ -1,0 +1,12 @@
+<a
+  class="onact96-a"
+  [href]="'/' + appService.languageCode"
+  (click)="$event.preventDefault(); click()"
+  *ngIf="clickable"
+></a>
+<ng-container *ngIf="isOnline">
+  <img class="logo-img" [src]="logoUrl" [style.width]="width" [style.height]="height" />
+</ng-container>
+<ng-container *ngIf="!isOnline">
+  <div class="logo" [style.width]="width" [style.height]="height"></div>
+</ng-container>

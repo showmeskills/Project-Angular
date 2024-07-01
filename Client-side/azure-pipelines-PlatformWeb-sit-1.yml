@@ -1,0 +1,178 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- sit-1
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+- group: PlatformWeb-sit-1
+- name: isOnline
+  value: "false"
+- name: isEur
+  value: "false"
+- name: isSit
+  value: "true"
+- name: isUat
+  value: "false"
+  # 远程配置文件名，对应每个商户的后台配置文件名
+- name: fileName
+  value: "web-1.json"
+  # Api请求域名
+- name: apiDomain
+  value: "http://18.176.7.11:5800"
+  # 远程配置下载地址
+- name: configUrl
+  value: "${{ variables.apiDomain }}/s3/download?s3_url=s3://glaibo-platform-public-upload-storage-prod/configs/${{ variables.fileName }}"
+  # 下载之后的地址，不要跟项目文件夹跟名字重名，避免覆盖
+- name: downloadPath
+  value: "$(System.DefaultWorkingDirectory)/release_config/config.json"
+- name: NODE_OPTIONS
+  value: "--max_old_space_size=4096"
+
+steps:
+- task: replacetokens@5
+  inputs:
+    rootDirectory: "$(Build.SourcesDirectory)/src/environments"
+    targetFiles: "**/*environment.prod.ts"
+    encoding: "auto"
+    tokenPattern: "default"
+    writeBOM: true
+    actionOnMissing: "warn"
+    keepToken: true
+    actionOnNoFiles: "continue"
+    enableTransforms: false
+    enableRecursion: false
+    useLegacyPattern: false
+    enableTelemetry: true
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      mkdir $(System.DefaultWorkingDirectory)/release_config
+      curl -f -o $(downloadPath) --header 'Authorization: Basic YWRtaW46YWRtaW4=' $(configUrl)
+  displayName: '下载发版配置文件'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      config_path=$(downloadPath)
+      deployUrl=$(jq -r '.config.deployUrl' $config_path)
+      if [ -z "$deployUrl" ]; then
+        echo "Error: deployUrl is empty"
+        exit 1
+      fi
+      appleTouchIcon=$(jq -r '.config.appleTouchIcon' $config_path)
+      if [ -z "$appleTouchIcon" ]; then
+        echo "Error: appleTouchIcon is empty"
+        exit 1
+      fi
+      merchantName=$(jq -r '.config.merchantName' $config_path)
+      if [ -z "$merchantName" ]; then
+        echo "Error: merchantName is empty"
+        exit 1
+      fi
+      echo "##vso[task.setvariable variable=deployUrl]$deployUrl"
+      echo "##vso[task.setvariable variable=appleTouchIcon]$appleTouchIcon"
+      echo "##vso[task.setvariable variable=merchantName]$merchantName"
+      echo $deployUrl
+      echo $appleTouchIcon
+      echo $merchantName
+  displayName: '读取配置文件信息'
+
+- task: replacetokens@5
+  inputs:
+    rootDirectory: '$(Build.SourcesDirectory)'
+    targetFiles: '**/package.json'
+    encoding: 'auto'
+    tokenPattern: 'default'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    actionOnNoFiles: 'continue'
+    enableTransforms: false
+    enableRecursion: false
+    useLegacyPattern: false
+    enableTelemetry: true
+  displayName: '替换deployUrl'
+
+- task: replacetokens@5
+  inputs:
+    rootDirectory: '$(Build.SourcesDirectory)/src'
+    targetFiles: '**/manifest.webmanifest'
+    encoding: 'auto'
+    tokenPattern: 'default'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    actionOnNoFiles: 'continue'
+    enableTransforms: false
+    enableRecursion: false
+    useLegacyPattern: false
+    enableTelemetry: true
+  displayName: '替换manifest'
+
+- task: replacetokens@5
+  inputs:
+    rootDirectory: '$(Build.SourcesDirectory)/src'
+    targetFiles: '**/index.html'
+    encoding: 'auto'
+    tokenPattern: 'default'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    actionOnNoFiles: 'continue'
+    enableTransforms: false
+    enableRecursion: false
+    useLegacyPattern: false
+    enableTelemetry: true
+  displayName: '替换入口html'
+
+- task: replacetokens@5
+  inputs:
+    rootDirectory: '$(Build.SourcesDirectory)/src'
+    targetFiles: '**/release.json'
+    encoding: 'auto'
+    tokenPattern: 'default'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    actionOnNoFiles: 'continue'
+    enableTransforms: false
+    enableRecursion: false
+    useLegacyPattern: false
+    enableTelemetry: true
+  displayName: '替换用于对比检查更新的版本文件'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install -g @angular/cli
+  displayName: 'npm install cli'
+
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: './'
+  displayName: 'npm install'
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: './'
+    customCommand: 'run build-prod'
+  displayName: 'npm build'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'dist'
+    artifact: 'drop'
+    publishLocation: 'pipeline'

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+    <defs>
+        <linearGradient id="gkyrs1ksyb" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fb6943"/>
+            <stop offset="1" stop-color="#f74c28"/>
+        </linearGradient>
+        <clipPath id="xni2uno7ya">
+            <path data-name="矩形 8615" transform="translate(903 377)" style="fill:#fff;stroke:#707070" d="M0 0h100v100H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="蒙版组 2374" transform="translate(-903 -377)" style="clip-path:url(#xni2uno7ya)">
+        <g data-name="组 8460">
+            <path data-name="路径 13924" d="M697.312 263.328a7.328 7.328 0 1 0-7.328 7.328 7.349 7.349 0 0 0 7.328-7.328z" transform="translate(284.996 145.355)" style="fill:url(#gkyrs1ksyb)"/>
+            <path data-name="路径 13925" d="M0 85.344v73.273h43.963v-7.328H7.328v-9.526l21.982-21.982 14.654 14.654 5.13-5.13-19.784-19.784L7.328 131.5V92.669H80.6v21.982l7.328 7.328V85.344z" transform="translate(909.035 301.357)" style="fill:url(#gkyrs1ksyb)"/>
+            <path data-name="路径 13926" d="m627.75 517.262 5.13-5.13-17.22-17.22-17.22 17.22 5.13 5.13 8.43-8.427v16.852h7.328v-16.852zm-30.406 15.753h7.328v7.328h-7.328zm14.654 0h7.328v7.328H612zm14.654 0h7.328v7.328h-7.328z" transform="translate(362.983 -73.043)" style="fill:#76808f"/>
+        </g>
+    </g>
+</svg>

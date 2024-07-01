@@ -1,0 +1,492 @@
+<div class="bg-fff rounded-3 p-12">
+  <form [formGroup]="formGroup" *ngIf="defaultForm">
+    <h2 class="color-111 mb-10 fz-18 fw-bolder">{{ 'content.info.setting' | lang }}</h2>
+
+    <div class="d-flex py-2 pb-4 mr-16">
+      <label class="form-title fz-16" style="flex: 0 0 220px"
+        >{{ 'content.info.mer' | lang }} <span class="text-danger">*</span>：
+      </label>
+      <div class="flex-1" *ngIf="isAdd">
+        <mat-form-field [style.width.px]="270">
+          <mat-select
+            class="form-control"
+            formControlName="merchant"
+            [class.is-invalid]="validator.isControlInvalid('merchant')"
+            (selectionChange)="onMerchant($event)"
+            [disabled]="isEdit"
+          >
+            <mat-option [value]="item.value" *ngFor="let item of merchantList">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="is-invalid"></div>
+        <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'merchant')">
+          {{ 'conten.chooseMer' | lang }}
+        </div>
+      </div>
+      <div class="lh-42 fz-16" *ngIf="isEdit">{{ merchantName }}</div>
+    </div>
+
+    <!-- 类型 -->
+    <form-row
+      name="type"
+      [label]="'content.info.type' | lang"
+      label-width="220"
+      required
+      [invalidFeedback]="{ required: ('content.info.chooseType' | lang) }"
+    >
+      <ng-template>
+        <div class="d-flex flex-wrap lh-32 py-2">
+          <label class="radio radio-lg mr-12 fz-14" *ngFor="let item of typeList">
+            <input
+              name="type"
+              type="radio"
+              [value]="item.key"
+              formControlName="type"
+              (change)="onTypeChange(item.key)"
+            />
+            <span class="mr-4"></span>{{ lang.isLocal ? item.value : item.key }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!--  <form-row-->
+    <!--    name="type"-->
+    <!--    [label]="'content.info.type' | lang"-->
+    <!--    label-width="220"-->
+    <!--    required-->
+    <!--    [invalidFeedback]="{ required: ('content.info.chooseType' | lang) }"-->
+    <!--    *ngIf="isEdit"-->
+    <!--  >-->
+    <!--    <ng-template [ngSwitch]="formGroup.value['type']">-->
+    <!--      <div class="fz-16" *ngSwitchCase="'FAQ'">{{ 'content.article.category.FAQ' | lang }}</div>-->
+    <!--      <div class="fz-16" *ngSwitchCase="'Announcement'">{{ 'content.article.category.Announcement' | lang }}</div>-->
+    <!--      <div class="fz-16" *ngSwitchCase="'Activity'">{{ 'content.article.category.Activity' | lang }}</div>-->
+    <!--    </ng-template>-->
+    <!--  </form-row>-->
+
+    <!-- 资讯分类 -->
+    <div class="d-flex py-2 pb-4 mr-16" *ngIf="formGroup.value['merchant']">
+      <label class="form-title fz-16" style="flex: 0 0 220px"
+        >{{ 'content.info.typeNews' | lang }} <span class="text-danger">*</span>：
+      </label>
+      <!--    <div class="flex-1" *ngIf="isAdd">-->
+      <div class="flex-1">
+        <div
+          class="d-flex flex-ac form-control mat-form-field-type-mat-select"
+          [style.width.px]="270"
+          [class.is-invalid]="validator.isControlInvalid('category')"
+          (click)="onCategory()"
+        >
+          <span class="flex-1">{{ curCategory['title'] }}</span>
+          <div class="mat-select-arrow"></div>
+        </div>
+
+        <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'category')">
+          {{ 'content.info.chooseTypeNews' | lang }}
+        </div>
+      </div>
+      <!--    <div class="lh-42 fz-16" *ngIf="isEdit">{{ curCategory['title'] }}</div>-->
+    </div>
+
+    <!-- 前端标识 -->
+    <div class="d-flex py-2 pb-4 mr-16">
+      <label class="form-title fz-16" style="flex: 0 0 220px"
+        >{{ 'content.info.qDuan' | lang }} <span class="text-danger">*</span>：
+      </label>
+      <div class="flex-1">
+        <div>
+          <input
+            class="form-control"
+            formControlName="flag"
+            type="text"
+            [style.width.px]="490"
+            [class.is-invalid]="validator.isControlInvalid('flag')"
+          />
+        </div>
+
+        <div class="is-invalid"></div>
+        <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'flag')">
+          {{ 'content.info.qBiao' | lang }}
+        </div>
+        <div class="invalid-feedback" *ngIf="validator.controlHasError('webCode', 'flag')">
+          {{ 'content.info.rightQian' | lang }}
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex py-2">
+      <label class="form-title fz-16" style="flex: 0 0 220px"
+        >{{ 'content.info.client' | lang }} <span class="text-danger">*</span>：
+      </label>
+
+      <div class="flex-1" formArrayName="client">
+        <div class="d-flex flex-wrap pt-2" style="line-height: 20px">
+          <label
+            class="checkbox checkbox-lg mr-12 my-2 fz-14"
+            *ngFor="let item of clientArrayForm.controls; let i = index"
+          >
+            <input type="checkbox" value="1" [formControlName]="i" />
+            <span class="mr-4"></span>{{ clientList[i].value }}
+          </label>
+        </div>
+
+        <div class="is-invalid"></div>
+        <div class="invalid-feedback" *ngIf="validator.controlHasError('arrayRequired', 'client')">
+          {{ 'content.info.chooseCli' | lang }}
+        </div>
+      </div>
+    </div>
+
+    <!-- 标签 -->
+    <div class="d-flex py-2">
+      <label class="form-title fz-16" style="flex: 0 0 220px">{{ 'content.info.label' | lang }} ：</label>
+      <div class="flex-1" formArrayName="tag">
+        <!-- 多选标签 -->
+        <ng-container *ngIf="!isRadio">
+          <div class="d-flex flex-wrap pt-2 lh-20">
+            <label
+              class="checkbox checkbox-lg mr-12 my-2 fz-14"
+              *ngFor="let item of tagArrayForm.controls; let i = index"
+            >
+              <input type="checkbox" value="1" [formControlName]="i" />
+              <span class="mr-4"></span>{{ tagList[i].value }}
+            </label>
+          </div>
+        </ng-container>
+
+        <!-- 单选标签 -->
+        <ng-container *ngIf="isRadio">
+          <div class="d-flex flex-wrap pt-2 lh-20">
+            <label class="radio radio-lg radio-success mr-12 my-2 fz-14" *ngFor="let item of tagList; let i = index">
+              <input [formControl]="formGroup.get('tagRadio')" [value]="item.key" name="tagRadio" type="radio" />
+              <span class="mr-4"></span>{{ item.value }}
+            </label>
+          </div>
+
+          <div class="is-invalid"></div>
+          <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'tagRadio')">
+            {{ 'content.article.tagTip' | lang }}
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="d-flex py-2" *ngIf="formGroup.value['merchant']">
+      <label class="form-title fz-16" style="flex: 0 0 220px">{{ 'content.info.contacr' | lang }}：</label>
+
+      <div class="d-flex flex-1 flex-wrap fz-14">
+        <span class="relate-tag" *ngFor="let item of currentRelative">{{ item.title }}</span>
+        <span class="relate-tag d-flex flex-center cursor-pointer" (click)="onAddInformation()">
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+          <span> {{ 'content.info.addN' | lang }}（{{ currentRelative.length }}/5）</span>
+        </span>
+      </div>
+    </div>
+
+    <ng-container formGroupName="method">
+      <!-- 发布方式 -->
+      <div class="d-flex py-2" *ngIf="isEdit">
+        <label class="form-title fz-16" style="flex: 0 0 220px">{{ 'content.info.faBuStu' | lang }}：</label>
+
+        <div class="flex-1 d-flex flex-ac">
+          <span [ngSwitch]="detail.status">
+            <span *ngSwitchCase="1" class="label label-lg label-inline label-light-success">{{
+              'content.info.yiFaBu' | lang
+            }}</span>
+            <span *ngSwitchCase="2" class="label label-lg label-inline label-light-danger">{{
+              'content.info.xiaJia' | lang
+            }}</span>
+            <span *ngSwitchCase="3" class="label label-lg label-inline label-light-warning">{{
+              'content.info.daiFaBu' | lang
+            }}</span>
+            <span *ngSwitchCase="4" class="label label-lg label-inline label-light-warning">{{
+              'content.info.caoGao' | lang
+            }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 发布方式 -->
+      <div class="d-flex py-2">
+        <label class="form-title fz-16" style="flex: 0 0 220px"
+          >{{ 'content.info.faBuWay' | lang }} <span class="text-danger">*</span>：
+        </label>
+
+        <div class="flex-1">
+          <div class="d-flex flex-wrap pt-2" style="line-height: 20px">
+            <ng-container *ngIf="isAdd; else releaseShow">
+              <label class="radio radio-lg mr-12 fz-14 my-2">
+                <input name="replaceType" value="Immediately" type="radio" formControlName="releaseType" />
+                <span class="mr-4"></span>{{ 'content.info.nowFaBu' | lang }}
+              </label>
+              <!--        <label class="radio radio-lg mr-12 fz-14 my-2">-->
+              <!--          <input name="replaceType" value="Manual" type="radio" formControlName="releaseType" />-->
+              <!--          <span class="mr-4"></span>手动发布-->
+              <!--        </label>-->
+              <label class="radio radio-lg mr-12 fz-14 my-2">
+                <input name="replaceType" value="Appointment" type="radio" formControlName="releaseType" />
+                <span class="mr-4"></span>{{ 'content.info.yuYue' | lang }}
+              </label>
+            </ng-container>
+            <ng-template #releaseShow>
+              <div class="fz-14 my-2" [ngSwitch]="formGroup.value.method.releaseType">
+                <span *ngSwitchCase="'Immediately'">{{ 'content.info.nowFaBu' | lang }}</span>
+                <span *ngSwitchDefault>{{ 'content.info.yuYue' | lang }}</span>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="is-invalid"></div>
+          <div
+            class="invalid-feedback"
+            *ngIf="validator.controlHasError('required', 'releaseType', formGroup.controls['method'])"
+          >
+            {{ 'content.info.chooseFa' | lang }}
+          </div>
+        </div>
+      </div>
+
+      <!-- 发布时间 -->
+      <div class="d-flex py-2" *ngIf="formGroup.value['method']?.['releaseType'] === 'Appointment'">
+        <label class="form-title fz-16" style="flex: 0 0 220px"
+          >{{ 'content.info.yuTime' | lang }} <span class="text-danger">*</span>：
+        </label>
+
+        <div class="flex-1">
+          <div class="d-flex flex-wrap">
+            <ng-container *ngIf="isAdd || [3, 4].includes(detail.type); else publishTimeShow">
+              <input
+                type="text"
+                [placeholder]="'content.info.chooseYu' | lang"
+                class="form-control text-center"
+                [style.width.px]="295"
+                [style.font-size.px]="14"
+                [owlDateTime]="publishTime"
+                [owlDateTimeTrigger]="publishTime"
+                [class.is-invalid]="invalidPublishTime"
+                formControlName="releaseTime"
+              />
+              <owl-date-time class="fz-20" #publishTime></owl-date-time>
+            </ng-container>
+
+            <ng-template #publishTimeShow>
+              <div class="form-control text-center" [style.width.px]="295">
+                {{ formGroup.value.method.releaseTime | timeFormat: 'YYYY-MM-DD HH:mm' }}
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="is-invalid" *ngIf="invalidPublishTime"></div>
+          <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'method')">
+            {{ 'content.info.chooseYu' | lang }}
+          </div>
+          <div class="invalid-feedback" *ngIf="validator.controlHasError('lg', 'method')">
+            {{ 'content.info.yuMoreNow' | lang }}
+          </div>
+        </div>
+      </div>
+
+      <!-- 结束时间 -->
+      <div class="d-flex py-2">
+        <label class="form-title fz-16" style="flex: 0 0 220px">{{ 'content.info.endTime' | lang }}：</label>
+
+        <div class="flex-1">
+          <div class="d-flex flex-wrap fz-14">
+            <label
+              class="form-control clear-input-wrap mb-0"
+              [class.is-invalid]="validator.isControlInvalid('endTime', formGroup.controls['method'])"
+            >
+              <input
+                type="text"
+                [placeholder]="'content.info.chooseEnd' | lang"
+                class="text-center clear-input flex-1"
+                [owlDateTime]="endTime"
+                [owlDateTimeTrigger]="endTime"
+                formControlName="endTime"
+              />
+
+              <svg-icon
+                (click)="onClearEndTime($event)"
+                class="cursor-pointer py-2 px-4 svg-icon svg-icon-1x"
+                [src]="'assets/images/svg/close.svg'"
+              ></svg-icon>
+            </label>
+
+            <owl-date-time class="fz-20" #endTime></owl-date-time>
+          </div>
+
+          <!--        <div class="is-invalid"></div>-->
+          <!--        <div class="invalid-feedback" *ngIf="validator.controlHasError('lgNowTime', 'endTime', formGroup.controls['method'])">结束时间需大于当前时间</div>-->
+        </div>
+      </div>
+
+      <!-- 显示顺序 -->
+      <form-row
+        name="sort"
+        [label]="'content.article.sort' | lang"
+        [label-width]="220"
+        [invalidFeedback]="{ numberRequired: 'content.article.sortTip' | lang }"
+      >
+        <ng-template let-control="formControl" let-invalid="invalid">
+          <label form-wrap width="295px" [invalid]="invalid">
+            <input form-full type="text" autocomplete="off" input-number [formControl]="control" />
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- 活动编号 -->
+      <form-row *ngIf="isEdit" [label]="'content.article.activityNum' | lang" [label-width]="220">
+        <ng-template>{{ detail.number }}</ng-template>
+      </form-row>
+    </ng-container>
+
+    <h2 class="color-111 mt-4 mb-10 fz-18 fw-bolder">{{ 'content.info.con' | lang }}</h2>
+
+    <div class="tab mt-12">
+      <div class="tab-hd">
+        <div class="mr-4 d-flex">
+          <div
+            class="tab-hd-item"
+            [class.active]="curTab === i"
+            *ngFor="let nav of langTabList; let i = index"
+            (click)="curTab = i"
+          >
+            {{ nav.name }}
+          </div>
+        </div>
+
+        <div class="edit position-relative">
+          <button class="btn-cube sm" type="button" (click)="showEditTab = true">
+            <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+          </button>
+
+          <select-group
+            [position]="true"
+            [select]="selectLang"
+            [(show)]="showEditTab"
+            [data]="langList"
+            label="name"
+            value="code"
+            (confirm)="onLanguage($event, delLang)"
+          ></select-group>
+        </div>
+      </div>
+
+      <div class="tab-bd" formArrayName="lang">
+        <div *ngFor="let lang of langArrayForm.controls; let i = index" [hidden]="curTab !== i" [formGroupName]="i">
+          <div class="w-100 d-flex py-2">
+            <label class="mr-0 mb-0 form-title" style="flex: 0 0 200px"
+              >{{ 'content.info.title' | lang }} <span class="text-danger">*</span>：
+            </label>
+            <div class="flex-1">
+              <input
+                type="text"
+                class="form-control"
+                autocomplete="off"
+                formControlName="title"
+                [placeholder]="'content.info.labelEnter' | lang"
+                input-trim
+                [class.is-invalid]="validator.isControlInvalid('title', langArrayForm.controls[i])"
+              />
+
+              <div
+                class="invalid-feedback"
+                *ngIf="validator.controlHasError('required', 'title', langArrayForm.controls[i])"
+              >
+                {{ 'content.info.labelEnter' | lang }}（{{ curLang?.name }}）
+              </div>
+            </div>
+          </div>
+
+          <form-row [group]="lang" name="introduction" label-width="200px" [label]="'content.info.details' | lang">
+            <ng-template let-control="formControl" let-invalid="invalid">
+              <input
+                type="text"
+                class="form-control"
+                autocomplete="off"
+                [formControl]="control"
+                [class.is-invalid]="invalid"
+                [placeholder]="'content.info.enterDe' | lang"
+                input-trim
+              />
+            </ng-template>
+          </form-row>
+
+          <div class="w-100 d-flex py-2" style="min-width: 0">
+            <label class="mr-0 mb-0 form-title" style="flex: 0 0 200px"
+              >{{ 'content.info.con' | lang }} <span class="text-danger">*</span>：
+            </label>
+            <div class="flex-1">
+              <div
+                class="form-control rounded border-1 h-auto"
+                [class.is-invalid]="validator.isControlInvalid('content', langArrayForm.controls[i])"
+                style="padding: 0 !important"
+              >
+                <ueditor type="Article" formControlName="content" [config]="{ autoHeightEnabled: true }"></ueditor>
+              </div>
+
+              <div
+                class="invalid-feedback"
+                *ngIf="validator.controlHasError('required', 'content', langArrayForm.controls[i])"
+              >
+                {{ 'content.info.enterDe' | lang }}（{{ curLang?.name }}）
+              </div>
+            </div>
+          </div>
+
+          <form-row [label]="'content.info.acPic' | lang" label-width="200">
+            <ng-template>
+              <div class="d-flex flex-wrap">
+                <!--              <form-row [control]="lang.get('activityImgUrl')" label="活动图" class="mr-23">-->
+                <!--                <ng-template let-control="formControl">-->
+                <!--                  <upload [formControl]="control" type="Article" [style.width.px]="230"></upload>-->
+                <!--                </ng-template>-->
+                <!--              </form-row>-->
+
+                <form-row [control]="lang.get('activityImgUrl')" [label]="'content.info.listPic' | lang" class="mr-9">
+                  <ng-template let-control="formControl">
+                    <upload [formControl]="control" type="Article" [style.width.px]="200"></upload>
+                  </ng-template>
+                </form-row>
+
+                <form-row [control]="lang.get('detailImgUrl')" [label]="'content.info.dePic' | lang" class="mr-9">
+                  <ng-template let-control="formControl">
+                    <upload [formControl]="control" type="Article" [style.width.px]="200"></upload>
+                  </ng-template>
+                </form-row>
+
+                <form-row [control]="lang.get('bonusImgUrl')" [label]="'content.info.bonusPic' | lang" class="mr-9">
+                  <ng-template let-control="formControl">
+                    <upload [formControl]="control" type="Article" [style.width.px]="200"></upload>
+                  </ng-template>
+                </form-row>
+              </div>
+            </ng-template>
+          </form-row>
+        </div>
+      </div>
+    </div>
+
+    <!-- 按钮组 -->
+    <div class="btn-wrap pt-12 flex-center d-flex">
+      <button class="c-btn c-btn-default ml-0" (click)="back()">{{ 'content.info.cancel' | lang }}</button>
+      <button class="c-btn c-btn-default">{{ 'content.info.yuLan' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'content.info.save' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onSubmit(true)">{{ 'content.info.faBu' | lang }}</button>
+    </div>
+  </form>
+
+  <!-- 删除语言提示 -->
+  <ng-template #delLang let-c="close" let-d="dismiss">
+    <modal-title [title]="'content.info.prompt' | lang" (close)="d()"></modal-title>
+
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'components.langDelTip' | lang }}</p>
+    </div>
+
+    <modal-footer (confirm)="c({ value: true })" (dismiss)="d()"></modal-footer>
+  </ng-template>
+</div>

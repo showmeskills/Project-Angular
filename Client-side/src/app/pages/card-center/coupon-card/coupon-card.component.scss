@@ -1,0 +1,848 @@
+.card-page-container {
+  display: flex;
+  flex-direction: column;
+
+  .card-banner-container {
+    display: flex;
+    padding: 10px 32px;
+    background-color: var(--main-page-bg);
+    width: 100%;
+    border-radius: 16px;
+    @media (max-width: 767px) {
+      flex-wrap: wrap;
+      padding: 10px 14px;
+    }
+  }
+
+  .left-group {
+    display: flex;
+    @media (max-width: 767px) {
+      align-items: center;
+    }
+  }
+  .right-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+    @media (max-width: 767px) {
+      margin-left: 0;
+      margin-top: 10px;
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .h5-filter {
+      margin-left: 15px;
+      font-size: 26px;
+      color: var(--text-color-20);
+    }
+  }
+  .coupon-logo {
+    width: 97px;
+    height: 97px;
+    @media (max-width: 767px) {
+      width: 58px;
+      height: 56px;
+    }
+  }
+  .coupon-intro {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 20px;
+    > * + * {
+      margin-top: 10px;
+    }
+    @media (max-width: 767px) {
+      padding: 0;
+      margin-left: 10px;
+    }
+    .intro-text {
+      font-size: 14px;
+      color: var(--text-color);
+      line-height: 1.48;
+    }
+    .intro-link {
+      font-size: 14px;
+      color: var(--primary-color);
+    }
+  }
+  .page-head {
+    width: 100%;
+    margin-top: 20px;
+    @media (max-width: 767px) {
+      margin-top: 10px;
+    }
+    .form-group-container {
+      display: flex;
+      row-gap: 0;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      ::ng-deep {
+        .input-container {
+          width: auto;
+          min-width: 150px;
+        }
+      }
+      > * {
+        margin-right: 25px;
+      }
+      > * + * {
+        margin-top: 20px;
+      }
+      .btn-group {
+        display: flex;
+        flex: 1;
+        > * + * {
+          margin-left: 10px;
+        }
+      }
+
+      .new-btn-groups {
+        display: flex;
+        margin-right: 0px;
+        @media (max-width: 767px) {
+          width: 100%;
+        }
+        .credit-order-btn {
+          ::ng-deep {
+            button {
+              display: flex;
+              align-items: center;
+              > * + * {
+                margin-left: 5px;
+              }
+
+              @media (max-width: 767px) {
+                justify-content: space-between;
+              }
+
+              &:hover {
+                app-tool-tip {
+                  .icon-warning {
+                    &::before {
+                      color: var(--primary-color);
+                    }
+                  }
+                }
+                .credit-txt {
+                  color: var(--primary-color);
+                }
+                .icon-bottom-menu {
+                  margin-top: 2px;
+                  color: var(--primary-color);
+                }
+              }
+
+              app-tool-tip {
+                margin-top: 2px;
+              }
+              .credit-txt {
+                color: var(--text-color);
+              }
+              .icon-bottom-menu {
+                margin-top: 2px;
+                color: var(--text-color);
+              }
+            }
+          }
+        }
+        .collect-all-btn {
+          margin-left: 20px;
+          @media (max-width: 767px) {
+            margin-left: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  .page-main {
+    width: 100%;
+    min-height: 500px;
+    margin-top: 40px;
+
+    @media (max-width: 767px) {
+      min-height: 200px;
+    }
+
+    app-paginator {
+      @media (max-width: 767px) {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.data-list {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+  }
+}
+
+::ng-deep {
+  .card-menu-open {
+    &.data-list {
+      grid-template-columns: repeat(1, 1fr);
+      gap: 20px;
+    }
+  }
+
+  .cash-card {
+    background: linear-gradient(to right top, rgb(136, 1, 199) 47%, rgb(233, 66, 96) 80%, rgb(234, 64, 64) 100%);
+  }
+  .coupon-card {
+    background: linear-gradient(
+      to right top,
+      rgba(1, 80, 199, 1) 47%,
+      rgba(230, 66, 233, 1) 80%,
+      rgba(159, 64, 234, 1) 100%
+    );
+  }
+  .svip-card {
+    background: linear-gradient(
+      to right top,
+      rgba(199, 1, 96, 1) 47%,
+      rgba(233, 163, 66, 1) 80%,
+      rgba(234, 171, 64, 1) 100%
+    );
+  }
+
+  .cdk-drag {
+    &.card {
+      .card-inner-layout {
+        @media (max-width: 767px) {
+          padding: 10px 24px;
+        }
+      }
+    }
+  }
+
+  .card {
+    border-radius: 10px;
+    position: relative;
+    min-height: 220px;
+    @media (max-width: 767px) {
+      width: 100%;
+      min-height: 192px;
+    }
+    .icon-six-dots {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-white-at-night);
+      @media (max-width: 767px) {
+        left: 10px;
+      }
+    }
+    .warning-tips {
+      position: absolute;
+      left: 15px;
+      top: 15px;
+      z-index: 4;
+      @media (max-width: 767px) {
+        left: 6px;
+        top: 6px;
+      }
+      .icon-warning {
+        font-size: 14px;
+        @media (max-width: 767px) {
+          font-size: 12px;
+        }
+        &::before {
+          color: var(--text-white-at-night);
+        }
+      }
+      .tips-detail {
+        color: #f2f3f4;
+        font-size: 14px;
+      }
+    }
+    .card-inner-layout {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      @media (max-width: 767px) {
+        flex-direction: column;
+        padding: 10px 14px;
+        justify-content: space-between;
+      }
+      .h5-card-inner-top {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        .card-inner-right {
+          .right-title {
+            width: 100%;
+            text-align: left;
+          }
+          .right-labels {
+            justify-content: flex-start;
+          }
+        }
+      }
+      .h5-card-inner-bottom {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .card-inner-left {
+        min-width: 240px;
+        height: 160px;
+        background: url(src/assets/images/card-center/card-amount-bg.svg) center no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scale: 0.95;
+        @media (max-width: 767px) {
+          min-width: 100px;
+          height: 80px;
+          background: url(src/assets/images/card-center/h5-card-amount-bg.svg) center no-repeat;
+          scale: 1;
+        }
+        .balance {
+          font-size: 30px;
+          color: rgba(255, 214, 0, 1);
+          word-break: break-all;
+          width: 160px;
+          text-align: center;
+          @media (max-width: 767px) {
+            font-size: 14px;
+            width: 72px;
+          }
+        }
+        .currency {
+          font-size: 30px;
+          color: var(--text-white-at-night);
+          margin-top: 8px;
+          @media (max-width: 767px) {
+            font-size: 14px;
+          }
+        }
+      }
+      .card-inner-right {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 48%;
+        @media (max-width: 767px) {
+          width: 80%;
+          margin-left: 10px;
+          height: 100%;
+          justify-content: space-between;
+        }
+        .right-title {
+          font-size: 18px;
+          color: var(--text-white-at-night);
+          line-height: 1.4;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 1;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          text-align: center;
+          word-break: break-word;
+        }
+        .right-labels {
+          margin-top: 6px;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          white-space: nowrap;
+          width: 100%;
+          justify-content: center;
+          > * {
+            margin-right: 2px;
+            margin-top: 4px;
+            @media (max-width: 767px) {
+              margin-top: 0;
+              margin-bottom: 4px;
+            }
+          }
+          .label {
+            padding: 4px 8px;
+            font-size: 14px;
+            color: var(--text-white-at-night);
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+          }
+        }
+      }
+      .card-date {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: rgba(255, 234, 133, 1);
+        margin-top: 6px;
+        white-space: nowrap;
+        @media (max-width: 767px) {
+          justify-content: space-between;
+        }
+        .date {
+          font-weight: 600;
+          margin-left: 12px;
+        }
+      }
+      .bottom {
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: rgba(255, 234, 133, 1);
+        min-height: 21px;
+        .tool-tip-txt {
+          line-height: 1.48;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 1;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          text-align: center;
+          @media (max-width: 767px) {
+            text-align: left;
+          }
+        }
+        .icon-double-arrow {
+          color: rgb(255, 234, 133);
+          transform: rotateZ(-90deg);
+          font-size: 12px;
+          margin: 1px 0 0 4px;
+        }
+        @media (max-width: 767px) {
+          justify-content: space-between;
+        }
+      }
+      .bottom-btn {
+        margin-top: 16px;
+        @media (max-width: 767px) {
+          margin-top: 6px;
+        }
+        ::ng-deep {
+          &.customize-button {
+            background-color: rgba(223, 102, 24, 1) !important;
+            color: var(--text-white-at-night);
+          }
+        }
+        &.disabled-btn {
+          ::ng-deep {
+            &.customize-button {
+              background-color: rgba(0, 0, 0, 0.3) !important;
+              color: var(--text-white-at-night);
+              pointer-events: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 抵用金 排序
+.credit-order-popup {
+  width: 554px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 767px) {
+    width: 100vw;
+    height: 100%;
+    border-radius: 0px;
+  }
+
+  .header {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--default-border-color);
+    @media (max-width: 767px) {
+      border-bottom: 0px;
+      text-align: left;
+      padding-left: 20px;
+      height: 75px;
+      line-height: 75px;
+    }
+
+    .title {
+      color: var(--text-color);
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .icon-close-simple {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      &.active {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .body-content {
+    padding: 10px 20px 30px 20px;
+    @media (max-width: 767px) {
+      padding: 0 20px 30px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 70px);
+    }
+  }
+
+  .popup-tips {
+    font-size: 14px;
+    color: var(--text-color);
+    line-height: 1.48;
+  }
+
+  .content {
+    margin-top: 20px;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    height: 464px;
+    @media (max-width: 767px) {
+      height: 100%;
+    }
+
+    .cdk-drag-placeholder {
+      opacity: 0;
+    }
+
+    .cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    .cdk-drop-list-dragging {
+      .card-item:not(.cdk-drag-placeholder) {
+        transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+      }
+    }
+
+    .data-list {
+      grid-template-columns: repeat(1, 1fr);
+      justify-content: center;
+      gap: 10px;
+
+      .card {
+        cursor: move;
+        scale: 0.95;
+        @media (max-width: 767px) {
+          scale: 1;
+        }
+      }
+    }
+  }
+
+  .order-submit-btn {
+    margin-top: 25px;
+  }
+}
+
+// 返水&抵用金详情 webPopup
+.web-detail-popup {
+  width: 633px;
+  border-radius: 5px;
+  background-color: #fff;
+  padding: 0 20px;
+
+  .title {
+    width: 100%;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    p {
+      color: var(--text-color);
+      font-size: 20px;
+    }
+
+    .close {
+      font-size: 20px;
+    }
+  }
+
+  .info-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
+    &-main {
+      min-height: 520px;
+
+      .content {
+        height: 460px;
+
+        .item {
+          min-height: 60px;
+          border-radius: 5px;
+          border: solid 1px var(--default-border-color);
+          margin-bottom: 20px;
+          // padding: 10px;
+          display: flex;
+          align-items: center;
+          margin-right: 5px;
+
+          &-group {
+            flex: 1;
+            padding: 10px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .group {
+              display: flex;
+              align-items: center;
+              font-size: 14px;
+              min-height: 30px;
+
+              span {
+                flex: 1;
+                color: var(--text-color-20);
+                display: flex;
+                align-items: center;
+                word-break: keep-all;
+
+                img {
+                  width: 16px;
+                  margin-left: 10px;
+                }
+              }
+
+              p {
+                flex: 1;
+                color: var(--text-color);
+                display: flex;
+                align-items: center;
+                word-break: break-all;
+
+                img {
+                  width: 16px;
+                  margin-left: 10px;
+                }
+              }
+
+              .win {
+                color: #26a17b;
+              }
+
+              .loser {
+                color: #cf304a;
+              }
+            }
+          }
+        }
+      }
+
+      .bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .total {
+          display: flex;
+          align-items: center;
+
+          span {
+            display: block;
+            width: 50px;
+            font-size: 16px;
+            color: var(--text-color);
+          }
+
+          p {
+            color: var(--text-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+
+            img {
+              width: 16px;
+              margin-left: 10px;
+            }
+          }
+        }
+
+        app-paginator {
+          margin-top: 0;
+        }
+      }
+
+      app-empty::ng-deep {
+        .empty {
+          margin-top: 170px;
+        }
+      }
+    }
+
+    &-foot {
+      width: 100%;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+
+      .btn {
+        width: 112px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background-color: var(--primary-color-85);
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+// 返水&抵用金详情 h5Popup
+.h5-detail-popup {
+  width: 100vw;
+  height: 87vh;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 5px 11px 18px 0 rgba(0, 0, 0, 0.16);
+  background-color: #fff;
+  font-size: 14px;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+
+  .title {
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    padding: 0 16px;
+    color: var(--text-color);
+    font-weight: 700;
+  }
+
+  .info-box {
+    padding-left: 16px;
+    flex: 1;
+    overflow-y: scroll;
+
+    .item {
+      padding: 10px;
+      margin-right: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 11px;
+      border-radius: 5px;
+      border: solid 1px var(--default-border-color);
+
+      &:host-context(.dark) & {
+        border: solid 1px #2f4553;
+      }
+
+      .group {
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        span {
+          color: #969bad;
+          word-break: keep-all;
+        }
+
+        p {
+          width: 80%;
+          color: var(--text-color);
+          display: flex;
+          align-items: center;
+          text-align: right;
+          justify-content: flex-end;
+          word-break: break-all;
+
+          img {
+            margin-left: 10px;
+            width: 14px;
+          }
+        }
+
+        .win {
+          color: #26a17b;
+        }
+
+        .loser {
+          color: #cf304a;
+        }
+      }
+    }
+
+    app-empty {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .foot {
+    padding: 0 16px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    span {
+      display: block;
+      width: 66px;
+      font-size: 16px;
+      color: var(--text-color);
+      font-weight: 700;
+    }
+
+    p {
+      color: var(--text-color);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 16px;
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.water-Rejected {
+  color: var(--primary-color) !important;
+}
+
+.water-Review {
+  color: #ff9433 !important;
+}

@@ -1,0 +1,365 @@
+<div class="d-flex">
+  <report-amount
+    class="mt-11"
+    [data]="payoutModule"
+    [title]="graph.curProviderData?.name || ('game.casino.casino' | lang)"
+    (flipChange)="graph.chart?.['chartObj']?.windowResizeHandler()"
+  ></report-amount>
+
+  <trade-graph #graph class="flex-1 mt-11 ml-10" [providerList]="providerList" [category]="category"></trade-graph>
+</div>
+
+<!-- wu2021-6054新增-->
+<div class="d-flex bg-fff mt-8 pb-8 px-4 rounded flex-wrap">
+  <div class="mt-8 item d-flex align-items-center mx-4 px-8 color-purple bg-purple flex-1">
+    <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/info-up.svg'"></svg-icon>
+    <div class="pl-6">
+      <div class="fw-bolder fz-18">
+        {{ transactionSummary?.transactionAmount | currencyValue: 'USDT' }}
+      </div>
+      <div class="fz-12 pt-2 opacity-45">{{ 'game.provider.total_trans' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="mt-8 item d-flex align-items-center mx-4 px-8 color-blue bg-skyblue flex-1">
+    <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/info-bag.svg'"></svg-icon>
+    <div class="pl-6">
+      <div class="fw-bolder fz-18">
+        {{ transactionSummary?.payoutAmount | currencyValue: 'USDT' }}
+      </div>
+      <div class="fz-12 pt-2 opacity-45">{{ 'game.provider.total_win' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="mt-8 item d-flex align-items-center mx-4 px-8 color-purple bg-purple flex-1">
+    <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/info-up.svg'"></svg-icon>
+    <div class="pl-6">
+      <div class="fw-bolder fz-18">
+        {{ transactionSummary?.todayTransactionAmount | currencyValue: 'USDT' }}
+      </div>
+      <div class="fz-12 pt-2 opacity-45">{{ 'game.provider.day_trade' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="mt-8 item d-flex align-items-center mx-4 px-8 color-blue bg-skyblue flex-1">
+    <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/info-bag.svg'"></svg-icon>
+    <div class="pl-6">
+      <div class="fw-bolder fz-18">
+        {{ transactionSummary?.todayPayoutAmount | currencyValue: 'USDT' }}
+      </div>
+      <div class="fz-12 pt-2 opacity-45">{{ 'game.provider.day_win' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="mt-8 item d-flex align-items-center mx-4 px-8 color-grass bg-grass flex-1">
+    <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/info-box.svg'"></svg-icon>
+    <div class="pl-6">
+      <div class="fw-bolder fz-18">
+        {{ transactionSummary?.todayBackWaterAmount | currencyValue: 'USDT' }}
+      </div>
+      <div class="fz-12 pt-2 opacity-45">{{ 'game.provider.day_return' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="mt-8 item d-flex align-items-center mx-4 px-8 flex-1">
+    <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/info-order.svg'"></svg-icon>
+    <div class="pl-6">
+      <div class="fw-bolder fz-18">{{ (transactionSummary?.todayCancelQuantity | toFormatMoney) || '0' }}</div>
+      <div class="fz-12 pt-2 color-aaa text-wrap">{{ 'game.provider.day_cancel' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="item d-flex mx-4 px-8 flex-1 my-0 h-0" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"></div>
+</div>
+
+<div class="d-flex flex-wrap bg-fff mt-8 pb-8 px-4 rounded info-item-wrap custom-scroll-x">
+  <div class="mt-8 item mx-4 px-6 pt-4 flex-1 game-module" *ngFor="let item of gameModule">
+    <div class="fz-14 fw-bolder">{{ item.gameProviderName }}</div>
+    <div class="d-flex mt-4">
+      <span class="flex-1 opacity-45">{{ 'game.provider.day_trade' | lang }}</span>
+      <span>{{ item.todayTransactionAmount | currencyValue: 'USDT' }}</span>
+    </div>
+    <div class="d-flex mt-4">
+      <span class="flex-1 opacity-45">{{ 'game.provider.day_win' | lang }}</span>
+      <ng-container *win="item.todayPayoutAmount; let value; prev as prev">
+        <span [winColor]="value" [winColorReverse]="true">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+      </ng-container>
+    </div>
+  </div>
+  <div class="item mx-4 px-6 flex-1 game-module my-0 h-0" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"></div>
+
+  <!-- 空显示 -->
+  <empty class="mt-10 w-100" *ngIf="!gameModule.length" [style.height.px]="120"></empty>
+</div>
+<!-- 结束 -->
+
+<div class="card hd my-8 filter-wrap">
+  <div class="card-header rounded p-10 d-flex flex-wrap">
+    <form-row [label]="'game.provider.trans_id' | lang" [contentWidth]="234">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          input-trim="input"
+          type="text"
+          [(ngModel)]="data.order"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'game.provider.game_manu' | lang" [contentWidth]="150">
+      <ng-template>
+        <mat-form-field>
+          <mat-select
+            class="form-control"
+            [style.width.px]="150"
+            [(ngModel)]="data.provider"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.id" *ngFor="let item of providerList">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'game.provider.trans_time' | lang" [contentWidth]="240">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'game.provider.choose_trans_time' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.tradeTime"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'game.provider.sett_time' | lang" [contentWidth]="240">
+      <ng-template>
+        <input
+          class="text-center w-100 form-control"
+          type="text"
+          [placeholder]="'game.provider.chosse_sett_time' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="settlementPicker"
+          [owlDateTimeTrigger]="settlementPicker"
+          [(ngModel)]="data.settlementTime"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #settlementPicker></owl-date-time>
+      </ng-template>
+    </form-row>
+    <!-- 新增状态下拉框 -->
+    <form-row label="状态" [contentWidth]="110">
+      <ng-template>
+        <mat-form-field [style.width.px]="110">
+          <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.value" *ngFor="let item of statusList">{{ item.lang | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+    <!-- 按钮 -->
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="reset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body p-12">
+    <div class="d-flex flex-ac justify-content-between">
+      <h2 class="mb-0 fw-bolder fz-20">{{ 'game.provider.trans_list' | lang }}</h2>
+
+      <button (click)="onExport()" type="button" class="ml-6 btn btn-light-primary py-2">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl d-inline-block"></svg-icon>
+        <span class="vam">{{ 'common.export' | lang }}</span>
+      </button>
+    </div>
+
+    <div class="mt-4">
+      <!--begin::Datatable-->
+      <table class="table mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th class="w-10px">
+              <label class="checkbox checkbox-lg">
+                <input type="checkbox" selectGroup />
+                <span></span>
+              </label>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.provider.provider' | lang }}</span>
+            </th>
+            <th style="width: 8%">
+              <span class="cell">{{ 'game.provider.trans_time' | lang }}</span>
+            </th>
+            <th style="width: 14%">
+              <span class="cell">{{ 'game.provider.orders' | lang }}</span>
+            </th>
+            <!-- 第三方订单号 -->
+            <th>
+              <span class="cell">{{ 'game.detail.third_id' | lang }}</span>
+            </th>
+            <th style="width: 7%"><span class="cell">UID</span></th>
+            <th>
+              <span class="cell">{{ 'game.info1' | lang }}</span>
+            </th>
+            <th style="width: 10%">
+              <span class="cell">{{ 'game.game_id' | lang }}</span>
+            </th>
+            <th style="width: 10%">
+              <span class="cell">{{ 'game.trans_content' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.trans_amount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.odds' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.win' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.result' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.statu' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">
+                <label class="checkbox checkbox-lg">
+                  <input type="checkbox" select [(ngModel)]="item.checked" [checked]="item.checked" />
+                  <span></span>
+                </label>
+              </span>
+            </td>
+            <!-- 内容 -->
+            <td>
+              <span class="cell">{{ item.gameProvider }}</span>
+            </td>
+            <!-- 交易时间 -->
+            <td>
+              <span class="cell">{{ item.betTime | timeFormat }}</span>
+            </td>
+            <!-- 订单号 -->
+            <td>
+              <span class="cell">
+                <span class="order-number" (click)="onView(item)">{{ item.orderNumber }}</span>
+              </span>
+            </td>
+            <!-- 第三方订单号 -->
+            <td>
+              <span class="cell">{{ item.wagerNumber || '-' }}</span>
+            </td>
+            <!--uid -->
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <!--信息1 -->
+            <td>
+              <span class="cell">{{ item.gameCategory || '_' }}</span>
+            </td>
+            <!--赛事ID -->
+            <td>
+              <span class="cell">{{ item.gameName || '-' }}</span>
+            </td>
+            <!--交易内容 -->
+            <td>
+              <span class="cell">-</span>
+            </td>
+            <!--交易金额 -->
+            <td>
+              <span class="cell has-icon"
+                >{{ item.betAmount | currencyValue: 'USDT' }}<img class="ml-2" [currencyIcon]="item.currency" />
+                <svg-icon
+                  *ngIf="item.isNonStickyBet"
+                  [src]="'./assets/images/svg/nonSticky.svg'"
+                  class="svg-icon menu-icon"
+                ></svg-icon
+              ></span>
+            </td>
+            <!--赔率 -->
+            <td>
+              <span class="cell">{{ item.odds }}</span>
+            </td>
+            <!-- 输赢 -->
+            <td>
+              <ng-container *win="item.payoutAmount; let value; prev as prev">
+                <span class="cell has-icon" [winColor]="value" [winColorReverse]="true"
+                  >{{ prev }}{{ value | currencyValue: 'USDT' }}
+                  <svg-icon
+                    *ngIf="item.isNonStickyBet"
+                    [src]="'./assets/images/svg/nonSticky.svg'"
+                    class="svg-icon menu-icon"
+                  ></svg-icon>
+                </span>
+              </ng-container>
+            </td>
+            <!-- 赛果 -->
+            <td>
+              <span class="cell">-</span>
+            </td>
+            <!-- 结束 -->
+            <td>
+              <span class="cell" (click)="onView(item)" [betStatusLabel]="item.status" [pointer]="true"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!list.length"></empty>
+
+      <div class="d-flex flex-between pt-10 table-footer">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

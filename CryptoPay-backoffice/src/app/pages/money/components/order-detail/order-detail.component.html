@@ -1,0 +1,1062 @@
+<!--
+  此模板为：法币、虚拟币的存款和提款（四种模板）逐渐维护迭代变为各尽不一，可后期考虑拆分为多个模板 -> 2023-04-25 Freeze
+-->
+
+<!-- 基础类目模板 -->
+<ng-template #tpl let-title let-value="value" let-custom="custom">
+  <div class="d-flex py-2 fz-16">
+    <label class="mr-0 mb-0 label-title lh-42" style="flex: 0 0 120px">{{ title }}</label>
+
+    <div class="lh-22 pt-4 flex-1 min-w-0 text-break" *ngIf="!custom">{{ value }}</div>
+    <div class="lh-42 flex-1 min-w-0 text-break" *ngIf="custom">
+      <ng-container
+        *ngIf="custom"
+        [ngTemplateOutlet]="custom"
+        [ngTemplateOutletContext]="{ $implicit: value }"
+      ></ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 状态模板 -->
+<ng-template #allocationTpl>
+  <div class="flex-1">
+    <div class="d-flex flex-ac mb-4 lh-24 pt-4" *ngIf="ls.isGB && allocations.length">
+      <div class="custom-scroll-y flex-1" style="max-height: 160px">
+        <!-- 精简展示一条 -->
+        <ng-container *ngIf="!data.showAllocations">
+          <div *ngFor="let his of allocations | slice : 0 : 1">
+            {{ his.time | timeFormat : 'YYYY-MM-DD HH:mm' }}
+            <span class="ml-6">{{ his.desc }}</span>
+          </div>
+        </ng-container>
+        <!-- 全展示 -->
+        <ng-container *ngIf="data.showAllocations">
+          <div *ngFor="let his of allocations" class="mb-4">
+            {{ his.time | timeFormat : 'YYYY-MM-DD HH:mm' }}
+            <span class="ml-6">{{ his.desc }}</span>
+          </div>
+        </ng-container>
+      </div>
+      <span
+        class="btn btn-default px-5 text-nowrap ml-8"
+        (click)="data.showAllocations = !data.showAllocations"
+        *ngIf="allocations.length > 1"
+        >{{ 'payment.transactionList.course' | lang }}</span
+      >
+    </div>
+
+    <ng-container [ngTemplateOutlet]="stateTpl"></ng-container>
+  </div>
+</ng-template>
+
+<!-- 状态模板 -->
+<ng-template #stateTpl>
+  <state-label [data]="data"></state-label>
+</ng-template>
+
+<!-- 虚拟币重送 resendDigitalTpl -->
+<!-- 法币重送 resendFiatTpl -->
+<ng-template #resendDigitalTpl #resendFiatTpl>
+  <ng-container *ngTemplateOutlet="resendQueryTpl"></ng-container>
+  <ng-container *ngTemplateOutlet="noticeMerchantTpl"></ng-container>
+</ng-template>
+
+<!-- 重送查询 -->
+<ng-template #resendQueryTpl>
+  <button
+    *ngIf="!['Success', 'Cancel', 'Reverse', 'Allocating'].includes(data.status)"
+    type="button"
+    class="btn btn-primary px-3 mr-8"
+    [style.padding.px]="6"
+    (click)="sendQuery()"
+  >
+    <svg-icon [src]="'./assets/images/svg/refresh.svg'" class="svg-icon svg-icon-2x5 text-white"></svg-icon>
+    <span class="vam">{{ 'payment.transactionList.resendQuery' | lang }}</span>
+  </button>
+</ng-template>
+
+<!-- 通知商户 -->
+<ng-template #noticeMerchantTpl>
+  <button type="button" class="btn btn-primary px-3 mr-8" [style.padding.px]="6" (click)="sendCallback()">
+    <svg-icon [src]="'./assets/images/svg/bell.svg'" class="svg-icon svg-icon-2x5 text-white"></svg-icon>
+    <span class="vam">{{ 'payment.transactionList.notifyMerchants' | lang }}</span>
+  </button>
+</ng-template>
+
+<!-- 提款操作 -->
+<ng-template #withdrawOperationTpl>
+  <!-- 指定渠道 -->
+  <button
+    *ngIf="showDesignChannel"
+    type="button"
+    class="btn btn-primary px-6 py-0 mr-8 lh-34"
+    [style.padding.px]="6"
+    (click)="openChangeChannel(channelTpl)"
+  >
+    <span class="vam">{{ 'payment.transactionList.designatedChannel' | lang }}</span>
+  </button>
+
+  <!-- 调整积分 -->
+  <button
+    *ngIf="!this.data.isDigital && ['Allocating'].includes(data.status)"
+    type="button"
+    class="btn btn-primary px-6 mr-8 lh-34 py-0"
+    [style.padding.px]="6"
+    (click)="openChangeIntegral(integrityTpl, data)"
+  >
+    <span class="vam">{{ 'payment.transactionList.adjustPoints' | lang }}</span>
+  </button>
+
+  <!-- 冲正撤单 -->
+  <button
+    *ngIf="showRedemption"
+    type="button"
+    class="btn btn-primary px-6 mr-8 lh-34 py-0"
+    [style.padding.px]="6"
+    (click)="openRedemption()"
+  >
+    <span class="vam">{{ 'payment.transactionList.redemption' | lang }}</span>
+  </button>
+
+  <!-- 取消出款 -->
+  <button
+    *ngIf="
+      data.paymentCategory === 'Withdraw' &&
+      (data.status === 'Allocating' || (data.isDigital && data.status === 'Confirming'))
+    "
+    [style.padding.px]="6"
+    (click)="sendCancelWithdraw()"
+    class="btn btn-danger px-3 mr-8"
+    type="button"
+  >
+    <svg-icon [src]="'./assets/images/svg/refresh.svg'" class="svg-icon svg-icon-2x5 text-white"></svg-icon>
+    <span class="vam">{{ 'payment.transactionList.cancelPayment' | lang }}</span>
+  </button>
+</ng-template>
+
+<!-- 存款操作 -->
+<ng-template #depositOperationTpl>
+  <!-- 手动上分 -->
+  <ng-container *ngIf="data.paymentMethod === 'OfflineDeposit'; else manualBtnTpl">
+    <button
+      type="button"
+      class="btn btn-primary px-6 mr-8 lh-34 py-0"
+      *ngIf="['Timeout', 'Confirming'].includes(data.status) && !data.isCheck"
+      [style.padding.px]="6"
+      (click)="openManualDeposit(manualDepositTpl, data)"
+    >
+      <span class="vam">{{ 'payment.transactionList.manualDeposit' | lang }}</span>
+    </button>
+  </ng-container>
+
+  <!-- 人工编辑 -->
+  <ng-template #manualBtnTpl>
+    <button
+      type="button"
+      class="btn btn-primary px-6 mr-8 lh-34 py-0"
+      *ngIf="['Timeout', 'Confirming'].includes(data.status) && !data.isCheck"
+      [style.padding.px]="6"
+      (click)="openManualEditing(manualEditingTpl, data)"
+    >
+      <span class="vam">{{ 'payment.transactionList.manualEditing' | lang }}</span>
+    </button>
+  </ng-template>
+
+  <span class="check-wrap" *ngIf="data.isCheck">
+    <svg-icon class="svg-icon svg-icon-2x5 vam" [src]="'./assets/images/svg/success.svg'"></svg-icon>
+    <span class="vam ml-2">{{ 'payment.transactionList.manualReview' | lang }}</span>
+  </span>
+</ng-template>
+
+<!-- 时间模板 -->
+<ng-template #timeTpl let-value>
+  <span class="mr-4 text-nowrap">{{ +value ? (value | timeFormat : 'YYYY-MM-DD') : '-' }}</span>
+  <span class="text-nowrap">{{ +value ? (value | timeFormat : 'HH:mm:ss') : '' }}</span>
+</ng-template>
+
+<!-- 图片模板 -->
+<ng-template #picTpl let-value>
+  <img-viewer *ngIf="value && value.length" [showClear]="false" class="mr-20" [list]="value"></img-viewer>
+</ng-template>
+
+<!-- =======================================================================
+=================================== 开始 ====================================
+======================================================================== -->
+<div class="modal-header">
+  <div class="modal-title d-flex flex-ac">
+    <span>{{ 'payment.transactionList.transactionDetails' | lang }}</span>
+    <app-label class="ml-4" type="yellow">{{ payType | lang }}</app-label>
+  </div>
+
+  <div class="c-btn-close" (click)="modalRef.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+  </div>
+</div>
+
+<div class="modal-body">
+  <div class="d-flex flex-wrap" *ngIf="!init && !isAdjustment">
+    <!-- 左边 -->
+    <div class="flex-1 min-w-0">
+      <div class="fz-18 lh-50">{{ 'payment.transactionList.orderInfo' | lang }}</div>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: {
+            $implicit: ('payment.subChannel.merchantName' | lang) + '：',
+            value: data.merchantName || merchantName
+          }
+        "
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.merchantFunding.userID' | lang) + '：', value: data.merchantUserAccount }
+        "
+      ></ng-container>
+      <ng-container *ngIf="!data.isDigital && data.paymentCategory === 'Deposit'">
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: ('common.userName' | lang) + '：', value: data.realName }"
+        ></ng-container>
+      </ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.subChannel.orderNumber' | lang) + '：', value: data.orderId }
+        "
+      ></ng-container>
+      <ng-container *ngIf="ls.isGB">
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('payment.transactionList.channelOrderNumber' | lang) + '：',
+              value: data.channelOrderId
+            }
+          "
+        ></ng-container>
+      </ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.merchantFunding.merchantOrder' | lang) + '：', value: data.merchantOrderId }
+        "
+      ></ng-container>
+      <ng-container *ngIf="ls.isGB">
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('payment.merchantFunding.subChannelName' | lang) + '：',
+              value: data.merchantChannelName === 'Undefined' ? '' : data.merchantChannelName
+            }
+          "
+        ></ng-container>
+      </ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.paymentMethod.currency' | lang) + '：', value: data.currency }
+        "
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.paymentMethod.paymentMethod' | lang) + '：', value: data.paymentMethod }
+        "
+      ></ng-container>
+      <ng-container *ngIf="ls.isGB && data.paymentCategory === 'Withdraw' && !data.isDigital">
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: { $implicit: ('payment.transactionList.integral' | lang) + '：', value: data.integrals }
+          "
+        ></ng-container>
+      </ng-container>
+      <!-- 备注信息 -->
+      <ng-container *ngIf="ls.isGB">
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: { $implicit: ('payment.transactionList.remark' | lang) + '：', value: data.remark }
+          "
+        ></ng-container>
+      </ng-container>
+      <ng-container *ngIf="ls.isGB && data?.imagePath?.length">
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('payment.transactionList.screenshot' | lang) + '：',
+              custom: picTpl,
+              value: data.imagePath
+            }
+          "
+        ></ng-container>
+      </ng-container>
+    </div>
+
+    <!-- 右边 -->
+    <div class="flex-1 min-w-0">
+      <div class="fz-18 lh-50">{{ 'payment.transactionList.details' | lang }}</div>
+
+      <!-- 数字货币 -->
+      <ng-container *ngIf="data.isDigital">
+        <ng-container *ngIf="data.transactionType !== 'VirtualToFiatMoney'">
+          <!-- 存放地址 -->
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.storageAddress' | lang) + '：',
+                value: data.digitalInfo?.fromAddress || '-'
+              }
+            "
+          ></ng-container>
+        </ng-container>
+        <!-- 到账地址 -->
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('payment.transactionList.accountAddress' | lang) + '：',
+              value: data.digitalInfo?.toAddress || '-'
+            }
+          "
+        ></ng-container>
+        <!-- 交易哈希 -->
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: 'TXHash：', value: data.digitalInfo?.txHash || '-' }"
+        ></ng-container>
+        <!-- 存虚得法、提法得虚 -->
+        <ng-container *ngIf="data.transactionType === 'VirtualToFiatMoney'">
+          <!-- 到账金额 -->
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.amountReceived' | lang) + '：',
+                value: (data.orderAmount | currencyValue : data.currency)
+              }
+            "
+          ></ng-container>
+          <ng-container *ngIf="ls.isGB">
+            <!-- 实时汇率 -->
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: {
+                  $implicit: ('payment.currency.liveRate' | lang) + '：',
+                  value: data.realRate
+                }
+              "
+            ></ng-container>
+          </ng-container>
+          <!-- 汇率 -->
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.approval.exchangeRate' | lang) + '：',
+                value: data.exchangeRate
+              }
+            "
+          ></ng-container>
+          <!-- 数字货币数量 -->
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.digitalCurrencyNumber' | lang) + '：',
+                value:
+                  (data.exchangeAmount | toFormatMoney | toFormatNumberDecimal : 8) +
+                  ' ' +
+                  (data.exchangeCurrency || '') +
+                  ' ' +
+                  (data.exchangeNetwork ? '(' + data.exchangeNetwork + ')' : '')
+              }
+            "
+          ></ng-container>
+        </ng-container>
+        <ng-container *ngIf="data.transactionType !== 'VirtualToFiatMoney'">
+          <!-- 存放数量 -->
+          <ng-container
+            *ngIf="data.paymentCategory !== WithdrawalTypeEnum.CurrencyExchange"
+            [ngTemplateOutlet]="tpl"
+            [ngTemplateOutletContext]="{
+              $implicit: ('payment.transactionList.storageQuantity' | lang) + '：',
+              value: (data.orderAmount | toFormatMoney | toFormatNumberDecimal : 8)
+            }"
+          ></ng-container>
+
+          <!-- 换汇 -->
+          <ng-container *ngIf="data.paymentCategory === WithdrawalTypeEnum.CurrencyExchange">
+            <!-- 汇率 -->
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: {
+                  $implicit: ('payment.approval.exchangeRate' | lang) + '：',
+                  value: data.exchangeRate || '-'
+                }
+              "
+            ></ng-container>
+
+            <!-- 金额 -->
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: {
+                  $implicit: ('common.amount' | lang) + '：',
+                  value: data.orderAmount ? (data.orderAmount | currencyValue : data.currency) : '-'
+                }
+              "
+            ></ng-container>
+            <!-- 实际收入：加密货币数量 -->
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: {
+                  $implicit: ('payment.transactionList.digitalCurrencyNumber' | lang) + '：',
+                  value:
+                    (data.exchangeAmount ? (data.exchangeAmount | currencyValue : data.exchangeCurrency) : '-') +
+                    ' ' +
+                    data.exchangeCurrency +
+                    ' (' +
+                    data.exchangeNetwork +
+                    ')'
+                }
+              "
+            ></ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- 法币 -->
+      <ng-container *ngIf="!data.isDigital">
+        <!--<ng-container *ngIf="data.paymentMethod === 'C2CBankTransfer'"></ng-container>-->
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: { $implicit: ('payment.bank.bankName' | lang) + '：', value: data.bankInfo?.bankName }
+          "
+        ></ng-container>
+
+        <!-- 存款 -->
+        <ng-container *ngIf="data.paymentCategory === 'Deposit'">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.companyAccountManagement.payee' | lang) + '：',
+                value: data.bankInfo?.bankAccountHolder
+              }
+            "
+          ></ng-container>
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.companyAccountManagement.receivingAccount' | lang) + '：',
+                value: data.bankInfo?.bankAccountNumber
+              }
+            "
+          ></ng-container>
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.applicationAmount' | lang) + '：',
+                value: (data.orderAmount | currencyValue : data.currency)
+              }
+            "
+          ></ng-container>
+        </ng-container>
+
+        <!-- 取款 -->
+        <ng-container *ngIf="data.paymentCategory === 'Withdraw'">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.name' | lang) + '：',
+                value: data.bankInfo?.bankAccountHolder
+              }
+            "
+          ></ng-container>
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.cardNumber' | lang) + '：',
+                value: data.bankInfo?.bankAccountNumber
+              }
+            "
+          ></ng-container>
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.applicationAmount' | lang) + '：',
+                value: (data.orderAmount | currencyValue : data.currency)
+              }
+            "
+          ></ng-container>
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.amountReceived' | lang) + '：',
+                value: (data.receiveAmount | currencyValue : data.currency)
+              }
+            "
+          ></ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- 虚拟币 -->
+      <ng-container *ngIf="data.isDigital">
+        <!-- 到账数量 -->
+        <ng-container *ngIf="data.paymentCategory === 'Deposit' && data.transactionType !== 'VirtualToFiatMoney'">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.arrivalQuantity' | lang) + '：',
+                value: (data.receiveAmount | toFormatMoney)
+              }
+            "
+          ></ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- 法币 -->
+      <ng-container *ngIf="!data.isDigital">
+        <!-- 存款 -->
+        <ng-container *ngIf="data.paymentCategory === 'Deposit'">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.amountReceived' | lang) + '：',
+                value: data.receiveAmount | currencyValue : data.currency
+              }
+            "
+          ></ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container>
+        <ng-container *ngIf="data.paymentCategory !== WithdrawalTypeEnum.CurrencyExchange">
+          <!-- 渠道手续费 -->
+          <ng-container *ngIf="ls.isGB">
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: {
+                  $implicit: ('payment.transactionList.channelFee' | lang) + '：',
+                  value: (data.channelFee | currencyValue : data.currency)
+                }
+              "
+            ></ng-container>
+          </ng-container>
+          <!-- 商户手续费 -->
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.merchantFee' | lang) + '：',
+                value: (data.merchantFee | currencyValue : data.currency)
+              }
+            "
+          ></ng-container>
+        </ng-container>
+
+        <!-- 申请时间 -->
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('payment.transactionList.applicationTime' | lang) + '：',
+              custom: timeTpl,
+              value: data.applicationTime
+            }
+          "
+        ></ng-container>
+      </ng-container>
+
+      <!-- 虚拟币 -->
+      <ng-container *ngIf="data.isDigital">
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('payment.transactionList.updateTime' | lang) + '：',
+              custom: timeTpl,
+              value: data.updateTime
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('common.status' | lang) + '：',
+              custom: allocationTpl,
+              value: data.status
+            }
+          "
+        ></ng-container>
+
+        <!-- 虚拟币 - 操作+重送 -->
+        <ng-container *ngIf="ls.isGB && !data.hideOpera">
+          <!-- 提款 -->
+          <ng-container *ngIf="data.paymentCategory === 'Withdraw'">
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: { $implicit: ('payment.paymentMethod.operating' | lang) + '：', custom: withdrawOperationTpl }
+              "
+            ></ng-container>
+          </ng-container>
+
+          <!-- 存款 -->
+          <ng-container *ngIf="data.paymentCategory === 'Deposit'">
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: { $implicit: ('payment.paymentMethod.operating' | lang) + '：', custom: depositOperationTpl }
+              "
+            ></ng-container>
+          </ng-container>
+
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: { $implicit: ('payment.transactionList.resendQuery' | lang) + '：', custom: resendDigitalTpl }
+            "
+          ></ng-container>
+        </ng-container>
+
+        <!-- 虚拟币 - 操作+重送 没有GB资源的展示 -->
+        <ng-container *ngIf="!ls.isGB && !data.hideOpera">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: { $implicit: ('payment.paymentMethod.operating' | lang) + '：', custom: noticeMerchantTpl }
+            "
+          ></ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- 法币 -->
+      <ng-container *ngIf="!data.isDigital">
+        <!-- 存款 -->
+        <ng-container *ngIf="data.paymentCategory === 'Deposit'">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.arrivalTime' | lang) + '：',
+                custom: timeTpl,
+                value: data.updateTime
+              }
+            "
+          ></ng-container>
+        </ng-container>
+        <!-- 取款 -->
+        <ng-container *ngIf="data.paymentCategory === 'Withdraw'">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: {
+                $implicit: ('payment.transactionList.updateTime' | lang) + '：',
+                custom: timeTpl,
+                value: data.updateTime
+              }
+            "
+          ></ng-container>
+        </ng-container>
+
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('common.status' | lang) + '：',
+              custom: allocationTpl,
+              value: data.status
+            }
+          "
+        ></ng-container>
+
+        <!-- 法币 - 操作+重送 GB资源的 -->
+        <ng-container *ngIf="ls.isGB && !data.hideOpera && !isRequestException">
+          <!-- 提款 -->
+          <ng-container *ngIf="data.paymentCategory === 'Withdraw'">
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: { $implicit: ('payment.paymentMethod.operating' | lang) + '：', custom: withdrawOperationTpl }
+              "
+            ></ng-container>
+          </ng-container>
+
+          <!-- 存款 -->
+          <ng-container *ngIf="data.paymentCategory === 'Deposit'">
+            <ng-container
+              *ngTemplateOutlet="
+                tpl;
+                context: { $implicit: ('payment.paymentMethod.operating' | lang) + '：', custom: depositOperationTpl }
+              "
+            ></ng-container>
+          </ng-container>
+
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: { $implicit: ('payment.transactionList.resendQuery' | lang) + '：', custom: resendFiatTpl }
+            "
+          ></ng-container>
+        </ng-container>
+
+        <!-- 法币 - 操作+重送 没有GB资源的展示 -->
+        <ng-container *ngIf="!ls.isGB && !data.hideOpera && !isRequestException">
+          <ng-container
+            *ngTemplateOutlet="
+              tpl;
+              context: { $implicit: ('payment.paymentMethod.operating' | lang) + '：', custom: noticeMerchantTpl }
+            "
+          ></ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- 调账 -->
+  <div *ngIf="!init && isAdjustment" class="d-flex flex-row flex-wrap" style="gap: 30px">
+    <div class="flex-1">
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.subChannel.orderNumber' | lang) + '：', value: data.orderId }
+        "
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: {
+            $implicit: ('payment.channelConfig.channelName' | lang) + '：',
+            value: data.paymentProviderName === 'Undefined' ? '' : data.paymentProviderName
+          }
+        "
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: {
+            $implicit: ('payment.merchantFunding.subChannelName' | lang) + '：',
+            value: data.merchantChannelName === 'Undefined' ? '' : data.merchantChannelName
+          }
+        "
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="tpl; context: { $implicit: ('common.type' | lang) + '：', value: payType | lang }"
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.transactionList.reason' | lang) + '：', value: curAdjustment }
+        "
+      ></ng-container>
+
+      <!-- 下发不展示 -->
+      <ng-container *ngIf="!isAdjustmentDistribution">
+        <ng-container
+          *ngTemplateOutlet="tpl; context: { $implicit: ('common.currency' | lang) + '：', value: data.currency }"
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: {
+              $implicit: ('payment.subChannel.amount' | lang) + '：',
+              value: data.receiveAmount | currencyValue : data.currency
+            }
+          "
+        ></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: { $implicit: ('payment.paymentMethod.paymentMethod' | lang) + '：', value: data.paymentMethod }
+          "
+        ></ng-container>
+      </ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.finceBank.operator' | lang) + '：', value: data.merchantUserAccount }
+        "
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: {
+            $implicit: ('payment.transactionList.applicationTime' | lang) + '：',
+            custom: timeTpl,
+            value: data.applicationTime
+          }
+        "
+      ></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.channelConfig.remarks' | lang) + '：', value: data.remark || '-' }
+        "
+      ></ng-container>
+      <ng-container *ngIf="!isAdjustmentDistribution">
+        <ng-container
+          *ngTemplateOutlet="
+            tpl;
+            context: { $implicit: ('common.status' | lang) + '：', custom: stateTpl, value: data.status }
+          "
+        ></ng-container>
+      </ng-container>
+    </div>
+    <div class="flex-1" *ngIf="isAdjustmentDistribution">
+      <!-- 币种 - from -->
+      <ng-container
+        *ngTemplateOutlet="tpl; context: { $implicit: ('common.currency' | lang) + '：', value: data.currency }"
+      ></ng-container>
+      <!-- 兑换币种 - to -->
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.approval.exchange' | lang) + '：', value: data.exchangeCurrency }
+        "
+      ></ng-container>
+      <!-- 兑换币种 -->
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('payment.approval.exchangeRate' | lang) + '：', value: data.exchangeRate }
+        "
+      ></ng-container>
+      <!-- 兑换金额 -->
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: {
+            $implicit: ('budget.amount' | lang) + '：',
+            value: data.receiveAmount | currencyValue : data.currency
+          }
+        "
+      ></ng-container>
+      <!-- 到账金额 -->
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: {
+            $implicit: ('budget.amountReceipt' | lang) + '：',
+            value: (data.exchangeAmount | currencyValue : data.currency)
+          }
+        "
+      ></ng-container>
+      <!-- 状态 -->
+      <ng-container
+        *ngTemplateOutlet="
+          tpl;
+          context: { $implicit: ('common.status' | lang) + '：', custom: stateTpl, value: data.status }
+        "
+      ></ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-primary" (click)="modalRef.close({ value: true })">
+    {{ 'common.confirm' | lang }}
+  </button>
+</div>
+<!-- =======================================================================
+=================================== 结束 ====================================
+======================================================================== -->
+
+<!-- 指定渠道 -->
+<ng-template #channelTpl let-data let-c="close" let-d="dismiss">
+  <modal-title [title]="'payment.transactionList.changeChannel' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-8">
+    <form-row
+      [label]="'payment.transactionList.changeChannel' | lang"
+      [control]="data.control"
+      [invalidFeedback]="{ required: 'payment.transactionList.selectChannel' | lang }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+            class="form-control rounded-0"
+            *search="let channelList$ of data.list; key: 'channelAccountAlias'"
+          >
+            <input type="search" searchInput />
+            <mat-option *ngFor="let item of channelList$ | async" [value]="item['channelAccountId']">{{
+              item['channelAccountAlias']
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <modal-footer (confirm)="onChangeChannel(c, data)" (dismiss)="d()"></modal-footer>
+</ng-template>
+
+<!-- 调整积分 -->
+<ng-template #integrityTpl let-control let-c="close" let-d="dismiss">
+  <modal-title [title]="'payment.transactionList.adjustPoints' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-8">
+    <form-row [label]="'payment.transactionList.existingPoints' | lang">
+      <span class="pl-4">{{ data.integrals | toFormatMoney }}</span>
+    </form-row>
+    <form-row
+      [label]="'payment.transactionList.adjustPoints' | lang"
+      [control]="control"
+      [invalidFeedback]="{ required: 'payment.transactionList.enterAdjustedPoints' | lang }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          input-trim
+          input-number
+          [formControl]="control"
+          [class.is-valid]="invalid"
+          class="form-control rounded-0 w-100"
+          type="text"
+          (keyup)="$event.keyCode === 13 && onChangeIntegrity(c, control)"
+        />
+      </ng-template>
+    </form-row>
+  </div>
+
+  <modal-footer (confirm)="onChangeIntegrity(c, control)" (dismiss)="d()"></modal-footer>
+</ng-template>
+
+<!-- 法币 - 人工编辑 -->
+<ng-template #manualEditingTpl let-data let-c="close" let-d="dismiss">
+  <modal-title [title]="'payment.transactionList.manualEditing' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-8" [formGroup]="data.group">
+    <form-row [label]="'payment.transactionList.changeAmount' | lang" name="amount">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          input-trim
+          [input-float]="2"
+          [formControl]="control"
+          [class.is-invalid]="invalid"
+          class="form-control rounded-0"
+          type="text"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'payment.transactionList.screenshoTofRemittance' | lang">
+      <img-viewer [hidden]="!data['list']?.length" class="mb-8" #viewer [(list)]="data['list']"></img-viewer>
+
+      <ng-container afterContent>
+        <upload
+          class="p-0"
+          type="TxReview"
+          [style.width.px]="150"
+          [style.height.px]="56"
+          [style.borderRadius.px]="4"
+          [desc]="''"
+          [showLimitText]="false"
+          (change)="onUpload($event, data, upload, viewer)"
+          #upload
+        ></upload>
+      </ng-container>
+    </form-row>
+
+    <div class="text-center fz-16 color-999 mt-11">{{ 'payment.transactionList.infoIsTrue' | lang }}</div>
+  </div>
+
+  <modal-footer (confirm)="onManualEditing(c, data)" (dismiss)="d()"></modal-footer>
+</ng-template>
+
+<!-- 法币 - 手动上分 -->
+<ng-template #manualDepositTpl let-data let-c="close" let-d="dismiss">
+  <modal-title [title]="'payment.transactionList.manualDeposit' | lang" (close)="d()"></modal-title>
+
+  <div class="px-12 py-8" [formGroup]="data.group">
+    <!-- UID -->
+    <form-row label="UID" label-width="100px" labelTextAuto="true">
+      <ng-template>
+        {{ data.data.merchantUserAccount }}
+      </ng-template>
+    </form-row>
+
+    <!-- 商户订单号 -->
+    <form-row [label]="'payment.transactionList.merchantOrder' | lang" label-width="100px" labelTextAuto="true">
+      <ng-template>
+        {{ data.data.merchantOrderId }}
+      </ng-template>
+    </form-row>
+
+    <!-- 申请金额 -->
+    <form-row [label]="'payment.transactionList.requestedAmount' | lang" label-width="100px" labelTextAuto="true">
+      <ng-template>
+        {{ data.data.orderAmount | currencyValue : data.data.currency }}
+      </ng-template>
+    </form-row>
+
+    <!-- 入款金额 -->
+    <form-row
+      [label]="'payment.transactionList.creditedAmount' | lang"
+      name="amount"
+      label-width="100px"
+      labelTextAuto="true"
+      required
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          input-trim
+          [input-float]="2"
+          [formControl]="control"
+          [class.is-invalid]="invalid"
+          class="form-control rounded-0"
+          type="text"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 附件 -->
+    <form-row [label]="'risk.att' | lang" label-width="100px" labelTextAuto="true" required>
+      <img-viewer [hidden]="!data['list']?.length" class="mb-8" #viewer [(list)]="data['list']"></img-viewer>
+
+      <ng-container afterContent>
+        <upload
+          class="p-0"
+          type="TxReview"
+          [style.width.px]="150"
+          [style.height.px]="56"
+          [style.borderRadius.px]="4"
+          [desc]="''"
+          [showLimitText]="false"
+          (change)="onUpload($event, data, upload, viewer)"
+          #upload
+        ></upload>
+      </ng-container>
+    </form-row>
+
+    <!-- 备注 -->
+    <form-row name="remarks" [label]="'common.remarks' | lang" label-width="100px" labelTextAuto="true">
+      <ng-template let-control="formControl">
+        <input input-trim [formControl]="control" class="form-control rounded-0" type="text" />
+      </ng-template>
+    </form-row>
+
+    <div class="text-center fz-16 color-999 mt-11">{{ 'payment.transactionList.infoIsTrue' | lang }}</div>
+  </div>
+
+  <modal-footer (confirm)="onManualDeposit(c, data)" (dismiss)="d()"></modal-footer>
+</ng-template>

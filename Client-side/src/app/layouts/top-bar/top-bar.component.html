@@ -1,0 +1,279 @@
+<div class="container" cdkOverlayOrigin #containerOrigin="cdkOverlayOrigin">
+  <ng-container *ngIf="logined">
+    <!-- 钱包 -->
+    <div class="menu-trigger mutual-opacity direct wallet">
+      <span class="trigger-txt" routerLink="wallet/overview">{{ 'my_wallet' | translate }}</span>
+    </div>
+
+    <!-- 订单 -->
+    <div
+      class="menu-trigger mutual-opacity order"
+      cdkOverlayOrigin
+      #orderOrigin="cdkOverlayOrigin"
+      [class.active]="popStatus.order"
+      (mouseenter)="showPop('order')"
+      (mouseleave)="closePop(150)"
+    >
+      <span class="trigger-txt">{{ 'orders' | translate }}</span>
+      <i class="select-icon icon-arrow-right-simple"></i>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="orderOrigin"
+        [cdkConnectedOverlayOpen]="popStatus.order"
+        [cdkConnectedOverlayPositions]="orderPositions"
+        [cdkConnectedOverlayFlexibleDimensions]="true"
+      >
+        <div class="general-pop order-box" (mouseenter)="showPop('order', false)" (mouseleave)="closePop()">
+          <ng-container *ngFor="let item of orderMenuData">
+            <div [routerLink]="item.page" class="onact96" [routerLinkActive]="item.page ? 'active' : ''">
+              <i [class]="item.icon"></i>
+              <span>{{ item.title | translate }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- 用户账户信息 -->
+    <div class="menu-trigger" (mouseenter)="showPop('user')" (mouseleave)="closePop(150)">
+      <div class="user-avatar" [class.active]="popStatus.user">
+        <span *ngIf="bounsCount > 0" class="badge">{{ bounsCount > 99 ? '99+' : bounsCount }}</span>
+        <img class="avatar" [src]="userInfo?.avater || ''" alt="" lazy="loading" />
+      </div>
+      <ng-template
+        #avater
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="containerOrigin"
+        [cdkConnectedOverlayOpen]="popStatus.user"
+        [cdkConnectedOverlayPositions]="containerPositions"
+        [cdkConnectedOverlayFlexibleDimensions]="true"
+      >
+        <div class="user-center-contaienr" (mouseenter)="showPop('user', false)" (mouseleave)="closePop()">
+          <div class="user-info">
+            <div class="title">{{ userInfo?.userName || userInfo?.uid || '' }}</div>
+            <div class="row-between">
+              <div class="vip-status mutual-opacity onact96" [routerLink]="'promotions/vip-level'">
+                <span class="vip-img"></span>
+                <span class="vip-text">
+                  <ng-container *ngIf="!vipLoading">
+                    {{ (isSuperVip ? 'customize_vip10' : 'customize_vip' + currentVipLevel) | translate }}
+                  </ng-container>
+                  <i class="animation-icon-loading-dot" *ngIf="vipLoading"><i></i><i></i><i></i></i>
+                </span>
+              </div>
+              <div class="kyc-status onact96-not" [class.active]="kycLevel > 1" (click)="jumpToKyc()">
+                <ng-container *ngIf="!kycStatusLoading">
+                  {{ kycStatusName }}
+                </ng-container>
+                <i class="animation-icon-loading-dot" *ngIf="kycStatusLoading"><i></i><i></i><i></i></i>
+              </div>
+            </div>
+          </div>
+          <div class="items">
+            <app-scrollbar>
+              <ng-container *ngFor="let item of menuData">
+                <div
+                  class="menu-item onact96"
+                  [class]="item.class || ''"
+                  *ngIf="(!item.showOnly || item.showOnly === 'web') && !item.showOnlyCountry"
+                  (click)="handleClick(item)"
+                  [routerLink]="!item.page ? null : item.page"
+                  [routerLinkActive]="!item.page ? '' : 'active'"
+                >
+                  <span class="icon icon-{{ item.icon }}"></span>
+                  <span>{{ item.title | translate }}</span>
+                  <em *ngIf="item.icon == 'bell' && messagesCount > 0">{{
+                    messagesCount > 99 ? '99+' : messagesCount
+                  }}</em>
+                  <em *ngIf="item.icon == 'coupon' && bounsCount > 0">{{ bounsCount > 99 ? '99+' : bounsCount }}</em>
+                </div>
+              </ng-container>
+            </app-scrollbar>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- im聊天 -->
+    @if (chatService.chatEnabled) {
+      <div class="menu-trigger mutual-opacity imchat" (click)="closePop(); chatService.toggleChat(isH5)">
+        <div class="notification">
+          <i class="icon-chat2" [class.active]="chatService.chatPop">
+            <span *ngIf="chatService.unreadCount > 0" class="badge">
+              {{ chatService.unreadCount > 99 ? '99+' : chatService.unreadCount }}
+            </span>
+          </i>
+        </div>
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayPanelClass]="'chat-pop-panel'"
+          [cdkConnectedOverlayOrigin]="containerOrigin"
+          [cdkConnectedOverlayOpen]="chatService.chatPop"
+          [cdkConnectedOverlayPositions]="containerPositions"
+          [cdkConnectedOverlayFlexibleDimensions]="true"
+        >
+          <!-- (overlayOutsideClick)="closePop(10)" -->
+          <app-chat></app-chat>
+        </ng-template>
+      </div>
+    }
+
+    <!-- 通知 -->
+    <div class="menu-trigger" (mouseenter)="showPop('notification')" (mouseleave)="closePop(150)">
+      <div class="notification">
+        <i class="icon-clock" [class.active]="popStatus.notification">
+          <span *ngIf="messagesCount > 0" class="badge">{{ messagesCount > 99 ? '99+' : messagesCount }}</span>
+        </i>
+      </div>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="containerOrigin"
+        [cdkConnectedOverlayOpen]="popStatus.notification"
+        [cdkConnectedOverlayPositions]="containerPositions"
+        [cdkConnectedOverlayFlexibleDimensions]="true"
+      >
+        <div
+          class="notification-box"
+          [appLoading]="loading"
+          (mouseenter)="showPop('notification', false)"
+          (mouseleave)="closePop()"
+        >
+          <div class="message-box-tips">
+            <div class="tips-left">
+              <p class="message-number">{{ messagesCount > 99 ? '99+' : messagesCount }}</p>
+              <p class="text-left">{{ 'notis' | translate }}</p>
+              <!-- <p class="clear" *ngIf="messagesCount > 0" (click)="onClearAllMassages()">{{'clear_all' |translate}}</p> -->
+            </div>
+            <div class="tips-right onact96" (click)="onGoToNotificationCenter()">
+              <p class="text-right">{{ 'view_more' | translate }}</p>
+              <i class="icon-arrow-bold-right"></i>
+            </div>
+          </div>
+          <ng-container *ngIf="messageList?.length > 0">
+            <div class="message-detail-container">
+              <app-scrollbar>
+                <div
+                  class="message-detail onact96"
+                  *ngFor="let item of messageList; let idx = index"
+                  (click)="onOpenNoticeDialog(idx, item)"
+                >
+                  <i class="message-icon icon-email" [class]="item.isReaded ? 'gray-dot' : 'green-dot'"></i>
+                  <div class="content">
+                    <p class="title">{{ item.title }}</p>
+                    <p class="detail" [innerHTML]="item.content"></p>
+                    <p class="date">{{ item.sendTime }}</p>
+                  </div>
+                </div>
+              </app-scrollbar>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="messageList?.length == 0 && !loading">
+            <div class="no-message">
+              <i class="icon-clock"></i>
+              <span>{{ 'no_noti' | translate }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </ng-template>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!logined && !isSimple">
+    <customize-button type="text" class="onact96" size="small" width="100%" (click)="jumpToLogin()">
+      {{ 'login_button' | translate }}
+    </customize-button>
+    <customize-button type="primary" class="onact96" size="small" width="100%" (click)="jumpToRegister()">
+      {{ 'register_button' | translate }}
+    </customize-button>
+  </ng-container>
+
+  <a [href]="appService.getAppUrl()" rel="noopener" target="_blank" class="menu-trigger mutual-opacity direct">
+    <span class="trigger-txt">{{ 'download' | translate }}</span>
+  </a>
+</div>
+
+<!-- 通知详情弹窗 -->
+<ng-template #noticeDialog>
+  <div class="notice-dialog">
+    <div class="notice-header">
+      <p class="empty"></p>
+      <p class="text">{{ 'noti_detail' | translate }}</p>
+      <p class="next onact96-not" [class.disabled]="!isShowNoMsg" (click)="nextNotice()">
+        {{ 'next_noti' | translate }}
+      </p>
+    </div>
+    <div class="notice-content" *ngIf="isShowNoMsg">
+      <p class="title">{{ messageList[isActiveNoticeIdx]?.title || '' }}</p>
+      <p class="date">{{ messageList[isActiveNoticeIdx]?.sendTime || '' }}</p>
+      <div class="parent">
+        <app-scrollbar *ngIf="messageList[isActiveNoticeIdx]?.content">
+          <p class="detail" [innerHtml]="messageList[isActiveNoticeIdx]?.content || ''"></p>
+        </app-scrollbar>
+      </div>
+    </div>
+    <div class="no-message" *ngIf="!isShowNoMsg && !loading">
+      <i class="icon-clock"></i>
+      <span>{{ 'no_noti' | translate }}</span>
+    </div>
+    <ng-container
+      *ngIf="
+        ['IDVerification', 'IDVerificationNoApproved', 'EddCreate', 'KycAdvancedForEuCreate'].includes(
+          messageList[isActiveNoticeIdx || 0]?.businessType || ''
+        );
+        else DefaultSingleBtn
+      "
+    >
+      <div class="btn-group">
+        <!--ok-->
+        <customize-button class="close" width="95px" type="default" size="large" (onClick)="closeNoticeDialog()">
+          {{ 'sure_btn' | translate }}</customize-button
+        >
+        <!-- 中级kyc 身份站内信通知 -->
+        <customize-button
+          *ngIf="
+            ['IDVerification', 'IDVerificationNoApproved'].includes(
+              messageList[isActiveNoticeIdx || 0]?.businessType || ''
+            )
+          "
+          class="close"
+          width="168px"
+          type="primary"
+          size="large"
+          (onClick)="openKycPage()"
+        >
+          {{ 'bring_me_there' | translate }}
+        </customize-button>
+
+        <!-- 高级KYC弹窗 -->
+        <customize-button
+          *ngIf="['KycAdvancedForEuCreate'].includes(messageList[isActiveNoticeIdx || 0]?.businessType || '')"
+          class="close"
+          width="168px"
+          type="primary"
+          size="large"
+          (onClick)="openAdvanceKyc()"
+        >
+          {{ 'bring_me_there' | translate }}
+        </customize-button>
+
+        <!-- EDD 站内信通知 -->
+        <customize-button
+          *ngIf="['EddCreate'].includes(messageList[isActiveNoticeIdx || 0]?.businessType || '')"
+          class="close"
+          width="168px"
+          type="primary"
+          size="large"
+          (onClick)="openEdd()"
+        >
+          {{ 'bring_me_there' | translate }}
+        </customize-button>
+      </div>
+    </ng-container>
+    <!-- default btn -->
+    <ng-template #DefaultSingleBtn>
+      <customize-button class="close" width="100%" type="primary" size="large" (onClick)="closeNoticeDialog()">
+        {{ 'notice_dialog_ok' | translate }}</customize-button
+      >
+    </ng-template>
+  </div>
+</ng-template>

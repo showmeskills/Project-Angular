@@ -1,0 +1,47 @@
+parameters:
+  - name: condition
+    type: string
+    default: succeeded()
+
+steps:
+  - task: CmdLine@2
+    inputs:
+      script: |
+        cp $(appIcon.secureFilePath)  merchant-$(merchantNumber)/icon/app-icon.png
+    displayName: "Change App Icon"
+    condition: ${{ parameters.condition }}
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        cp $(appForegroundIcon.secureFilePath) merchant-$(merchantNumber)/icon/app-icon-foreground.png
+    displayName: "Change App Foreground Icon"
+    condition: ${{ parameters.condition }}
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        cp $(splashImage.secureFilePath) assets/images/splash/splash.jpeg
+    displayName: "Change Flutter Splash Image"
+    condition: ${{ parameters.condition }}
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        cp $(appLogoIcon.secureFilePath) merchant-$(merchantNumber)/icon/app-logo.png
+    displayName: "Change App Logo Icon"
+    condition: ${{ parameters.condition }}
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        $(FlutterToolPath)/flutter pub run flutter_launcher_icons -f merchant-$(merchantNumber)/app-icon.yaml
+    displayName: "Flutter launcher icons"
+    condition: ${{ parameters.condition }}
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        $(FlutterToolPath)/flutter pub run flutter_native_splash:create --path=merchant-$(merchantNumber)/native_splash.yaml
+    displayName: "Flutter native splash"
+    condition: ${{ parameters.condition }}

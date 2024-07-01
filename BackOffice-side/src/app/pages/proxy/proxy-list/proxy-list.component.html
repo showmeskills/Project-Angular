@@ -1,0 +1,310 @@
+<ng-template subHeader>
+  <div class="ml-8 cursor-pointer d-flex flex-ac">
+    <mat-form-field [style.width.px]="114">
+      <mat-select
+        class="fz-14 px-4 team-select"
+        [(ngModel)]="proxyService.curTeamId"
+        [style.height.px]="34"
+        [placeholder]="'marketing.list.selectTeam' | lang"
+        [class.is-invalid]="!+proxyService.curTeamId"
+      >
+        <mat-option *ngFor="let item of proxyService.teamList" [value]="item.id">{{ item.groupName }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</ng-template>
+
+<div class="card px-12 py-8 d-flex flex-row flex-wrap">
+  <!-- 渠道经理 -->
+  <form-row [label]="'marketing.list.channelManager' | lang" [label-width]="lang.isLocal ? '120' : '160'">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [style.width.px]="200"
+        [(ngModel)]="data.channelManager"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+  <!-- 代理ID -->
+  <form-row [label]="'marketing.list.agentID' | lang" [label-width]="lang.isLocal ? '120' : '160'">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [style.width.px]="295"
+        [(ngModel)]="data.proxyId"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+  <!-- 代理类型 -->
+  <form-row [label]="'marketing.list.agentType' | lang" [label-width]="lang.isLocal ? '120' : '160'">
+    <mat-select
+      class="form-control"
+      [style.width.px]="200"
+      [(ngModel)]="data.isDaily"
+      (selectionChange)="loadData(true)"
+    >
+      <mat-option [value]="0">{{ 'common.all' | lang }} </mat-option>
+      <!-- 月结 -->
+      <mat-option [value]="1">{{ 'marketing.list.monthly' | lang }}</mat-option>
+      <!-- 日结 -->
+      <mat-option [value]="2">{{ 'marketing.list.dayEnd' | lang }}</mat-option>
+    </mat-select>
+  </form-row>
+  <!-- 成为代理时间 -->
+  <form-row [label]="'marketing.list.timeAgent' | lang" [label-width]="lang.isLocal ? '120' : '160'">
+    <div class="d-flex">
+      <!--      <input class="form-control" type="text" [style.width.px]="130" />-->
+      <!--      <span class="fz-16 mx-4">-</span>-->
+      <!--      <input class="form-control" type="text" [style.width.px]="130" />-->
+      <input
+        [style.width.px]="294"
+        class="form-control text-center"
+        type="text"
+        placeholder=""
+        selectMode="date-range"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [(ngModel)]="data.applyTimeBeginTime"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </div>
+  </form-row>
+
+  <div class="d-flex justify-content-end card-toolbar flex-1 btn-wrap flex-nowrap text-nowrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card px-12 py-8 mt-8" [selectChildren]="true">
+  <div class="d-flex">
+    <div class="flex-1 d-flex flex-ac">
+      <div class="fz-16">
+        <ng-template selectTpl let-data let-checkAll="checkAll">
+          <span class="vam">{{ data.count }} {{ 'marketing.list.chosen' | lang }}</span>
+          <!-- 未选择 -->
+          <span class="vam color-aaa">/{{ data.total - data.count }}{{ 'marketing.list.notSelected' | lang }}</span>
+          <span class="vam line mx-8"></span>
+          <span class="vam cursor-pointer" *ngIf="!data.isAll" (click)="checkAll()">{{
+            'marketing.list.selectAll' | lang
+          }}</span>
+          <!-- 取消选择 -->
+          <span class="vam cursor-pointer" *ngIf="data.isAll" (click)="checkAll()">{{
+            'marketing.list.cancelSelection' | lang
+          }}</span>
+        </ng-template>
+      </div>
+      <!-- 代理转移 -->
+      <span class="btn btn-light btn-hover-primary ml-10" (click)="openTransfer()">{{
+        'marketing.list.proxyTransfer' | lang
+      }}</span>
+    </div>
+
+    <div>
+      <span class="btn btn-default ml-4" [class.btn-primary]="data.sateType === 0" (click)="onType(0)">{{
+        'marketing.list.activeAgent' | lang
+      }}</span>
+      <!-- 非活跃代理 -->
+      <span class="btn btn-default ml-4" [class.btn-primary]="data.sateType === 1" (click)="onType(1)">{{
+        'marketing.list.inactiveProxy' | lang
+      }}</span>
+      <!-- 负值代理 -->
+      <span class="btn btn-default ml-4" [class.btn-primary]="data.sateType === 2" (click)="onType(2)">{{
+        'marketing.list.negativeProxy' | lang
+      }}</span>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2 px-3">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg"><input type="checkbox" selectGroup /><span></span></label>
+            </span>
+          </th>
+          <!-- 代理ID -->
+          <th>
+            <span class="cell">{{ 'marketing.list.agentID' | lang }}</span>
+          </th>
+          <!--团队 -->
+          <th>
+            <span class="cell">{{ 'marketing.list.team' | lang }}</span>
+          </th>
+          <!-- 渠道经理 -->
+          <th class="text-nowrap">
+            <span class="cell">{{ 'marketing.list.channelManager' | lang }}</span>
+          </th>
+          <!-- 下线数 -->
+          <th>
+            <span class="cell">{{ 'marketing.list.numOffline' | lang }}</span>
+          </th>
+          <!-- 有效新增会员 -->
+          <th>
+            <span class="cell">{{ 'marketing.list.addVip' | lang }}</span>
+          </th>
+          <th>
+            <!-- 活跃人数 -->
+            <span class="cell">{{ 'marketing.list.activePeople' | lang }}</span>
+          </th>
+          <!-- 有效活跃人数-->
+          <th>
+            <span class="cell">{{ 'marketing.list.effActivePeople' | lang }}</span>
+          </th>
+          <!-- 存款金额 -->
+          <th>
+            <span class="cell">{{ 'marketing.list.depositAmount' | lang }}</span>
+          </th>
+          <th>
+            <!-- 提款金额 -->
+            <span class="cell">{{ 'marketing.list.withdrawalAmount' | lang }}</span>
+          </th>
+          <!-- 有效投注 -->
+          <th>
+            <span class="cell">{{ 'marketing.list.effBet' | lang }}</span>
+          </th>
+          <!-- 总输赢 -->
+          <th>
+            <span class="cell">{{ 'marketing.list.totalWin' | lang }}</span>
+          </th>
+          <!-- USDT佣金 -->
+          <th>
+            <span class="cell">{{ 'marketing.list.usdtCommission' | lang }}</span>
+          </th>
+          <!-- 状态 -->
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <tr *ngFor="let item of list; let i = index">
+          <th>
+            <span class="cell">
+              <label class="checkbox checkbox-lg"
+                ><input select type="checkbox" [(ngModel)]="item.checked" /><span></span>
+              </label>
+            </span>
+          </th>
+          <td>
+            <span class="cell">{{ item.proxyId }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.teamName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell" *ngIf="item.channelManagerName; else managerTransfer">{{
+              item.channelManagerName || '-'
+            }}</span>
+            <ng-template #managerTransfer>
+              <!-- 代理转移 -->
+              <span class="transfer" (click)="openTransfer(item)">{{ 'marketing.list.proxyTransfer' | lang }}</span>
+            </ng-template>
+          </td>
+          <td>
+            <span class="cell">{{ item.subordinate || 0 | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ !item.trading ? 0 : (item.trading | toFormatMoney) }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ !item.activePeople ? 0 : (item.activePeople | toFormatMoney) }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ !item.validActivePeople ? 0 : (item.validActivePeople | toFormatMoney) }}</span>
+          </td>
+          <td>
+            <span class="cell">{{
+              !item.deposit ? (0 | currencyValue: 'USDT') : (item.deposit | currencyValue: 'USDT')
+            }}</span>
+          </td>
+          <td>
+            <span class="cell">{{
+              !item.drawing ? (0 | currencyValue: 'USDT') : (item.drawing | currencyValue: 'USDT')
+            }}</span>
+          </td>
+          <td>
+            <span class="cell">{{
+              !item.transaction ? (0 | currencyValue: 'USDT') : (item.transaction | currencyValue: 'USDT')
+            }}</span>
+          </td>
+          <td>
+            <ng-container *win="item.winOrLoss; let value; prev as prev">
+              <span class="cell" [winColor]="value">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+            </ng-container>
+          </td>
+          <td>
+            <span class="cell">
+              <label class="switch switch-success fz-16 mb-0">
+                <input type="checkbox" [(ngModel)]="item.usdtStatus" (change)="onSwitchUSDTCommission(item)" />
+                <span></span>
+              </label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span *ngIf="!+item.state">0</span>
+              <span *ngIf="item.state < 0" class="label label-lg label-inline label-light-danger px-10 fw-bolder">{{
+                toInt(item.state)
+              }}</span>
+              <span *ngIf="item.state > 0" class="label label-lg label-inline label-light-primary px-10 fw-bolder">{{
+                item.state
+              }}</span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between flex-ac pt-4 px-3">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData()"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="isLoading"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

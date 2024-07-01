@@ -1,0 +1,375 @@
+<div class="popup-common wheel-container" [class.wheel-play]="play" [appLoading]="loadingWheelInfo">
+  <div class="header-container">
+    <div *ngIf="wheelInfo" (click)="openPop('description')" class="icon-tips"></div>
+    <div (click)="music()" [class]="musicStatus ? 'orignal-mute' : 'orignal-voice'"></div>
+    <div (click)="close()" class="icon-close-simple"></div>
+  </div>
+
+  <ng-container *ngIf="!loadingWheelInfo && wheelInfo">
+    <div class="wheel__container">
+      <div class="wheel__racoon-img-container">
+        <!-- <app-img-dpi
+          class="wheel__racoon-img"
+          [hdpiSrc]="'assets/images/activity/wheel/lucky_spin_bg_m1.png' | preferWebp"
+          [ldpiSrc]="'assets/images/activity/wheel/lucky_pre.png'"
+        ></app-img-dpi> -->
+        <img
+          class="wheel__racoon-img"
+          [src]="'assets/images/activity/wheel/lucky_spin_bg_m1.png' | preferWebp"
+          alt=""
+        />
+        <span #slogan appLifeObserve (lifeChange)="$event && checkSize(slogan, sloganem)">
+          <em #sloganem>{{ wheelInfo.slogan || '' }}</em>
+        </span>
+      </div>
+      <!-- 转盘 -->
+      <div class="wheel__wheel-wrap" *ngIf="!popShow" [class.wheel__wheel-prize]="status != 0">
+        <!-- 转盘js控制旋转 -->
+        <div [class.wheel__wheel-hide]="status != 0" *ngIf="status == 0">
+          <div #wheelWrap class="wheelWrap">
+            <!-- <app-img-dpi
+              class="wheel__racoon-img"
+              [hdpiSrc]="'assets/images/activity/wheel/wheel.png' | preferWebp"
+              [ldpiSrc]="'assets/images/activity/wheel/wheel_pre.png'"
+            ></app-img-dpi> -->
+            <img class="wheel__racoon-img" [src]="'assets/images/activity/wheel/wheel.png' | preferWebp" />
+            <!-- 奖品 -->
+            <div class="lucky-div-wrap">
+              <ul class="pie">
+                <li
+                  class="slice"
+                  *ngFor="let item of prizeInfos; let i = index"
+                  [style]="'transform:rotate(' + i * 30 + 'deg) skewY(-60deg)'"
+                >
+                  <div class="content">
+                    <div class="mo">
+                      <ng-container *ngTemplateOutlet="prizeTemplate; context: { item: item }"></ng-container>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- 指针 -->
+          <img class="wheel__arrow-img" src="{{ 'assets/images/activity/wheel/pointer.png' | preferWebp }}" alt="" />
+
+          <!-- 外圈光圈 -->
+          <div class="wheel__wheel-help-wrap">
+            <img class="wheel__wheel-help" src="assets/images/activity/wheel/1.svg" alt="" />
+          </div>
+          <div class="wheel__wheel-help-wrap">
+            <img class="wheel__wheel-help" src="assets/images/activity/wheel/2.svg" alt="" />
+          </div>
+          <div class="wheel__wheel-help-wrap">
+            <img class="wheel__wheel-help" src="assets/images/activity/wheel/3.svg" alt="" />
+          </div>
+          <div class="wheel__wheel-help-wrap">
+            <img class="wheel__wheel-help" src="assets/images/activity/wheel/4.svg" alt="" />
+          </div>
+          <div class="wheel__wheel-help-wrap">
+            <img class="wheel__wheel-help" src="assets/images/activity/wheel/7.png" alt="" />
+          </div>
+          <div class="wheel__wheel-help-wrap">
+            <img
+              class="wheel__wheel-help"
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcoAAAHKCAMAAAC0QvvuAAAABlBMVEVMaXFBev8T1jgbAAAAAnRSTlMAf7YpoZUAAAAJcEhZcwAACxMAAAsTAQCanBgAAAE6SURBVHic7dqxDcAwCABB2H/p7OAqvO76VC8Ty2IGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAHu7sv3/HDkGKmUjqYmZJSXidlr6RT2Ump5W1KZkhZoWSGlBlSZkhZoWSGlBlSZkhZoWSH99cKb+kZBmyGlBVKdrj1VLj1ZBiwGVJm+FVmSJlhwHZYgO2wy9xhKR0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACYgz7FZQFPP4C81AAAAABJRU5ErkJggg=="
+              alt=""
+            />
+          </div>
+        </div>
+
+        <!-- 赢钱弹窗 -->
+        <div class="wheel-prize-pop wheel-win" *ngIf="status == 1">
+          <div class="wheel-win__coins-block">
+            <img src="{{ 'assets/images/activity/wheel/win.png' | preferWebp }}" alt="" />
+            <div class="wheel-win_content">
+              <p>{{ 'whe_win_txt' | translate }}</p>
+              <p>
+                <ng-container *ngTemplateOutlet="prizeTemplate; context: { item: prize, reverse: true }"></ng-container>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 未中奖弹窗 -->
+        <div class="wheel-prize-pop wheel-loss" *ngIf="status == 2">
+          <div class="wheel-loss__coins-block">
+            <img src="{{ 'assets/images/activity/wheel/loss.png' | preferWebp }}" alt="" />
+            <div class="wheel-loss_content">
+              <p>{{ 'whe_lose_txt' | translate }}...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- H5蒙版 -->
+      <!-- <img class="mask" src="{{ 'assets/images/activity/wheel/mask.png' | preferWebp }}" alt="" /> -->
+      <!-- 内容 -->
+      <div class="wheel__body" *ngIf="!popShow">
+        <div class="wheel__body-main" [appLoading]="loadingCondition">
+          <ng-container *ngIf="!loadingCondition">
+            <ng-container [ngSwitch]="wheelStatus">
+              <ng-container *ngSwitchCase="0">
+                <button class="wheel__btn" (click)="jumpToLogin()">{{ 'login_button' | translate }}</button>
+              </ng-container>
+              <ng-container *ngSwitchCase="1">
+                <ng-container [ngSwitch]="status">
+                  <button *ngSwitchCase="0" class="wheel__btn" [class.disabled]="loadingTurn" (click)="onWheelPlay()">
+                    <i class="animation-icon-loading-dot" *ngIf="loadingTurn"><i></i><i></i><i></i></i>
+                    <span>{{ 'whe_play_btn' | translate }}</span>
+                  </button>
+                  <button *ngSwitchCase="1" class="wheel__btn" (click)="goToGame()">
+                    {{ 'whe_g_g' | translate }}
+                  </button>
+                  <button *ngSwitchCase="2" class="wheel__btn" (click)="goToAgain()">
+                    {{ 'whe_ag_t' | translate }}
+                  </button>
+                </ng-container>
+                <div class="tips-text top-less" *ngIf="status == 0">
+                  {{ 'whe_lt_tip' | translate: wheelCondition.leftTimes }}
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="2">
+                <ng-container [ngSwitch]="conditionStatus">
+                  <ng-container *ngSwitchCase="'time'">
+                    <div class="wheel__timer-block">
+                      <!-- notranslate 别删，需要它阻止谷歌翻译 -->
+                      <div class="wheel__timer notranslate">
+                        <div class="wheel__timer-time" *ngIf="timeData.day > 0">
+                          {{ timeData.day > 9 ? timeData.day : '0' + timeData.day }}
+                          <p>{{ 'day_jop' | translate }}</p>
+                        </div>
+                        <div class="wheel__timer-time">
+                          {{ timeData.hour > 9 ? timeData.hour : '0' + timeData.hour }}
+                          <p>{{ 'hour_unit' | translate }}</p>
+                        </div>
+                        <div class="wheel__timer-time">
+                          {{ timeData.min > 9 ? timeData.min : '0' + timeData.min }}
+                          <p>{{ 'minu' | translate }}</p>
+                        </div>
+                        <div class="wheel__timer-time">
+                          {{ timeData.sec > 9 ? timeData.sec : '0' + timeData.sec }}
+                          <p>{{ 'second_unit' | translate }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="tips-text">{{ 'whe_t_d_t' | translate }}</div> -->
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'deposit'">
+                    <ng-container
+                      *ngTemplateOutlet="
+                        progressBar;
+                        context: {
+                          cur: wheelCondition.depositAmount - wheelCondition.remainDeposit,
+                          tot: wheelCondition.depositAmount,
+                          suffix: wheelInfo.currency
+                        }
+                      "
+                    >
+                    </ng-container>
+                    <div class="tips-text">
+                      {{
+                        'whe_dep_t'
+                          | translate
+                            : wheelCondition.depositAmount + wheelInfo.currency
+                            : wheelCondition.rewardSpinTimes
+                      }}
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'trade'">
+                    <ng-container
+                      *ngTemplateOutlet="
+                        progressBar;
+                        context: {
+                          cur: wheelCondition.transAmount - wheelCondition.remainTransAmount,
+                          tot: wheelCondition.transAmount,
+                          suffix: wheelInfo.currency
+                        }
+                      "
+                    >
+                    </ng-container>
+                    <div class="tips-text">
+                      {{
+                        'whe_trad_t'
+                          | translate: wheelCondition.transAmount + wheelInfo.currency : wheelCondition.rewardSpinTimes
+                      }}
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'tradeCount'">
+                    <ng-container
+                      *ngTemplateOutlet="
+                        progressBar;
+                        context: {
+                          cur: wheelCondition.perTransCount - wheelCondition.remainTransCount,
+                          tot: wheelCondition.perTransCount,
+                          suffix: ('whe_trad_c_bt' | translate)
+                        }
+                      "
+                    >
+                    </ng-container>
+                    <div class="tips-text">
+                      {{
+                        'whe_trad_c_t'
+                          | translate
+                            : wheelCondition.perTransCount
+                            : wheelCondition.transMinAmount + wheelInfo.currency
+                            : wheelCondition.rewardSpinTimes
+                      }}
+                    </div>
+                  </ng-container>
+                </ng-container>
+
+                <ng-template #progressBar let-cur="cur" let-tot="tot" let-suffix="suffix">
+                  <div class="progress-bar">
+                    <div class="bar">
+                      <div [style.width]="(cur / tot) * 100 + '%'"></div>
+                    </div>
+                    <span>{{ cur }}/{{ tot }} {{ suffix }}</span>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-container *ngSwitchCase="3">
+                <button class="wheel__btn" [class.disabled]="loadingTurn" (click)="onWheelPlay()">
+                  <i class="animation-icon-loading-dot" *ngIf="loadingTurn"><i></i><i></i><i></i></i>
+                  <span>{{ 'whe_play_btn' | translate }}</span>
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </div>
+        <!-- 弹窗底部 -->
+        <div class="wheel__footer" *ngIf="!popShow">
+          <div class="wheel__winners">
+            <app-scroll-select-item
+              [data]="prizeInfos"
+              [gap]="10"
+              [animation]="true"
+              [showPrevNext]="false"
+              [skip]="1"
+              [duration]="4000"
+              [touchMove]="false"
+            >
+              <ng-template #item let-item>
+                <div class="wheel__winner">
+                  <ng-container
+                    *ngTemplateOutlet="prizeTemplate; context: { item: item, reverse: true }"
+                  ></ng-container>
+                </div>
+              </ng-template>
+            </app-scroll-select-item>
+          </div>
+        </div>
+      </div>
+
+      <div class="wheel-history" [class.wheel-history--show]="popShow" *ngIf="popShow" (click)="closehistory($event)">
+        <div class="wheel-history__content">
+          <div class="wheel-history__head">
+            <h3>{{ (popShowFor == 'description' ? 'whe_desc_con_t' : 'whe_prize_h') | translate }}</h3>
+            <div (click)="closehistory()" class="icon-close-simple"></div>
+          </div>
+
+          <div class="wheel-history__main" *ngIf="popShowFor == 'description'">
+            <div class="global-html-content" [innerHTML]="wheelInfo.content || '' | toHtmlElement"></div>
+          </div>
+
+          <div class="wheel-history__table" *ngIf="popShowFor == 'history'">
+            <div
+              class="wheel-history__table-container"
+              #historyTableContainer
+              [appLoading]="loadingHistory && (historyList.length == 0 || historyIsOld)"
+            >
+              <table *ngIf="historyList.length > 0">
+                <thead>
+                  <th width="33%">{{ 'date' | translate }}</th>
+                  <th width="33%">{{ 'gamer' | translate }}</th>
+                  <th width="33%">{{ 'prizes' | translate }}</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of historyList">
+                    <td>{{ item.drawTime | mdate: 'HH:mm:ss' }}</td>
+                    <td>
+                      <div class="wheel-history__user-item">
+                        <img *ngIf="item.userAvatar" class="avatar" [src]="item.userAvatar | avatarDefault" alt="" />
+                        <span>{{ item.userName || ('invisible' | translate) }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="wheel-history__prize-item">
+                        <ng-container
+                          *ngTemplateOutlet="prizeTemplate; context: { item: item, reverse: true }"
+                        ></ng-container>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!--分页-->
+              <!-- <app-paginator [(page)]="paginator.page" [total]="paginator.total" [pageSize]="paginator.pageSize"
+                [alwaysH5]="true" [disabled]="loadingHistory" [loading]="loadingHistory" (onPageChange)="getHistory()">
+              </app-paginator> -->
+              <!-- 空内容 -->
+              <app-empty *ngIf="historyList.length == 0 && !loadingHistory"></app-empty>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wheel__right" (click)="openPop('history')" *ngIf="!popShow">
+      <img [src]="'assets/images/activity/wheel/wheel_history_' + languageCode + '.png' | preferWebp" alt="" />
+    </div>
+  </ng-container>
+</div>
+
+<!-- 1、2、7 显示 金额, 其它 显示名称 -->
+<ng-template #prizeTemplate let-item="item" let-reverse="reverse">
+  <ng-container [ngSwitch]="item.prizeType">
+    <ng-container *ngSwitchCase="1">
+      <ng-container *ngTemplateOutlet="prizeCategory1; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+      <ng-container *ngTemplateOutlet="prizeCategory1; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="3">
+      <ng-container *ngTemplateOutlet="prizeCategory2; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="4">
+      <ng-container *ngTemplateOutlet="prizeCategory2; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="5">
+      <ng-container *ngTemplateOutlet="prizeCategory2; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="6">
+      <ng-container *ngTemplateOutlet="prizeCategory2; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="7">
+      <ng-container *ngTemplateOutlet="prizeCategory1; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <!-- 非粘性奖金显示活动金额 -->
+    <ng-container *ngSwitchCase="8">
+      <ng-container *ngTemplateOutlet="prizeCategory1; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="99">
+      <ng-container *ngTemplateOutlet="prizeCategory2; context: { item: item, reverse: reverse }"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- 显示金额 -->
+<ng-template #prizeCategory1 let-item="item" let-reverse="reverse">
+  <span [style.order]="reverse ? 1 : 0">{{
+    item.amount | currencyValue: item.currency : undefined : undefined : 2
+  }}</span>
+  <img
+    *ngIf="item.picture || item.currency"
+    [src]="item.picture ? (item.picture | assetsLink | preferWebp: '100') : (item.currency | currencyIcon)"
+  />
+</ng-template>
+
+<!-- 显示名称 -->
+<ng-template #prizeCategory2 let-item="item" let-reverse="reverse">
+  <span [style.order]="reverse ? 1 : 0">{{ item.prizeShortName }}</span>
+  <img *ngIf="item.picture" [src]="item.picture | assetsLink | preferWebp: '100'" />
+</ng-template>

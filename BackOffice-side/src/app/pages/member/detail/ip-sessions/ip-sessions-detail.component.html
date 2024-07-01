@@ -1,0 +1,197 @@
+<div class="card d-flex flex-row flex-wrap py-8 px-12 my-8">
+  <form-row label="IP" class="mr-8" [contentWidth]="200">
+    <ng-template>
+      <input class="form-control" type="text" [(ngModel)]="data.ip" (keyup)="$event.keyCode === 13 && loadData(true)" />
+    </ng-template>
+  </form-row>
+  <form-row [label]="'member.detail.ipsessionstable.device' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field [style.width.px]="120">
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option value="">
+            {{ 'common.all' | lang }}
+          </mat-option>
+          <mat-option value="PC"> PC </mat-option>
+          <mat-option value="APP"> APP </mat-option>
+          <mat-option value="H5"> H5 </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+  <!-- 日期范围 -->
+  <form-row [label]="'system.export.dateRange' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="text-center form-control"
+        type="text"
+        [placeholder]="'form.chooseTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <!-- 发放查询 -->
+    <div class="fz-20 flex-1">{{ 'member.detail.logipSessions' | lang }}</div>
+
+    <div>
+      <!-- 导出全部 -->
+      <!-- <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button> -->
+      <!-- 导出 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0 mt-2">
+    <thead>
+      <tr>
+        <!-- 登陆时间 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.loginTime' | lang }}</span>
+        </th>
+        <!-- 登出时间 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.endTime' | lang }}</span>
+        </th>
+        <!-- 开始余额 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.startBalance' | lang }}</span>
+        </th>
+        <!-- 结束余额 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.endBalance' | lang }}</span>
+        </th>
+        <!-- 总流水 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.totalActiveFlow' | lang }}</span>
+        </th>
+        <!-- IP -->
+        <th>
+          <span class="cell">IP</span>
+        </th>
+        <!-- Ip属于的位置 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.ipLocation' | lang }}</span>
+        </th>
+        <!-- 设备指纹 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.fingerprint' | lang }}</span>
+        </th>
+        <!-- 设备类型 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.device' | lang }}</span>
+        </th>
+        <!-- 系统 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.os' | lang }}</span>
+        </th>
+        <!-- 浏览器 -->
+        <th>
+          <span class="cell">{{ 'member.detail.ipsessionstable.browser' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.loginTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.endTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell"
+            ><img [currencyIcon]="'USDT'" currencySize="18" class="mr-2" />
+            {{ item?.startBalance | currencyValue: 'USDT' }}</span
+          >
+        </td>
+        <td>
+          <span class="cell"
+            ><img [currencyIcon]="'USDT'" currencySize="18" class="mr-2" *ngIf="item.endBalance !== 0" />
+            {{ item.endBalance !== 0 ? (item.endBalance | currencyValue: 'USDT') : '-' }}</span
+          >
+        </td>
+        <td>
+          <span class="cell"
+            ><img [currencyIcon]="'USDT'" currencySize="18" class="mr-2" *ngIf="item.totalActiveFlow !== 0" />
+            {{ item.totalActiveFlow !== 0 ? (item.totalActiveFlow | currencyValue: 'USDT') : '-' }}</span
+          >
+        </td>
+        <td>
+          <span class="cell">{{ item?.ip || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item?.ipLocation || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item?.fingerprint || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item?.device || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item?.os || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item?.browser || '-' }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

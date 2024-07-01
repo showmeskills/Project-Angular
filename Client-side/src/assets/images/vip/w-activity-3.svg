@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+    <g data-name="组 7063">
+        <path data-name="矩形 8181" d="M0 0h40v40H0z" style="fill:none"/>
+        <g data-name="组 6770">
+            <g data-name="组 1040" transform="translate(2.307 1.538)">
+                <path data-name="减去 2" d="M10 20a10 10 0 1 1 10-10 10 10 0 0 1-10 10zm0-15.282A5.28 5.28 0 1 0 15.278 10 5.28 5.28 0 0 0 10 4.718z" transform="translate(12.307)" style="fill:#ebcb9c"/>
+                <path data-name="矩形 868" d="M0 0h3.511v13.244H0z" transform="rotate(30 -22.614 40.755)" style="fill:#ebcb9c"/>
+                <rect data-name="矩形 869" width="35.384" height="3.078" rx="1.539" transform="translate(0 27.693)" style="fill:#ebcb9c"/>
+                <rect data-name="矩形 870" width="20" height="3.078" rx="1.539" transform="translate(7.693 33.847)" style="fill:#ebcb9c"/>
+            </g>
+        </g>
+    </g>
+</svg>

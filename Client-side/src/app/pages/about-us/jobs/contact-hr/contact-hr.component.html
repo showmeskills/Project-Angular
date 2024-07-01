@@ -1,0 +1,22 @@
+<div class="hr-container">
+  <div class="hr-wrap">
+    <div class="left">
+      <p class="text-one">{{ 'sen_bf' | translate }}</p>
+      <p class="text-two">{{ 'sen_bh' | translate }}</p>
+      <div class="right" *ngIf="isH5">
+        <img src="assets/images/about-us/hr-bg.svg" loading="lazy" />
+      </div>
+      <div class="copy-group">
+        <input placeholder="hr@novatech.vc" />
+        <app-tool-tip [copyMode]="'custom'" [copyContent]="'hr@novatech.vc'">
+          <customize-button origin type="primary" size="medium" minWidth="130px">
+            {{ 'sen_bg' | translate }}
+          </customize-button>
+        </app-tool-tip>
+      </div>
+    </div>
+    <div class="right" *ngIf="!isH5">
+      <img src="assets/images/about-us/hr-bg.svg" loading="lazy" />
+    </div>
+  </div>
+</div>

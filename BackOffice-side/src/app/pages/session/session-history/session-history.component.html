@@ -1,0 +1,361 @@
+<div class="d-flex justify-content-start pt-3">
+  <button
+    *ngFor="let item of tabs; let index = index"
+    class="c-btn btn fz-14 mr-4"
+    [class]="currentIndex === index ? 'btn-primary' : 'btn-white'"
+    [disabled]="appService.isContentLoadingSubject | async"
+    (click)="onSwitchTab(index)"
+  >
+    {{ item | lang }}
+  </button>
+</div>
+
+<div class="card mt-5 d-flex flex-row flex-wrap py-8 px-8">
+  <!-- uid/username 搜索 -->
+  <form-row [label]="'session.history.searchUid' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="form-control form-control-lg form-control-solid"
+        type="text"
+        [placeholder]="'session.history.searchTips' | lang"
+        [style.width.px]="280"
+        [(ngModel)]="data.uids"
+        (keyup)="$event.key === 'Enter' && onLoadRecords(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- VIP等级 -->
+  <!-- <form-row [label]="'session.history.vipLevel' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field [style.max-width.px]="200">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.vipLevel"
+          [placeholder]="'session.history.vipLevelTips' | lang"
+          multiple
+        >
+          <mat-option *ngFor="let item of levelList" [value]="item.value">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row> -->
+
+  <!-- 查询主题 -->
+  <form-row *ngIf="currentIndex === 0" [label]="'session.history.category' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field [style.max-width.px]="200">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.categoryId"
+          [placeholder]="'session.history.categoryTips' | lang"
+          (selectionChange)="onTopicCategory()"
+        >
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of topicCategory" [value]="item.id">
+            <topic-label [data]="item" />
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row *ngIf="currentIndex === 0" [label]="'session.history.theme' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field [style.max-width.px]="200">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.subjectId"
+          [placeholder]="'session.history.themeTips' | lang"
+          (selectionChange)="onLoadRecords(true)"
+        >
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of topic" [value]="item.id">
+            <topic-label [data]="item" />
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 日期范围 -->
+  <form-row [label]="'session.history.date' | lang" class="mr-8">
+    <ng-template>
+      <input
+        class="text-center form-control"
+        type="text"
+        [placeholder]="'form.chooseTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="onLoadRecords(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap">
+    <button
+      class="c-btn c-btn-default"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="onResetRecord()"
+    >
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="onLoadRecords(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="mt-6 card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ tabs[currentIndex] | lang }}</div>
+
+    <ng-container *ngFor="let item of tableBtns">
+      <button type="button" class="ml-4 btn btn-light-primary" (click)="onTableProcess(item)">
+        <span class="vam">{{ item.value | lang }}</span>
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="pt-5">
+    <ng-container [ngSwitch]="currentIndex">
+      <ng-container *ngSwitchCase="0">
+        <ng-container *ngTemplateOutlet="singleHistoryTemplate"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="1">
+        <ng-container *ngTemplateOutlet="completeHistoryTemplate"></ng-container>
+      </ng-container>
+    </ng-container>
+
+    <!-- 空显示 -->
+    <empty *ngIf="currentIndex === 0 ? !singleRecord.length : !AllRecord.length"></empty>
+    <!-- 页码 -->
+    <div
+      *ngIf="currentIndex === 0 ? singleRecord.length > 0 : AllRecord.length > 0"
+      class="d-flex flex-between pt-10 table-footer"
+    >
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="onLoadRecords(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="onLoadRecords()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 单次记录 -->
+<ng-template #singleHistoryTemplate>
+  <table class="table mb-0 table-layout" selectChildren>
+    <thead>
+      <tr>
+        <th class="w-10px pe-2">
+          <span class="cell">
+            <label class="checkbox">
+              <input type="checkbox" selectGroup />
+              <span></span>
+            </label>
+          </span>
+        </th>
+        <th><span class="cell">UID</span></th>
+        <th>
+          <span class="cell">{{ 'session.history.table.username' | lang }}</span>
+        </th>
+        <!-- <th>
+          <span class="cell">{{ 'session.history.vipLevel' | lang }}</span>
+        </th> -->
+        <th>
+          <span class="cell">{{ 'session.history.table.customerService' | lang }}</span>
+        </th>
+        <th [style.width.px]="160">
+          <span class="cell">{{ 'session.history.table.conversationTime' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'session.history.table.category' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'session.history.theme' | lang }}</span>
+        </th>
+        <!-- <th>
+          <span class="cell">{{ 'session.history.table.attachmentType' | lang }}</span>
+        </th> -->
+        <th [style.width.px]="170">
+          <span class="cell">{{ 'session.history.table.summary' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'session.history.table.operate' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of singleRecord">
+        <td>
+          <span class="cell">
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="item['checked']" />
+              <span></span>
+            </label>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.userName || '-' }}</span>
+        </td>
+        <!-- <td>
+          <span class="cell">VIP {{ item.vip || 0 }}</span>
+        </td> -->
+        <td>
+          <span class="cell">{{ item.cusName || '-' }}</span>
+        </td>
+        <td [style.width.px]="160">
+          <span class="cell start justify-content-start">{{ item.startTime | timeFormat }}</span>
+          <span class="cell end justify-content-start">{{ item.endTime | timeFormat }}</span>
+          <span class="cell duration justify-content-start"
+            >{{ getMintes(item) }}{{ 'session.history.table.minute' | lang }}{{ getSeconds(item)
+            }}{{ 'session.history.table.seconds' | lang }}</span
+          >
+        </td>
+        <td>
+          <span class="cell">
+            <topic-label
+              [data]="{
+                label: item.categoryLabel,
+                nameCn: item.categoryNameCn,
+                nameEn: item.categoryNameEn,
+                deleteFlag: item.categoryDelFlag
+              }"
+              [pointer]="false"
+            />
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <topic-label
+              [data]="{
+                label: item.subjectLabel,
+                nameCn: item.subjectNameCn,
+                nameEn: item.subjectNameEn,
+                deleteFlag: item.subjectDelFlag
+              }"
+              [pointer]="false"
+            />
+          </span>
+        </td>
+        <!-- <td>
+          <span class="cell">{{ item.attachmentType || '-' }}</span>
+        </td> -->
+        <td [style.width.px]="170">
+          <span class="cell"
+            >[{{ item.endTime | timeFormat: 'HH:mm:ss' }}] {{ item.lastName || '-' }}:{{
+              item.msgSummary || '-' | filterLatestMsg
+            }}</span
+          >
+        </td>
+        <td>
+          <span class="cell text-primary" (click)="onMessageDetails(item, 'single')">{{
+            'session.history.table.messageDetails' | lang
+          }}</span>
+          <span class="cell green-color" (click)="massMsg(item.uid)">{{
+            'session.history.table.ewuSendMessage' | lang
+          }}</span>
+          <span class="cell text-primary" (click)="onExportSingle(item.topicId)">{{ 'common.export' | lang }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+<!-- 全部信息记录 -->
+<ng-template #completeHistoryTemplate>
+  <table class="table mb-0 table-layout" selectChildren>
+    <thead>
+      <tr>
+        <th class="w-10px pe-2">
+          <span class="cell">
+            <label class="checkbox">
+              <input type="checkbox" selectGroup />
+              <span></span>
+            </label>
+          </span>
+        </th>
+        <th><span class="cell">UID</span></th>
+        <th>
+          <span class="cell">{{ 'session.history.table.username' | lang }}</span>
+        </th>
+        <!-- <th>
+          <span class="cell">{{ 'session.history.vipLevel' | lang }}</span>
+        </th> -->
+        <th [style.width.px]="400">
+          <span class="cell">{{ 'session.history.table.summary' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'session.history.table.operate' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of AllRecord">
+        <td>
+          <span class="cell">
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="item['checked']" />
+              <span></span>
+            </label>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.uid }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.userName || '-' }}</span>
+        </td>
+        <!-- <td>
+          <span class="cell">VIP {{ item.vip || 0 }}</span>
+        </td> -->
+        <td [style.width.px]="400">
+          <span class="cell"
+            >[{{ item.endTime | timeFormat: 'HH:mm:ss' }}] {{ item.lastName || '-' }}:{{
+              item.msgSummary || '-' | filterLatestMsg
+            }}</span
+          >
+        </td>
+        <td>
+          <span class="cell text-primary" (click)="onMessageDetails(item, 'all')">{{
+            'session.history.table.messageDetails' | lang
+          }}</span>
+          <span class="cell green-color" (click)="massMsg(item.uid)">{{
+            'session.history.table.ewuSendMessage' | lang
+          }}</span>
+          <span class="cell text-primary" (click)="onExportAll(item.id)">{{ 'common.export' | lang }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>

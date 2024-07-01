@@ -1,0 +1,122 @@
+<!-- 列表 -->
+<div class="card card-body">
+  <!-- 报表列表 -->
+  <div class="fz-20">{{ 'member.activity.sencli12.reportsList' | lang }}</div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead class="sticky-wrapper">
+        <tr>
+          <!-- 活动名称 -->
+          <th style="width: 20%">
+            <span class="cell">{{ 'member.activity.sencli12.campaignName' | lang }}</span>
+          </th>
+          <!-- 开始时间 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onLabelThSort('tmpStartTime')">
+                <span>{{ 'common.startTime' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.order === 'tmpStartTime' && sortData.isAsc"></div>
+                  <div
+                    class="triangle-down"
+                    [class.active]="sortData.order === 'tmpStartTime' && !sortData.isAsc"
+                  ></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 结束时间 -->
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onLabelThSort('tmpEndTime')">
+                <span>{{ 'common.endTime' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up" [class.active]="sortData.order === 'tmpEndTime' && sortData.isAsc"></div>
+                  <div class="triangle-down" [class.active]="sortData.order === 'tmpEndTime' && !sortData.isAsc"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <!-- 参与人数 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencli12.participants' | lang }}</span>
+          </th>
+          <!-- 活动状态 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.actStatus' | lang }}</span>
+          </th>
+          <!-- GGR:(商户输赢，USDT统计) -->
+          <th>
+            <span class="cell">{{ 'GGR' }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.tmpName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.tmpStartTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.tmpEndTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.tmpJoinUidNum }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.configState">
+              <!-- 进行中 -->
+              <app-label *ngSwitchCase="11" type="primary">
+                {{ 'member.activity.sencli6.processing' | lang }}
+              </app-label>
+              <!-- 已过期 -->
+              <app-label *ngSwitchCase="2" type="danger">
+                {{ 'member.coupon.expired' | lang }}
+              </app-label>
+              <!-- 手动结束 -->
+              <app-label *ngSwitchCase="3" type="danger">
+                {{ 'member.activity.sencli12.manualStop' | lang }}
+              </app-label>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.ggr | currencyValue: true }}
+              <img class="ml-2" [currencyIcon]="'USDT'" />
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

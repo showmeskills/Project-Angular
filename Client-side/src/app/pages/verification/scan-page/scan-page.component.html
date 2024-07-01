@@ -1,0 +1,15 @@
+<div class="scan-page-container">
+  <div class="header">
+    {{ 'scan_auth' | translate }}
+  </div>
+  <div class="icon-container">
+    <qr-code [value]="qrCode" [margin]="3" [lightColor]="'#ffffff50'" [size]="122" [darkColor]="'#000'"> </qr-code>
+  </div>
+  <span class="key">
+    {{ googleValidekey }}
+    <app-tool-tip [copyMode]="'icon'" [copyContent]="googleValidekey"></app-tool-tip>
+  </span>
+  <span class="footer">
+    {{ 'manually_enter' | translate }}
+  </span>
+</div>

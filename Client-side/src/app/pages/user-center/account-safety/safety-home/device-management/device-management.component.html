@@ -1,0 +1,198 @@
+<div class="page-container">
+  <!-- 公共title -->
+  <app-header-title-bar
+    [clickForRouterBack]="!isRecordView"
+    [title]="isRecordView ? recordViewTitle : ('device_management' | translate)"
+    (clickTitle)="isRecordView = false"
+  >
+  </app-header-title-bar>
+
+  <!-- 正文 -->
+  <div class="main-container inner-page unity-padding-web">
+    <div class="container page-content">
+      <!-- 用户设备列表 -->
+      <div class="content-box" *ngIf="!isRecordView; else focusDeveiceContent">
+        <div class="directions" *ngIf="!isH5">
+          <span>{{ 'allowed_devices_desc' | translate }}</span>
+        </div>
+        <div class="content">
+          <!-- web布局 -->
+          <table *ngIf="!isH5; else h5DeveiceList" [class.disabled]="loadDeviceListLoading">
+            <thead>
+              <th>{{ 'devices' | translate }}</th>
+              <th>{{ 'date' | translate }}</th>
+              <th>{{ 'location' | translate }}</th>
+              <th>IP {{ 'address' | translate }}</th>
+              <th width="1%">{{ 'action' | translate }}</th>
+            </thead>
+            <tbody [appLoading]="loadDeviceListLoading">
+              <ng-container *ngIf="deveiceList.length > 0">
+                <ng-container *ngFor="let device of deveiceList">
+                  <tr
+                    class="device-item onact96"
+                    (click)="checkToExpand(device)"
+                    [class.disabled]="device.loading"
+                    [class.expand]="device.expand"
+                  >
+                    <td class="long-able">
+                      {{ device.browser }} <span *ngIf="device.os"> {{ ' (' + device.os + ')' }} </span>
+                    </td>
+                    <td>{{ device.lastLoginTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+                    <td>{{ device.lastLoginZone || '-' }}</td>
+                    <td>{{ device.lastLoginIp }}</td>
+                    <td>
+                      <div class="options">
+                        <div class="delete-text onact96" (click)="$event.stopPropagation(); deleteDevice(device)">
+                          {{ 'delete' | translate }}
+                        </div>
+                        <ng-container *ngIf="!(device.record.length === 1)">
+                          <span class="icon-arrow-down" *ngIf="!device.loading && !device.expand"></span>
+                          <span class="icon-arrow-up" *ngIf="!device.loading && device.expand"></span>
+                        </ng-container>
+                        <span class="animation-icon-loading-dot" *ngIf="device.loading"><i></i><i></i><i></i></span>
+                      </div>
+                    </td>
+                  </tr>
+                  <ng-container *ngIf="device.expand">
+                    <ng-container *ngFor="let log of device.record | slice : 1 : 6; let last = last">
+                      <tr class="sub-tr" [class.last]="last && device.record.length <= 6">
+                        <td></td>
+                        <td>{{ log.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+                        <td>{{ log.createZone || '-' }}</td>
+                        <td>{{ log.createIp }}</td>
+                        <td></td>
+                      </tr>
+                    </ng-container>
+                    <tr class="more-tr" *ngIf="device.record.length > 6">
+                      <td></td>
+                      <td>
+                        <span class="more-text onact96-not" (click)="intoRecordView(device)">{{
+                          'view_more' | translate
+                        }}</span>
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+          <!-- wen布局结束 -->
+
+          <!-- h5布局 template -->
+          <ng-template #h5DeveiceList>
+            <div class="h5DeveiceList">
+              <ng-container *ngFor="let device of deveiceList">
+                <div class="list-item" [class.disabled]="device.loading">
+                  <div
+                    class="list-line click-able onact96"
+                    (click)="checkToExpand(device)"
+                    (clickOutside)="device.expand = false"
+                  >
+                    <span class="bold big"
+                      >{{ device.browser }} <span *ngIf="device.os"> {{ ' (' + device.os + ')' }} </span></span
+                    >
+                    <i class="menu-icon icon-three-dot" *ngIf="!device.loading"></i>
+                    <i class="loading-icon animation-icon-loading-dot" *ngIf="device.loading"><i></i><i></i><i></i></i>
+                    <div class="menu-box" *ngIf="device.expand">
+                      <span class="onact96-not" (click)="deleteDevice(device)">{{ 'delete' | translate }}</span>
+                      <span class="onact96-not" (click)="intoRecordView(device)">{{ 'view_more' | translate }}</span>
+                    </div>
+                  </div>
+                  <div class="list-line">
+                    <span class="light">{{ 'date' | translate }}</span>
+                    <em>{{ device.lastLoginTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</em>
+                  </div>
+                  <div class="list-line">
+                    <span class="light">{{ 'location' | translate }}</span>
+                    <em>{{ device.lastLoginZone || '-' }}</em>
+                  </div>
+                  <div class="list-line">
+                    <span class="light">IP {{ 'address' | translate }}</span>
+                    <em>{{ device.lastLoginIp }}</em>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </ng-template>
+          <!-- h5布局结束 -->
+
+          <!-- 空内容 -->
+          <app-empty *ngIf="deveiceList.length <= 0 && !loadDeviceListLoading"></app-empty>
+
+          <!-- 分页器（h5因为是相交检测，所以需要紧挨着最后的元素，如非必要，不要再给分页器设置边距） -->
+          <app-paginator
+            [(page)]="paginator.page"
+            [total]="paginator.total"
+            [pageSize]="paginator.pageSize"
+            [disabled]="loadDeviceListLoading"
+            [loading]="loadDeviceListLoading"
+            (onPageChange)="loadDeviceData()"
+          >
+          </app-paginator>
+        </div>
+      </div>
+
+      <!-- 某个设备的详情记录 -->
+      <ng-template #focusDeveiceContent>
+        <div class="content-box">
+          <div class="content">
+            <!-- web布局 -->
+            <table *ngIf="!isH5; else h5focusDeveice">
+              <thead>
+                <th>{{ 'date' | translate }}</th>
+                <th>{{ 'location' | translate }}</th>
+                <th>IP {{ 'address' | translate }}</th>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let log of focusDeveice.record">
+                  <tr class="log-item">
+                    <td>{{ log.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+                    <td>{{ log.createZone || '-' }}</td>
+                    <td>{{ log.createIp }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <!-- wen布局结束 -->
+
+            <!-- h5布局 template -->
+            <ng-template #h5focusDeveice>
+              <div class="h5DeveiceList">
+                <ng-container *ngFor="let log of focusDeveice.record">
+                  <div class="list-item">
+                    <div class="list-line">
+                      <span class="light">{{ 'date' | translate }}</span>
+                      <em>{{ log.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</em>
+                    </div>
+                    <div class="list-line">
+                      <span class="light">{{ 'location' | translate }}</span>
+                      <em>{{ log.createZone || '-' }}</em>
+                    </div>
+                    <div class="list-line">
+                      <span class="light">IP {{ 'address' | translate }}</span>
+                      <em>{{ log.createIp }}</em>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-template>
+            <!-- h5布局结束 -->
+
+            <!-- 分页器（h5因为是相交检测，所以需要紧挨着最后的元素，如非必要，不要再给分页器设置边距） -->
+            <app-paginator
+              [(page)]="focusDeveice.paginator.page"
+              [total]="focusDeveice.paginator.total"
+              [pageSize]="focusDeveice.paginator.pageSize"
+              [disabled]="focusDeveice.loading"
+              [loading]="focusDeveice.loading"
+              (onPageChange)="loadDeviceLog(focusDeveice)"
+            ></app-paginator>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

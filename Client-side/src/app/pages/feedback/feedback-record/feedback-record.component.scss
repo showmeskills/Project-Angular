@@ -1,0 +1,117 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.main-container {
+  padding-top: 30px;
+  padding-bottom: 50px;
+  border-radius: 0 !important;
+
+  .container {
+    min-height: 300px;
+  }
+}
+
+.record-container {
+  display: flex;
+  flex-direction: column;
+  @include polyfills.flex-gap(20px, 'column nowrap');
+}
+
+.record-item {
+  min-height: 63px;
+  border-radius: 4px;
+  border: solid 1px var(--default-border-color);
+  font-size: 12px;
+  padding: 0 10px;
+  color: var(--text-color-20);
+
+  &.disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .title {
+    height: 63px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      @include polyfills.flex-gap(12px, 'column nowrap');
+
+      h3 {
+        font-size: 14px;
+        color: #1e2329;
+      }
+
+      span {
+        display: flex;
+        @include polyfills.flex-gap(10px, 'row nowrap');
+
+        em {
+          color: #b7bdc6;
+        }
+      }
+    }
+
+    .right {
+      > i {
+        & + i {
+          display: none;
+        }
+
+        &.icon-arrow-down {
+          display: flex;
+          transform: rotate(90deg);
+
+          &.expand {
+            transform: none;
+          }
+        }
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    @include polyfills.flex-gap(22px, 'column nowrap');
+    padding: 10px 0 25px;
+
+    .row-item {
+      display: flex;
+      @include polyfills.flex-gap(20px, 'row nowrap');
+      line-height: normal;
+
+      .label {
+        color: var(--text-color);
+        white-space: nowrap;
+      }
+
+      &.detail {
+        > div {
+          word-break: break-all;
+        }
+      }
+
+      &.attachment {
+        .label {
+          padding: 2px 0 3px;
+        }
+
+        .attachment-list {
+          display: flex;
+          flex-wrap: wrap;
+          @include polyfills.flex-gap(10px, 'row wrap');
+
+          p {
+            padding: 2px 10px 3px;
+            background-color: var(--default-border-color);
+            border-radius: 99px;
+          }
+        }
+      }
+    }
+  }
+}

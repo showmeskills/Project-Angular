@@ -1,0 +1,91 @@
+<div class="chart-container">
+  <div class="chart-wrap">
+    <!-- line chart 头部 -->
+    <div class="chart-header">
+      <p class="title" *ngIf="!isH5">{{ data.title && data.title }}</p>
+      <p class="title" *ngIf="isH5">{{ data.title && data.title }}{{ 'data_tren00' | translate }}</p>
+      <i class="icon-close-simple mutual-opacity onact96-not" (click)="close()"></i>
+    </div>
+    <!-- 按钮 -->
+    <div class="chart-btns" *ngIf="isH5">
+      <ng-container *ngTemplateOutlet="btnTemp"></ng-container>
+    </div>
+    <!-- 头部选项 -->
+    <div class="chart-options">
+      <!-- 日历 -->
+      <div class="chart-options-calendar">
+        <app-datepicker [(dateValue)]="beginTime" placeholder="YYYY-MM-DD" (dateValueChange)="onDateChange()">
+        </app-datepicker>
+        <span class="calendar-symbol">~</span>
+        <app-datepicker
+          [(dateValue)]="endTime"
+          [minDate]="beginTime"
+          [maxDate]="maxDate"
+          [disabled]="!beginTime"
+          (dateValueChange)="onDateChange()"
+          placeholder="{{ !beginTime ? ('sel_start_time00' | translate) : 'YYYY-MM-DD' }}"
+        >
+        </app-datepicker>
+      </div>
+      <!-- 按钮 -->
+      <div class="chart-btns" *ngIf="!isH5">
+        <ng-container *ngTemplateOutlet="btnTemp"></ng-container>
+      </div>
+      <!-- 项目 -->
+      <app-customize-select
+        [defaultText]="'dashboard' | translate"
+        [(value)]="gameType"
+        [options]="projectList"
+        [valueKey]="'value'"
+        [textKey]="'value' | translate"
+        [width]="'80px'"
+        (onSelect)="onChangeSelect()"
+      >
+      </app-customize-select>
+    </div>
+    <!-- 图形 -->
+    <div class="line-chart" *ngIf="chartReady">
+      <apx-chart
+        #apxChart
+        [chart]="form.chart"
+        [xaxis]="form.xaxis"
+        [stroke]="form.stroke"
+        [markers]="form.markers"
+        [grid]="form.grid"
+        [title]="form.title"
+        [tooltip]="form.tooltip"
+        [series]="form.series"
+      ></apx-chart>
+    </div>
+    <!-- 底部 -->
+    <div class="chart-bottom">
+      <div class="amount">
+        <span class="amount-title">{{ 'total_amount' | translate }}:</span>
+        <span class="amount-money">{{ total }}$</span>
+      </div>
+      <div class="btns">
+        <ng-container *ngFor="let item of btnListTwo; let i = index">
+          <customize-button
+            [type]="i == isActiveBtnTwoIndex ? 'primary' : 'default'"
+            size="medium"
+            (onClick)="onClickItemMethod(i)"
+            >{{ item.name }}</customize-button
+          >
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #btnTemp>
+    <ng-container *ngFor="let item of btnList; let i = index">
+      <customize-button
+        class="onact96-btn"
+        [type]="isH5 ? 'text' : i === isActiveBtnIndex ? 'primary' : 'default'"
+        size="medium"
+        (onClick)="onClickItem(i)"
+      >
+        <span [class.active]="i === isActiveBtnIndex && isH5"> {{ item.name }}</span>
+      </customize-button>
+    </ng-container>
+  </ng-template>
+</div>

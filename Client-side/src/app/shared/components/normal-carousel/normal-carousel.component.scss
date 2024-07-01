@@ -1,0 +1,138 @@
+:host {
+  display: block;
+  &.hide-when-no-data {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    margin-left: 12px;
+    margin-right: 12px;
+    width: calc(100% - 24px) !important;
+  }
+  --carousel-hover-opacity: 0.8;
+
+  :host-context(.dark) & {
+    --carousel-hover-opacity: 0.7;
+  }
+}
+
+.content-box {
+  margin: 10px -8px 0;
+}
+
+.customize-carousel {
+  display: grid;
+  grid-auto-flow: column;
+  padding-top: 10px;
+  -ms-scroll-snap-type: x mandatory;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  width: 100%;
+  scrollbar-color: transparent transparent;
+  scrollbar-width: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.carousel-item-container {
+  scroll-snap-align: start;
+  padding: 0 8px;
+  display: flex;
+}
+
+.carousel-item {
+  height: 0;
+  flex: 1;
+  padding-top: 58.82%;
+  position: relative;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  will-change: opacity;
+
+  @media (any-hover: hover) {
+    &:hover {
+      opacity: var(--carousel-hover-opacity);
+    }
+  }
+
+  @media (any-hover: none) {
+    &:active {
+      opacity: var(--carousel-hover-opacity);
+    }
+  }
+
+  .carousel-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  &.disabled {
+    pointer-events: none;
+  }
+}
+
+.carousel-arrow-right,
+.carousel-arrow-left {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  will-change: opacity;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text-color);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &.show {
+    opacity: 1;
+  }
+
+  > i {
+    transform: scale(1);
+    transition: transform 0.2s;
+    will-change: transform;
+  }
+
+  @media (any-hover: hover) {
+    &:hover {
+      > i {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+  }
+
+  @media (any-hover: none) {
+    display: none;
+  }
+}
+
+.carousel-arrow-left {
+  right: calc(100% - 8px);
+  padding: 0 8px 0 32px;
+
+  @media (max-width: 950px) {
+    padding-right: 4px;
+  }
+}
+
+.carousel-arrow-right {
+  left: calc(100% - 8px);
+  padding: 0 32px 0 8px;
+
+  @media (max-width: 950px) {
+    padding-left: 4px;
+  }
+}

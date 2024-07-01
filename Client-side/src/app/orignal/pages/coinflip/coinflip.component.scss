@@ -1,0 +1,357 @@
+:host {
+  width: 100%;
+  background-color: var(--orignal-bg);
+
+  @media (max-width: 767px) {
+    height: 100%;
+  }
+}
+
+div {
+  display: flex;
+}
+
+.wrapper {
+  width: 878px;
+  margin: 10px auto 0px;
+  /* 背景色/日间 */
+  // background: var(--orignal-bg);
+  /* 分隔线色/日间 */
+  // border: 1px solid var(--orignal-border-color);
+  // border-radius: 6px;
+  flex-direction: column;
+  position: relative;
+
+  @media (max-width: 937px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+  }
+
+  &-top {
+    padding: 10px 16px;
+
+    @media (max-width: 767px) {
+      padding-bottom: 0;
+    }
+  }
+
+  .mian {
+    padding: 10px 16px;
+    width: 100%;
+
+    .coinflip {
+      background: url(src/assets/orignal/images/coinflip/bg.svg);
+      @media (max-width: 767px) {
+        background: url(src/assets/orignal/images/coinflip/bg_h5.svg);
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      flex-direction: column;
+      width: 100%;
+      .numbers {
+        padding: 20px 0px 143px 28px;
+        display: flex;
+        flex-direction: row-reverse;
+        overflow: hidden;
+        position: relative;
+        /* width: 100%; */
+        margin: 0 10px;
+        &.h5 {
+          &::before {
+            background: var(--orignal-history-shadow) !important;
+          }
+        }
+
+        &::before {
+          position: absolute;
+          content: '';
+          left: 0;
+          top: 10px;
+          height: 100%;
+          width: 15px;
+          background: transparent;
+        }
+
+        .item {
+          font-family: 'D-DIN';
+          font-size: 14px;
+          font-weight: 700;
+          padding: 0 5px;
+          height: 19px;
+          margin-left: 4px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #ffffff;
+          border-radius: 6px;
+          white-space: nowrap;
+        }
+      }
+      .board-body {
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+        max-width: 713px;
+        @media (max-width: 767px) {
+          width: 80%;
+        }
+        .game-area {
+          width: 50%;
+          height: 113px;
+          background: #344053;
+          position: relative;
+          z-index: 2;
+          justify-content: center;
+          align-items: center;
+
+          @media (max-width: 767px) {
+            height: 56px;
+          }
+          &:first-child {
+            padding-right: 50px;
+          }
+          &:last-child {
+            padding-left: 50px;
+          }
+        }
+
+        .game-area > span {
+          position: absolute;
+          font-style: normal;
+          font-weight: 700;
+          font-size: 15px;
+          color: #7c8499;
+        }
+
+        .game-area > span:last-child {
+          font-family: 'PingFang SC';
+          font-style: normal;
+          font-weight: 600;
+          font-size: 36px;
+          color: #ffffff;
+        }
+
+        .game-area .top {
+          top: 20%;
+          @media (max-width: 767px) {
+            font-family: Arial;
+            font-size: 10px;
+            font-weight: 700;
+          }
+        }
+
+        .game-area span:not(.top) {
+          top: 36%;
+          @media (max-width: 767px) {
+            top: 42%;
+            font-family: PingFang SC;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+          }
+        }
+        .game-area:first-child {
+          border-radius: 100px 0 0 100px;
+        }
+        .game-area:last-child {
+          border-radius: 0 100px 100px 0;
+        }
+        .coin-container {
+          z-index: 3;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          .coin {
+            display: block;
+            width: 168px;
+            height: 168px;
+            perspective: 500px;
+            position: relative;
+            @media (max-width: 767px) {
+              width: 84px;
+              height: 84px;
+            }
+            // transition: transform 1s;
+            transform-style: preserve-3d;
+            .big-coin__front {
+              position: absolute;
+              width: 168px;
+              height: 168px;
+              @media (max-width: 767px) {
+                width: 84px;
+                height: 84px;
+              }
+              background-size: 100%;
+              background-image: url(src/assets/orignal/images/coinflip/front.svg);
+            }
+            .big-coin__back {
+              position: absolute;
+              width: 168px;
+              height: 168px;
+              @media (max-width: 767px) {
+                width: 84px;
+                height: 84px;
+              }
+              background-size: 100%;
+              background-image: url(src/assets/orignal/images/coinflip/back.svg);
+            }
+          }
+          .coin.coin_animationBack .big-coin__back,
+          .coin.coin_animationBack .big-coin__front,
+          .coin.coin_animationFront .big-coin__back,
+          .coin.coin_animationFront .big-coin__front {
+            transform: translateZ(-1px) rotateX(180deg);
+          }
+          .coin.coin_animationBack .big-coin__back,
+          .coin.coin_animationFront .big-coin__front {
+            transform: translateZ(1px);
+          }
+          // .coin.flip {
+          //   animation: or-flip 1s;
+          //   animation-fill-mode: forwards;
+          // }
+
+          // @keyframes or-flip {
+          //   0% {
+          //     transform: rotateX(0deg);
+          //   }
+          //   50% {
+          //     transform: rotateX(180deg);
+          //   }
+          //   100% {
+          //     transform: rotateX(360deg);
+          //   }
+          // }
+
+          // .coin.heads {
+          //   content: url(src/assets/orignal/images/coinflip/front.svg);
+          //   width: 168px;
+          //   @media (max-width: 767px) {
+          //     width: 84px;
+          //   }
+          // }
+
+          // .coin.tails {
+          //   content: url(src/assets/orignal/images/coinflip/back.svg);
+          //   width: 168px;
+          //   @media (max-width: 767px) {
+          //     width: 84px;
+          //   }
+          // }
+        }
+      }
+      .bot-res {
+        background: #344053;
+        display: flex;
+        height: 51px;
+        width: 713px;
+        max-width: 100%;
+        margin: 0 auto;
+        border-radius: 90px;
+        align-items: center;
+        margin-top: 89px;
+        margin-bottom: 45px;
+        padding: 0px 30px;
+
+        @media (max-width: 767px) {
+          width: 80%;
+          height: 40px;
+          padding: 0px 16px;
+        }
+
+        .item-container {
+          display: flex;
+          overflow-x: auto;
+          padding: 0 16px;
+          width: 100%;
+        }
+
+        .item {
+          margin-right: 10px;
+          flex: 0 0 auto;
+
+          img {
+            width: 35px;
+
+            @media (max-width: 767px) {
+              width: 25px;
+            }
+          }
+        }
+
+        .item:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  &.loading {
+    ::ng-deep orignal-bet {
+      .wrapper .top .bet-button {
+        opacity: 0.5;
+      }
+    }
+  }
+  .win-tip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 246px;
+    margin: auto;
+    width: 251px;
+    height: 101px;
+    background: var(--orignal-primary-linear);
+    border: 1px solid var(--orignal-primary-color);
+    box-shadow: 0px 10px 20px rgba(0, 87, 255, 0.3);
+    border-radius: 8px;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 3;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 0;
+      background-image: url(src/assets/orignal/images/mines/tip-bg.svg);
+    }
+
+    div:first-child {
+      font-weight: 900;
+      font-size: 24px;
+      line-height: 34px;
+      text-align: center;
+      color: #ffffff;
+      z-index: 1;
+      display: block;
+    }
+
+    div:last-child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+
+      img {
+        width: 18px;
+        height: 18px;
+        margin-right: 4px;
+      }
+
+      font-weight: 900;
+      font-size: 15px;
+      line-height: 21px;
+      color: #ffffff;
+    }
+  }
+}

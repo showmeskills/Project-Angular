@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <defs>
+        <clipPath id="e73tpcos1a">
+            <path data-name="矩形 8321" transform="translate(10 10)" style="stroke:#707070;fill:#fb6943" d="M0 0h20v20H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="蒙版组 2368" transform="translate(-10 -10)" style="clip-path:url(#e73tpcos1a)">
+        <path data-name="下载 (1)" d="M19.5 5H8.4v2h11.1zm0 12H8.4v2h11.1zm0-6H8.4v2h11.1zM6.81 12.01 5.4 10.6l-1.418 1.41L5.4 13.424zM6.777 6 5.363 4.582 3.949 6l1.414 1.41L6.777 6zm.065 12.026L5.428 16.61l-1.414 1.414 1.414 1.415 1.414-1.415z" transform="translate(8.276 7.99)" style="fill:#fb6943"/>
+    </g>
+</svg>

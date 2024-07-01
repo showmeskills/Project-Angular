@@ -1,0 +1,32 @@
+:host {
+  background: #fff;
+  border-radius: 6px;
+  padding: 30px;
+  display: block;
+}
+
+.border-wrap {
+  border: 1px solid #eff2f5;
+  border-radius: 6px;
+}
+
+.border-top {
+  border-top: 1px solid #eff2f5;
+}
+
+.border-left {
+  border-left: 1px solid #eff2f5;
+}
+
+::ng-deep {
+  .kyc-option-detail-modal {
+    .modal-dialog {
+      max-width: 655px;
+      min-width: 655px;
+    }
+
+    .modal-content {
+      margin: 0 30px;
+    }
+  }
+}

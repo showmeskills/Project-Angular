@@ -1,0 +1,74 @@
+<ng-container *ngFor="let item of uploadList | keyvalue; let i = index; trackBy: trackMethod">
+  <div class="upload-container">
+    <div class="label">{{ item.value.label | translate }}</div>
+    <div class="info">
+      <pre class="info-item">{{ item.value.infoLists | translate }}</pre>
+    </div>
+    <div
+      class="upload-lists"
+      [class.m-b-30]="item.value.fileList && item.value.fileList.length > 0"
+      cdkOverlayOrigin
+      #origin="cdkOverlayOrigin"
+    >
+      <ng-container *ngIf="!item.value.isVideo">
+        <div class="list-item" *ngFor="let img of item.value.fileList; let index = index">
+          <p class="skeleton" *ngIf="item.value.currentIdx === index && item.value.isShowSkeleton"></p>
+          <img #imgGroup [src]="img" lazy="loading" />
+          <div class="layer" *ngIf="!item.value.isShowSkeleton" (click)="enLargeImg(img, item.key)">
+            <i class="icon-enlarge"></i>
+          </div>
+          <p *ngIf="!disabled" class="clear onact96-not" (click)="removeItem(item.key, img)">x</p>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="item.value.isVideo && item.value.videoUrl">
+        <div class="video-item">
+          <video class="video-player" width="268" height="150" controls>
+            <source [src]="item.value.videoUrl" type="video/mp4" />
+          </video>
+          <p class="clear onact96-not" *ngIf="!disabled" (click)="removeItem(item.key)">x</p>
+        </div>
+      </ng-container>
+    </div>
+    <div
+      *ngIf="!disabled"
+      class="upload-box mutual-opacity onact96-not"
+      [class.video]="item.value.isVideo"
+      [class.diabled]="item.value.loading"
+    >
+      <input type="file" [class.video]="item.value.isVideo" (change)="onUpload($event, item.key)" />
+      <ng-container *ngIf="item.value.loading">
+        <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+      </ng-container>
+      <ng-container *ngIf="!item.value.loading && !item.value.isVideo">
+        <i class="icon-exit"></i>{{ 'up_files' | translate }}
+      </ng-container>
+      <ng-container *ngIf="!item.value.loading && item.value.isVideo">
+        <i class="icon-cloud-upload"></i> {{ 'click_up_video' | translate }}
+      </ng-container>
+    </div>
+    <!-- 文件大小限制  -->
+    <ng-container *ngIf="item.value.reqLimit">
+      <p class="limit">{{ item.value.reqLimit | translate }}</p>
+    </ng-container>
+  </div>
+
+  <!-- 大图定位 -->
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayOpen]="item.value.isShowEnlargeImg"
+    [cdkConnectedOverlayPositions]="isH5 ? h5Positions : positions"
+  >
+    <div class="img-container">
+      <img #enlargeImage [src]="'assets/images/home/banner/default_banner_' + theme + '.jpg'" lazy="loading" />
+      <p
+        class="clear onact96-not"
+        *ngIf="item.value.isShowCloseBtn"
+        [class.enlarge-clear]="isH5"
+        (click)="onCloseEnlargeImg(item.key)"
+      >
+        x
+      </p>
+    </div>
+  </ng-template>
+</ng-container>

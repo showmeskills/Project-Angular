@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+    <defs>
+        <clipPath id="clip-path">
+            <path id="矩形_9269" data-name="矩形 9269" transform="translate(14.779 25)" style="fill:#fff;stroke:#707070" d="M0 0h26v26H0z"/>
+        </clipPath>
+    </defs>
+    <g id="蒙版组_6" data-name="蒙版组 6" transform="translate(-14.779 -25)" style="clip-path:url(#clip-path)">
+        <g id="红包" transform="translate(17.989 25.5)">
+            <path id="路径_5431" data-name="路径 5431" style="fill:currentColor" d="M152.109 1.912V11.9a12.578 12.578 0 0 1-5.566 4.067 4.32 4.32 0 0 0-8.3.134 12.559 12.559 0 0 1-5.954-4.2V1.912A1.921 1.921 0 0 1 134.206 0h15.984a1.921 1.921 0 0 1 1.919 1.912z" transform="translate(-132.288)"/>
+            <path id="路径_5432" data-name="路径 5432" style="fill:currentColor" d="M152.109 554.56v9.777a1.921 1.921 0 0 1-1.918 1.912h-15.985a1.921 1.921 0 0 1-1.918-1.912v-9.777a12.559 12.559 0 0 0 5.877 4.176 4.318 4.318 0 0 0 8.518-.163 12.562 12.562 0 0 0 5.426-4.013z" transform="translate(-132.288 -540.75)"/>
+            <path id="路径_5433" data-name="路径 5433" style="fill:currentColor;opacity:.311;" d="M422.074 572.628a2.991 2.991 0 0 1-.192 1.06 3.041 3.041 0 0 1-5.647.108 2.989 2.989 0 0 1-.235-1.168 3.037 3.037 0 0 1 6.074 0z" transform="translate(-408.914 -555.416)"/>
+        </g>
+    </g>
+</svg>

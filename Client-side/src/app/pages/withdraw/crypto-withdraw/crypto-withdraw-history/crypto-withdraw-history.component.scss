@@ -1,0 +1,371 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+div {
+  display: flex;
+}
+
+:host {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  // width: 1200px;
+  flex-direction: column;
+  padding-bottom: 48px;
+
+  // @media (max-width: 1260px) {
+  //   width: 721px;
+  // }
+
+  // @media (max-width: 767px) {
+  //   width: 588px;
+  // }
+
+  // @media (max-width: 600px) {
+  //   width: 415px;
+  // }
+
+  // @media (max-width: 414px) {
+  //   width: 343px;
+  // }
+
+  .header-row {
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 64px;
+    align-items: center;
+    padding-bottom: 27px;
+
+    // @media (max-width: 600px) {
+    //   flex-direction: column;
+    //   align-items: flex-start;
+    //   padding-top: 48px;
+    //   padding-bottom: 20px;
+    // }
+
+    .start-row {
+      align-items: center;
+
+      span {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--text-color-30);
+
+        @media (max-width: 767px) {
+          font-size: 20px;
+          font-weight: normal;
+        }
+      }
+
+      //小导航
+      .small-nav {
+        border-radius: 16px;
+        background-color: var(--bg-color-10);
+        width: 75px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 16px;
+
+        @media (max-width: 600px) {
+          display: none;
+        }
+
+        .labe {
+          border-right: 1px solid var(--default-border-color);
+          width: 1px;
+          height: 14px;
+        }
+
+        .icon-overview,
+        .icon-menu {
+          height: 16px;
+          width: 16px;
+          background-repeat: no-repeat;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .icon-overview {
+          margin-right: 9px;
+          background-image: url(src/assets/images/wallet/overview.svg);
+
+          &.selected,
+          &:hover {
+            background-image: url(src/assets/images/wallet/overview-hover.svg);
+          }
+        }
+
+        .icon-menu {
+          background-size: 100%;
+          margin-left: 9px;
+          background-image: url(src/assets/images/wallet/menu.svg);
+
+          &.selected,
+          &:hover {
+            background-image: url(src/assets/images/wallet/menu-hover.svg);
+          }
+        }
+      }
+    }
+
+    .end-row {
+      // color: #707a8a;
+      color: var(--text-color-20);
+      align-items: center;
+
+      .link-txt {
+        color: var(--primary-color);
+        text-decoration: underline;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      @media (max-width: 767px) {
+        // padding-top: 21px;
+        font-size: 14px;
+      }
+
+      p {
+        text-decoration: underline;
+        margin-right: 24px;
+
+        // @media (max-width: 600px) {
+        //   display: none;
+        // }
+      }
+    }
+  }
+
+  .contant {
+    flex-wrap: wrap;
+
+    .ticket {
+      width: 100%;
+      // height: 99px;
+      box-shadow: 0 1px 0 0 var(--default-border-color);
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 20px 16px;
+      align-items: center;
+      // cursor: pointer;
+
+      @media (any-hover: hover) {
+        &:hover {
+          background-color: var(--list-hover-bg-color);
+
+          .arrow-right {
+            height: 25px;
+            width: 25px;
+            background-image: url(src/assets/images/wallet/arrow-right-small-select.svg);
+          }
+        }
+      }
+
+      @media (any-hover: none) {
+        &:active {
+          background-color: var(--list-hover-bg-color);
+
+          .arrow-right {
+            height: 25px;
+            width: 25px;
+            background-image: url(src/assets/images/wallet/arrow-right-small-select.svg);
+          }
+        }
+      }
+
+      .infor-clounm {
+        flex-direction: column;
+        width: 100%;
+
+        .clounm-1 {
+          flex-direction: row;
+          align-items: center;
+          margin-bottom: 9px;
+          @include polyfills.flex-gap(5px, 'row nowrap');
+
+          .icon {
+            height: 16px;
+            width: 16px;
+          }
+
+          .amount {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+          }
+
+          .offset-right {
+            margin-right: 20px;
+          }
+
+          // .success {
+          //   border-radius: 3px;
+          //   background-color: #e6fff1;
+          //   height: 24px;
+          //   align-items: center;
+          //   color: #15bf7b;
+          //   padding: 0 8px;
+          //   font-size: 12px;
+          // }
+        }
+
+        .item-bottom {
+          display: grid;
+          align-items: center;
+          gap: 15px 30px;
+          grid-template: 1fr / 0fr 1fr 2fr 1fr;
+
+          @media (max-width: 900px) {
+            grid-template: 1fr 1fr / 0fr 1fr 2fr;
+
+            &.no-txid {
+              grid-template: 1fr / 0fr 1fr 2fr;
+              gap: 0px 30px;
+            }
+          }
+
+          @media (max-width: 767px) {
+            grid-template: 1fr / 1fr;
+          }
+
+          .group {
+            font-size: 14px;
+            display: flex;
+
+            &.network-group {
+              flex: 1;
+            }
+
+            &.addresse-group {
+              flex: 2;
+              overflow: hidden;
+              min-width: 150px;
+
+              > p {
+                flex: 1;
+                overflow: hidden;
+
+                .addresse {
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                  white-space: nowrap;
+                }
+              }
+            }
+
+            &.txid-group {
+              min-width: 185px;
+            }
+
+            .addresse {
+              margin-right: 10px;
+            }
+
+            span {
+              color: var(--text-color-20);
+              white-space: nowrap;
+            }
+
+            p {
+              color: var(--text-color);
+              display: flex;
+              align-items: center;
+
+              i {
+                color: var(--text-color-20);
+              }
+
+              .icon-link {
+                cursor: pointer;
+                user-select: none;
+
+                &:hover,
+                .select {
+                  color: var(--primary-color);
+                }
+              }
+
+              .icon-copy {
+                cursor: pointer;
+
+                &:hover,
+                .select {
+                  color: var(--text-color);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      //展开 icon
+      .arrow-right {
+        height: 9px;
+        width: 13px;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        background-image: url(src/assets/images/wallet/arrow-right-small.svg);
+        user-select: none;
+        &:host-context(.dark) & {
+          height: 25px;
+          width: 25px;
+          background-image: url(src/assets/images/wallet/arrow-right-small-select.svg);
+        }
+
+        &:hover {
+          height: 25px;
+          width: 25px;
+          background-image: url(src/assets/images/wallet/arrow-right-small-select.svg);
+        }
+      }
+    }
+  }
+
+  .contant {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.status-text {
+  border-radius: 3px;
+  height: 24px;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 12px;
+  background-color: rgba(#000, 0.05);
+  color: inherit;
+
+  //成功 Success Created Passed
+  &.success {
+    color: #15bf7b;
+    background-color: #e6fff1;
+  }
+
+  //正在处理中: Waiting Process Review
+  &.process {
+    background-color: rgba(#ff9300, 0.2);
+    color: #ff9300;
+  }
+
+  //交易失败 NotPassed Fail
+  &.fail {
+    background-color: rgba(#cf304a, 0.2);
+    color: #cf304a;
+  }
+
+  //交易已取消 Cancel Timeout
+  &.cancel {
+    background-color: rgba(#707a8a, 0.2);
+    color: var(--text-color-20);
+  }
+}
+
+.list-box {
+  min-height: 300px;
+  flex-direction: column;
+}

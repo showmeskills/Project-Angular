@@ -1,0 +1,14 @@
+<div class="preview-media">
+  <div class="tit">
+    <span>{{ url | getFileName }}</span>
+    <i class="icon-close-simple mutual-opacity onact96-not" (click)="close()"></i>
+  </div>
+  <div class="con" *ngIf="url">
+    <ng-container *ngIf="type === 'image'">
+      <img [src]="url" />
+    </ng-container>
+    <ng-container *ngIf="type === 'video'">
+      <video [src]="url" controls></video>
+    </ng-container>
+  </div>
+</div>

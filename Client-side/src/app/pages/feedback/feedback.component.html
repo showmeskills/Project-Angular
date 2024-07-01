@@ -1,0 +1,68 @@
+<div class="page-container">
+  <div class="main-container unity-padding-web unity-padding-h5-16 line1">
+    <div class="container">
+      <div class="content-box">
+        <h1>{{ 'sen_ca' | translate }}</h1>
+        <p>{{ 'sen_cb' | translate }}</p>
+        <div>
+          <span>
+            {{ 'sen_cc' | translate }}
+          </span>
+          <div class="btn mutual-opacity onact96" [routerLink]="['record']">
+            {{ 'sen_cd' | translate }}
+            <span>
+              <i class="icon-arrow-right-simple"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-container unity-padding-web unity-padding-h5-16 line2">
+    <div class="container">
+      <div class="title">{{ 'sen_cc' | translate }}</div>
+      <div class="group">
+        <div *ngFor="let item of btns" class="btn-item onact96" [routerLink]="['submit', item.value]">
+          <div>
+            <p>{{ item.title }}</p>
+            <span *ngIf="!isH5">{{ item.desc }}</span>
+          </div>
+          <i [class]="item.icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-container unity-padding-web unity-padding-h5-16 line3">
+    <div class="container">
+      <div class="title">{{ 'sen_cn' | translate }}</div>
+      <div class="step">
+        <div class="step-item">
+          <img src="assets/images/feedback/s1.png" />
+          <span>{{ 'sen_cm' | translate }}</span>
+        </div>
+        <div class="step-gap"></div>
+        <div class="step-item">
+          <img src="assets/images/feedback/s2.png" />
+          <span>{{ 'sen_co' | translate }}</span>
+        </div>
+        <div class="step-gap special"></div>
+        <div class="step-item">
+          <img src="assets/images/feedback/s3.png" />
+          <span>{{ 'sen_cp' | translate }}</span>
+        </div>
+        <div class="step-gap"></div>
+        <div class="step-item">
+          <img src="assets/images/feedback/s4.png" />
+          <span>{{ 'waiting' | translate }}…</span>
+        </div>
+      </div>
+      <div class="text">
+        <p>{{ 'sen_cq' | translate }}</p>
+        <p>
+          <span>{{ 'sen_cr' | translate }}</span>
+          <span class="link-text mutual-opacity onact96-not" [routerLink]="['submit']">{{ 'sen_cm' | translate }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

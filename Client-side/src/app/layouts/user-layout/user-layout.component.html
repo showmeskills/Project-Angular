@@ -1,0 +1,24 @@
+<div class="page-container" *ngIf="menusVisible">
+  <div class="main-container">
+    <div class="container">
+      <div class="content-box menus-box" appMouseScroll>
+        <div class="wrapper">
+          <ng-container *ngFor="let item of menuConfig">
+            <div
+              class="item animate__animated animate__fadeIn onact96"
+              *ngIf="!item.showOnlyCountry"
+              (click)="clickItem(item)"
+              [routerLink]="getRouterLink(item.page)"
+              [routerLinkActive]="getRouterLinkActive(item)"
+            >
+              <div class="icon icon-{{ item.icon }}"></div>
+              <p class="text">{{ item.title | translate }}</p>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

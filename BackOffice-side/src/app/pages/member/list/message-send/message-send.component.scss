@@ -1,0 +1,36 @@
+.main {
+  display: flex;
+  flex-flow: column nowrap;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px #523f690d;
+  padding: 30px;
+
+  .label-title {
+    line-height: 50px;
+    margin-right: 10px;
+  }
+  .radio.radio-lg {
+    font-size: 14px;
+
+    > span {
+      width: 22px;
+      height: 22px;
+      margin-right: 7px;
+    }
+  }
+  .btn-wrap {
+    flex: 1;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+  }
+}
+.option-radio {
+  .checkbox > span {
+    margin-right: 10px;
+  }
+  .checkbox > input:checked ~ b {
+    color: #3699ff;
+  }
+}

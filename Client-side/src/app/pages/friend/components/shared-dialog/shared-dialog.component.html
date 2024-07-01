@@ -1,0 +1,123 @@
+<!-- 大的 qr -->
+<div class="shared-container" *ngIf="data?.isShowGigComponent; else isShowSmall">
+  <div class="shared-wrapper" [style]="!isShowSharedComponent && isH5 ? 'bottom:50px' : 'bottom:0'">
+    <div class="shared-header" *ngIf="!isH5">
+      <i class="icon-close-simple onact96-not" (click)="close()"></i>
+    </div>
+    <!-- h5 swiper template -->
+    <div class="h5-shared-top" *ngIf="isH5">
+      <ng-container *ngTemplateOutlet="swiperTemplate"></ng-container>
+    </div>
+    <!-- h5 按钮 -->
+    <div class="h5-bottom" *ngIf="isShowSharedComponent && isH5 && sharedSwiperData.length === 3">
+      <div class="h5-bottom-top">
+        <span>{{ 'shared_ss' | translate }}</span>
+        <i class="icon-close-simple onact96-not" (click)="close()"></i>
+      </div>
+      <!-- shared btns -->
+      <ng-container *ngTemplateOutlet="sharedBtnTemplate"></ng-container>
+
+      <div class="h5-bottom-icons">
+        <div class="h5-bottom-icons-left onact96" [class.disabled]="downLoading" (click)="downloadImg()">
+          <i class="icon-download"></i>
+          <p class="download-text" *ngIf="!downLoading">{{ 'download' | translate }}</p>
+          <i class="instead-text animation-icon-loading-dot" *ngIf="downLoading"><i></i><i></i><i></i></i>
+        </div>
+      </div>
+    </div>
+    <!-- web shard swiper -->
+    <ng-template [ngIf]="!isH5">
+      <ng-container *ngTemplateOutlet="swiperTemplate"></ng-container>
+    </ng-template>
+    <!-- web shared btns -->
+    <ng-template [ngIf]="!isH5">
+      <ng-container *ngTemplateOutlet="sharedBtnTemplate"></ng-container>
+    </ng-template>
+    <div class="shared-lists" *ngIf="!isH5 && !loading">
+      <i
+        class="onact96-not"
+        *ngFor="let item of list"
+        [class]="item.icon"
+        [class.disabled]="downLoading"
+        (click)="downloadImg()"
+      ></i>
+    </div>
+  </div>
+</div>
+
+<!-- swiper template -->
+<ng-template #swiperTemplate>
+  <div class="swiper-container" [appLoading]="loading">
+    <ng-container *ngIf="!loading">
+      <div class="arrow-group" *ngIf="sharedSwiperData.length === 3">
+        <div class="left onact96" (click)="onLastSlide()">
+          <i class="icon-left-arrow" [class]="isH5 ? 'h5-style' : 'web-style'"></i>
+        </div>
+        <div class="right onact96" (click)="onNextSlide()">
+          <i class="icon-right-arrow" [class]="isH5 ? 'h5-style' : 'web-style'"></i>
+        </div>
+      </div>
+      <app-img-carousel
+        #sharedSwiperComponent
+        [config]="sharedSwiperOptions"
+        [itemsData]="sharedSwiperData"
+        (IndexChange)="indexChange($event)"
+      >
+        <ng-template #carouselItemTpl let-item let-i="index">
+          <div #imgContainer class="img-container" [class]="'img-wrapper-' + i" *ngIf="sharedSwiperData.length === 3">
+            <img [class]="'img-wrapper-' + i + '-carousel-img'" [src]="item.img" alt="" />
+            <div #qrCanvas class="qr-code-img">
+              <qr-code
+                value="{{ smallQrData.inviteUrl }}"
+                [size]="isH5 ? (i === 0 ? '45' : i === 1 ? '65' : '45') : i === 0 ? '60' : i === 1 ? '100' : '60'"
+                errorCorrectionLevel="M"
+              ></qr-code>
+            </div>
+          </div>
+        </ng-template>
+      </app-img-carousel>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- sharedBtnTemplate -->
+<ng-template #sharedBtnTemplate>
+  <div class="bottom-btns" *ngIf="sharedSwiperData.length === 3">
+    <div class="onact96" *ngFor="let item of btnList; let i = index" (click)="onClickSlide(i)">
+      <div class="btns-active">
+        <ng-template [ngIf]="!isH5">
+          <div class="dashed-box">
+            <p [class]="item.size" [class.active-bgc]="i == currentIdx"></p>
+          </div>
+          <span class="text" [class.active]="i == currentIdx">{{ item.text }}</span>
+        </ng-template>
+        <ng-template [ngIf]="isH5">
+          <p class="text" [class.active]="i == currentIdx">{{ item.text }}</p>
+          <br />
+          <div class="dashed-box">
+            <p [class]="item.size" [class.active-bgc]="i == currentIdx"></p>
+          </div>
+          <br />
+        </ng-template>
+        <i class="icon-toast-success" [class.active]="i == currentIdx"></i>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 小的qr code -->
+<ng-template #isShowSmall>
+  <div class="qr-code-container">
+    <div class="qr-code-container-close">
+      <i (click)="close()" class="icon-close-simple onact96-not"></i>
+    </div>
+    <div class="title">{{ 'brand_name' | translate }}</div>
+    <div class="hind">{{ 'shared_fy' | translate : smallQrData.friendCommission * 1000 }}</div>
+    <div class="qr-code-container-qr-img">
+      <qr-code value="{{ smallQrData.inviteUrl }}" size="211" errorCorrectionLevel="M"></qr-code>
+      <div class="qr-code-container-qr-img-border"></div>
+      <div class="qr-code-container-qr-img-id">{{ 'shared_r' | translate }}</div>
+      <div class="qr-code-container-qr-img-id-number">{{ smallQrData.inviteCode }}</div>
+    </div>
+  </div>
+</ng-template>

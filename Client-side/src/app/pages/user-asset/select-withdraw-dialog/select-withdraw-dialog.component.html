@@ -1,0 +1,22 @@
+<div class="top-up-dialog-container" [appLoading]="isLoading">
+  <div class="header-row">
+    <span>{{ 'withdraw' | translate }}</span>
+    <span class="close-icon mutual-opacity onact96-not" (click)="close()"></span>
+  </div>
+  <div class="contant-clounm">
+    <span class="way">{{ 'selected_wd_method' | translate }}</span>
+    <!--ways-->
+    <div *ngFor="let item of withdrawGroups">
+      <div class="ticket mutual-opacity onact96" (click)="handleSelect(item)">
+        <span class="{{ item.icon }}"></span>
+        <div class="option-row">
+          <div class="clounm">
+            <span class="text">{{ item.name }}</span>
+            <span>{{ item.remark }}</span>
+          </div>
+          <span class="icon-arrow"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

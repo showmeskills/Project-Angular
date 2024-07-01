@@ -1,0 +1,97 @@
+<div class="modal-content">
+  <modal-title
+    [title]="('game.provider.game_label' | lang) + ' - ' + gameLabelData?.description"
+    (close)="modal.dismiss()"
+  ></modal-title>
+
+  <!-- 搜索 -->
+  <div class="d-flex flex-ac flex-center search">
+    <form-wrap [style.width.px]="557" class="mr-8">
+      <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+      <input
+        class="form-control"
+        autocomplete="off"
+        type="text"
+        (focus)="openGameSearch()"
+        (blur)="closeGameSearch()"
+        [(ngModel)]="gameName"
+        [disabled]="gameLabelLoading"
+        [placeholder]="'game.manage.keyword' | lang"
+        (ngModelChange)="serachChange()"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </form-wrap>
+    <button class="c-btn btn btn-primary h40" [disabled]="gameLabelLoading" (mousedown)="gameSearch($event)">
+      {{ 'common.confirm' | lang }}
+    </button>
+
+    <!-- 搜索 - 内容框 -->
+    <div class="custom-scroll-y search-box" [appLoading]="isLoading" *ngIf="searchFlag">
+      <div class="d-flex item" *ngFor="let item of list" (mousedown)="addGameLabel(item)">
+        <div class="item-images">
+          <img class="w-100 h-100" [src]="getGameImg(item)" />
+        </div>
+        <div class="item-content">
+          <div class="lh-22">{{ getGameName(item, 'gameName') || ('game.noneName' | lang) }}</div>
+          <div class="lh-22">{{ item.providerCatId || '-' }}</div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="!isLoading">
+        <!-- 空显示 -->
+        <empty *ngIf="!list.length"></empty>
+
+        <div
+          *ngIf="total && !noListFlag"
+          class="f-14 text-center cursor-pointer text-primary"
+          (mousedown)="getMoreList($event)"
+        >
+          {{ 'game.manage.load_more' | lang }}
+        </div>
+
+        <div *ngIf="noListFlag && list.length" class="f-14 text-center color-aaa">
+          {{ 'game.manage.no_more' | lang }}
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="px-12 fz-16 color-aaa mb-4">{{ 'game.manage.tagsWithGames' | lang }}：</div>
+  <div
+    class="modal-body custom-scroll-y pb-8 pt-0 px-12 label-game"
+    [style.height.px]="400"
+    [appLoading]="gameLabelLoading"
+  >
+    <div class="game-box" *ngFor="let item of gameLabelList; index as i">
+      <img [src]="getGameImg(item)" />
+      <div class="game-content">
+        <div class="content-left">
+          <div class="lh-22 text-overflow" [style.width.px]="200">
+            {{ getGameName(item, 'gameName') || ('game.noneName' | lang) }}
+          </div>
+          <div class="lh-22">{{ item.providerCatId || '-' }}</div>
+        </div>
+        <svg-icon
+          [src]="'./assets/images/svg/admin-del.svg'"
+          class="svg-icon svg-icon-3x cursor-pointer"
+          (click)="deleteGameLabel(i)"
+        ></svg-icon>
+      </div>
+    </div>
+
+    <!-- 空显示 -->
+    <empty
+      [style.width.px]="700"
+      [style.height.px]="330"
+      class="pl-20"
+      *ngIf="!gameLabelList.length && !gameLabelLoading"
+    ></empty>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">{{ 'common.cancel' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="confirm()" [disabled]="gameLabelLoading">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

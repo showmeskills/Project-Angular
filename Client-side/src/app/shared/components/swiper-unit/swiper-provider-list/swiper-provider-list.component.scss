@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  ::ng-deep {
+    .unit .content-body .item-box {
+      background-color: var(--game-unit-bg);
+      img {
+        filter: brightness(0) invert(1);
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="header-row">
+    <div class="row-2">
+      {{ 'faq' | translate }}
+      <div class="span-row onact96" (click)="jumpToPage(true)">
+        {{ 'faqs00' | translate }}
+        <span class="icon-arrow"></span>
+      </div>
+    </div>
+    <i class="icon-close" (click)="close()"></i>
+  </div>
+  <ng-container *ngIf="faqList.length > 0">
+    <ng-container *ngFor="let item of faqList; let i = index">
+      <div
+        class="question-row onact96"
+        (click)="$event.stopPropagation(); openList(i)"
+        [class.question-row-open]="activeIdx === i"
+      >
+        <div class="colunm">
+          <p class="txt">{{ item.title }}</p>
+          <p
+            class="link-txt onact96-not"
+            *ngIf="activeIdx === i"
+            (click)="$event.stopPropagation(); jumpToPage(false, item)"
+          >
+            {{ 'check_detail00' | translate }}
+          </p>
+        </div>
+        <i class="icon-back" [class.active]="activeIdx === i"></i>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="faqList.length === 0">
+    <app-empty [text]="'no' | translate"></app-empty>
+  </ng-container>
+</div>

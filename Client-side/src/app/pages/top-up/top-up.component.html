@@ -1,0 +1,36 @@
+<div class="page-container">
+  <!--标题栏-->
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="container title-row">
+      <div class="header-container">
+        <div class="header onact96" (click)="back()">
+          <i class="icon-back"></i>
+          <div class="title">{{ pagetitle }}</div>
+          <!-- <div class="nav-row" *ngIf="page === 'Currency'">
+            历史委托 <i class="right-arrow-orange"></i>
+          </div> -->
+        </div>
+        <div
+          class="to-other-page mutual-opacity"
+          *ngIf="page === 'Digital'"
+          routerLink="fiat"
+          (click)="onChangeRoute()"
+        >
+          {{ 'dep_fiat' | translate }}<i class="right-arrow"></i>
+        </div>
+        <div
+          class="to-other-page mutual-opacity"
+          *ngIf="page === 'Currency'"
+          routerLink="crypto"
+          (click)="onChangeRoute()"
+        >
+          {{ 'dep_crypto' | translate }}<i class="right-arrow"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--内容-->
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-16">
+    <router-outlet></router-outlet>
+  </div>
+</div>

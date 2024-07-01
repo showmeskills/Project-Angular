@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="94" height="94" viewBox="0 0 94 94">
+    <defs>
+        <linearGradient id="8gq1wb4b5b" x1=".5" y1=".041" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fcfcfc"/>
+            <stop offset="1" stop-color="#eeeff0"/>
+        </linearGradient>
+        <linearGradient id="zskn225ifc" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fb6943"/>
+            <stop offset="1" stop-color="#fb6943"/>
+        </linearGradient>
+        <linearGradient id="78btbg5ked" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#748090"/>
+            <stop offset="1" stop-color="#3a4048"/>
+        </linearGradient>
+        <clipPath id="bjrlhd1t8a">
+            <path data-name="矩形 8274" transform="translate(1357 145)" style="fill:#fff;stroke:#707070" d="M0 0h94v94H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="勋章 卡券" transform="translate(-1357 -145)" style="clip-path:url(#bjrlhd1t8a)">
+        <g data-name="组 6949">
+            <path data-name="减去 2" d="M35.88 71.759A35.889 35.889 0 0 1 21.913 2.82a35.889 35.889 0 0 1 27.932 66.12 35.654 35.654 0 0 1-13.965 2.819zm0-67.682A31.81 31.81 0 0 0 23.5 65.182 31.81 31.81 0 0 0 48.258 6.577 31.6 31.6 0 0 0 35.88 4.078z" transform="translate(1367.713 151.249)" style="fill:url(#8gq1wb4b5b)"/>
+            <path data-name="路径 13247" d="M3.874 69.3V42.368h26.933V69.3H3.874zm42.368 0V42.368h26.933V69.3H46.242zM0 38.494V19.247h30.807v19.247zm46.242-19.247h30.746v19.247H46.242V19.247z" transform="translate(1365.415 157.478)" style="fill:url(#zskn225ifc)"/>
+            <path data-name="路径 13248" d="M34.681 69.3V19.247h7.686V69.3zM46.242 3.874v11.56H30.807V3.874h15.435zM69.3 0v15.434H50.054L57.618 0zM19.247 0l7.748 15.434H7.748V0h11.5z" transform="translate(1365.415 157.478)" style="fill:url(#78btbg5ked)"/>
+        </g>
+        <circle data-name="椭圆 170" cx="3.76" cy="3.76" r="3.76" transform="translate(1363.016 152.52)" style="fill:url(#8gq1wb4b5b)"/>
+        <circle data-name="椭圆 171" cx="3.76" cy="3.76" r="3.76" transform="translate(1441.224 162.296)" style="fill:url(#8gq1wb4b5b)"/>
+    </g>
+</svg>

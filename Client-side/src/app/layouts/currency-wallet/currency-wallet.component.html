@@ -1,0 +1,352 @@
+<div class="currency-wallet">
+  <div class="expansion-row">
+    <div
+      class="contants-row onact96"
+      (click)="handleOpen()"
+      (clickOutside)="supportExpanded = false"
+      [clickOutsideExcludeSelector]="'.currency-wallet-expansion'"
+      [class.diasbled]="isDiasbled"
+    >
+      <!--用户金额-->
+      <ng-container *ngIf="!defaultCurrencyLoading">
+        <div class="amount">
+          <ng-container *ngIf="currentCurrencyData">
+            <span class="play-in" *ngIf="isShowPlaying">({{ 'play_in' | translate }})</span>
+            <span #amount *ngIf="!isShowPlaying">
+              {{
+                currencyDisplay?.conversion && currentCurrencyData.isDigital
+                  ? ((currencies | filterByKeyValue : 'currency' : currencyDisplay?.conversionFiat : 'symbol') || '') +
+                    (currencyWalletService.amountAfterCalculateRate(
+                      allCurrencyBalance
+                        | filterByKeyValue : 'currency' : currentCurrencyData.currency : 'nonStickyBalance',
+                      currentCurrencyData.currency
+                    ) | currencyValue : currencyDisplay?.conversionFiat)
+                  : ((currentCurrencyData.isDigital ? '' : currentCurrencyData.symbol) || '') +
+                    (allCurrencyBalance
+                      | filterByKeyValue : 'currency' : currentCurrencyData.currency : 'nonStickyBalance'
+                      | currencyValue : currentCurrencyData.currency)
+              }}
+            </span>
+            <img class="currency-icon" [src]="currentCurrencyData.icon" />
+          </ng-container>
+        </div>
+        <span class="select-icon icon-arrow-right-simple" [class.active]="supportExpanded"></span>
+      </ng-container>
+      <i class="animation-icon-loading-dot" *ngIf="defaultCurrencyLoading"><i></i><i></i><i></i></i>
+    </div>
+    <div class="toggle mutual-opacity onact96" [class.disabled]="renderPiqCheckedLoading()" (click)="toWalletPage()">
+      <span class="toggle-wallet">{{ 'deposit' | translate }}</span>
+    </div>
+  </div>
+  <!--币种切换tab-->
+  <div class="expansion-details currency-wallet-expansion" @expansion *ngIf="supportExpanded">
+    <app-customize-input
+      [autocomplete]="false"
+      size="medium"
+      [leftIcon]="'icon-wallet-search'"
+      [placeholder]="'search_currency' | translate"
+      [max]="40"
+      type="text"
+      [(value)]="searchKeyWord"
+      width="calc(100% - 24px)"
+      (valueChange)="onValueChange($event)"
+    >
+    </app-customize-input>
+    <div class="tabs">
+      <div
+        class="tab offset-right onact96-not"
+        [class.active]="selectedTabIndex === 0"
+        (click)="selectedTabIndex = 0; piqService.selectDepositMethod.set('crypto')"
+      >
+        {{ 'crypto' | translate }}
+      </div>
+      <div
+        class="tab onact96-not"
+        [class.active]="selectedTabIndex === 1"
+        (click)="selectedTabIndex = 1; piqService.selectDepositMethod.set('fiat')"
+      >
+        {{ 'fiat_cur' | translate }}
+      </div>
+    </div>
+    <div class="form-group">
+      <ng-container
+        *ngIf="
+          (
+            checkZeroCurrencies
+            | filterByText : searchKeyWord : ['currency']
+            | filterByKeyValue : 'isDigital' : selectedTabIndex === 0
+          ).length === 0;
+          else data
+        "
+      >
+        <div class="empty">{{ 'currency_not_available' | translate }}</div>
+      </ng-container>
+      <ng-template #data>
+        <ng-container
+          *ngFor="
+            let item of checkZeroCurrencies
+              | filterByText : searchKeyWord : ['currency']
+              | filterByKeyValue : 'isDigital' : selectedTabIndex === 0
+          "
+        >
+          <div
+            class="select-row onact96"
+            [class.grid-layout]="
+              allCurrencyBalance
+                | filterByText : searchKeyWord : ['currency']
+                | filterByKeyValue : 'currency' : item.currency : 'isShowNonSticky'
+            "
+            [class.select]="item.isSelected"
+            (click)="$event.stopPropagation(); handleSelect(item)"
+          >
+            <div class="amount-value">
+              {{
+                currencyDisplay?.conversion && item.isDigital
+                  ? ((currencies
+                      | filterByText : searchKeyWord : ['currency']
+                      | filterByKeyValue : 'currency' : currencyDisplay?.conversionFiat : 'symbol') || '') +
+                    (currencyWalletService.amountAfterCalculateRate(
+                      allCurrencyBalance
+                        | filterByText : searchKeyWord : ['currency']
+                        | filterByKeyValue : 'currency' : item.currency : 'nonStickyBalance',
+                      item.currency
+                    ) | currencyValue : currencyDisplay?.conversionFiat)
+                  : (item.isDigital
+                      ? ''
+                      : (currencies
+                          | filterByText : searchKeyWord : ['currency']
+                          | filterByKeyValue : 'currency' : item.currency : 'symbol') || '') +
+                    (allCurrencyBalance
+                      | filterByText : searchKeyWord : ['currency']
+                      | filterByKeyValue : 'currency' : item.currency : 'nonStickyBalance'
+                      | currencyValue : item.currency)
+              }}
+            </div>
+            <i
+              class="icon-warning mutual-opacity"
+              *ngIf="
+                (allCurrencyBalance
+                  | filterByText : searchKeyWord : ['currency']
+                  | filterByKeyValue : 'currency' : item.currency : 'isShowNonSticky') &&
+                (allCurrencyBalance
+                  | filterByText : searchKeyWord : ['currency']
+                  | filterByKeyValue : 'currency' : item.currency : 'nonStickyBalance') > 0
+              "
+              (click)="$event.stopPropagation(); showNonStickBalanceDetail(item.currency)"
+            ></i>
+            <div class="rate-clounm">
+              <img class="currency-icon" [src]="item.icon" />
+              <span>{{ item.currency }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+    <div class="expansion-footer">
+      <div class="edit-btn">
+        <customize-button
+          size="small"
+          type="text"
+          width="100%"
+          icon="icon-wallet-setting"
+          radius="0"
+          (onClick)="walletSetting(editCurrency)"
+        >
+          {{ 'wallet_setting' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <ng-template #editCurrency>
+  <div class="edit-currency-box">
+    <div class="content">
+      <div class="title">
+        <span>{{ 'curr_cho' | translate }}</span>
+        <i
+          class="icon-close-simple mutual-opacity onact96-not"
+          [class.disabled]="defaultCurrencyLoading"
+          (click)="closeEditPop()"
+        ></i>
+      </div>
+      <div class="content-desc">
+        <div class="desc">{{ 'man_curr_desc' | translate }}</div>
+        <ng-container *ngIf="logined">
+          <div class="default-currency">
+            <p class="default-currency-text">{{ 'default_currency' | translate }}</p>
+            <div class="currency">
+              <ng-container *ngIf="!defaultCurrencyLoading">
+                <div
+                  class="currency-group mutual-opacity onact96"
+                  (click)="handleOpenDefaultCurrency()"
+                  (clickOutside)="defaultCurrencyExpanded = false"
+                  [clickOutsideExcludeSelector]="'.default-currency-expansion'"
+                >
+                  <img
+                    class="currency-icon"
+                    [src]="currentCurrencyData.currency | currencyIcon"
+                    loading="lazy"
+                    alt=""
+                  />
+                  <p class="currency-text">{{ currentCurrencyData.currency }}</p>
+                  <i class="icon-arrow-right-simple" [class.active]="defaultCurrencyExpanded"></i>
+                </div>
+              </ng-container>
+              <i class="animation-icon-loading-dot" *ngIf="defaultCurrencyLoading"><i></i><i></i><i></i></i>
+              <div class="currency-expension default-currency-expansion" @expansion *ngIf="defaultCurrencyExpanded">
+                <div class="currencies">
+                  <app-scrollbar>
+                    <ng-container *ngFor="let item of editCurrencies">
+                      <div class="currency-item mutual-opacity onact96" (click)="handleSelect(item)">
+                        <img class="currency-icon" [src]="item.icon" loading="lazy" alt="" />
+                        <p class="currency-text">{{ item.currency }}</p>
+                      </div>
+                    </ng-container>
+                  </app-scrollbar>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="currency-check-box">
+        <p>{{ 'crypto' | translate }}</p>
+        <div>
+          <div
+            class="currency-check-item"
+            *ngFor="let item of editCurrencies | filterByKeyValue : 'isDigital' : true"
+            [class.disabled]="item.currency === currentCurrencyData.currency"
+          >
+            <mat-checkbox [disableRipple]="true" [(ngModel)]="item.display">
+              <div class="check-content">
+                <img [src]="item.icon" /><span>{{ item.currency }}</span>
+              </div>
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+      <div class="currency-check-box">
+        <p>{{ 'fiat_cur' | translate }}</p>
+        <div>
+          <div
+            class="currency-check-item"
+            *ngFor="let item of editCurrencies | filterByKeyValue : 'isDigital' : false"
+            [class.disabled]="item.currency === currentCurrencyData.currency"
+          >
+            <mat-checkbox [disableRipple]="true" [(ngModel)]="item.display">
+              <div class="check-content">
+                <img [src]="item.icon" /><span>{{ item.currency }}</span>
+              </div>
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="tips">{{ 'man_curr_tip' | translate }}</div>
+      <customize-button
+        size="medium"
+        type="primary"
+        (onClick)="saveCurrencyDisplay()"
+        [disabled]="defaultCurrencyLoading"
+        >{{ 'save_btn' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template> -->
+
+<ng-template #editCurrency>
+  <div class="edit-currency-box">
+    <div class="content">
+      <div class="title">
+        <span><i class="icon-wallet-setting"></i>{{ 'wallet_setting' | translate }}</span>
+        <i
+          class="icon-close-simple mutual-opacity onact96-not"
+          [class.disabled]="defaultCurrencyLoading"
+          (click)="closeEditPop()"
+        ></i>
+      </div>
+      <div class="content-desc">
+        <div class="desc">
+          <div class="control-slide">
+            <mat-slide-toggle [(ngModel)]="hideZero" [disableRipple]="true"></mat-slide-toggle>
+          </div>
+          <div class="intro">
+            <span class="des1">{{ 'hide_zero_balance' | translate }}</span>
+            <span class="des2">{{ 'zero_balance_disapear' | translate }}</span>
+          </div>
+        </div>
+        <div class="desc">
+          <div class="control-slide">
+            <mat-slide-toggle [(ngModel)]="conversion" [disableRipple]="true"></mat-slide-toggle>
+          </div>
+          <div class="intro">
+            <span class="des1">{{ 'display_crypto_in_fiat' | translate }}</span>
+            <span class="des2">{{ 'all_bet_equipment' | translate }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="currency-check-box">
+        <mat-radio-group [(ngModel)]="conversionFiat" [class.disable]="!conversion">
+          <mat-radio-button
+            [disabled]="!conversion"
+            [value]="item.currency"
+            *ngFor="let item of currencies | filterByKeyValue : 'isDigital' : false"
+          >
+            <div class="check-content">
+              <img [src]="item.icon" /><span>{{ item.currency }}</span>
+            </div>
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="tips">{{ 'currency_is_approximations' | translate }}</div>
+      <customize-button
+        size="medium"
+        type="primary"
+        (onClick)="saveCurrencyDisplay()"
+        [disabled]="defaultCurrencyLoading"
+        >{{ 'save_btn' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 非粘性详情 -->
+<ng-template #nonStickPopup>
+  <div class="popup-common standard-popup">
+    <div class="title">{{ 'bal_det' | translate }}</div>
+    <div class="popup-item">
+      {{ 'wallet_balance' | translate }}:
+      <p class="main-color">
+        {{ renderNonStickyDetails()?.balance || 0 | currencyValue : renderNonStickyDetails()?.currency || 'USDT' }}
+        {{ renderNonStickyDetails()?.currency || 'USDT' }}
+      </p>
+    </div>
+    <div class="popup-item" *ngIf="renderNonStickyDetails()?.nsSlotGame">
+      {{ 'casino_bonus' | translate }}:
+      <p class="main-color">
+        {{
+          renderNonStickyDetails()?.nsSlotGame?.balance || 0
+            | currencyValue : renderNonStickyDetails()?.nsSlotGame?.currency || 'USDT'
+        }}
+        {{ renderNonStickyDetails()?.nsSlotGame?.currency || 'USDT' }}
+      </p>
+    </div>
+    <div class="popup-item" *ngIf="renderNonStickyDetails()?.nsLiveCasino">
+      {{ 'live_casino_bonus' | translate }}:
+      <p class="main-color">
+        {{
+          renderNonStickyDetails()?.nsLiveCasino?.balance || 0
+            | currencyValue : renderNonStickyDetails()?.nsLiveCasino?.currency || 'USDT'
+        }}
+        {{ renderNonStickyDetails()?.nsLiveCasino?.currency || 'USDT' }}
+      </p>
+    </div>
+    <customize-button class="close-btn" width="100%" type="primary" size="large" (onClick)="closeDialog.close()">{{
+      'confirm_button' | translate
+    }}</customize-button>
+  </div>
+</ng-template>

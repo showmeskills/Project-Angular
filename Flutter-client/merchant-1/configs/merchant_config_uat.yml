@@ -1,0 +1,34 @@
+# 本地配置
+# app 配置
+app_config:
+  # 切记保证商户包名和谷歌登录配置一致，否则会出现打包问题
+  bundle_id: com.gogaming.lt
+  bundle_id_ios: com.gogaming.lt
+  display_name: gogaming-uat
+  # 安卓安装包名字
+  install_package_name: gogaming_app-uat
+  install_package_name_ios: gogaming_app-uat
+  # app唤醒scheme
+  scheme_id: com.gogaming.lt
+  # shorebird appId
+  shorebird_id: dd802e44-0899-48e4-8d37-3e2950ea87be
+
+# 商户配置
+merchant_config:
+  # 商户 id
+  tenant_id: 1
+  # line channel_id
+  line_id: 1660686316
+  # 谷歌配置文件路径，暂不支持分别指定 iOS 以及安卓配置路径
+  google_info_path: merchant-1/sources/pro/
+  # 对应 config.dart 文件中的 currentConfig 变量值
+  # 注意这里会覆盖掉之前的值，请确保该值填入后编译顺利
+  current_config: Uat.config
+  current_firebase_options: DefaultFirebaseOptions.currentPlatformPro
+  language_type: App
+  # sentry dsn
+  sentry_dsn: https:\/\/28012dbc8729b090190555b9704a7b81@sentry.athena25.com\/5
+  # sentry project 上传 debug symbol 时需要指定
+  # sentry_project: flutter
+  is_m1: true
+  colors: GGColorsM1

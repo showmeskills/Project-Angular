@@ -1,0 +1,52 @@
+.prev,
+.next {
+  width: 60px;
+  flex: 0 0 60px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  color: #c7c8d9;
+  user-select: none;
+
+  svg-icon {
+    transform: scaleX(0.7);
+  }
+}
+
+.prev {
+  margin-right: -10px;
+}
+
+.next {
+  margin-left: -10px;
+}
+
+.currency {
+  &-wrap {
+  }
+
+  &-total {
+    width: 25%;
+    flex: 0 0 25%;
+  }
+
+  &-list {
+    flex: 3;
+    display: flex;
+    width: 100%;
+
+    currency-item {
+      margin: 0 10px;
+    }
+  }
+}
+
+.info-row {
+  td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    line-height: 0;
+  }
+}

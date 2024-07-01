@@ -1,0 +1,158 @@
+<ng-container *ngIf="isShow">
+  <div class="container item-container">
+    <!--tab select -->
+    <div class="tabs">
+      <!--初级 tab-->
+      <div class="tab offset-right onact96" [class.active]="selectedTabIndex === 0" (click)="selectedTabIndex = 0">
+        <ng-container *ngIf="configValue[0]['status'] == 'I'">
+          <!--未认证状态-->
+          <span>{{ 'basic_ver' | translate }}</span>
+          <span class="s-label" [class.active]="selectedTabIndex === 0">{{ pagesConfig[0].discrible }}</span>
+        </ng-container>
+        <ng-container *ngIf="configValue[0]['status'] == 'S'">
+          <!--完成认证状态-->
+          <div class="success-label" [class.active]="selectedTabIndex === 0">
+            <span class="icon-correct-orange"></span>
+            <div class="row-txt">
+              <span>{{ 'basic_ver' | translate }}</span>
+              <span class="dis-txt" *ngIf="configValue[0]['buttonText']">{{
+                configValue[0]['buttonText'] | translate
+              }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <!--中级 tab-->
+      <div class="tab onact96" [class.active]="selectedTabIndex === 1" (click)="selectedTabIndex = 1">
+        <ng-container *ngIf="configValue[1]['status'] !== 'S'">
+          <!--未认证状态-->
+          <span>{{ 'int_ver' | translate }}</span>
+          <span class="s-label" [class.active]="selectedTabIndex === 1">{{ pagesConfig[1].discrible }}</span>
+        </ng-container>
+        <ng-container *ngIf="configValue[1]['status'] == 'S'">
+          <!--完成认证状态-->
+          <div class="success-label" [class.active]="selectedTabIndex === 1">
+            <span class="icon-correct-orange"></span>
+            <div class="row-txt">
+              <span>{{ 'int_ver' | translate }}</span>
+              <span class="dis-txt" *ngIf="configValue[1]['buttonText']">{{
+                configValue[1]['buttonText'] | translate
+              }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <!--高级 tab-->
+      <div class="tab onact96" [class.active]="selectedTabIndex === 2" (click)="selectedTabIndex = 2">
+        <ng-container *ngIf="configValue[2]['status'] !== 'S'">
+          <!--未认证状态-->
+          <span>{{ 'adv_ver' | translate }}</span>
+          <span class="s-label" [class.active]="selectedTabIndex === 2">{{ pagesConfig[2].discrible }}</span>
+        </ng-container>
+        <ng-container *ngIf="configValue[2]['status'] == 'S'">
+          <!--完成认证状态-->
+          <div class="success-label" [class.active]="selectedTabIndex === 2">
+            <span class="icon-correct-orange"></span>
+            <div class="row-txt">
+              <span>{{ 'adv_ver' | translate }}</span>
+              <span class="dis-txt" *ngIf="configValue[2]['buttonText']">{{
+                configValue[2]['buttonText'] | translate
+              }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <!--single page-->
+    <div class="pages-container">
+      <!---基础认证--->
+      <ng-container *ngIf="selectedTabIndex === 0">
+        <app-kyc-card
+          [singlecardConfig]="configValue[0]"
+          [requestDocumentsInfor]="requestDocumentsInfor"
+          [id]="0"
+          [isAsia]="isAsia"
+          [kycStatus]="kycStatus"
+        ></app-kyc-card>
+      </ng-container>
+      <!---中级认证--->
+      <ng-container *ngIf="selectedTabIndex === 1">
+        <app-kyc-card
+          [singlecardConfig]="configValue[1]"
+          [midProcessDetailForEu]="midProcessDetailForEu"
+          [requestDocumentsInfor]="requestDocumentsInfor"
+          [id]="1"
+          [isAsia]="isAsia"
+          [kycStatus]="kycStatus"
+        ></app-kyc-card>
+      </ng-container>
+      <!---高级认证--->
+      <ng-container *ngIf="selectedTabIndex === 2">
+        <app-kyc-card
+          [singlecardConfig]="configValue[2]"
+          [requestDocumentsInfor]="requestDocumentsInfor"
+          [id]="2"
+          [isAsia]="isAsia"
+          [kycStatus]="kycStatus"
+        ></app-kyc-card>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noticeBox let-item="item">
+  <span class="title">{{ 'curr_be' | translate }}</span>
+  <div class="colunm-box">
+    <span class="txt-bold">{{ 'cur_limit' | translate }}-</span>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'buy_crypto' | translate }}</span>
+      </div>
+      <!--后端无法修改，暂时写时成 无限制-->
+      <span class="txt">{{ 'no_limit' | translate }}</span>
+      <!-- <span class="txt">{{item.fiatToVirtualLimit == "-1" ?  '无限制' : item.fiatToVirtualLimit + ' USDT/日'}}</span> -->
+    </div>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'deposit' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.fiatDepositLimit == '-1' ? ('no_limit' | translate) : item.fiatDepositLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'withdrawl' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.fiatWithdrawLimit == '-1' ? ('no_limit' | translate) : item.fiatWithdrawLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+  </div>
+  <div class="colunm-box">
+    <span>{{ 'crypto_limits' | translate }}-</span>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'deposit' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.virtualDepositLimit == '-1' ? ('no_limit' | translate) : item.virtualDepositLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+    <div class="row-root">
+      <div class="row-1">
+        <span class="i-correct"></span>
+        <span class="notice-header">{{ 'withdrawl' | translate }}</span>
+      </div>
+      <span class="txt">{{
+        item.virtualWithdrawLimit == '-1'
+          ? ('no_limit' | translate)
+          : item.virtualWithdrawLimit + ('usdt_d' | translate)
+      }}</span>
+    </div>
+  </div>
+</ng-template>

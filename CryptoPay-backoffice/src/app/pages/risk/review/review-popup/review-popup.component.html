@@ -1,0 +1,60 @@
+<div class="modal-content">
+  <modal-title [title]="title" (close)="modal.dismiss()"></modal-title>
+
+  <div class="modal-body">
+    <ng-container [ngSwitch]="type">
+      <!-- 订单：人工编辑 -->
+      <review-content-order *ngSwitchCase="ReviewType.Edit" [data]="data"></review-content-order>
+
+      <!-- 订单：手动上分 -->
+      <review-content-order-manual-deposit
+        *ngSwitchCase="ReviewType.ManualDeposit"
+        [data]="data"
+      ></review-content-order-manual-deposit>
+
+      <!-- 订单：冲正撤单 -->
+      <review-content-order *ngSwitchCase="ReviewType.Reversal" [data]="data"></review-content-order>
+
+      <!-- 通用：审核 -->
+      <ng-container *ngIf="allowReview">
+        <form-row [label]="'risk.check' | lang" label-width="140">
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of auditList">
+                <input type="radio" name="audit" [value]="item.value" [(ngModel)]="audit" />
+                <span class="mr-4"></span>{{ item.lang | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+        <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="audit === ReviewStatus.Fail">
+          <ng-template>
+            <input class="form-control w-100" type="text" [(ngModel)]="remark" />
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 通用：详情 -->
+      <ng-container *ngIf="!allowReview">
+        <form-row [label]="'risk.check' | lang" label-width="140">
+          <ng-template>
+            {{ data?.auditStatus === ReviewStatus.Success ? ('risk.passing' | lang) : ('risk.noPass' | lang) }}
+          </ng-template>
+        </form-row>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'risk.checkTime' | lang" label-width="140">
+            <ng-template> {{ (data?.auditTime | timeFormat) || '-' }} </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'risk.viewr' | lang" label-width="140">
+            <ng-template> {{ data?.auditUserName || '-' }} </ng-template>
+          </form-row>
+        </div>
+        <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="data?.auditStatus === ReviewStatus.Fail">
+          <ng-template> {{ data?.remark || '-' }} </ng-template>
+        </form-row>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>
+</div>

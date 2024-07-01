@@ -1,0 +1,32 @@
+:host {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+img,
+.skeleton-loading {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border: 0;
+  user-select: none;
+}
+.skeleton-loading {
+  &.hide-when-alone {
+    &:only-child {
+      display: none;
+    }
+  }
+  & ~ img {
+    opacity: 0;
+  }
+}

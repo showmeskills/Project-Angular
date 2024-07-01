@@ -1,0 +1,527 @@
+<!-- 社交媒体浮层 -->
+<ng-template #socialTpl>
+  <div class="px-6">
+    <div class="lh-48 bank-item flex-ac d-flex" *ngFor="let item of socialList">
+      <img
+        class="rounded-circle vam"
+        [iconSrc]="'/assets/media/svg/social-icons/' + item.socialUserType.toLowerCase() + '.svg'"
+        iconSize="18px"
+        alt=""
+      />
+      <span class="ml-2 mr-7 vam">{{ item.socialUserType }}</span>
+      <span *ngIf="item?.socialUserName" class="vam d-flex flex-1 flex-end" style="justify-content: flex-end">
+        {{ item.socialUserName }}
+      </span>
+      <span *ngIf="!item?.socialUserName" class="vam d-flex flex-1 flex-end" style="justify-content: flex-end">
+        {{ 'member.list.disable' | lang }}
+      </span>
+    </div>
+
+    <span *ngIf="!socialList?.length">{{ 'common.emptyText' | lang }}</span>
+  </div>
+</ng-template>
+
+<!-- 银行卡浮层 -->
+<ng-template #bankTpl>
+  <div class="px-6">
+    <div class="lh-48 bank-item" *ngFor="let item of bankList">
+      <img class="rounded-circle vam" iconSrc="https://via.placeholder.com/18x18" iconSize="18px" alt="" />
+      <span class="ml-2 mr-7 vam">{{ item.bankName }}</span>
+      <span class="vam">{{ item.cardNum }}</span>
+    </div>
+
+    <span *ngIf="!bankList?.length">{{ 'common.emptyText' | lang }}</span>
+  </div>
+</ng-template>
+
+<!-- 虚拟币浮层 -->
+<ng-template #virtualTpl>
+  <ng-template #renderAddress let-addressList>
+    <div class="border-top">
+      <div class="bank-item" *ngFor="let item of addressList">
+        <div class="lh-30">
+          <img
+            class="vam mr-2"
+            *ngIf="item.currentName"
+            [currencyIcon]="item.currentName"
+            alt=""
+            [currencySize]="'18px'"
+          />
+          <span class="vam fz-14">{{ item.network }}</span>
+        </div>
+        <form-wrap>
+          <span class="text-truncate">{{ item.address }}</span>
+          <ng-container suffix>
+            <span class="btn btn-outline-primary" (click)="onCopy(item.address)">{{ 'common.copy' | lang }}</span>
+          </ng-container>
+        </form-wrap>
+      </div>
+
+      <div *ngIf="!addressList?.length" class="color-999 fz-12 py-4 text-center">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </ng-template>
+
+  <div class="px-4 text-left">
+    <div>
+      <div class="py-3 fz-14">{{ 'member.detail.userWallet' | lang }}</div>
+      <ng-container *ngTemplateOutlet="renderAddress; context: { $implicit: userWallet }"></ng-container>
+    </div>
+
+    <div class="pt-4">
+      <div class="py-3 fz-14">{{ 'member.detail.boundWallet' | lang }}</div>
+      <ng-container *ngTemplateOutlet="renderAddress; context: { $implicit: bindWallet }"></ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<!-- VIP浮层 -->
+<ng-template #vipInfoTpl>
+  <div class="px-6">
+    <div class="vip-info-row">
+      <span class="color-999">{{ 'member.overview.currentIntegral' | lang }}</span>
+      <span>{{ (isFiveMerchant ? vipUserInfo?.cumulatePoints : vipUserInfo?.currentPoints) | toFormatMoney }}</span>
+    </div>
+    <div class="vip-info-row">
+      <span class="color-999">{{ 'member.overview.currentLevel' | lang }}</span>
+      <span>{{ vipUserInfo?.currentVipLevel | vipName: tenantId }}</span>
+    </div>
+    <!-- VIPC（商户5）没有 【保级成长值】，进行隐藏处理 -->
+    <div class="vip-info-row" *ngIf="!isFiveMerchant">
+      <span class="color-999">{{ 'member.overview.safeLevel' | lang }}</span>
+      <span>{{ vipUserInfo?.keepPoints | toFormatMoney }}</span>
+    </div>
+    <div class="vip-info-row">
+      <span class="color-999">{{ 'member.overview.promotion' | lang }}</span>
+      <span>{{ vipUserInfo?.nextLevelPoints | toFormatMoney }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<div class="detail-base">
+  <div class="detail-base-wrap d-flex flex-wrap">
+    <div class="d-flex flex-wrap">
+      <div class="detail-avatar">
+        <img class="detail-avatar-face w-100 h-100" [src]="getAvatar()" />
+        <div class="d-flex flex-center detail-online">
+          <ng-container *ngFor="let status of statusListCopy">
+            <div
+              *ngIf="status.categoryDescription === userDetailsInfo.status"
+              [class.green]="status.categoryCode === 'Normal'"
+              [class.red]="status.categoryCode === 'Disable'"
+              [class.yellow]="status.categoryCode !== 'Disable' && status.categoryCode !== 'Normal'"
+            ></div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="min-w-0">
+        <div class="d-flex flag flex-wrap flex-ac">
+          <!-- 用户名 -->
+          <span class="detail-name">{{ userDetailsInfo?.name }}</span>
+
+          <!-- UID -->
+          <span class="detail-uid">UID {{ userDetailsInfo?.uid }}</span>
+
+          <!-- VIP等级 -->
+          <span class="detail-vip">
+            {{ userDetailsInfo?.vip | vipName: tenantId }}
+          </span>
+
+          <!-- 手机绑定 -->
+          <svg-icon
+            *ngIf="userDetailsInfo?.bindMobile"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'./assets/images/svg/member/phone.svg'"
+          ></svg-icon>
+
+          <!-- 谷歌绑定 -->
+          <svg-icon
+            *ngIf="userDetailsInfo?.bindGoogle2FA"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'./assets/images/svg/member/google.svg'"
+          ></svg-icon>
+
+          <!-- 国家 -->
+          <span class="ml-2" style="width: 22px; height: 22px" *ngIf="userDetailsInfo.kycInfo?.countryEnName">
+            <i class="country countryIcon" [class]="'country-' + userDetailsInfo.kycInfo?.countryEnName"></i>
+          </span>
+
+          <!-- KYC认证 -->
+          <span class="primary-label px-2 ml-2">{{ userDetailsInfo.kycInfo?.kycGrade }}</span>
+
+          <!-- 真实姓名 -->
+          <span class="fz-16 ml-2 text-nowrap">{{ userDetailsInfo.kycInfo?.actualName }}</span>
+
+          <ng-container [ngSwitch]="userDetailsInfo.kycInfo?.idType">
+            <!-- 驾驶证 -->
+            <svg-icon
+              *ngSwitchCase="'DRIVING_LICENSE'"
+              [svgStyle]="{ 'width.px': 30 }"
+              [src]="'./assets/images/svg/member/car.svg'"
+            ></svg-icon>
+            <!-- 银行卡 -->
+            <svg-icon
+              *ngSwitchCase="'ID_CARD'"
+              [svgStyle]="{ 'width.px': 30 }"
+              [src]="'./assets/images/svg/member/card.svg'"
+            ></svg-icon>
+            <!-- 护照 -->
+            <svg-icon
+              *ngSwitchCase="'PASSPORT'"
+              [svgStyle]="{ 'width.px': 30 }"
+              [src]="'./assets/images/svg/member/passport.svg'"
+            ></svg-icon>
+          </ng-container>
+
+          <!-- 绑定社交媒体信息 -->
+          <svg-icon
+            *ngIf="userDetailsInfo.bindSocialInfo"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'/assets/media/svg/social-icons/telegram.svg'"
+            [ngbTooltip]="socialTpl"
+            placement="bottom"
+          ></svg-icon>
+
+          <!-- 绑定银行卡信息 -->
+          <svg-icon
+            *ngIf="userDetailsInfo.bindBankCard"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'./assets/images/svg/member/bank-card.svg'"
+            [ngbTooltip]="bankTpl"
+            placement="bottom"
+          ></svg-icon>
+
+          <!-- 绑定虚拟币钱包 -->
+          <svg-icon
+            *ngIf="userWallet?.length || bindWallet?.length"
+            [svgStyle]="{ 'width.px': 30 }"
+            [src]="'./assets/images/svg/member/bit.svg'"
+            [autoClose]="'outside'"
+            [ngbPopover]="virtualTpl"
+            placement="bottom"
+          ></svg-icon>
+
+          <!-- 相似用户 -->
+          <!-- <div class="similar-users" (click)="openSimilarUsersModal()">
+            <svg-icon [svgStyle]="{ 'width.px': 30 }" [src]="'./assets/images/svg/member/similarUsers.svg'"></svg-icon>
+            <div class="conut-tips">99</div>
+          </div> -->
+
+          <!-- 测试账号 -->
+          <div class="d-flex flex-ac px-4">
+            <label
+              class="fz-14 text-nowrap cursor-pointer"
+              [class.not-test]="!isTestAccount"
+              (click)="onIsTestAccount()"
+            >
+              <span class="color-aaa vam">{{ 'member.overview.accountTest' | lang }}:</span>
+              <label class="switch switch-success switch-sm ml-2">
+                <input type="checkbox" [(ngModel)]="isTestAccount" disabled="disabled" />
+                <span></span>
+              </label>
+            </label>
+          </div>
+
+          <!-- 监视列表 -->
+          <label class="fz-14 text-nowrap cursor-pointer">
+            <span class="color-aaa vam">{{ 'member.overview.watchList' | lang }}:</span>
+            <label class="switch switch-success switch-sm ml-2">
+              <input type="checkbox" [(ngModel)]="isWatchlist" (ngModelChange)="onIsWatchlistChange($event)" />
+              <span></span>
+            </label>
+          </label>
+        </div>
+
+        <!-- 风控级别 -->
+        <div class="detail-riskLevel my-2" [class]="userDetailsInfo?.riskControl">
+          {{ userDetailsInfo?.riskControl || '-' }}
+        </div>
+
+        <div class="d-flex">
+          <span class="detail-point"><span></span></span>
+
+          <span class="ml6 detail-last">
+            <span class="mr-10">
+              {{ 'member.overview.registeredDate' | lang }}：
+              {{ userDetailsInfo?.createTime ? (userDetailsInfo?.createTime | timeFormat) : '-' }}
+            </span>
+            <span class="mr-10"
+              >IP： {{ userDetailsInfo?.lastLoginInfo?.ip || '-' }} ({{
+                userDetailsInfo?.lastLoginInfo?.zone || '-'
+              }})</span
+            >
+            <span class="mr-10">
+              {{ 'member.overview.device' | lang }}: {{ userDetailsInfo?.lastLoginInfo?.source }}
+            </span>
+
+            <span class="mr-10 account-manager d-flex align-center" *ngIf="userDetailsInfo?.accountName">
+              {{ 'auManage.sys.accountManager' | lang }}: {{ userDetailsInfo?.accountName || '' }}
+              <button class="btn-cube sm p-0" type="button" (click)="onRemoveManager()">
+                <svg-icon [src]="'./assets/images/svg/admin-del.svg'" class="svg-icon svg-icon-2x"></svg-icon>
+              </button>
+            </span>
+            <!-- <span class="mr-10 color-222" *ngIf="userDetailsInfo?.superiorAgent">
+              {{ 'member.overview.invite' | lang }}: {{ userDetailsInfo.superiorAgent }}
+            </span> -->
+          </span>
+        </div>
+
+        <div class="d-flex mt-2">
+          <div class="mr-12 color-aaa">
+            <span>{{ 'auManage.sys.email' | lang }}: </span>
+            <span>{{ userDetailsInfo.email || '-' }}</span>
+          </div>
+          <div class="mr-12 color-aaa">
+            <span>{{ 'payment.bankManage.address' | lang }}: </span>
+            <span>{{ userDetailsInfo.address || '-' }}</span>
+          </div>
+          <div class="mr-12 color-aaa">
+            <span>{{ 'budget.record.phoneNum' | lang }}: </span>
+            <span>{{ userDetailsInfo.mobile || '-' }}</span>
+          </div>
+          <!-- 最后投注时间 -->
+          <div class="mr-12 color-aaa">
+            <span>{{ 'member.overview.lastBetTime' | lang }}: </span>
+            <span> {{ userDetailsInfo?.lastBetTime | timeFormat: 'YYYY-MM-DD' }}</span>
+          </div>
+          <!-- 推荐人ID -->
+          <div class="mr-12 color-aaa" *ngIf="userDetailsInfo?.superiorUId">
+            <span>{{ 'member.table.referrerId' | lang }}: </span>
+            <span> {{ userDetailsInfo.superiorUId }}</span>
+          </div>
+          <!-- MA邀请码 -->
+          <div class="mr-12 color-aaa">
+            <span>{{ 'member.table.ma' | lang }}: </span>
+            <span> {{ userDetailsInfo?.inviteCode || 'member.table.noMa' | lang }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 d-flex flex-wrap detail-opera-wrap justify-content-end" [style.min-width.px]="200">
+      <!-- 身份认证 -->
+      <button (click)="openAuthenticationModal()" type="button" class="btn btn-primary">
+        {{ 'member.overview.authentication' | lang }}
+      </button>
+      <!-- 活体验证 -->
+      <button (click)="memberSpecial(detailSpecialTpl)" type="button" class="btn btn-primary">
+        {{ 'member.overview.kyc' | lang }}
+      </button>
+      <!-- 重置 -->
+      <button (click)="openReset()" type="button" class="btn btn-primary">
+        {{ 'common.reset' | lang }}
+      </button>
+      <!-- 禁用 -->
+      <button (click)="onAllowUser(false)" type="button" class="btn btn-primary">
+        {{ 'common.disable' | lang }}
+      </button>
+      <!-- <button (click)="onAllowUser(AccountAllowTpl, true)" type="button" class="btn btn-primary">
+        {{ 'common.enable' | lang }}
+      </button> -->
+      <!-- 信息 -->
+      <button (click)="ontMessage()" type="button" class="btn btn-primary">
+        {{ 'common.information' | lang }}
+      </button>
+      <!-- 会员数据导出 -->
+      <button (click)="openExport()" type="button" class="btn btn-primary">
+        {{ 'member.detail.statementExport' | lang }}
+      </button>
+      <!-- 充值 -->
+      <button (click)="toValet()" type="button" class="btn btn-primary">
+        {{ 'common.recharge' | lang }}
+      </button>
+      <!-- 调账 -->
+      <button (click)="openBill()" type="button" class="btn btn-primary">
+        {{ 'member.overview.changeAmount' | lang }}
+      </button>
+      <!-- 通讯记录 -->
+      <button (click)="toCorrespondence()" type="button" class="btn btn-primary">
+        {{ 'member.overview.correspondence.title' | lang }}
+      </button>
+      <!-- 添加不良数据 -->
+      <button (click)="addBadData()" type="button" *ngIf="!userDetailsInfo.badDataId" class="btn btn-primary">
+        {{ 'member.detail.addBadData' | lang }}
+      </button>
+      <!-- 删除不良数据 -->
+      <button
+        (click)="removeBadData(userDetailsInfo.badDataId, delBad)"
+        type="button"
+        *ngIf="userDetailsInfo.badDataId"
+        class="btn btn-light-danger"
+      >
+        {{ 'member.detail.removeBadData' | lang }}
+      </button>
+
+      <!-- 删除不良数据提示 -->
+      <ng-template #delBad let-c="close" let-d="dismiss">
+        <modal-title [title]="'member.detail.removeBadData' | lang" (close)="d()"></modal-title>
+
+        <div class="modal-body text-center">
+          <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+          <p class="fz-16 mt-8">{{ 'member.detail.removeBadDataTip' | lang }}</p>
+        </div>
+
+        <modal-footer (confirm)="c({ value: true })" (dismiss)="d()"></modal-footer>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="d-flex pt-2">
+    <div class="d-flex flex-wrap w-100 flex-1">
+      <!-- 总存款/总提款/余额/子钱包余额/抵用金/非粘性奖金/提款流水要求/NGR -->
+      <div
+        *ngFor="let item of balanceList"
+        (click)="openBalanceDetail(item.detailKey, item.lang)"
+        class="detail-count-item"
+      >
+        <p *ngIf="item.valueKey === 'xxx'; else tpl">NaN</p>
+        <ng-template #tpl>
+          <p>
+            <!-- 金额 -->
+            <ng-container *ngIf="item.valueKey !== 'freeSpinBonusValidCount'; else freeSpinTpl">
+              ${{ userDetailsInfo?.[item.valueKey] | currencyValue: 'USDT' }}
+            </ng-container>
+
+            <!-- Free Spin - 已获得，未过期且未旋转完的张数 -->
+            <ng-template #freeSpinTpl>
+              {{ userDetailsInfo?.[item.valueKey] | toFormatMoney }}{{ 'risk.config.piece' | lang }}
+            </ng-template>
+          </p>
+        </ng-template>
+
+        <div class="d-flex">
+          <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType' | lang: item.lang }}</span>
+          <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <!-- 竞赛详情 -->
+      <div class="detail-count-item" (click)="openCampaignDetail()">
+        <p>{{ 'member.detail.tournamentRank.tournament' | lang }}</p>
+        <div class="d-flex">
+          <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.totalRank' | lang }}</span>
+          <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <!-- 信用等 -->
+      <div class="detail-count-item" (click)="openBalanceDetail('credit', 'creditLevel')">
+        <p>{{ userDetailsInfo?.credit | toFormatNumberDecimal | toFormatMoney }}</p>
+        <div class="d-flex">
+          <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.creditLevel' | lang }}</span>
+          <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <!-- 冻结金额 -->
+      <div class="detail-count-item" (click)="openBalanceDetail('freezeAmount', 'freeze')">
+        <p>${{ userDetailsInfo?.freezeAmountTotal | currencyValue: 'USDT' }}</p>
+        <div class="d-flex">
+          <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.freeze' | lang }}</span>
+          <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <!-- 剩余手续费 -->
+      <div class="detail-count-item" (click)="openBalanceDetail('handlingFee', 'remainingFee')">
+        <p>${{ userDetailsInfo?.handlingFeeTotal | currencyValue: 'USDT' }}</p>
+        <div class="d-flex">
+          <span class="flex-row-fluid mr-5">{{ 'member.detail.balanceType.remainingFee' | lang }}</span>
+          <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <!-- 意见箱 -->
+      <div class="detail-count-item" (click)="openCommentsDetail()">
+        <p>{{ 'member.detail.commentsBox' | lang }}</p>
+        <div class="d-flex">
+          <span class="flex-row-fluid mr-5">{{ 'member.detail.more' | lang }}</span>
+          <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+        </div>
+      </div>
+
+      <!-- IP会话 -->
+      <div class="detail-count-item" (click)="openIpSessionsDetail()">
+        <p>{{ 'member.detail.ipSessions' | lang }}</p>
+        <div class="d-flex">
+          <span class="flex-row-fluid mr-5">{{ 'member.detail.more' | lang }}</span>
+          <svg-icon class="vam svg-icon svg-icon-1x" [src]="'./assets/images/svg/gt-double.svg'"></svg-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-5 detail-progress-wrap flex-fill text-nowrap" style="max-width: 300px">
+      <div [ngbTooltip]="vipInfoTpl" placement="bottom">
+        <div class="d-flex justify-content-between">
+          <span class="txt">{{ 'member.overview.vipProgress' | lang }}</span>
+          <span class="fw-bolder f16">{{ isSvip ? 100 : vipUserInfo?.process }}%</span>
+        </div>
+        <pp-progress
+          [percentage]="isSvip ? 100 : +vipUserInfo?.process || 0"
+          [showText]="false"
+          [strokeWidth]="5"
+          class="w-100 mt-3 mb-4"
+          status="success"
+        ></pp-progress>
+        <div class="d-flex justify-content-between">
+          <span class="fw-bolder">{{ vipUserInfo?.currentVipLevel | vipName: tenantId }} </span>
+          <span class="fw-bolder">
+            {{
+              (isSvip
+                ? vipUserInfo?.currentVipLevel
+                : isFiveMerchant
+                  ? vipUserInfo?.nextVipLevel
+                  : vipUserInfo?.currentVipLevel + 1
+              ) | vipName: tenantId
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- tabs -->
+  <div class="mt-8">
+    <div class="tab member-tab-list">
+      <div
+        #targetTab
+        (click)="onNav(targetTab, i, tab.path)"
+        *ngFor="let tab of tabs; index as i"
+        class="tab-item"
+        [class.active]="activeTabIndex === i"
+      >
+        <a href="javascript: void(0);">{{ 'member.overview.type' | lang: tab.lang }}</a>
+      </div>
+
+      <div class="tab-active" [style.width]="activeTabW + 'px'" [style.left]="activeTabLeft + 'px'"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 活体识别 -->
+<ng-template #detailSpecialTpl let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="modal-title fw-bolder">活体识别</div>
+
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body px-17 py-12">
+    <div class="link-box f16">
+      <div class="title-text">会员访问地址：</div>
+      <div class="link-body d-flex">
+        <a class="link-box-text" href="{{ memberSpecialLink }}" target="_blank">
+          <input type="text" readonly id="copyInput" [(ngModel)]="memberSpecialLink" />
+        </a>
+        <div class="link-box-btn" (click)="onCopy(memberSpecialLink)">复制</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">返回</button>
+  </div>
+</ng-template>
+<router-outlet></router-outlet>

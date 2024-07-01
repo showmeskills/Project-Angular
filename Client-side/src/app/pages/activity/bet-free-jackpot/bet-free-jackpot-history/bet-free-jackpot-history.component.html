@@ -1,0 +1,96 @@
+<div class="container" [appLoading]="appLoading">
+  <ng-container>
+    <div class="top-btn-list">
+      <ng-container *ngFor="let item of btnList">
+        <customize-button
+          [active]="item.activityCode === currentActivityCode"
+          [plain]="true"
+          type="primary"
+          radius="30px"
+          size="medium"
+          (click)="onMoreList(item.activityCode)"
+          >{{ item.activityName }}</customize-button
+        >
+      </ng-container>
+    </div>
+    <div class="top" *ngIf="isTitle">
+      <div class="info" *ngIf="events.length !== 0">
+        <p>
+          <em>{{ correctScore }}/{{ events.length }}</em
+          >{{ 'cor_gus_jop' | translate }}
+        </p>
+        <span *ngIf="isWinLoss"
+          >{{ winLoss }}/{{ events.length }}{{ 'win_ind_for_jop' | translate }}
+          <i class="{{ winLoss === events.length ? 'icon-correct' : 'icon-error' }}"></i
+        ></span>
+        <span *ngIf="isOverUnder"
+          >{{ overUnder }}/{{ events.length }}{{ 'size_gl_cor_jop' | translate }}
+          <i class="{{ overUnder === events.length ? 'icon-correct' : 'icon-error' }}"></i
+        ></span>
+      </div>
+    </div>
+    <div class="events">
+      <div
+        class="event-item {{ item.isSettled ? (item.correctScore ? 'win' : 'lose') : '' }}"
+        *ngFor="let item of events"
+      >
+        <div class="event-main">
+          <div class="team-info left">
+            <img [src]="item.homeIcon" />
+            <span>{{ item.home }}</span>
+          </div>
+          <div class="scores">
+            <span>{{ item.scoreHome }}</span>
+            <em>-</em>
+            <span>{{ item.scoreAway }}</span>
+          </div>
+          <div class="team-info right">
+            <span>{{ item.away }}</span>
+            <img [src]="item.awayIcon" />
+          </div>
+          <div class="option left">
+            <div class="label">
+              <span>{{ 'result_jop' | translate }}</span>
+              <span>{{ 'big_small_jop' | translate }}{{ betFreeData.infoBase.sbv }}{{ 'ball_jop' | translate }}</span>
+            </div>
+          </div>
+          <div class="results">
+            <ng-container *ngIf="item.isSettled">
+              <span
+                ><em>{{
+                  item.scoreHomeResult > item.scoreAwayResult
+                    ? item.home
+                    : item.scoreHomeResult === item.scoreAwayResult
+                    ? ('draw_jop' | translate)
+                    : item.away
+                }}</em>
+                <i *ngIf="item.isSettled" class="status-icon {{ item.winLoss ? 'icon-correct' : 'icon-error' }}"></i
+              ></span>
+              <span
+                ><em>{{
+                  item.scoreHomeResult + item.scoreAwayResult > betFreeData.infoBase.sbv
+                    ? ('more_than_jop' | translate)
+                    : ('less_than_jop' | translate)
+                }}</em>
+                <i class="status-icon {{ item.overUnder ? 'icon-correct' : 'icon-error' }}"></i>
+              </span>
+            </ng-container>
+            <ng-container *ngIf="!item.isSettled">
+              <span>
+                <em>{{ 'un_settled' | translate }}</em>
+              </span>
+              <span>
+                <em>{{
+                  item.scoreHome + item.scoreAway > betFreeData.infoBase.sbv
+                    ? ('more_than_jop' | translate)
+                    : ('less_than_jop' | translate)
+                }}</em>
+              </span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-empty [text]="'not_pt_quz_jop' | translate" *ngIf="events.length === 0"></app-empty>
+  </ng-container>
+</div>

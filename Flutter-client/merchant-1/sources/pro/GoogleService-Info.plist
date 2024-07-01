@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>443049792076-d6pvh9ankoo4i0v7uvin0hmmt4ohoa36.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.443049792076-d6pvh9ankoo4i0v7uvin0hmmt4ohoa36</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>443049792076-f49pj4lonj6m6bi3jvml0v564uock64f.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDnhEp2SYVqONQ3ITP8j0MN_7XkfpbMlTQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>443049792076</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.gogaming.lt</string>
+	<key>PROJECT_ID</key>
+	<string>gogaming-prod</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gogaming-prod.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:443049792076:ios:9036ef03fe23e9806c9ae9</string>
+</dict>
+</plist>

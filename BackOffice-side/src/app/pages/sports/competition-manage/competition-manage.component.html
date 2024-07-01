@@ -1,0 +1,546 @@
+<mat-tab-nav-panel #tabPanel1></mat-tab-nav-panel>
+
+<div class="card d-flex felx-ac mb-8" style="flex-direction: row">
+  <div class="tab-wrapper flex-1 px-4" *ngIf="tabs && tabs.length > 0" mat-tab-nav-bar [tabPanel]="tabPanel1">
+    <div
+      class="item"
+      mat-tab-link
+      *ngFor="let item of tabs; let index = index"
+      [disableRipple]="true"
+      [active]="item.value === currentTab"
+      [class.active]="item.value === currentTab"
+      (click)="changeTabIndex(item.value)"
+    >
+      <div class="tab-name">{{ item.name }}</div>
+    </div>
+  </div>
+  <form-row label="选择数据商" class="mx-4 flex-ac">
+    <ng-template>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" [(ngModel)]="provider" (selectionChange)="selectProvider()">
+          <!-- <mat-option value="">全部</mat-option> -->
+          <mat-option *ngFor="let item of providerList" [value]="item.value">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+</div>
+
+<div class="card mb-8">
+  <sports-category-menu (sportsChange)="sportsMenuChange($event)"></sports-category-menu>
+  <mat-tab-nav-panel #tabPanel2></mat-tab-nav-panel>
+
+  <div class="tab-wrapper px-5" *ngIf="dateList && dateList.length > 0" mat-tab-nav-bar [tabPanel]="tabPanel2">
+    <div
+      class="item mr-16"
+      mat-tab-link
+      *ngFor="let item of dateList; let index = index"
+      [disableRipple]="true"
+      [active]="item.value === currentTabDate"
+      [class.active]="item.value === currentTabDate"
+      (click)="changeTabDate(item.value)"
+    >
+      <div class="tab-name" style="font-weight: 500">{{ item.name }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- 未匹配 -->
+<div class="card card-body mb-8">
+  <div class="fz-20 fw-bolder">未匹配</div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th><span class="cell">开赛时间</span></th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>联赛</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th><span class="cell">主队</span></th>
+          <th><span class="cell">客队</span></th>
+          <th><span class="cell">数据商来源</span></th>
+          <th><span class="cell">交换主客队</span></th>
+          <th style="width: 200px"><span class="cell">操作</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <ng-container *ngFor="let item of notMatchedList">
+          <tr style="background: #f9fdff">
+            <td>
+              <span class="cell">2022/01/23 14:20</span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon
+                  class="svg-icon svg-icon-lg mr-5"
+                  [src]="'./assets/images/svg/sports/competition/team-logo.svg'"
+                ></svg-icon>
+                <span [class.not-matched]="!item.child.length">英格兰足球超级联赛</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon
+                  class="svg-icon svg-icon-lg mr-2"
+                  [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                ></svg-icon>
+                <span [class.not-matched]="!item.child.length">多特蒙德</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell" style="flex-direction: column">
+                <div class="d-flex flex-ac" *ngIf="item.value === 4">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg mr-2"
+                    [src]="'./assets/images/svg/sports/competition/team-ren.svg'"
+                  ></svg-icon>
+                  <span class="not-matched">丹尼爾·梅德韋傑夫/</span>
+                </div>
+                <div class="d-flex flex-ac">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg mr-2"
+                    [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                  ></svg-icon>
+                  多特蒙德
+                </div>
+              </span>
+            </td>
+            <td>
+              <span class="cell">GB</span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon
+                  *ngIf="item.value === 4; else noExchange"
+                  class="svg-icon svg-icon-lg cursor-pointer"
+                  [src]="'./assets/images/svg/sports/competition/exchange.svg'"
+                >
+                </svg-icon>
+                <ng-template #noExchange>-</ng-template>
+              </span>
+            </td>
+            <td>
+              <span class="cell h42">
+                <ng-container *ngIf="item.child.length; else noChild">
+                  <svg-icon
+                    (click)="item.expand = !item.expand"
+                    *ngIf="!item.expand"
+                    class="svg-icon svg-icon-2x5 cursor-pointer"
+                    [src]="'./assets/images/svg/sports/competition/matched-shrink.svg'"
+                  ></svg-icon>
+                  <svg-icon
+                    (click)="item.expand = !item.expand"
+                    *ngIf="!!item.expand"
+                    class="svg-icon svg-icon-2x5 cursor-pointer"
+                    [src]="'./assets/images/svg/sports/competition/matched-expand.svg'"
+                  ></svg-icon>
+                </ng-container>
+                <ng-template #noChild>
+                  <app-label type="primary" style="cursor: pointer" (click)="onOpenWarningPopup(warningTpl)"
+                    >隐藏赛事</app-label
+                  >
+                </ng-template>
+              </span>
+            </td>
+          </tr>
+
+          <ng-container *ngIf="item.expand && item.child?.length">
+            <tr *ngFor="let chuld of item.child">
+              <td>
+                <span class="cell">2022/01/23 14:20</span>
+              </td>
+              <td>
+                <span class="cell">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg mr-5"
+                    [src]="'./assets/images/svg/sports/competition/team-logo.svg'"
+                  ></svg-icon>
+                  英格兰足球超级联赛
+                </span>
+              </td>
+              <td>
+                <span class="cell">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg mr-2"
+                    [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                  ></svg-icon>
+                  多特蒙德
+                </span>
+              </td>
+              <td>
+                <span class="cell">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg mr-2"
+                    [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                  ></svg-icon>
+                  <span class="not-matched">多特蒙德</span>
+                </span>
+              </td>
+              <td>
+                <span class="cell">GB</span>
+              </td>
+              <td>
+                <span class="cell">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg cursor-pointer"
+                    [src]="'./assets/images/svg/sports/competition/exchange.svg'"
+                  >
+                  </svg-icon>
+                </span>
+              </td>
+              <td>
+                <span class="cell h42">
+                  <app-label type="primary" style="cursor: pointer; margin-right: 10px">取消匹配</app-label>
+                  <app-label type="primary" style="cursor: pointer">确认匹配</app-label>
+                </span>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+    <div class="w-100 text-center mt-5">
+      <svg-icon
+        class="svg-icon svg-icon-2x5 cursor-pointer"
+        [src]="'./assets/images/svg/sports/competition/matched-fold.svg'"
+      ></svg-icon>
+    </div>
+  </div>
+</div>
+
+<!-- 赛事列表 -->
+<div class="card card-body">
+  <div class="d-flex flex-ac justify-content-between">
+    <div class="fz-20 fw-bolder">联赛列表</div>
+    <form-wrap [style.width.px]="280">
+      <svg-icon
+        [src]="'./assets/images/svg/admin-search.svg'"
+        class="svg-icon svg-icon-2x5 svg-icon-primary"
+      ></svg-icon>
+      <input
+        class="form-control"
+        autocomplete="off"
+        type="text"
+        [(ngModel)]="listSearch"
+        (keyup)="$event.keyCode === 13 && getList(true)"
+        placeholder="请输入名称或ID查询"
+      />
+    </form-wrap>
+  </div>
+
+  <div class="flex-fill mt-2 competition-list">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>时间</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>联赛</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th><span class="cell">赛事</span></th>
+          <th><span class="cell">数据源</span></th>
+          <th><span class="cell">基础返还率</span></th>
+          <th>
+            <span class="cell"
+              ><span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>人数</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span> </span
+            ></span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>交易金额</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th><span class="cell">风险敞口</span></th>
+          <th><span class="cell">展开</span></th>
+          <th><span class="cell">热门赛事</span></th>
+          <th><span class="cell">开关</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <ng-container *ngFor="let item of competitionList">
+          <tr class="item">
+            <td>
+              <span class="cell">下半场76:30</span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon
+                  class="svg-icon svg-icon-lg mr-5"
+                  [src]="'./assets/images/svg/sports/competition/team-logo.svg'"
+                ></svg-icon>
+                英格兰足球超级联赛
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <div class="d-flex flex-ac mr-10">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg mr-2"
+                    [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                  ></svg-icon>
+                  多特蒙德
+                </div>
+                <div class="d-flex flex-ac">
+                  <svg-icon
+                    class="svg-icon svg-icon-lg mr-2"
+                    [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                  ></svg-icon>
+                  多特蒙德
+                </div>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <div class="source d-flex flex-ac justify-content-center mr-8" [class]="item.value">
+                  5
+                  <svg-icon
+                    class="svg-icon svg-icon-1x tips"
+                    [src]="'./assets/images/svg/sports/competition/source-tips.svg'"
+                  ></svg-icon>
+                </div>
+                <div class="d-flex flex-ac flex-direction-column" style="flex-direction: column">
+                  <svg-icon
+                    class="svg-icon svg-icon-1x5"
+                    [src]="'./assets/images/svg/sports/competition/source-top.svg'"
+                  ></svg-icon>
+                  <svg-icon
+                    class="svg-icon svg-icon-1x5"
+                    [src]="'./assets/images/svg/sports/competition/source-bottom.svg'"
+                  ></svg-icon>
+                </div>
+              </span>
+            </td>
+            <td>
+              <span class="cell"> 0.973 </span>
+            </td>
+            <td>
+              <span class="cell"> 6543 </span>
+            </td>
+            <td>
+              <span class="cell"> 9,999,999.00 </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span style="color: #e63535">100,000.00</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon
+                  (click)="item.expand = !item.expand"
+                  *ngIf="!item.expand"
+                  class="svg-icon svg-icon-2x5 cursor-pointer"
+                  [src]="'./assets/images/svg/sports/competition/matched-shrink.svg'"
+                ></svg-icon>
+                <svg-icon
+                  (click)="item.expand = !item.expand"
+                  *ngIf="!!item.expand"
+                  class="svg-icon svg-icon-2x5 cursor-pointer"
+                  [src]="'./assets/images/svg/sports/competition/matched-expand.svg'"
+                ></svg-icon>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <svg-icon
+                  (click)="item.hot = !item.hot"
+                  *ngIf="!item.hot"
+                  class="svg-icon svg-icon-2x5 cursor-pointer"
+                  [src]="'./assets/images/svg/sports/competition/hot.svg'"
+                ></svg-icon>
+                <svg-icon
+                  (click)="item.hot = !item.hot"
+                  *ngIf="!!item.hot"
+                  class="svg-icon svg-icon-2x5 cursor-pointer"
+                  [src]="'./assets/images/svg/sports/competition/hot-active.svg'"
+                ></svg-icon>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="switch switch-success switch-sm">
+                  <label class="mx-auto">
+                    <input type="checkbox" [(ngModel)]="item.checked" />
+                    <span></span>
+                  </label>
+                </span>
+              </span>
+            </td>
+          </tr>
+
+          <ng-container *ngIf="item.expand && item.child?.length">
+            <tr>
+              <td colspan="11" class="p-0 border-0">
+                <div class="w-100 d-flex f-14 competition-detail" *ngFor="let _ of item.child">
+                  <div class="h-100 boder-b boder-r d-flex flex-center" style="flex: 0 0 178px">GB</div>
+                  <div class="h-100 boder-b boder-r d-flex flex-center" style="flex: 0 0 178px">1234565778</div>
+
+                  <!-- 独赢 -->
+                  <div class="h-100 boder-r d-flex flex-column flex-1">
+                    <div class="boder-b d-flex flex-center" [style.height.px]="68">独赢</div>
+                    <div class="boder-b d-flex flex-center flex-1">1.40</div>
+                    <div class="boder-b d-flex flex-center flex-1">1.40</div>
+                    <div class="boder-b d-flex flex-center flex-1">1.40</div>
+                  </div>
+                  <!-- 让球 -->
+                  <div class="h-100 boder-r d-flex flex-column flex-1">
+                    <div class="boder-b d-flex flex-center" [style.height.px]="68">让球</div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">0.18</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">0.18</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                  </div>
+                  <!-- 大小 -->
+                  <div class="h-100 boder-r d-flex flex-column flex-1">
+                    <div class="boder-b d-flex flex-center" [style.height.px]="68">大小</div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">大0.18/0.2</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">小0.18/0.2</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                  </div>
+
+                  <!-- 独赢 -->
+                  <div class="h-100 boder-r d-flex flex-column flex-1">
+                    <div class="boder-b d-flex flex-center" [style.height.px]="68">独赢</div>
+                    <div class="boder-b d-flex flex-center flex-1">1.40</div>
+                    <div class="boder-b d-flex flex-center flex-1">1.40</div>
+                    <div class="boder-b d-flex flex-center flex-1">1.40</div>
+                  </div>
+                  <!-- 让球 -->
+                  <div class="h-100 boder-r d-flex flex-column flex-1">
+                    <div class="boder-b d-flex flex-center" [style.height.px]="68">让球</div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">0.18</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">0.18</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                  </div>
+                  <!-- 大小 -->
+                  <div class="h-100 boder-r d-flex flex-column flex-1">
+                    <div class="boder-b d-flex flex-center" [style.height.px]="68">大小</div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">大0.18/0.2</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                    <div class="boder-b d-flex flex-center flex-column flex-1">
+                      <span class="color-aaa lh-18">小0.18/0.2</span>
+                      <span class="lh-18">1.40</span>
+                    </div>
+                  </div>
+
+                  <!-- 开关 -->
+                  <div class="h-100 d-flex flex-column flex-1">
+                    <div class="d-flex flex-center" [style.height.px]="68">独赢</div>
+                    <div class="boder-b d-flex flex-center flex-1">
+                      <span class="switch switch-success switch-sm">
+                        <label class="mx-auto">
+                          <input type="checkbox" [(ngModel)]="item.checked" />
+                          <span></span>
+                        </label>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!competitionList.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="competitionList.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="getList()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="getList()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 取消赛事确认 -->
+<ng-template #warningTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'member.coupon.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">确认不再显示本赛事</p>
+    </div>
+    <modal-footer (confirm)="warningPopupConfirm(c)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

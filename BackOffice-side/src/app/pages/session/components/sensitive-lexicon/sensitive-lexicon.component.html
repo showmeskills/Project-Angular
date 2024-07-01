@@ -1,0 +1,34 @@
+<modal-title [title]="'session.history.sensitiveLexicon' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body">
+  <form class="form w-100" [formGroup]="formGroup" #form>
+    <!-- lang-tab -->
+    <lang-tab
+      #langTab
+      formArrayName="lang"
+      [(value)]="selectLang"
+      [(selection)]="curLang"
+      (languageChange)="updateLanguageForm()"
+    >
+      <ng-template let-control="formControl">
+        <div class="pb-8" [formGroup]="control">
+          <!-- 内容 -->
+          <form-row name="content" label-width="0">
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <textarea
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+                class="form-control resize-none"
+                type="text"
+                rows="12"
+              ></textarea>
+            </ng-template>
+            <div afterContent class="fz-14 color-999 pt-2">{{ 'session.history.sensitiveLexiconTips' | lang }}</div>
+          </form-row>
+        </div>
+      </ng-template>
+    </lang-tab>
+  </form>
+</div>
+
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

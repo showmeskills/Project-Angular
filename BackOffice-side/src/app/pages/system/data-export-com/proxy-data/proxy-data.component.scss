@@ -1,0 +1,25 @@
+.export-table-wrap {
+  overflow-x: auto;
+
+  th {
+    min-width: 120px;
+  }
+  .popover-tpl{
+    width: 120px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+::ng-deep {
+  .month-picker {
+    .mat-calendar-period-button {
+      pointer-events: none;
+    }
+
+    abbr {
+      cursor: default;
+    }
+  }
+}

@@ -1,0 +1,118 @@
+<div class="container">
+  <div class="con-tit"><i class="icon-cunkuan"></i>自我禁止</div>
+  <div class="content-box">
+    <p class="text-20">如果您面临博彩问题带来的风险，或认为您目前已有博彩问题，请考虑“自我禁止”选项。</p>
+    <p class="text-20">
+      我们允许客户在设定的期限内自我禁止使用账户或特定产品。一旦进行该变更，则无论任何原因，所选定的産品都无法被重新激活，直至所设定的期限到期。
+    </p>
+    <p class="text-20">在自我禁止期间，我们将尽其所能避免客户另外开设一个新帐户。</p>
+    <p class="text-20">如果您希望了解关于自我禁止功能的更多信息，请联系我们。我们专业的客服人员将为您服务。</p>
+    <p class="text-20">
+      如果您希望现在就进行自我禁止，请在以下选择自我禁止的期限以及您希望进行自我禁止的产品。您将被要求确认相关信息，且自我禁止将随即生效。
+    </p>
+    <p class="text-20">
+      请注意：针对体育投注和扑克牌産品的自我禁止可单独进行。然而，若您希望对娱乐场或游戏産品进行自我禁止，将导致娱乐场、游戏和扑克牌産品一起被自我禁止。
+    </p>
+  </div>
+  <div class="content-box">
+    <p class="title">自我禁止期限</p>
+    <div class="select-time" *ngIf="isFirstStep">
+      <ng-container *ngFor="let item of selectTime; let idx = index">
+        <customize-button
+          type="text"
+          size="small"
+          [plain]="true"
+          [active]="idx === activeIdx"
+          minWidth="80px"
+          (onClick)="onSelectTime(idx)"
+        >
+          {{ item.name }}
+        </customize-button>
+      </ng-container>
+    </div>
+    <p class="text-12 m-top-20" *ngIf="isFirstStep">至少选择一款产品</p>
+    <ng-container *ngIf="isFirstStep">
+      <div class="check-box-list m-top-20">
+        <ng-container *ngFor="let item of gameList; let idx = index">
+          <mat-checkbox [checked]="item.value" (change)="selectedGame(idx)">
+            <span class="mutual-opacity">{{ item.name }}</span>
+          </mat-checkbox>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isFirstStep">
+      <div class="selected-game-list m-top-20">
+        <p class="group">
+          <span class="text-12">自我禁止期限</span>
+          <span class="text-14">{{ selectedTiming }}</span>
+        </p>
+        <div class="group">
+          <span class="text-12">产品</span>
+          <p class="flex-gap">
+            <ng-container *ngFor="let game of gameList">
+              <ng-container *ngIf="game.value">
+                <span class="text-14">
+                  {{ game.name }}
+                </span>
+              </ng-container>
+            </ng-container>
+          </p>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isFirstStep">
+      <div class="password">
+        <app-customize-input
+          #iPwd
+          [label]="'password_text' | translate"
+          type="password"
+          [autocomplete]="false"
+          size="medium"
+          width="100%"
+          (valueChange)="onValueChange($event)"
+        >
+          <i
+            class="onact96-not"
+            right-content
+            [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+            (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+          ></i>
+        </app-customize-input>
+      </div>
+    </ng-container>
+    <div class="submit">
+      <ng-container *ngIf="!isFirstStep">
+        <customize-button
+          [minWidth]="isH5 ? 'unset' : '140px'"
+          [width]="isH5 ? '100%' : 'unset'"
+          type="default"
+          size="medium"
+          (onClick)="onCancel()"
+        >
+          取消
+        </customize-button>
+        <customize-button
+          [disabled]="!canSubmit()"
+          [minWidth]="isH5 ? 'unset' : '140px'"
+          [width]="isH5 ? '100%' : 'unset'"
+          type="primary"
+          size="medium"
+          (onClick)="onContinue()"
+        >
+          自我禁止
+        </customize-button>
+      </ng-container>
+      <ng-container *ngIf="isFirstStep">
+        <customize-button
+          [minWidth]="isH5 ? '100%' : '140px'"
+          type="primary"
+          size="medium"
+          [disabled]="!canContinue()"
+          (onClick)="this.isFirstStep = !this.isFirstStep"
+        >
+          继续
+        </customize-button>
+      </ng-container>
+    </div>
+  </div>
+</div>

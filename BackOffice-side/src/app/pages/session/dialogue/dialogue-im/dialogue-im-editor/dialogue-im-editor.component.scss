@@ -1,0 +1,58 @@
+:host {
+  display: block;
+  box-shadow: 0 -6px 8px -4px rgba(22, 22, 22, 0.07);
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 10px;
+
+  &::ng-deep {
+    .im-edit-panel-img {
+      max-width: 200px;
+      max-height: 140px;
+      display: block;
+      min-width: 50px;
+      min-height: 50px;
+      border: 0;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.im {
+  &-tool {
+    &-face {}
+
+    &-wrap {
+      background: #F7F9FB;
+    }
+  }
+
+  /** 输入框 */
+  &-edit-panel {
+    border: 0;
+    outline: none;
+    background: transparent;
+    word-wrap: break-word;
+    white-space: pre-line;
+    line-height: 24px;
+  }
+
+  &-inp {
+
+    &-wrap {
+      background: #F5F8FA;
+      cursor: text;
+    }
+
+    &-label {
+      cursor: text;
+    }
+
+    &-send {
+      &-wrap {
+        text-align: right;
+      }
+    }
+  }
+}

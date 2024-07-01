@@ -1,0 +1,13 @@
+:host {
+  color: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.customize-text {
+  .link-text {
+    color: var(--primary-color);
+    padding: 0 2px;
+  }
+}

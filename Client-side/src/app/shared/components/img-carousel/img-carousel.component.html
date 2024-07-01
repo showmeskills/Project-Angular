@@ -1,0 +1,27 @@
+<ng-content></ng-content>
+<div
+  #container
+  class="carousel-container"
+  [style]="transformStyle"
+  (pan)="onPan(container, $any($event))"
+  (mouseenter)="stopPlay()"
+  (mouseleave)="startPlay()"
+  (transitionstart)="transitionstart($event)"
+  (transitionend)="transitionend($event)"
+>
+  <ng-container *ngIf="updatedItemsData">
+    <ng-container *ngFor="let item of updatedItemsData(); let i = index">
+      <app-carousel-item (clickOnHalfRight)="slideNext()" (clickOnHalfLeft)="slidePrev()">
+        <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item, index: i }"></ng-container>
+      </app-carousel-item>
+    </ng-container>
+  </ng-container>
+</div>
+<div class="carousel-pagination" *ngIf="pagination">
+  <span
+    class="carousel-pagination-bullet"
+    *ngFor="let item of [].constructor(maxIndex + 1); let index = index"
+    [class.active]="activeIndex == index"
+    (click)="slideTo(index)"
+  ></span>
+</div>

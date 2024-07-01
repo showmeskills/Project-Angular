@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="header-row">
+    <div class="start-row">
+      <span>{{ 'recent_wd' | translate }}</span>
+      <!-- <div class="small-nav">
+        <i class="icon-overview"></i>
+        <span class="labe"></span>
+        <i class="icon-menu"></i>
+      </div> -->
+    </div>
+    <!--右侧-->
+    <div class="end-row">
+      <span class="link-txt onact96-not" [routerLink]="getLink()">{{ 'view_all' | translate }}</span>
+      <!-- <mat-checkbox [disableRipple]="true" [(ngModel)]="isAgree">{{'hide_error'|translate}}</mat-checkbox> -->
+    </div>
+  </div>
+  <!--内容-->
+  <div class="contant list-box" [appLoading]="loading">
+    <ng-container *ngFor="let item of historyList">
+      <div
+        class="ticket onact96"
+        [class.select]="item.isSelected"
+        (click)="isH5 ? openReceipt(item) : $event.stopPropagation()"
+      >
+        <div class="infor-clounm">
+          <div class="clounm-1">
+            <img class="icon" [src]="item.currency | currencyIcon" />
+            <span class="amount">{{ item.amount }}</span>
+            <span class="amount offset-right">{{ item.currency }}</span>
+            <div
+              class="status-text"
+              [class.success]="item.status == 'Success' || item.status == 'Created' || item.status == 'Passed'"
+              [class.process]="item.status == 'Waiting' || item.status == 'Process' || item.status == 'Review'"
+              [class.fail]="item.status == 'NotPassed' || item.status == 'Fail'"
+              [class.cancel]="item.status == 'Canceled' || item.status == 'Timeout'"
+            >
+              {{ item.statusName }}
+            </div>
+          </div>
+          <ul class="item-bottom" [class.no-txid]="!item.txid">
+            <li class="group">
+              <span>{{ item.date | mdate }}</span>
+            </li>
+            <ng-container *ngIf="!isH5">
+              <li class="group network-group">
+                <span>{{ 'trans_network' | translate }}：</span>
+                <p>
+                  <span>{{ item.network }}</span>
+                </p>
+              </li>
+              <li class="group addresse-group">
+                <span>{{ 'address' | translate }}：</span>
+                <p>
+                  <span class="addresse">{{ item.address }}</span>
+                  <!-- <i class="icon-link"></i> -->
+                  <app-tool-tip [copyMode]="'icon'" [copyContent]="item.address"></app-tool-tip>
+                </p>
+              </li>
+              <li class="group txid-group">
+                <ng-container *ngIf="item.txid">
+                  <span>{{ 'tx_ad' | translate }}：</span>
+                  <p>
+                    <span class="addresse">{{ getAddresseElipsis(item.txid) }}</span>
+                    <!-- <i class="icon-link"></i> -->
+                    <app-tool-tip [copyMode]="'icon'" [copyContent]="item.txid"></app-tool-tip>
+                  </p>
+                </ng-container>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <span class="arrow-right" *ngIf="isH5"></span>
+      </div>
+    </ng-container>
+    <app-empty *ngIf="!loading && historyList.length < 1"></app-empty>
+  </div>
+</div>

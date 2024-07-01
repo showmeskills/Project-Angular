@@ -1,0 +1,608 @@
+<div class="card rounded">
+  <div class="card-header py-8">
+    <div class="d-flex flex-ac flex-wrap">
+      <form-row [label]="'walle.type' | lang" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <mat-form-field [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="selectedType" (selectionChange)="loadData(true)">
+              <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of typeList" [value]="item.code">{{ item.description }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'content.mu.search' | lang" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control w-100"
+            type="text"
+            [(ngModel)]="textSerach"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </ng-template>
+      </form-row>
+      <!-- 翻译搜索 -->
+      <form-row [label]="'content.mu.fy' | lang" class="mr-16" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control w-100"
+            type="text"
+            [(ngModel)]="translateSerach"
+            (keyup)="$event.keyCode === 13 && loadData(true)"
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex flex-ac mt-4">
+      <form-row [label]="'content.mu.addTime' | lang" label-width="106">
+        <ng-template>
+          <div class="d-flex">
+            <input
+              class="form-control text-center"
+              type="text"
+              selectMode="rangeFrom"
+              [placeholder]="'content.mu.startTime' | lang"
+              [style.width.px]="148"
+              [owlDateTime]="timeStart"
+              [owlDateTimeTrigger]="timeStart"
+              [(ngModel)]="time"
+            />
+            <owl-date-time class="fz-20" #timeStart></owl-date-time>
+
+            <div class="date-line lh-42"></div>
+
+            <input
+              class="form-control text-center"
+              type="text"
+              selectMode="rangeTo"
+              [placeholder]="'content.mu.endTime' | lang"
+              [style.width.px]="148"
+              [owlDateTime]="timeEnd"
+              [owlDateTimeTrigger]="timeEnd"
+              [(ngModel)]="time"
+              (dateTimeChange)="loadData(true)"
+            />
+            <owl-date-time class="fz-20" #timeEnd></owl-date-time>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <div class="btn-wrap py-2">
+        <button class="c-btn c-btn-default" (click)="onReset(); loadData(true)">{{ 'common.reset' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-ac flex-between">
+      <div></div>
+      <div>
+        <button (click)="translate()" type="button" class="btn btn-light-primary py-3">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/site_message_icon.svg'"></svg-icon>
+          <span class="vam">{{ 'content.mu.scFy' | lang }}</span>
+        </button>
+        <button (click)="openTranslate(translatePopup)" type="button" class="ml-6 btn btn-light-primary py-3">
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/site_message_icon.svg'"></svg-icon>
+          <span class="vam">{{ 'content.mu.scSource' | lang }}</span>
+        </button>
+        <button
+          (click)="openAddFieldPopup(addFieldPopup)"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 lh-30"
+        >
+          <svg-icon class="vam lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          <span class="vam">{{ 'content.mu.addWord' | lang }}</span>
+        </button>
+        <button
+          (click)="openAddLanguagePopup(addLanguagePopup)"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 lh-30"
+        >
+          <svg-icon class="vam lh-18 svg-icon svg-icon-xl" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          <span class="vam">{{ 'content.mu.addYu' | lang }}</span>
+        </button>
+        <button (click)="onExport()" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-0 lh-30">
+          <svg-icon class="svg-icon svg-icon-xl d-inline-block" [src]="'./assets/images/svg/export.svg'"></svg-icon>
+          <span class="vam">{{ 'content.mu.curExport' | lang }}</span>
+        </button>
+        <button
+          (click)="openExportAllPopup(exportPopup)"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 lh-30"
+        >
+          <svg-icon class="svg-icon svg-icon-xl d-inline-block" [src]="'./assets/images/svg/export.svg'"></svg-icon>
+          <span class="vam">{{ 'content.mu.allExport' | lang }}</span>
+        </button>
+        <button
+          (click)="openUploadPopup(uploadPopup)"
+          type="button"
+          class="ml-6 btn btn-light-primary px-9 fz-14 py-0 lh-30"
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl d-inline-block"></svg-icon>
+          <span class="vam">{{ 'common.upload' | lang }}</span>
+        </button>
+        <button (click)="onDel(modalTpl, false)" type="button" class="ml-6 btn btn-light-primary px-9 fz-14 py-0 lh-30">
+          <svg-icon [src]="'./assets/images/svg/del.svg'" class="svg-icon svg-icon-xl d-inline-block"></svg-icon>
+          <span class="vam">{{ 'common.delete' | lang }}</span>
+        </button>
+      </div>
+    </div>
+    <!-- 当前的多语言表 -->
+    <div class="tableMain">
+      <div class="table1-container" *ngIf="list.length > 0">
+        <table class="table mb-0" selectChildren>
+          <thead>
+            <tr>
+              <th class="w-10px pe-2 thStart">
+                <div class="cell mt-2">
+                  <label class="checkbox">
+                    <input type="checkbox" selectGroup />
+                    <span></span>
+                  </label>
+                </div>
+                <p class="thStart-right">{{ 'content.mu.word' | lang }}</p>
+              </th>
+
+              <th class="tdThType">{{ 'common.type' | lang }}</th>
+
+              <th *ngFor="let item of languageList">
+                <!-- {{ item }} -->
+                <span class="cursor-pointer">
+                  <span>{{ item }}</span>
+                  <!-- <span class="triangle d-inline-block">
+                    <div class="triangle-up"></div>
+                    <div class="triangle-down"></div>
+                  </span> -->
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let items of list">
+              <td class="tdStart">
+                <div class="cell">
+                  <label class="checkbox">
+                    <input type="checkbox" [(ngModel)]="items.checked" />
+                    <span></span>
+                  </label>
+                </div>
+                <p class="tdStart-right">{{ items.key }}</p>
+              </td>
+              <td class="tdThType">{{ items.typeDesc }}</td>
+
+              <td *ngFor="let item of languageList; let i = index">
+                <!-- [ngClass]="[getKeyCotent(items.content,item).text && getKeyCotent(items.content,item).text.length > 10  ? 'm-80' : 'm-42']" -->
+                <textarea
+                  class="tdTextarea"
+                  [placeholder]="getKeyCotent(items.content, item).text ? '' : ('content.mu.enterWord' | lang)"
+                  [value]="getKeyCotent(items.content, item).text"
+                  (change)="translateChange($event, getKeyCotent(items.content, item).id, item, items)"
+                ></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- table 钉住左侧第一列 -->
+      <div class="table2-container" *ngIf="list.length > 0">
+        <table class="table mb-0" selectChildren>
+          <thead>
+            <tr>
+              <th class="w-10px pe-2 thStart">
+                <div class="cell mt-2">
+                  <label class="checkbox">
+                    <input type="checkbox" selectGroup />
+                    <span></span>
+                  </label>
+                </div>
+                <p class="thStart-right">{{ 'content.mu.word' | lang }}</p>
+              </th>
+
+              <!-- <th class="tdThType">类型</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let items of list">
+              <td class="tdStart">
+                <div class="cell">
+                  <label class="checkbox">
+                    <input type="checkbox" [(ngModel)]="items.checked" />
+                    <span></span>
+                  </label>
+                </div>
+                <p class="tdStart-right">{{ items.key }}</p>
+              </td>
+
+              <!-- <td class="tdThType">
+                {{ getTypeText(items['content'][0].typeId) }}
+              </td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 新增字段 -->
+<ng-template #addFieldPopup>
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'content.mu.addWord' | lang }}</div>
+      <div class="c-btn-close" (click)="addFieldPopupRef.close()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body" *ngIf="formGroup">
+      <form class="form" [formGroup]="formGroup" #form>
+        <ng-template #labelFieldTpl>{{ 'content.mu.word' | lang }}</ng-template>
+        <form-row
+          required
+          name="field"
+          [label]="labelFieldTpl"
+          [invalidFeedback]="{ required: ('content.mu.enterWord' | lang) }"
+        >
+          <ng-template let-invalid="invalid">
+            <input
+              [style.width.px]="331"
+              type="text"
+              class="form-control"
+              formControlName="field"
+              [class.is-invalid]="invalid"
+            />
+          </ng-template>
+        </form-row>
+        <ng-template #labelTypeTpl>{{ 'common.type' | lang }}</ng-template>
+        <form-row
+          required
+          name="type"
+          [label]="labelTypeTpl"
+          [invalidFeedback]="{ required: ('content.mu.chooseType' | lang) }"
+        >
+          <ng-template let-invalid="invalid">
+            <mat-form-field class="w-100">
+              <mat-select class="form-control" formControlName="type" [class.is-invalid]="invalid">
+                <mat-option *ngFor="let item of typeList" [value]="item.code">{{ item.description }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+      </form>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="addFieldPopupRef.close()">
+        {{ 'common.back' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onAddFieldSubmit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 上传 -->
+<ng-template #uploadPopup let-c="close">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'content.mu.upFile' | lang }}</div>
+      <div class="c-btn-close" (click)="c()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <upload
+        [style.flex]="'0 0 130px'"
+        class="w-100"
+        mark="file"
+        [customUpload]="customUpload"
+        [accept]="['xls', 'xlsx']"
+        [limit]="2048"
+      ></upload>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="uploadPopupRef.close()">
+        {{ 'common.back' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onUploadSubmit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 新增语系 -->
+<ng-template #addLanguagePopup>
+  <div class="modal-content addLanguagePopup">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'content.mu.addYu' | lang }}</div>
+      <div class="c-btn-close" (click)="addLanguagePopupRef.close()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body" *ngIf="formLanguageGroup">
+      <form class="form w-100" [formGroup]="formLanguageGroup" #form>
+        <form-row
+          required
+          [label]="'content.mu.jZw' | lang"
+          name="simplifiedChinese"
+          label-width="136px"
+          [label-width]="lang.isLocal ? '136' : '176'"
+        >
+          <ng-template let-invalid="invalid">
+            <input type="text" class="form-control" formControlName="simplifiedChinese" [class.is-invalid]="invalid" />
+          </ng-template>
+        </form-row>
+
+        <form-row [label]="'content.mu.fZw' | lang" [label-width]="lang.isLocal ? '136' : '176'">
+          <input class="form-control w-100" type="text" formControlName="traditionalChinese" />
+        </form-row>
+
+        <form-row [label]="'content.mu.english' | lang" [label-width]="lang.isLocal ? '136' : '176'">
+          <input class="form-control w-100" type="text" formControlName="english" />
+        </form-row>
+
+        <form-row
+          required
+          [label]="'content.mu.localLan' | lang"
+          name="name"
+          [label-width]="lang.isLocal ? '136' : '176'"
+        >
+          <ng-template let-invalid="invalid">
+            <input type="text" class="form-control" formControlName="name" [class.is-invalid]="invalid" />
+          </ng-template>
+        </form-row>
+
+        <form-row required [label]="'content.mu.code' | lang" name="code" [label-width]="lang.isLocal ? '136' : '176'">
+          <ng-template let-invalid="invalid">
+            <input type="text" class="form-control" formControlName="code" [class.is-invalid]="invalid" />
+          </ng-template>
+        </form-row>
+      </form>
+
+      <div class="countryChoice">
+        <label class="mr-0 mb-0 title-label"
+          >{{ 'content.mu.country' | lang }}<span class="text-danger">*</span>：</label
+        >
+
+        <div class="countryChoice-main">
+          <div class="allselect">
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="checked" (change)="seletedChangeAll()" />
+              <span class="mr-2"></span>
+              {{ 'content.mu.all' | lang }}
+            </label>
+          </div>
+
+          <ul class="container">
+            <li class="item" *ngFor="let data of countryList" selectChildren>
+              <label class="checkbox plate">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="data.checked"
+                  (click)="seletedbkAll(data.countries, data.checked)"
+                  (change)="data.checked ? '' : (checked = false)"
+                  selectGroup
+                />
+                <span class="mr-2"></span>
+                {{ lang.isLocal ? data.continentName : data.continentCode }}
+              </label>
+
+              <div class="countrys" *ngIf="data.checked">
+                <label class="checkbox" *ngFor="let item of data.countries">
+                  <input type="checkbox" [(ngModel)]="item.checked" [checked]="item.checked" />
+                  <span class="mr-2"></span>
+                  {{ lang.isLocal ? item.countryName : item.countryEnName }}
+                </label>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="addLanguagePopupRef.close()">
+        {{ 'common.back' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onAddLanguageSubmit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 生成翻译资源 -->
+<ng-template #translatePopup let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'content.mu.scSource' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="w-100">
+        <form-row [label]="'walle.type' | lang" label-width="150">
+          <ng-template>
+            <mat-form-field class="w-100">
+              <mat-select class="form-control w-100" [(ngModel)]="translateData.type">
+                <!-- <mat-option value="All">全部</mat-option> -->
+                <mat-option *ngFor="let item of typeList" [value]="item.code">{{ item.description }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <form-row [label]="'content.mu.string' | lang" label-width="150">
+          <input
+            class="form-control w-100"
+            type="text"
+            [placeholder]="'content.mu.infoEnter' | lang"
+            [(ngModel)]="translateData.identifyStr"
+          />
+        </form-row>
+
+        <form-row [label]="'content.mu.fuGaiAd' | lang" label-width="150">
+          <ng-template>
+            <div class="d-flex flex-wrap py-2 lh-32">
+              <label class="radio radio-lg radio-success mr-16 fz-16">
+                <input type="radio" name="bonusRateBase" [value]="true" [(ngModel)]="translateData.isCover" />
+                <span class="mr-4"></span>{{ 'content.mu.fuGai' | lang }}
+              </label>
+              <label class="radio radio-lg radio-success fz-16">
+                <input type="radio" name="bonusRateBase" [value]="false" [(ngModel)]="translateData.isCover" />
+                <span class="mr-4"></span>{{ 'content.mu.noFuGai' | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+
+        <div class="btn-wrap">
+          <button type="button" class="c-btn btn btn-primary" (click)="onTranslateSubmit()">
+            {{ 'content.mu.scZy' | lang }}
+          </button>
+        </div>
+
+        <label class="mr-0 mb-0 title-label">{{ 'content.mu.enterFySource' | lang }}</label>
+        <div class="generateBox">
+          <ng-container *ngIf="generateTranslateList.length > 0 && !generateLoading">
+            <div class="generate" *ngFor="let item of generateTranslateList" (click)="onCopy(item)">
+              {{ item }}
+            </div>
+          </ng-container>
+
+          <div
+            class="container-empty"
+            style="height: 100%"
+            *ngIf="generateTranslateList.length === 0 && !generateLoading"
+          >
+            <div>
+              <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+              <div class="txt">{{ 'common.emptyText' | lang }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">取消</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onTranslateSubmit()">保存</button>
+    </div> -->
+  </div>
+</ng-template>
+
+<!-- 全部导出 -->
+<ng-template #exportPopup let-c="close">
+  <div class="modal-content">
+    <div class="modal-header">
+      <!-- 翻译导出 -->
+      <div class="modal-title">{{ 'content.mu.fyExp' | lang }}</div>
+      <div class="c-btn-close" (click)="c()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body d-flex flex-wrap justify-content-center">
+      <!-- 平台 -->
+      <form-row [label]="'content.mu.plat' | lang">
+        <ng-template>
+          <mat-form-field [style.width.px]="300">
+            <mat-select class="form-control" [(ngModel)]="selectedExportType">
+              <mat-option *ngFor="let item of exportTypeList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+      <!-- 语言 -->
+      <form-row [label]="'content.mu.yu' | lang">
+        <ng-template>
+          <mat-form-field [style.width.px]="300">
+            <mat-select class="form-control" [(ngModel)]="selectedExportLang">
+              <mat-option *ngFor="let item of languageList" [value]="item">{{ item }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="c()">{{ 'common.back' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="getExportAll(c)">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 删除字段 -->
+<ng-template #modalTpl let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title fw-bolder">{{ 'game.provider.notice' | lang }}</div>
+
+      <div class="c-btn-close" (click)="c()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'content.ba.ifDelField' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="c()">
+        {{ 'common.back' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onDel(c(), true)">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>

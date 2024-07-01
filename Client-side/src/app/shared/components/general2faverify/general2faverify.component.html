@@ -1,0 +1,223 @@
+<!-- 登录 注册  验证使用 -->
+<ng-container *ngIf="isUsedComponent">
+  <div class="container">
+    <!-- 安全验证 -->
+    <div class="title">{{ title }}</div>
+    <!--验证流程-->
+    <div class="description" *ngIf="otpTypeFromComponent === 'Login'">
+      {{ 'safe_infos' | translate }}
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="verifyTemplate"
+      [ngTemplateOutletContext]="{
+        otpType: otpTypeFromComponent,
+        phone: user2fa?.mobile || '',
+        phoneTips: ('enter_phone' | translate) + user2fa?.areaCode + ' ' + user2fa?.mobile + ('ver_code' | translate),
+        currentPhoneZone: user2fa?.areaCode || '',
+        email: user2fa?.email,
+        emailTips: ('enter_v_email' | translate) + user2fa?.email + ('ver_code' | translate)
+      }"
+    ></ng-container>
+    <ng-container [ngTemplateOutlet]="submitBtnTemplate"></ng-container>
+    <!-- 邮箱按钮弹窗  (未收到验证码？)-->
+    <ng-container *ngIf="verifyType === 'EMAIL'">
+      <div class="description-bottom">
+        <p class="link onact96-not" (click)="popupEmailTip()">{{ 'unreceive_code' | translate }}</p>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+
+<!-- 登录后 使用 -->
+<ng-container *ngIf="!isUsedComponent">
+  <div class="verify-container">
+    <div class="header-row">
+      <span class="title">{{ 'security_veri' | translate }}</span>
+      <i class="icon-close mutual-opacity onact96-not" (click)="close()"></i>
+    </div>
+    <div class="contant">
+      <div class="options">
+        <label class="txt">{{ 'complete_op' | translate }}</label>
+        <ng-container
+          [ngTemplateOutlet]="verifyTemplate"
+          [ngTemplateOutletContext]="{
+            otpType: verifyFor,
+            phone: userAccountInfor?.mobile || '',
+            phoneTips:
+              ('enter_phone' | translate) +
+              userAccountInfor?.areaCode +
+              ' ' +
+              userAccountInfor?.mobile +
+              ('ver_code' | translate),
+            currentPhoneZone: userAccountInfor?.areaCode,
+            email: userAccountInfor?.email || '',
+            emailTips: ('enter_v_email' | translate) + userAccountInfor?.email + ('ver_code' | translate)
+          }"
+        ></ng-container>
+      </div>
+      <ng-container [ngTemplateOutlet]="submitBtnTemplate"></ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<!-- 验证组件 -->
+<ng-template
+  #verifyTemplate
+  let-otpType="otpType"
+  let-phone="phone"
+  let-phoneTips="phoneTips"
+  let-currentPhoneZone="currentPhoneZone"
+  let-email="email"
+  let-emailTips="emailTips"
+>
+  <ng-container *ngIf="verifyType === 'PHONE'">
+    <!--手机验证码 -->
+    <div class="form-group">
+      <app-verify-code
+        verifyType="PHONE"
+        [otpType]="otpType"
+        [phone]="phone"
+        [inputLabel]="'p_code' | translate"
+        [authStatus]="authStatus"
+        [tips]="phoneTips"
+        [currentPhoneZone]="currentPhoneZone"
+        (onChangeAuthStatus)="onfirstSendAuthcode($event)"
+        (verfityInputSuccess)="onOtpCode($event)"
+      >
+      </app-verify-code>
+      <div class="error-msg" *ngIf="!!showErrorText">
+        {{ showErrorText }}
+      </div>
+    </div>
+    <!-- 切换方法 -->
+    <div class="bottom-1">
+      <ng-container
+        [ngTemplateOutlet]="swtichMethods"
+        [ngTemplateOutletContext]="{
+          switchFirst: 'EMAIL',
+          switchSecond: 'GOOGLE',
+          firstMethodName: ('switch_email' | translate),
+          secondMethodName: ('switch_google_auth' | translate),
+          isShowFirstMethod: isUsedComponent ? user2fa?.tFaEmail : userAccountInfor?.isBindEmail,
+          isShowSecondMethod: isUsedComponent ? user2fa?.tFaGoogle : userAccountInfor?.isBindGoogleValid
+        }"
+      ></ng-container>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="verifyType === 'GOOGLE'">
+    <!--google验证-->
+    <div class="form-group">
+      <app-verify-code
+        [otpType]="otpType"
+        verifyType="GOOGLE"
+        (verfityInputSuccess)="onGoogleOtpCode($event)"
+      ></app-verify-code>
+    </div>
+    <!-- 切换方法 -->
+    <ng-container
+      [ngTemplateOutlet]="swtichMethods"
+      [ngTemplateOutletContext]="{
+        switchFirst: 'PHONE',
+        switchSecond: 'EMAIL',
+        firstMethodName: ('swtich_phone' | translate),
+        secondMethodName: ('switch_email' | translate),
+        isShowFirstMethod: isUsedComponent ? user2fa?.tFaMobile : userAccountInfor?.isBindMobile,
+        isShowSecondMethod: isUsedComponent ? user2fa?.tFaEmail : userAccountInfor?.isBindEmail
+      }"
+    ></ng-container>
+  </ng-container>
+  <ng-container *ngIf="verifyType === 'EMAIL'">
+    <div class="form-group">
+      <app-verify-code
+        [inputLabel]="'email_verification' | translate"
+        verifyType="EMAIL"
+        [email]="email"
+        [otpType]="otpType"
+        [tips]="emailTips"
+        [emailAuthStatus]="emailAuthStatus"
+        (onChangeAuthStatus)="onFirstSendEmailAuthCode()"
+        (verfityInputSuccess)="onEmailOtpCode($event)"
+      >
+      </app-verify-code>
+      <div class="error-msg" *ngIf="!!showErrorText">
+        {{ showErrorText }}
+      </div>
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="swtichMethods"
+      [ngTemplateOutletContext]="{
+        switchFirst: 'PHONE',
+        switchSecond: 'GOOGLE',
+        firstMethodName: ('swtich_phone' | translate),
+        secondMethodName: ('switch_google_auth' | translate),
+        isShowFirstMethod: isUsedComponent ? user2fa?.tFaMobile : userAccountInfor?.isBindMobile,
+        isShowSecondMethod: isUsedComponent ? user2fa?.tFaGoogle : userAccountInfor?.isBindGoogleValid
+      }"
+    ></ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- 提交按钮组件 -->
+<ng-template #submitBtnTemplate>
+  <!-- 提交按钮 -->
+  <customize-button
+    class="m-top"
+    width="100%"
+    type="primary"
+    [disabled]="!canSubmit"
+    [loading]="isLoading"
+    size="medium"
+    (onClick)="submit()"
+  >
+    {{ 'sub' | translate }}</customize-button
+  >
+</ng-template>
+
+<!-- 切换多种验证方式 -->
+<ng-template
+  #swtichMethods
+  let-switchFirst="switchFirst"
+  let-switchSecond="switchSecond"
+  let-firstMethodName="firstMethodName"
+  let-secondMethodName="secondMethodName"
+  let-isShowFirstMethod="isShowFirstMethod"
+  let-isShowSecondMethod="isShowSecondMethod"
+>
+  <div class="switch-container" *ngIf="isShowFirstMethod || isShowSecondMethod">
+    <div
+      class="d-msg-1 onact96-not"
+      *ngIf="isShowFirstMethod || isShowSecondMethod"
+      (click)="handleVerityWay(isShowFirstMethod ? switchFirst : switchSecond)"
+    >
+      {{ isShowFirstMethod ? firstMethodName : secondMethodName }}
+    </div>
+    <ng-container *ngIf="isShowFirstMethod && isShowSecondMethod">
+      <p class="or">{{ 'or' | translate }}</p>
+      <div class="d-msg-1 onact96-not" *ngIf="isShowSecondMethod" (click)="handleVerityWay(switchSecond)">
+        {{ secondMethodName }}
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- 邮箱提示弹窗 -->
+<ng-template #emailTipPopup>
+  <div class="popup-common standard-popup">
+    <div class="header">
+      <img src="assets/svg/icon-email.svg" lazy="loading" />
+    </div>
+    <div class="popup-body">
+      <p class="one">{{ 'email_ver_code_no_receive' | translate }}</p>
+      <p class="two">{{ 'email_ver_code00' | translate }}</p>
+      <div class="three">
+        <p>1.{{ 'email_ver_code01' | translate }}</p>
+        <p>2.{{ 'email_ver_code02' | translate }} {{ user2fa?.email || '' }}</p>
+        <p>3.{{ 'email_ver_code03' | translate }}</p>
+        <!-- <p>4.{{ 'email_ver_code04' | translate }}</p> -->
+      </div>
+    </div>
+    <customize-button class="cancel-btn" type="primary" width="100%" (onClick)="popupClose.close()">{{
+      'confirm_button' | translate
+    }}</customize-button>
+  </div>
+</ng-template>

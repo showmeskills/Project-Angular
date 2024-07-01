@@ -1,0 +1,20 @@
+<div
+  class="page-container"
+  style="
+--application-bg: url({{ 'assets/images/friend/application/application-bg.jpg' | preferWebp }});
+--h5-application-bg: url({{ 'assets/images/friend/application/h5-application-bg.jpg' | preferWebp }});"
+>
+  <div class="application-container" [appLoading]="contentLoading">
+    <div [innerHtml]="localeContent | toHtmlElement" class="aff-locale" (click)="onClickLink($event)"></div>
+  </div>
+  <div class="main-container footer-background unity-padding-h5-16">
+    <img class="footer-bg" src="assets/images/friend/application/footer-background.svg" alt="" lazy="loading" />
+    <app-friend-footer
+      [redirect]="onJoin()"
+      [title]="footerData.title"
+      [smallTitle]="footerData.smallTitle"
+      [btnName]="footerData.btnName"
+    >
+    </app-friend-footer>
+  </div>
+</div>

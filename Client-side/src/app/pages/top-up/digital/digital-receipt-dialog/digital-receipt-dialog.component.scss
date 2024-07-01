@@ -1,0 +1,141 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+div {
+  display: flex;
+}
+
+.main-container {
+  width: 484px;
+  // height: 375px;
+  padding: 24px;
+  flex-direction: column;
+  background-color: var(--container-bg-color);
+
+  @media (max-width: 767px) {
+    width: 100%;
+    // height: 374px;
+    padding: 24px 16px;
+  }
+
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    //标题
+    .title {
+      // color: #1e2329;
+      color: var(--text-color);
+      font-size: 20px;
+
+      @media (max-width: 767px) {
+        font-size: 16px;
+      }
+    }
+
+    //关闭icon
+    .icon-close {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  //内容
+  .contants-clounm {
+    flex-direction: column;
+    margin-top: 21px;
+
+    @media (max-width: 767px) {
+    }
+
+    .infor-row {
+      height: 38px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      @include polyfills.flex-gap(15px, 'row nowrap');
+
+      //字体最小宽度
+      .min-txt {
+        @media (max-width: 767px) {
+          min-width: 58px;
+        }
+      }
+
+      span {
+        // color: #707a8a;
+        color: var(--text-color-20);
+      }
+
+      .status-txt {
+        display: flex;
+        align-items: center;
+        color: var(--text-color);
+      }
+
+      .data,
+      .amount,
+      .network {
+        // color: #1e2329;
+        color: var(--text-color);
+      }
+
+      .center-row {
+        align-items: center;
+        color: var(--text-color);
+
+        .icon-network {
+          height: 20px;
+          width: 20px;
+          margin-right: 9px;
+        }
+      }
+
+      .contant {
+        // color: #1e2329;
+        color: var(--text-color);
+        text-align: end;
+        flex: 1;
+        overflow: hidden;
+        align-items: center;
+        @include polyfills.flex-gap(5px, 'row nowrap');
+
+        @media (max-width: 767px) {
+          // display: inline-block !important;
+        }
+
+        .txt {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex: 1;
+
+          @media (max-width: 767px) {
+            word-break: break-all;
+            display: inline;
+            line-height: 1.43;
+          }
+        }
+
+        .icon-link {
+          cursor: pointer;
+          user-select: none;
+          &:hover,
+          .select {
+            color: var(--primary-color);
+          }
+        }
+      }
+    }
+
+    .offset-height {
+      height: 60px;
+    }
+  }
+}

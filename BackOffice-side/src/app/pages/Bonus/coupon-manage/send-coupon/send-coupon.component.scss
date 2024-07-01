@@ -1,0 +1,25 @@
+.member {
+  height: 290px;
+  align-content: flex-start;
+  &-item {
+    width: 168px;
+    height: 42px;
+    border: 1px dashed #e4e6ef;
+    border-radius: 6px;
+    .del-icon {
+      width: 32px;
+      height: 32px;
+      background: #f5f8fa;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  }
+}
+
+.download {
+  color: #319ef7;
+  font-size: 16px;
+  text-decoration: underline;
+  word-break: keep-all;
+  cursor: pointer;
+}

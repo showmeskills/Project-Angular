@@ -1,0 +1,104 @@
+@use 'sass/tools';
+
+@include tools.tab-line() {
+  @include tools.tabs();
+
+  ::ng-deep {
+    .mat-mdc-tab-header {
+      --mdc-tab-indicator-active-indicator-height: 4px;
+      max-width: 840px;
+      position: relative;
+      border: 0;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        border-bottom: 4px solid #eff2f5;
+      }
+    }
+
+    .mat-mdc-tab-body-content {
+      padding: 5px 0;
+      font-size: 16px;
+      overflow: inherit;
+    }
+  }
+}
+
+:host {
+  margin: 12px;
+  padding: 30px 30px 55px;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px 0 rgba(82, 63, 105, 0.05);
+  background-color: #fff;
+  display: flex;
+  flex-flow: column nowrap;
+
+  .form-label {
+    margin-bottom: 0;
+  }
+
+  .btn-wrap {
+    margin-left: -55px;
+  }
+
+  .label-title {
+    @extend .color-999 !optional;
+    flex: 0 0 110px;
+  }
+}
+
+.switch-btn {
+  padding: 2px;
+  background: #f5f8fa;
+  line-height: 38px;
+  display: inline-block;
+  border-radius: 4px;
+  vertical-align: middle;
+
+  > span {
+    display: inline-block;
+    line-height: 38px;
+    padding: 0 13px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .active {
+    background: #a1a5b7;
+    color: #fff;
+  }
+}
+
+.switch-btn-circle {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  > span {
+    flex: 0 0 38px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    background: #f5f8fa;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+
+  .active {
+    background: #009ef7;
+    color: #fff;
+  }
+}
+
+.area {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: -10px;
+  transform: scale(0.5);
+}

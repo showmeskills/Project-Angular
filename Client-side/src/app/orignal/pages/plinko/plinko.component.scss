@@ -1,0 +1,297 @@
+:host {
+  width: 100%;
+  background-color: var(--orignal-bg);
+}
+
+div {
+  display: flex;
+}
+
+.wrapper {
+  width: 878px;
+  margin: 10px auto 46px;
+  /* 背景色/日间 */
+  flex-direction: column;
+  position: relative;
+
+  @media (max-width: 940px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+  }
+
+  &-top {
+    padding: 10px 16px;
+
+    @media (max-width: 576px) {
+      padding-bottom: 0;
+    }
+  }
+
+  .content {
+    position: relative;
+    width: 100%;
+    display: block;
+
+    canvas {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .rows {
+      position: absolute;
+      bottom: 3%;
+      right: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      height: 6%;
+
+      .row {
+        box-sizing: border-box;
+        display: grid;
+        grid-gap: 1%;
+      }
+
+      .row-item {
+        position: relative;
+        font-weight: 900;
+        font-size: 13px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--orignal-mian);
+        border-radius: 5px;
+        white-space: nowrap;
+        grid-row: 1;
+        -webkit-animation-duration: 0.3s !important;
+        animation-duration: 0.3s !important;
+        -webkit-animation-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        animation-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
+
+        span {
+          text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        // &.active {
+        //   background-color: #2283f6;
+        //   color: #fff;
+        //   -webkit-animation: shake .8s cubic-bezier(.36, .07, .19, .97) both;
+        //   animation: shake .8s cubic-bezier(.36, .07, .19, .97) both;
+        //   transform: translateZ(0);
+        //   -webkit-backface-visibility: hidden;
+        //   backface-visibility: hidden;
+        //   perspective: 1000px;
+        // }
+
+        span {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 900;
+          font-size: 13px;
+
+          @media (max-width: 576px) {
+            font-weight: 600;
+            font-size: 12px;
+            transform: scale(0.833333);
+          }
+        }
+
+        &.highlighted {
+          -webkit-animation-name: svelte-slideDown;
+          animation-name: svelte-slideDown;
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-radius: 5px;
+            border: 2px solid var(--orignal-primary-color);
+          }
+        }
+      }
+    }
+
+    .left-corner {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 16px;
+      width: 34%;
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .right-corner {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      right: 16px;
+      width: 33%;
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .results {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: block;
+
+        @media (max-width: 576px) {
+          top: 7px;
+        }
+
+        .results__inner {
+          display: block;
+        }
+
+        .results__item {
+          line-height: 26px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 5px;
+          transition: opacity 0.3s;
+          -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+          -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+          -webkit-animation-timing-function: ease-out;
+          animation-timing-function: ease-out;
+          opacity: 0;
+          font-size: 12px;
+          background: var(--orignal-mian);
+          border: 1px solid var(--orignal-border-color1);
+          border-radius: 4px;
+          width: 40px;
+          color: #f06d23;
+          font-weight: 900;
+
+          @media (max-width: 576px) {
+            line-height: 14px;
+          }
+
+          &:nth-child(odd) {
+            opacity: 1;
+            -webkit-animation-name: horizont-3;
+            animation-name: horizont-3;
+          }
+
+          &:first-child {
+            opacity: 1;
+            -webkit-animation-name: horizont-1;
+            animation-name: horizont-1;
+          }
+
+          &:nth-child(2n) {
+            opacity: 1;
+            -webkit-animation-name: horizont-2;
+            animation-name: horizont-2;
+          }
+
+          &:nth-last-child(2) {
+            opacity: 0.5;
+          }
+
+          &:last-child {
+            margin-bottom: 0;
+            opacity: 0;
+          }
+        }
+      }
+    }
+  }
+
+  &.loading {
+    ::ng-deep orignal-bet {
+      .wrapper .top .bet-button {
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateY(3px);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+
+  100% {
+    transform: translateY(1px);
+  }
+}
+
+@keyframes horizont-1 {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes horizont-2 {
+  0% {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes horizont-3 {
+  0% {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes svelte-slideDown {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+
+  50% {
+    transform: translateY(30%);
+  }
+}

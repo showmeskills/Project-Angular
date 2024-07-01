@@ -1,0 +1,134 @@
+<div class="page-container">
+  <div class="main-container unity-padding-web unity-padding-h5-16">
+    <div class="header-container container">
+      <p class="title">{{ 'tournament' | translate }}</p>
+      <img class="head-right" src="assets/images/activity/tournament/flag.svg" alt="" lazy="loading" />
+    </div>
+  </div>
+  <div class="main-container unity-padding-web unity-padding-h5-16 inner-page">
+    <div class="container tournament-container" [appLoading]="tournamentLoading()">
+      <ng-container *ngIf="!renderEmpty(); else defaultEmpty">
+        <!-- 进行中 -->
+        <div class="start" *ngIf="renderTournamentStartList() && !tournamentLoading()">
+          <ng-container *ngFor="let item of renderTournamentStartList(); let index = index">
+            <app-tournament-template
+              [tournamentBanner]="item"
+              [rankList]="renderRankList()[index]"
+              (submitJoin)="onSubmitTournamentJoin(item)"
+              (seeMore)="toTournamentDetails(item)"
+              [joinLoading]="joinLoading"
+            ></app-tournament-template>
+          </ng-container>
+        </div>
+        <!-- 未开始 -->
+        <ng-container *ngIf="renderPreLists() && !tournamentLoading()">
+          <div class="title" *ngIf="renderPreLists()">{{ 'upcoming' | translate }}</div>
+          <div class="upcoming">
+            <div class="upcoming-tournament" *ngFor="let item of renderPreLists()">
+              <div class="upcoming-web">
+                <ng-container *ngTemplateOutlet="upcomingIntro; context: { item, showTimer: false }"></ng-container>
+                <div class="upcoming-timer">
+                  <div class="end-time">
+                    <p class="end-time-title">{{ 'start_in' | translate }}</p>
+                    <app-tournament-timer [calcTimer]="item.remainingTime"></app-tournament-timer>
+                  </div>
+                  <div class="upcoming-image">
+                    <app-lazy-image
+                      [lazy]="item.activityThumbnails"
+                      [thumbWidth]="500"
+                      [ratio]="230 / 225"
+                    ></app-lazy-image>
+                  </div>
+                </div>
+              </div>
+              <div class="upcoming-h5">
+                <app-lazy-image [lazy]="item.activityThumbnails" [thumbWidth]="500" [ratio]="1 / 1"></app-lazy-image>
+                <ng-container *ngTemplateOutlet="upcomingIntro; context: { item, showTimer: true }"></ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <!-- 过期 -->
+        <ng-container *ngIf="renderEndLists() && !tournamentLoading()">
+          <div class="title" *ngIf="renderEndLists()">{{ 'tournament_expired' | translate }}</div>
+          <div class="expired">
+            <div class="expired-tournament" *ngFor="let item of renderEndLists()">
+              <div class="expired-intro">
+                <div class="title-container">
+                  <p class="expired-title">{{ item?.activityName || '' }}</p>
+                  <p class="expired-sub-title">{{ item?.activitySubName || '' }}</p>
+                </div>
+                <customize-button
+                  class="expired-btn"
+                  type="primary"
+                  size="medium"
+                  width="100%"
+                  [radius]="'30px'"
+                  (onClick)="toTournamentDetails(item)"
+                >
+                  {{ 'see_more' | translate }}
+                </customize-button>
+              </div>
+              <div class="expired-img">
+                <app-lazy-image
+                  [lazy]="item?.activityThumbnails || ''"
+                  [thumbWidth]="500"
+                  [ratio]="163 / 149"
+                ></app-lazy-image>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <!-- 当前没有任何活动 -->
+      <ng-template #defaultEmpty>
+        <app-empty
+          *ngIf="!tournamentLoading()"
+          [icon]="'assets/images/card-center/empty.png'"
+          [text]="'no_tournaments' | translate"
+        ></app-empty>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<ng-template #upcomingIntro let-item="item" let-showTimer="showTimer">
+  <div class="upcoming-intro">
+    <p class="intro-title">{{ item?.activityName || '' }}</p>
+    <p class="intro-sub-title">{{ item?.activitySubName || '' }}</p>
+    <div class="upcoming-rewards">
+      <div class="first-rewards" *ngIf="item.numberVos.length">
+        <img src="assets/images/activity/tournament/glod-coin.png" />
+        <p class="mlr-12 reward" *ngIf="item.numberVos.length">
+          {{ item.totalPrizeAmount | transToDefaultCurrency : defaultCurrency?.currency || 'USDT' }}
+        </p>
+        <img class="currency-img" [src]="defaultCurrency?.currency || 'USDT' | currencyIcon" />
+      </div>
+      <div class="rewards-list" *ngIf="item.numberVos.length">
+        <div class="list-item" *ngFor="let item of item.numberVos; let index = index">
+          <img class="reward-badge" [src]="'assets/images/activity/tournament/' + index + '-award.svg'" />
+          <p class="mlr-12 reward-text">
+            {{ item.amount || 0 | transToDefaultCurrency : item?.currency || 'USDT' }}
+          </p>
+          <img class="currency-img" [src]="defaultCurrency?.currency || 'USDT' | currencyIcon" />
+        </div>
+      </div>
+    </div>
+    <div class="upcoming-timer" *ngIf="showTimer">
+      <div class="end-time">
+        <p class="end-time-title">{{ 'start_in' | translate }}</p>
+        <app-tournament-timer [calcTimer]="item.remainingTime"></app-tournament-timer>
+      </div>
+    </div>
+    <customize-button
+      class="upcoming-btn"
+      type="primary"
+      size="large"
+      width="100%"
+      [radius]="'30px'"
+      (onClick)="toTournamentDetails(item)"
+    >
+      {{ 'see_more' | translate }}
+    </customize-button>
+  </div>
+</ng-template>

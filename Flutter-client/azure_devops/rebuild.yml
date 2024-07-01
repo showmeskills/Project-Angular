@@ -1,0 +1,84 @@
+steps:
+  - task: InstallSSHKey@0
+    inputs:
+      knownHostsEntry: 'ssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H'
+      sshKeySecureFile: 'base_rsa'
+
+  - checkout: self
+    submodules: recursive
+    fetchDepth: 2
+    persistCredentials: true
+
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '11'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
+
+  - script: |
+      git diff --name-only HEAD~ HEAD
+      if [[ $(CHECKFORCE) == true ]]; then
+        full_build="$(sh merchant_scripts/check.sh)"
+        echo "##vso[task.setvariable variable=fullBuild]$full_build"
+        if [[ $full_build == true ]]; then
+          echo "This build is full build"
+        else
+          echo "This build is patch build"
+        fi
+      else
+        echo 'Skip'
+      fi
+    displayName: "Check If Full Update"
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        build_branch="$(Build.SourceBranch)"
+        remove_header="refs/heads/"
+        current_branch=${build_branch//$remove_header/}
+        git remote add $(repoName) https://GBDigital@dev.azure.com/GBDigital/SportsBook-Flutter/_git/gogaming_app
+        git fetch --all &>/dev/null
+        sh merchant_scripts/change_version.sh $(Build.BuildNumber) ${current_branch} $(Build.SourceVersion)
+    displayName: "Change Version And Push Code"
+    condition: eq(variables.fullBuild, true)
+
+  - task: replacetokens@5
+    inputs:
+      rootDirectory: "$(Build.SourcesDirectory)/lib/config"
+      targetFiles: "**/*config.dart"
+      encoding: "auto"
+      tokenPattern: "default"
+      writeBOM: true
+      actionOnMissing: "warn"
+      keepToken: false
+      actionOnNoFiles: "continue"
+      enableTransforms: false
+      enableRecursion: false
+      useLegacyPattern: false
+      enableTelemetry: true
+
+  - script: |
+      curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash
+    displayName: 'Setup Shorebird'
+
+  - task: FlutterInstall@0
+    inputs:
+      mode: 'Custom'
+      customUrl: 'https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_3.19.5-stable.zip'
+    displayName: 'Install Flutter SDK'
+
+  - script: |
+      sh scripts/get_translate.sh
+      $(FlutterToolPath)/flutter pub get
+      $(FlutterToolPath)/flutter pub run assets_gen build
+      $(FlutterToolPath)/flutter pub run build_runner build --delete-conflicting-outputs
+      $(FlutterToolPath)/flutter pub run flutter_launcher_icons -f merchant-$(merchantNumber)/app-icon.yaml
+    displayName: 'Setup Flutter Config'
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        export LC_ALL='C'
+        sh merchant_scripts/config.sh merchant-$(merchantNumber)/configs/merchant_config_$(merchantEnv).yml
+    displayName: "Config Merchant Info"

@@ -1,0 +1,251 @@
+<div class="wrapper" [class.loading]="loading">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="spaceDice"
+      [(isAnimation)]="isAnimation"
+      [(fairnessData)]="fairnessData"
+      [(isHotkey)]="isHotkey"
+      [(isFastBet)]="isFastBet"
+    >
+    </orignal-bar>
+  </div>
+  <div class="main">
+    <div class="main-content">
+      <div class="space-jackpot">
+        <!-- 顶部的赛果 -->
+        <div class="numbers">
+          <ng-container *ngFor="let item of historyList">
+            <div class="item" [class]="item.type > 0 ? 'pt1' : 'pt09'">{{ item.lotteryBetDetail }}</div>
+          </ng-container>
+        </div>
+        <!-- 显示器   -->
+        <div class="boarmid-main">
+          <!-- 展示预测的范围 -->
+          <!-- 功能选择在范围内 -->
+          <ng-container *ngIf="!isOut">
+            <div class="boardmid-cont-top">
+              <ng-container *ngIf="!isH5">
+                <div class="range">{{ minValue }}</div>
+                <span class="symbol">≤</span>
+              </ng-container>
+              <ng-container *ngIf="isH5">
+                <div class="range now-range">
+                  <p>{{ minValue }}</p>
+                  <p class="symbol">≤</p>
+                </div>
+              </ng-container>
+              <div class="dice-numbers">
+                <p class="dice-number-wrap" *ngFor="let item of luckyArr">
+                  <img
+                    *ngIf="item != ''"
+                    [src]="'assets/orignal/images/spaceDice/' + (redDice ? 'blue' : 'red') + '-' + item + '.svg'"
+                  />
+                  <img
+                    *ngIf="item == ''"
+                    [src]="'assets/orignal/images/spaceDice/' + (redDice ? 'blue' : 'red') + '-empty.svg'"
+                  />
+                </p>
+              </div>
+              <ng-container *ngIf="!isH5">
+                <span class="symbol">≤</span>
+                <div class="range">{{ maxValue }}</div>
+              </ng-container>
+              <ng-container *ngIf="isH5">
+                <div class="range now-range">
+                  <p class="symbol">≤</p>
+                  <p>{{ maxValue }}</p>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+          <!-- 功能选择在范围外 -->
+          <ng-container *ngIf="isOut">
+            <div class="boardmid-cont-top">
+              <div class="left-num" *ngIf="!isH5">
+                <div class="range">0</div>
+                <span class="symbol">≤</span>
+                <div class="range">{{ maxValue }}</div>
+                <span class="symbol"><</span>
+              </div>
+              <div class="left-num" *ngIf="isH5">
+                <div class="range now-range">
+                  <p>0</p>
+                  <p class="symbol">≤</p>
+                </div>
+                <div class="range now-range">
+                  <p>{{ maxValue }}</p>
+                  <p class="symbol"><</p>
+                </div>
+              </div>
+
+              <div class="dice-numbers">
+                <p class="dice-number-wrap" *ngFor="let item of luckyArr">
+                  <img
+                    *ngIf="item != ''"
+                    [src]="'assets/orignal/images/spaceDice/' + (redDice ? 'blue' : 'red') + '-' + item + '.svg'"
+                  />
+                  <img
+                    *ngIf="item == ''"
+                    [src]="'assets/orignal/images/spaceDice/' + (redDice ? 'blue' : 'red') + '-empty.svg'"
+                  />
+                </p>
+                <!-- <p class="dice-number-wrap">
+                  <img src="assets/orignal/images/spaceDice/blue-1.svg" alt="" lazy="loading" />
+                </p>
+                <p class="dice-number-wrap">
+                  <img src="assets/orignal/images/spaceDice/blue-1.svg" alt="" lazy="loading" />
+                </p>
+                <p class="dice-number-wrap">
+                  <img src="assets/orignal/images/spaceDice/blue-1.svg" alt="" lazy="loading" />
+                </p>
+                <p class="dice-number-wrap">
+                  <img src="assets/orignal/images/spaceDice/blue-1.svg" alt="" lazy="loading" />
+                </p> -->
+              </div>
+              <div class="left-num" *ngIf="!isH5">
+                <span class="symbol"><</span>
+                <div class="range">{{ minValue }}</div>
+                <span class="symbol">≤</span>
+                <div class="range">9999</div>
+              </div>
+              <div class="left-num" *ngIf="isH5">
+                <div class="range now-range">
+                  <p class="symbol"><</p>
+                  <p>{{ minValue }}</p>
+                </div>
+                <div class="range now-range">
+                  <p class="symbol">≤</p>
+                  <p>9999</p>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <!-- 功能键 -->
+          <div class="boardmid-cont-fuc">
+            <!-- 第一层功能键 -->
+            <div class="func-top">
+              <!-- 第一层功能键 -->
+              <!-- Fuc:IN - include the digits in the selected range. OUT - include the digits out of the selected range. -->
+              <div class="dice-switcher" [ngClass]="{ out: isOut, in: !isOut }" (click)="toggleOut()">
+                <p [ngClass]="{ active: !isOut }" class="left-sw-ff">{{ 'space_in' | translate }}</p>
+                <p [ngClass]="{ active: isOut }">{{ 'space_out' | translate }}</p>
+                <div class="slider"></div>
+              </div>
+              <!-- divider -->
+              <div class="hr-line" *ngIf="!isH5"></div>
+              <div class="other-btns">
+                <button class="dvs" (click)="minBtn()">
+                  <h6>{{ 'space_min' | translate }}</h6>
+                </button>
+                <button class="dvs" (click)="subPercent()"><h6>-5%</h6></button>
+                <button class="dvs magic-button" (click)="autoPick()">
+                  <img src="assets/orignal/images/spaceDice/magic.svg" alt="" lazy="loading" />
+                  <h6>{{ 'space_auto' | translate }}</h6>
+                </button>
+                <button class="dvs" (click)="addPercent()"><h6>+5%</h6></button>
+                <button class="dvs" (click)="maxBtn()">
+                  <h6>{{ 'space_max' | translate }}</h6>
+                </button>
+              </div>
+            </div>
+            <!-- Web-第二层功能键 -->
+            <div class="func-bot" *ngIf="!isH5">
+              <div class="bot-item">
+                <span>{{ 'space_payout' | translate }}</span>
+                <input type="number" [(ngModel)]="rate" [readOnly]="true" class="ff" />
+                <div class="suffix">X</div>
+              </div>
+              <div class="bot-item">
+                <span>{{ 'space_win' | translate }}</span>
+                <input type="text" [(ngModel)]="winAmount" [readOnly]="true" class="ff" />
+              </div>
+              <div class="bot-item">
+                <span>{{ 'space_chance' | translate }}</span>
+                <input type="text" [(ngModel)]="chance" [readOnly]="true" class="ff possible" />
+                <div class="suffix">%</div>
+              </div>
+            </div>
+            <!-- H5-第二层功能键 -->
+            <div class="func-bot" *ngIf="isH5">
+              <div class="bot-item">
+                <span>{{ 'space_payout' | translate }}</span>
+                <input type="number" [(ngModel)]="rate" [readOnly]="true" class="ff" />
+                <div class="suffix">X</div>
+              </div>
+              <div class="bot-item">
+                <span>{{ 'space_win' | translate }}</span>
+                <input type="text" [(ngModel)]="winAmount" [readOnly]="true" class="ff" />
+              </div>
+              <div class="bot-item">
+                <span>{{ 'space_chance' | translate }}</span>
+                <input type="text" [(ngModel)]="chance" [readOnly]="true" class="ff possible" />
+                <div class="suffix">%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 控制器 -->
+        <div class="dice-control">
+          <!-- 骰子的位置先写死 TODO:跟滚动条的颜色变化 -->
+          <div class="dice">
+            <!-- 骰子背景色 -->
+            <div
+              class="dice-bg"
+              [class.red]="!redDice"
+              [style]="{
+                left: leftPercent + '%'
+              }"
+            >
+              <!-- 骰子--在移动的时候旋转 -->
+              <ng-container *ngIf="diceMoved; else notMoved">
+                <img class="trans-dice" src="assets/orignal/images/spaceDice/dice.gif" alt="" />
+                <!-- 指向颜色的线 -->
+                <div class="divider"></div>
+              </ng-container>
+              <!-- 投资没移动 -->
+              <ng-template #notMoved>
+                <img class="my-dice" src="assets/orignal/images/spaceDice/dice.svg" alt="" />
+                <!-- 指向颜色的线 -->
+                <div class="divider"></div>
+              </ng-template>
+            </div>
+          </div>
+          <!-- 滑动栏（手动拖动范围） -->
+          <div class="game-slider" [ngClass]="{ 'now-slider': !isOut }">
+            <form [formGroup]="sliderForm">
+              <ngx-slider
+                formControlName="sliderControl"
+                [options]="options"
+                (userChange)="onUserChange($event)"
+              ></ngx-slider>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 0px; height: 0px; overflow: hidden">
+    <img src="assets/orignal/images/spaceDice/red-empty.svg" alt="" />
+    <img src="assets/orignal/images/spaceDice/blue-empty.svg" alt="" />
+    <img src="assets/orignal/images/spaceDice/dice.gif" alt="" />
+    <img
+      *ngFor="let item of [].constructor(10); let index = index"
+      [src]="'assets/orignal/images/spaceDice/blue-' + index + '.svg'"
+    />
+    <img
+      *ngFor="let item of [].constructor(10); let index = index"
+      [src]="'assets/orignal/images/spaceDice/red-' + index + '.svg'"
+    />
+  </div>
+
+  <orignal-bet
+    type="spaceDice"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [operate]="operate"
+    [(isLoop)]="isLoop"
+    [(rate)]="rate"
+    [isDice]="false"
+  ></orignal-bet>
+</div>

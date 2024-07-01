@@ -1,0 +1,219 @@
+<div class="card card-body">
+  <div class="base" [formGroup]="formGroup" *ngIf="formGroup">
+    <!-- 验证表单 -->
+    <lang-tab
+      formArrayName="lang"
+      [(value)]="selectLang"
+      [(selection)]="curLang"
+      (languageChange)="updateLanguageForm()"
+      [edit]="!isReadonly"
+    >
+      <ng-template let-control="formControl">
+        <div class="pb-8" [formGroup]="control">
+          <!-- 活动名称 -->
+          <form-row
+            name="activityName"
+            required
+            [label]="'luckRoulette.eventName' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterEventName' | lang }"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <input
+                *ngIf="!isReadonly; else showTpl"
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+                class="form-control"
+                type="text"
+                [placeholder]="'luckRoulette.max40' | lang"
+                [maxlength]="40"
+              />
+              <ng-template #showTpl>{{ control.value }}</ng-template>
+            </ng-template>
+          </form-row>
+
+          <!-- 活动子名称 -->
+          <form-row
+            name="activitySubName"
+            [label]="'luckRoulette.subEventName' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterSubName' | lang }"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <input
+                *ngIf="!isReadonly; else showTpl"
+                [class.is-invalid]="invalid"
+                class="form-control"
+                type="text"
+                [placeholder]="'luckRoulette.max20' | lang"
+                [formControl]="control"
+                [maxlength]="20"
+              />
+              <ng-template #showTpl>{{ control.value }}</ng-template>
+            </ng-template>
+          </form-row>
+
+          <!-- 玩法规则-->
+          <form-row
+            name="rule"
+            [label]="'luckRoulette.eventRules' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterEventRules' | lang }"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <ueditor
+                *ngIf="!isReadonly; else showTpl"
+                type="Bonus"
+                class="form-control rounded border-1 h-auto"
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+              ></ueditor>
+              <ng-template #showTpl>
+                <div class="word-break lh-1 pt-5" [innerHTML]="control.value"></div>
+              </ng-template>
+            </ng-template>
+          </form-row>
+
+          <!-- 宣传语 -->
+          <form-row
+            name="description"
+            [label]="'luckRoulette.promotion' | lang"
+            label-width="150"
+            [invalidFeedback]="{ required: 'luckRoulette.enterPromotion' | lang }"
+            class="pb-4"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <textarea
+                *ngIf="!isReadonly; else showTpl"
+                [class.is-invalid]="invalid"
+                [formControl]="control"
+                class="form-control resize-none"
+                type="text"
+                rows="3"
+              ></textarea>
+              <ng-template #showTpl>
+                <div class="lh-28 py-3 text-break" [style.white-space]="'pre-line'">{{ control.value }}</div>
+              </ng-template>
+            </ng-template>
+          </form-row>
+        </div>
+      </ng-template>
+    </lang-tab>
+
+    <!-- 参赛时间 -->
+    <form-row
+      [label]="'luckRoulette.partTime' | lang"
+      label-width="150"
+      class="ml-8 mt-5"
+      [control]="formGroup.controls['time']"
+      required
+    >
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="d-flex">
+          <input
+            *ngIf="!isReadonly; else showTpl"
+            class="form-control text-center"
+            type="text"
+            selectMode="range"
+            [placeholder]="'form.chooseTime' | lang"
+            [style.width.px]="290"
+            [owlDateTime]="picker"
+            [owlDateTimeTrigger]="picker"
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+          />
+          <ng-template #showTpl>
+            <ng-container *ngIf="control.value?.[0] || control.value?.[1]">
+              {{ control.value?.[0] | timeFormat }} ~
+              {{ control.value?.[1] | timeFormat }}
+            </ng-container>
+          </ng-template>
+          <owl-date-time class="fz-20" #picker></owl-date-time>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="activity ml-8" [class.disabled]="isReadonly">
+    <!-- 奖池 -->
+    <form-row [label]="'member.activity.sencli12.prizePool' | lang" class="mt-5" label-width="150" required>
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap mb-4" *ngFor="let item of prizePoolList; index as i">
+          <!-- 奖品 -->
+          <span class="color-aaa mr-6">{{ 'luckRoulette.prize' | lang }}{{ i + 1 }}：</span>
+
+          <div class="mr-5" *ngIf="item?.id">
+            <!-- 奖品名称 -->
+            {{ item?.prizeName }}
+            <!-- 奖品配置 -->
+            （{{ item | prizeConfig }}）
+            <!-- 奖品状态: 待审核/已下架 -->
+            <div class="text-danger" *ngIf="item?.status !== 2">（{{ getPrizeSatus(item.status) | lang }}）</div>
+
+            <!-- 奖品金额类型为比例：上限金额 + 币种 -->
+            <ng-container *ngIf="item?.amountType === 2">
+              （{{ 'member.activity.prizeCommon.capAmount' | lang }}：{{ item?.rateLimit
+              }}<img [currencyIcon]="item?.currency" currencySize="20" class="mx-2" /> {{ item?.currency }}）
+            </ng-container>
+
+            <!-- 奖品类型 -->
+            （{{ prizeService.getPrizeName(prizeTypeList, item?.prizeType) }}）
+            <!-- 奖品卷码 -->
+            （{{ item?.prizeCode || '-' }}）
+          </div>
+
+          <ng-container *ngIf="!isReadonly">
+            <!-- 新增/修改奖品 - 按钮 -->
+            <button type="button" class="btn btn-light-primary py-3 mr-5" (click)="onOpenSelectPrize(i)">
+              <svg-icon
+                class="vam svg-icon lh-18"
+                [src]="item?.id ? './assets/images/svg/pen.svg' : './assets/images/svg/add.svg'"
+              ></svg-icon>
+              <span class="vam">{{
+                (item?.id ? 'auManage.role.chnage' : 'member.activity.sencli2.addPrize') | lang
+              }}</span>
+            </button>
+
+            <!-- 删除名次 -->
+            <svg-icon
+              *ngIf="i > 0"
+              class="vam svg-icon svg-icon-3x lh-18 cursor-pointer"
+              [src]="'./assets/images/svg/bonus-delete.svg'"
+              (click)="prizePoolList.splice(i, 1)"
+            ></svg-icon>
+          </ng-container>
+        </div>
+
+        <!-- 新增 -->
+        <button
+          *ngIf="!isReadonly"
+          type="button"
+          class="btn btn-light-primary py-3"
+          (click)="prizePoolList.push(undefined)"
+        >
+          <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          <span class="vam">{{ 'common.add' | lang }}</span>
+        </button>
+      </ng-template>
+    </form-row>
+
+    <div class="text-danger mt-10">*{{ 'member.activity.sencli15.prizeSelectLimitTips' | lang }}</div>
+  </div>
+
+  <!-- 按钮组 -->
+  <div class="btn-wrap pt-14 flex-center d-flex">
+    <button type="button" class="c-btn btn btn-light" (click)="toList()">
+      {{ 'common.back' | lang }}
+    </button>
+
+    <button
+      *ngIf="!isReadonly"
+      type="button"
+      class="c-btn btn btn-primary"
+      (click)="onSubmit()"
+      [class.disabled]="appService.loading$ | async"
+    >
+      {{ 'luckRoulette.submit' | lang }}
+    </button>
+  </div>
+</div>

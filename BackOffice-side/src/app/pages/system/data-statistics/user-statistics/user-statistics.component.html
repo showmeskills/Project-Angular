@@ -1,0 +1,142 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <div class="d-flex flex-ac mr-8">
+      <form-row [label]="'system.statistics.statisticTime' | lang" class="mr-4" [contentWidth]="264">
+        <ng-template>
+          <input
+            class="text-center form-control w-100"
+            type="text"
+            [placeholder]="'system.statistics.selectStatisticsTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="data.time"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+      <div class="btn btn-primary" (click)="reStatistics()">{{ 'system.statistics.recounting' | lang }}</div>
+    </div>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <div class="d-flex flex-ac flex-1">
+      <div class="fz-20">{{ 'system.statistics.userStatistics' | lang }}</div>
+      <div class="ml-4 color-aaa">{{ 'system.statistics.ips' | lang }}</div>
+    </div>
+
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 导出 -->
+      <button
+        type="button"
+        class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        (click)="onExport()"
+      >
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 设备来源 -->
+          <th>
+            <span class="cell">{{ 'system.statistics.equipmentSources' | lang }}</span>
+          </th>
+          <!-- 渠道 -->
+          <th>
+            <span class="cell">{{ 'system.statistics.channel' | lang }}</span>
+          </th>
+          <!-- 国家 -->
+          <th>
+            <span class="cell">{{ 'system.statistics.country' | lang }}</span>
+          </th>
+          <!-- 注册用户总数 -->
+          <th>
+            <span class="cell">{{ 'system.statistics.totalUser' | lang }}</span>
+          </th>
+          <!-- 登陆用户总数 -->
+          <th>
+            <span class="cell">{{ 'system.statistics.totalLogged' | lang }}</span>
+          </th>
+          <!-- 统计日期 -->
+          <th>
+            <span class="cell">{{ 'system.statistics.statisticalDate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <!-- <td>
+            <span class="cell">{{ subHeaderService.getMerchantName(item.tenantId) }}</span>
+          </td> -->
+          <td>
+            <span class="cell">{{ item.device || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.channel || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.country || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.registerUserCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.loginUserCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.statDate | timeFormat: 'yyyy-MM-DD' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

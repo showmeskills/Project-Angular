@@ -1,0 +1,32 @@
+:host {
+  display: block;
+
+  &::ng-deep {
+    apx-chart {
+      width: 100%;
+
+      ::ng-deep > div {
+        width: 100%;
+      }
+    }
+  }
+
+  info {
+    max-width: 520px;
+    min-width: 460px;
+  }
+
+  manager-rank {
+    min-width: 280px;
+  }
+}
+
+.team-select {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  &.is-invalid {
+    border-color: #f64e60;
+  }
+}

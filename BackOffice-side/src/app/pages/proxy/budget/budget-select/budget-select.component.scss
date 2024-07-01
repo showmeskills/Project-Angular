@@ -1,0 +1,67 @@
+:host {
+  display: flex;
+  height: 36px;
+  line-height: 36px;
+
+  .add {
+    display: none;
+  }
+
+  &.form-control {
+    padding: 0 10px;
+    min-width: 210px;
+
+    .add {
+      width: 30px;
+      border-left: 1px solid #fff;
+      margin-left: 10px;
+      margin-right: -10px;
+      cursor: pointer;
+      line-height: 1;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+      display: flex;
+
+      &:hover {
+        background: #e4e6ef;
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .budget-select-menu {
+    border-radius: 8px;
+    background: #fff;
+    width: 146px;
+    padding: 5px 0;
+    display: flex;
+    flex-flow: row wrap;
+    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.1);
+    justify-content: center;
+
+    &-item {
+      flex: 0 0 36px;
+      width: 36px;
+      text-align: center;
+      border-radius: 4px;
+      border: 1px solid #dbdeed;
+      font-size: 12px;
+      margin: 5px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease-in;
+
+      &:hover {
+        color: #fff;
+        background: #319ef7;
+        border: 1px solid #319ef7;
+      }
+    }
+  }
+}
+
+.isOpenOver {
+  color: #a1a5b7;
+  opacity: 0.7;
+}

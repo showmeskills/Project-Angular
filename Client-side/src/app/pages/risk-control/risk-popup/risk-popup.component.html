@@ -1,0 +1,11 @@
+<div class="popup-common standard-popup">
+  <img class="header-img" lazy="loading" src="assets/images/face-verify/header-img.svg" />
+  <p class="header-title">{{ 'account_at_risk' | translate }}</p>
+  <p class="gray-color">{{ 'verify_hint' | translate }}</p>
+  <p class="primary-color">• {{ formData.title | translate }}</p>
+  <p class="gray-color">{{ 'advanced_certification_content2' | translate }}</p>
+
+  <customize-button width="100%" size="medium" type="primary" (onClick)="onConfirm()">
+    {{ 'sure' | translate }}
+  </customize-button>
+</div>

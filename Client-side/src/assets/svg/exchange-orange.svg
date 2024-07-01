@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+    <defs>
+        <style>
+            .cls-2{fill:#fb6943}
+        </style>
+    </defs>
+    <g id="组_5966" data-name="组 5966" transform="rotate(-90 15.172 15.172)">
+        <g id="组_361" data-name="组 361" transform="translate(.344)">
+            <circle id="椭圆_95" data-name="椭圆 95" cx="15" cy="15" r="15" style="fill:#f5f5f5"/>
+            <path id="联合_51" data-name="联合 51" class="cls-2" d="M7.788 2.946H0v1.685h7.788V7.58L12 3.79 7.788 0z" transform="translate(9 7.967)"/>
+            <path id="联合_52" data-name="联合 52" class="cls-2" d="M7.79 2.948H0v1.684h7.79v2.947L12 3.79 7.79 0z" transform="rotate(180 10.5 11.017)"/>
+        </g>
+    </g>
+</svg>

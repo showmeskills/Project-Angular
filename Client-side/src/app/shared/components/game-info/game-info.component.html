@@ -1,0 +1,85 @@
+<div class="container" *ngIf="gameInfo">
+  <div class="bet-container">
+    <div class="header mutual-opacity onact96" (click)="showTab = !showTab; onSelectedChange(0)">
+      <div class="left">
+        <div class="game-name">{{ gameInfo.gameName }}</div>
+        <div class="game-cat">{{ gameInfo.providerName }}</div>
+      </div>
+      <!-- 暂时隐藏 -->
+      <!--  <div class="tag jiangbei-tag">
+         <div class="jiangbei-icon"></div>
+          3,408.80x
+        </div> -->
+      <div class="right">
+        <ng-container *ngIf="!isH5 && dailyRacesService.firstUser.length">
+          <div class="first-user" *ngFor="let item of dailyRacesService.firstUser">
+            <img src="assets/images/daily-races/traphy.svg" lazy="loading" />
+            <p class="text-14 ml-6">{{ item?.odds }}</p>
+            <img
+              class="avatar ml-6"
+              [src]="item.avatar | avatarDefault"
+              lazy="loading"
+              alt=""
+              #img
+              (error)="dailyRacesService.onImageError(img)"
+            />
+            <p class="text-14 inline-block ml-6">
+              {{ item?.playerName || ('invisible' | translate) }}
+            </p>
+          </div>
+        </ng-container>
+        <div class="icon-arrow-left-simple" [class.active]="!showTab"></div>
+      </div>
+    </div>
+    <div class="tab-outer-container" *ngIf="showTab">
+      <div class="tab-container">
+        <mat-tab-group (selectedIndexChange)="onSelectedChange($event)">
+          <mat-tab [label]="'des' | translate">
+            <div class="desc-container">
+              <div class="img-wrapper" *ngIf="!isH5">
+                <img
+                  #imgEl
+                  [src]="$any(imgEl).isError ? defaultImg : gameInfo.webLogo || defaultImg"
+                  (error)="$any(imgEl).isError = true"
+                />
+              </div>
+              <div class="text-container">
+                <div class="desc">{{ gameInfo.gameDesc }}</div>
+                <div class="tag-group">
+                  <ng-container *ngFor="let item of gameInfo.gameLabels">
+                    <div
+                      class="onact96-not"
+                      [routerLink]="['/', appService.languageCode, 'casino', 'category', item.code]"
+                      class="mutual-opacity tag"
+                    >
+                      {{ item.description }}
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="tag">{{ 'bank_adv' | translate }}：{{ gameInfo.bankerAdvantage || 0 }}%</div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab [label]="'big_w' | translate">
+            <app-big-winner *ngIf="dailyRacesService.gameInnerIndex === 1"></app-big-winner>
+          </mat-tab>
+          <mat-tab [label]="'lucky_w' | translate">
+            <app-luskiest-user></app-luskiest-user>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 附加推荐栏 -->
+<app-swiper-unit
+  class="container"
+  (clickItem)="clickGameItem($event)"
+  [data]="gameList?.gameLists || []"
+  [title]="gameList?.labelName || ''"
+  [titleIcon]="gameList?.icon || ''"
+></app-swiper-unit>
+
+<!-- 提供商 -->
+<app-swiper-provider-list class="container"></app-swiper-provider-list>

@@ -1,0 +1,420 @@
+<div class="mt-8">
+  <!-- 产品 -->
+  <form-row [label]="'member.activity.sencli12.product' | lang" label-width="180" required>
+    <ng-template>
+      <mat-form-field [style.width.px]="250">
+        <mat-select
+          class="form-control"
+          [disabled]="isManualStopEdit"
+          [class.is-invalid]="!data.product"
+          [(ngModel)]="data.product"
+          (selectionChange)="productChange($event)"
+        >
+          <mat-option *ngFor="let item of productList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 类型 -->
+  <form-row [label]="'common.type' | lang" label-width="180" required>
+    <ng-template>
+      <mat-form-field [style.width.px]="250">
+        <mat-select
+          class="form-control"
+          [disabled]="isManualStopEdit"
+          [class.is-invalid]="!data.type"
+          [(ngModel)]="data.type"
+        >
+          <mat-option *ngFor="let item of typeList" [value]="item.value">{{ item.value }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 开始及结束 时间 -->
+  <form-row [label]="'member.activity.sencli12.startEndDate' | lang" label-width="180" required>
+    <ng-template>
+      <input
+        class="form-control text-center"
+        type="text"
+        selectMode="range"
+        [disabled]="isManualStopEdit"
+        [placeholder]="'form.chooseTime' | lang"
+        [style.width.px]="300"
+        [owlDateTime]="picker"
+        [owlDateTimeTrigger]="picker"
+        [(ngModel)]="data.time"
+      />
+      <owl-date-time class="fz-20" #picker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <!-- 通知时间 -->
+  <form-row [label]="'member.activity.sencli12.notificationTime' | lang" label-width="180" required>
+    <ng-template>
+      <div class="d-flex flex-ac">
+        <!-- 活动开始前几小时 -->
+        <div class="d-flex flex-ac mr-20">
+          <form-wrap [style.width.px]="130" [invalid]="!data.beforeHours && data.beforeHours !== 0">
+            <div class="d-flex flex-ac">
+              <div class="add mr-2" (click)="onAddCutHours('add', 'beforeHours')">+</div>
+              <div class="cut" (click)="onAddCutHours('cut', 'beforeHours')">-</div>
+            </div>
+            <input
+              class="form-control fz-14 text-center"
+              autocomplete="off"
+              type="text"
+              input-number
+              [disabled]="isManualStopEdit"
+              [(ngModel)]="data.beforeHours"
+            />
+            <span suffix class="color-aaa fz-14">H</span>
+          </form-wrap>
+          <div class="ml-6">{{ 'member.activity.sencli12.hoursBeforeTheCampaign' | lang }}</div>
+        </div>
+
+        <!-- 活动结束后几小时 -->
+        <div class="d-flex flex-ac mr-10">
+          <form-wrap [style.width.px]="130" [invalid]="!data.afterHours && data.afterHours !== 0">
+            <div class="d-flex flex-ac">
+              <div class="add mr-2" (click)="onAddCutHours('add', 'afterHours')">+</div>
+              <div class="cut" (click)="onAddCutHours('cut', 'afterHours')">-</div>
+            </div>
+            <input
+              class="form-control fz-14 text-center"
+              autocomplete="off"
+              type="text"
+              input-number
+              [disabled]="isManualStopEdit"
+              [(ngModel)]="data.afterHours"
+            />
+            <span suffix class="color-aaa fz-14">H</span>
+          </form-wrap>
+          <div class="ml-6">{{ 'member.activity.sencli12.hoursafterTheCampaign' | lang }}</div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 条件 -->
+  <form-row [label]="'member.activity.sencli12.criteria' | lang" label-width="180" required>
+    <ng-template>
+      <mat-form-field [style.width.px]="250">
+        <mat-select
+          class="form-control"
+          [class.is-invalid]="!data.criteria && data.criteria !== 0"
+          [(ngModel)]="data.criteria"
+        >
+          <mat-option *ngFor="let item of criteriaList" [value]="item.value">{{
+            lang.isLocal ? item.name : item.lang
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 最低下注金额 -->
+  <form-row [label]="'member.activity.sencli12.minbet' | lang" label-width="180" required>
+    <ng-template>
+      <div class="d-flex flex-ac">
+        <form-wrap [style.width.px]="250" [invalid]="!+data.minBet">
+          <input
+            class="form-control fz-14"
+            autocomplete="off"
+            type="text"
+            [input-float]="3"
+            [input-max]="99999999"
+            [(ngModel)]="data.minBet"
+            (ngModelChange)="minBetChange()"
+          />
+          <span suffix class="color-aaa fz-14 d-flex flex-ac">
+            <img class="mr-2" [currencyIcon]="'USDT'" currencySize="20" />
+            USDT
+          </span>
+        </form-wrap>
+        <svg-icon
+          [src]="'./assets/images/bonus/tournament-qualifications-1.svg'"
+          class="svg-icon svg-icon-xl ml-4 w30"
+          [ngbTooltip]="currencyTpl"
+          placement="end"
+        ></svg-icon>
+      </div>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="!+data.minBet">
+        {{ 'member.activity.prizeCommon.numberInvalid' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 游戏列表 -->
+  <form-row [label]="'member.activity.sencli12.gameList' | lang" label-width="180" required>
+    <ng-template>
+      <!-- 标签 -->
+      <form-row [label]="'member.activity.sencli12.byLabel' | lang" label-width="120" class="pt-0 mb-2">
+        <ng-template>
+          <div class="select-box">
+            <!-- 列表 -->
+            <div class="select-box-item" *ngFor="let item of selectedLabelList; index as i">
+              <img class="lh-1" *ngIf="item?.icon" [src]="item.icon | host" width="18" height="18" />
+              <div class="px-4">{{ item?.name || '-' }}</div>
+              <svg-icon
+                [src]="'./assets/images/svg/admin-del.svg'"
+                class="svg-icon svg-icon-2x cursor-pointer d-flex"
+                (click)="onDeteleLabel(item, i)"
+              ></svg-icon>
+            </div>
+
+            <!-- 添加 -->
+            <span class="btn btn-light-primary fz-16 d-flex flex-ac py-2 h42" (click)="onOpenLabelPopup()">
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              {{ 'member.activity.sencliCommon.add' | lang }}
+            </span>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 游戏 -->
+      <form-row [label]="'member.activity.sencli12.byGameCode' | lang" label-width="120">
+        <ng-template>
+          <div class="select-box">
+            <!-- 列表 -->
+            <div class="select-box-item" *ngFor="let item of selectedGameList; index as i">
+              <div class="px-4">{{ item?.name || '-' }}</div>
+              <svg-icon
+                [src]="'./assets/images/svg/admin-del.svg'"
+                class="svg-icon svg-icon-2x cursor-pointer d-flex"
+                (click)="selectedGameList.splice(i, 1)"
+              ></svg-icon>
+            </div>
+
+            <!-- 添加 -->
+            <span class="btn btn-light-primary fz-16 d-flex flex-ac py-2 h42" (click)="onOpenGamePopup()">
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              {{ 'member.activity.sencliCommon.add' | lang }}
+            </span>
+          </div>
+        </ng-template>
+      </form-row>
+    </ng-template>
+
+    <ng-template #invalidFeedbackCustom>
+      <div class="invalid-feedback" *ngIf="!selectedLabelList.length && !selectedGameList.length">
+        {{ 'member.activity.sencli12.errorTips.tips19' | lang }}
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 国家限制 -->
+  <form-row [label]="'member.activity.sencli12.countryRestrictions' | lang" label-width="180" required>
+    <ng-template>
+      <div class="d-flex">
+        <div class="d-flex flex-ac" style="align-self: flex-start">
+          <label class="radio radio-lg fz-16 mr-12">
+            <input type="radio" name="selectCountry" [value]="0" [(ngModel)]="data.countryRestrictions" />
+            <span class="mr-4"></span>{{ 'luckRoulette.unlimit' | lang }}
+          </label>
+
+          <!-- 选择国家 -->
+          <label class="radio radio-lg fz-16 mr-12">
+            <input type="radio" name="selectCountry" [value]="1" [(ngModel)]="data.countryRestrictions" />
+            <span class="mr-4"></span>{{ 'member.detail.selectCountry' | lang }}
+          </label>
+        </div>
+
+        <!-- 已选国家 -->
+        <div class="d-flex flex-ac flex-wrap" style="gap: 8px" *ngIf="data.countryRestrictions === 1">
+          <div
+            class="d-flex flex-ac px-5 h42"
+            style="background: #f5f8fa; border-radius: 6px"
+            *ngFor="let item of selectCountryList; index as i"
+          >
+            <i [iconCountry]="item.countryEnName"></i>
+            <div class="px-4">{{ lang.isLocal ? item.countryName : item.countryEnName }}</div>
+            <svg-icon
+              [src]="'./assets/images/svg/admin-del.svg'"
+              class="svg-icon svg-icon-2x cursor-pointer d-flex"
+              (click)="selectCountryList.splice(i, 1)"
+            >
+            </svg-icon>
+          </div>
+          <span class="btn btn-light-primary fz-16 d-flex flex-ac py-2 h42" (click)="onOpenCountryPopup()">
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            <!-- 添加 -->
+            {{ 'member.activity.sencliCommon.add' | lang }}
+          </span>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 玩家限制 -->
+  <form-row [label]="'member.activity.sencli12.playerRestrictions' | lang" label-width="180" required>
+    <ng-template>
+      <div class="d-flex flex-ac">
+        <label class="radio radio-lg fz-16 mr-12">
+          <input type="radio" name="playerRestrictions" [value]="0" [(ngModel)]="data.playerRestrictions" />
+          <span class="mr-4"></span>{{ 'luckRoulette.unlimit' | lang }}
+        </label>
+
+        <label class="radio radio-lg fz-16 mr-12">
+          <input type="radio" name="playerRestrictions" [value]="1" [(ngModel)]="data.playerRestrictions" />
+          <span class="mr-4"></span>{{ 'member.activity.sencli12.whitelistPlayer' | lang }}
+        </label>
+
+        <label class="radio radio-lg fz-16">
+          <input type="radio" name="playerRestrictions" [value]="2" [(ngModel)]="data.playerRestrictions" />
+          <span class="mr-4"></span>{{ 'member.activity.sencli12.blacklistPlayer' | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 发送对象 -->
+  <form-row
+    [label]="'member.coupon.model.sendObject' | lang"
+    label-width="165"
+    required
+    *ngIf="[1, 2].includes(data.playerRestrictions)"
+  >
+    <ng-template>
+      <div class="lang-hd">
+        <label
+          class="radio radio-lg radio-success fz-16 lang-hd-item"
+          [class.active]="item.value === data.playerSend"
+          *ngFor="let item of playerSendList"
+        >
+          <input type="radio" name="playerSend" [value]="item.value" [(ngModel)]="data.playerSend" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+
+      <div class="lang-bd" [ngSwitch]="data.playerSend">
+        <!-- 选择会员 -->
+        <ng-container *ngSwitchCase="0">
+          <div class="d-flex flex-ac">
+            <button
+              type="button"
+              class="btn btn-light-primary px-9 fz-14 py-2 mr-8"
+              (click)="onOpenMemberSelectPopup()"
+            >
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+              <span class="vam">{{ 'member.coupon.model.chooseMember' | lang }}</span>
+            </button>
+            <!-- 已选择N个会员< -->
+            <div class="color-aaa">
+              {{ 'member.coupon.model.chosen' | lang }}{{ memberSelectedList.length
+              }}{{ 'member.coupon.model.members' | lang }}
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select" *ngIf="memberSelectedList.length">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberSelectedList; let i = index">
+              <span>{{ item.name || item.uact || '-' }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberSelectedList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- 手动输入 -->
+        <ng-container *ngSwitchCase="1">
+          <!-- 请输入用户UID(以符号 ; 做拼接) -->
+          <div class="color-aaa">{{ 'member.coupon.model.pleaseEnterInfo' | lang }}</div>
+          <textarea
+            [style.height.px]="290"
+            type="text"
+            class="form-control"
+            autocomplete="off"
+            [(ngModel)]="memberManualRemark"
+            input-trim
+          ></textarea>
+        </ng-container>
+
+        <!-- 上传名单 -->
+        <ng-container *ngSwitchCase="2">
+          <div class="d-flex flex-ac">
+            <upload
+              class="mt-5 mb-5 mr-15"
+              [style.height.px]="50"
+              mark="file"
+              desc="Excel/xlsx"
+              [customUpload]="customUpload"
+              [accept]="['Excel', 'xlsx']"
+              [showLimitText]="false"
+              [limit]="2048"
+            ></upload>
+            <!-- 下载模板表格 -->
+            <span class="download" (click)="downloadTemplate()">{{ 'member.coupon.model.downloadForm' | lang }}</span>
+          </div>
+
+          <!-- <textarea
+            [style.height.px]="280"
+            type="text"
+            class="form-control"
+            autocomplete="off"
+            [(ngModel)]="memberManualUpload"
+          ></textarea> -->
+
+          <div class="d-flex flex-wrap custom-scroll-y mt-4 member-select" *ngIf="memberManualUploadList.length">
+            <div class="d-flex flex-ac member-select-item" *ngFor="let item of memberManualUploadList; index as i">
+              <span>{{ item.uact || item.uid }}</span>
+              <div class="del-icon d-flex flex-center">
+                <svg-icon
+                  [src]="'./assets/images/svg/admin-del.svg'"
+                  class="d-flex svg-icon svg-icon-2x"
+                  (click)="memberManualUploadList.splice(i, 1)"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-template>
+  </form-row>
+</div>
+
+<!-- 按钮组 -->
+<div class="btn-wrap pt-14 flex-center d-flex">
+  <button type="button" class="c-btn btn btn-light" (click)="jump('tournament-base')">
+    {{ 'luckRoulette.lastStep' | lang }}
+  </button>
+  <button
+    type="button"
+    class="c-btn btn btn-light"
+    [class.disabled]="appService.loading$ | async"
+    (click)="onSubmit('draft')"
+  >
+    {{ 'member.activity.sencli12.saveAsDraft' | lang }}
+  </button>
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit('activity')"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ 'luckRoulette.next' | lang }}
+  </button>
+</div>
+
+<!-- 最低下注金额：USDT换成其他币种金额 - 浮层 -->
+<ng-template #currencyTpl>
+  <div class="fz-14 text-left" [style.min-width.px]="80">
+    <div class="d-flex flex-ac" *ngFor="let item of rateAmonutList">
+      ≈ {{ item?.rateAmount | currencyValue: item?.currency }} {{ item?.currency }}
+      <img class="ml-2" [currencyIcon]="item?.currency" />
+    </div>
+
+    <!-- 暂无汇率数据！ -->
+    <div *ngIf="!rateList.length">{{ 'member.activity.sencli12.errorTips.tips17' | lang }}</div>
+    <!-- 请输入正确的金额！ -->
+    <div *ngIf="rateList.length && !data.minBet">{{ 'member.activity.sencli12.errorTips.tips18' | lang }}</div>
+  </div>
+</ng-template>

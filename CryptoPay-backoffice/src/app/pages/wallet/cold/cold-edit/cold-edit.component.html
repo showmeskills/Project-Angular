@@ -1,0 +1,50 @@
+<div class="fz-20">{{ isAdd ? ('walle.add' | lang) : ('walle.edit' | lang) }}{{ 'walle.coldW' | lang }}</div>
+
+<div class="pl-12 py-16" [formGroup]="formGroup">
+  <form-row
+    [label]="'walle.chooseMain' | lang"
+    name="network"
+    [invalidFeedback]="{ required: ('walle.chooseMainPlease' | lang) }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div class="d-flex flex-wrap py-2 lh-32">
+        <label class="radio radio-lg radio-success mr-16 fz-16 primary-link" *ngFor="let item of networkList">
+          <input
+            type="radio"
+            name="primaryLink"
+            [value]="item.network"
+            [formControl]="control"
+            (change)="formGroup.controls.address.updateValueAndValidity()"
+          />
+          <span class="mr-4"></span>{{ item.network }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <form-row
+    [label]="'walle.wAddress' | lang"
+    contentWidth="426"
+    name="address"
+    *ngIf="formGroup.value.network"
+    [invalidFeedback]="{
+      required: ('walle.enter_wAddress' | lang),
+      incompatible: ('walle.enter_corr' | lang) + formGroup.value.network + ('walle.addressLower' | lang)
+    }"
+    [style.height.px]="76"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid" let-valid="valid">
+      <form-wrap labelClass="rounded-0" [showClear]="true" [invalid]="invalid" [valid]="valid">
+        <input type="text" [placeholder]="'walle.enter_wAddress' | lang" [formControl]="control" />
+        <span suffix *ngIf="control.pending">
+          <!-- TODO 后期做个局部loading指令进行添加 -->
+          <!-- checking -->
+        </span>
+      </form-wrap>
+    </ng-template>
+  </form-row>
+</div>
+
+<div class="footer-wrap">
+  <modal-footer class="p-12" dismissKey="back" (dismiss)="onBack()" (confirm)="onSubmit()"></modal-footer>
+</div>

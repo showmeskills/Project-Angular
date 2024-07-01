@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="57.5" height="70.5" viewBox="0 0 57.5 70.5">
+  <defs>
+    <linearGradient id="linear-gradient" x1="-0.13" y1="0.152" x2="1.56" y2="0.895" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#9fb1c8"/>
+      <stop offset="1" stop-color="#676d74"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="1.053" y1="0.919" x2="0.062" y2="0.207" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fbb672"/>
+      <stop offset="1" stop-color="#f04e23"/>
+    </linearGradient>
+  </defs>
+  <g id="组_795" data-name="组 795" transform="translate(-467 -452)">
+    <g id="组_230" data-name="组 230" transform="translate(7943.75 -1736.501)">
+      <path id="减去_52" data-name="减去 52" d="M27.5,67.762h0L7.462,46.431l.046-.048A27.5,27.5,0,1,1,52.839,16.8a27.473,27.473,0,0,1-5.885,30.14L27.5,67.761ZM27.5,18A10.271,10.271,0,0,0,17,28,10.271,10.271,0,0,0,27.5,38,10.271,10.271,0,0,0,38,28,10.271,10.271,0,0,0,27.5,18Z" transform="translate(-7476.75 2188.5)" fill="url(#linear-gradient)"/>
+      <path id="减去_53" data-name="减去 53" d="M16,32A16,16,0,0,1,4.686,4.686,16,16,0,1,1,27.313,27.313,15.9,15.9,0,0,1,16,32ZM16,6.588A10.137,10.137,0,0,0,5.647,16.47,10.137,10.137,0,0,0,16,26.353,10.137,10.137,0,0,0,26.353,16.47,10.137,10.137,0,0,0,16,6.588Z" transform="translate(-7465.25 2200)" fill="#707a8a"/>
+      <circle id="椭圆_59" data-name="椭圆 59" cx="13" cy="13" r="13" transform="translate(-7445.25 2226)" fill="url(#linear-gradient-2)"/>
+      <rect id="矩形_412" data-name="矩形 412" width="2" height="10" transform="translate(-7433 2232)" fill="#fff"/>
+      <rect id="矩形_414" data-name="矩形 414" width="54" height="3" rx="1.5" transform="translate(-7476.25 2256)" fill="#e6e8ea"/>
+      <circle id="椭圆_75" data-name="椭圆 75" cx="1" cy="1" r="1" transform="translate(-7433 2243)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

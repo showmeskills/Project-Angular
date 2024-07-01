@@ -1,0 +1,190 @@
+@import 'styles/theme-default.scss';
+@import "fonts/style.css";
+
+app-orignal {
+  /* 失败色/单色/通用 */
+  --orignal-error-color: #EE3D3D;
+  /* 成功色/单色/通用 */
+  --orignal-success-color: #15DB41;
+  /* 链接色/单色/通用 */
+  --orignal-link-color: #257CFF;
+
+  /* 陰影/主队色/通用 */
+  --orignal-shadow-color-1:0px 10px 20px #{rgba(0, 87, 255, 0.3)};
+  /* 陰影/客队色/通用*/
+  --orignal-shadow-color-2:0px 10px 20px #{rgba(250, 48, 92, 0.3)};
+  /* 陰影/主色/通用 */
+  --orignal-shadow-color-3:0px 10px 20px #{rgba(255, 76, 29, 0.3)};
+  /* 陰影/文字凸顯/通用 */
+  --orignal-shadow-color-4:0px 2px 4px #{rgba(0, 0, 0, 0.3)};
+
+  font-size: 13px;
+  min-width: 320px;
+  height: 100%;
+  // overflow: hidden;
+  // position: relative;
+  font-weight: normal;
+  overflow: auto;
+
+  /* dice组件/WEB/选择队伍按钮/小/一般 */
+  .btn {
+    width: 287px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+
+    /* 主队色/渐层/夜間 */
+    &.btn-primary-linear {
+      background-color: var(--orignal-primary-linear);
+
+      &:hover,
+      &:active {
+        box-shadow: var(--orignal-shadow-color-1);
+      }
+    }
+
+    /* 客队色/渐层/夜間 */
+    &.btn-primary-linear-1 {
+      background-color: var(--orignal-primary-linear-1);
+
+      &:hover,
+      &:active {
+        box-shadow: var(--orignal-shadow-color-2);
+      }
+    }
+
+    // 禁用
+    &.btn-default {
+      opacity: 0.5;
+    }
+  }
+
+
+  /* dice组件/WEB/投注按钮/一般 */
+  .btn-bet {
+    width: 579px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 22px 0px;
+    gap: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &.btn-sm {
+      // width: 100px;
+    }
+
+    // 主要按鈕顏色
+    &.btn-primary {
+      background-color: var(--orignal-primary-linear-2);
+
+      &:hover,
+      &:active {
+        box-shadow: var(--orignal-shadow-color-3);
+
+      }
+    }
+
+
+    //  禁用
+    &.btn-default {
+      opacity: 0.5;
+    }
+  }
+
+  // 币种
+  [class^="symbol-"],
+  [class*=" symbol-"] {
+    width: 16px;
+    height: 16px;
+    background: pink;
+    border-radius: 7.5px;
+    background-color: #f7931a;
+    margin: 0 3px;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #fff;
+    display: flex;
+  }
+
+  .symbol-cny::before {
+    content: "¥";
+  }
+
+  .symbol-thb::before {
+    content: "฿";
+  }
+
+  .symbol-vnd::before {
+    content: "฿";
+  }
+
+
+  //原创游戏halo赢
+  .toast-center {
+    display: flex;
+    // width: 300px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 35.5%;
+    top: 46%;
+    z-index: 6;
+    width: 251px;
+    height: 101px;
+    background: linear-gradient(180deg, #2283F6 0%, #1252CF 100%);
+    /* 主队色/单色/夜間 */
+    border: 1px solid #2283F6;
+    /* 陰影/主队色/通用 */
+    box-shadow: 0px 10px 20px rgba(0, 87, 255, 0.3);
+    border-radius: 8px;
+    color: #FFFFFF;
+
+    @media (max-width:767px) {
+      left: 20.5%;
+      top: 19%;
+    }
+
+    .bgm {
+      position: absolute;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      width: 251px;
+      height: 101px;
+      margin-top: 7px;
+      background-image: url(src/assets/orignal/images/hilo/shine-shadow.svg);
+    }
+
+    .txt-contant {
+      font-family: 'Arial';
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 24px;
+      font-weight: 900;
+      z-index: 7;
+
+      .t-s {
+        font-size: 15px;
+        margin-top: 6PX;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 18px;
+          height: 18px;
+          margin-right: 4px;
+        }
+      }
+
+    }
+  }
+}

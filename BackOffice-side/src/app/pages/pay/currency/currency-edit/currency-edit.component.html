@@ -1,0 +1,348 @@
+<div class="card px-12 pt-12" [formGroup]="formGroup" *ngIf="data">
+  <!-- 新增币种 -->
+  <form-row
+    [label]="'payment.currency.currency' | lang"
+    required
+    name="currency"
+    label-width="250px"
+    contentWidth="162px"
+  >
+    <ng-template let-invalid="invalid">
+      <div
+        *ngIf="isAdd"
+        class="form-field d-flex cursor-pointer flex-ac"
+        [class.is-invalid]="invalid"
+        (click)="onOpenSelect()"
+      >
+        <span class="flex-fill fz-14">{{ getCurrencyName }}</span>
+        <svg-icon
+          class="d-inline-block"
+          [src]="'./assets/images/svg/triangle.svg'"
+          style="transform: rotate(270deg)"
+        ></svg-icon>
+      </div>
+
+      <span *ngIf="isEdit" class="fz-16">{{ currency }}</span>
+    </ng-template>
+  </form-row>
+
+  <!-- 数字种类 -->
+  <form-row name="isDigital" [label]="'payment.currency.kindOfNumbers' | lang" required label-width="250px">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="d-flex" [class.is-valid]="invalid">
+        {{ (control.value ? 'payment.currency.digitalCurrency' : 'payment.currency.fiatCurrency') | lang }}
+        <!--        <label class="radio radio-lg radio-success mr-12">-->
+        <!--          <input type="radio" [value]="true" name="type" [formControl]="control" />-->
+        <!--          <span class="mr-2"></span>-->
+        <!--          {{ 'payment.currency.digitalWallet' | lang }}-->
+        <!--        </label>-->
+        <!--        <label class="radio radio-lg radio-success mr-12">-->
+        <!--          <input type="radio" [value]="false" name="type" [formControl]="control" />-->
+        <!--          <span class="mr-2"></span>-->
+        <!--          {{ 'payment.currency.fiatCurrency' | lang }}-->
+        <!--        </label>-->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 币种全称 -->
+  <form-row
+    [label]="'payment.currency.currencyFullName' | lang"
+    required
+    label-width="250px"
+    name="name"
+    [invalidFeedback]="{ required: 'payment.currency.enterFullCurrencyName' | lang }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control w-100 fz-14"
+        autocomplete="off"
+        [formControl]="control"
+        [placeholder]="'payment.currency.currencyWithinCharacters' | lang"
+        [class.is-invalid]="invalid"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 币种ICON -->
+  <form-row
+    [label]="('payment.currency.currency' | lang) + (this.lang.isLocal ? '' : ' ') + 'ICON'"
+    required
+    label-width="250px"
+    name="icon"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div class="upload">
+        <div class="upload-title">WEB/APP/H5</div>
+        <div class="text-center">
+          <upload
+            style="width: 130px"
+            desc="100x100"
+            type="Currency"
+            [limit]="100"
+            [padding]="'10px'"
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+          ></upload>
+
+          <div class="invalid-feedback" *ngIf="invalid">{{ 'payment.currency.iconsNotUploaded' | lang }}</div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 存币区间 -->
+  <form-row *ngIf="formGroup.value.isDigital" [label]="'payment.currency.depositRange' | lang" label-width="250px">
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <form-row [control]="formGroup.controls.minDeposit" [showLabel]="false">
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <!--            <input-->
+            <!--              input-float-->
+            <!--              class="form-control"-->
+            <!--              [formControl]="control"-->
+            <!--              [class.is-invalid]="invalid"-->
+            <!--              [style.width.px]="156"-->
+            <!--            />-->
+            {{ control.value || 0 }}
+          </ng-template>
+        </form-row>
+        <span class="mx-4 py-2">-</span>
+        <form-row [control]="formGroup.controls.maxDeposit" [showLabel]="false">
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <!--            <input-->
+            <!--              input-float-->
+            <!--              class="form-control"-->
+            <!--              [formControl]="control"-->
+            <!--              [class.is-invalid]="invalid"-->
+            <!--              [style.width.px]="156"-->
+            <!--            />-->
+            {{ control.value || 0 }}
+          </ng-template>
+        </form-row>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 提币区间 -->
+  <form-row *ngIf="formGroup.value.isDigital" [label]="'payment.currency.withdrawRange' | lang" label-width="250px">
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <form-row [control]="formGroup.controls.minWithdraw" [showLabel]="false">
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <!--            <input-->
+            <!--              input-float-->
+            <!--              class="form-control"-->
+            <!--              [formControl]="control"-->
+            <!--              [class.is-invalid]="invalid"-->
+            <!--              [style.width.px]="156"-->
+            <!--            />-->
+            {{ control.value || 0 }}
+          </ng-template>
+        </form-row>
+        <span class="mx-4 py-2">-</span>
+        <form-row [control]="formGroup.controls.maxWithdraw" [showLabel]="false">
+          <ng-template let-control="formControl" let-invalid="invalid">
+            <!--            <input-->
+            <!--              input-float-->
+            <!--              class="form-control"-->
+            <!--              [formControl]="control"-->
+            <!--              [class.is-invalid]="invalid"-->
+            <!--              [style.width.px]="156"-->
+            <!--            />-->
+            {{ control.value || 0 }}
+          </ng-template>
+        </form-row>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 系统汇率 -->
+  <ng-template #systemRateRequired>
+    <span [style.margin-left.px]="76">{{ 'payment.currency.systemRateTip' | lang }}</span>
+  </ng-template>
+  <form-row
+    [label]="'payment.currency.systemRate' | lang"
+    label-width="250px"
+    name="systemRate"
+    [invalidFeedback]="{ numberRequired: systemRateRequired }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div class="d-flex">
+        1{{ systemRateUnit.from }}=
+        <label class="ml-4 mr-12" form-wrap width="160px" [invalid]="invalid">
+          <input form-full type="text" autocomplete="off" input-float="8" [formControl]="control" #systemRate />
+          <span>{{ systemRateUnit.to }}</span>
+        </label>
+
+        <span class="d-flex">1{{ systemRateUnit.to }}={{ data.realRate }}{{ systemRateUnit.from }} </span>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 存加密货币得法币 -->
+  <!-- <form-row
+    *ngIf="formGroup.value.isDigital"
+    [label]="'payment.currency.depositVirtualGetFiat' | lang"
+    label-width="250px"
+    name="isEnableCryptoCurrency"
+  >
+    <ng-template let-control="formControl">
+      <label class="switch switch-success">
+        <input type="checkbox" [formControl]="control" />
+        <span></span>
+      </label>
+    </ng-template>
+  </form-row> -->
+
+  <!-- 实时汇率 -->
+  <form-row
+    *ngIf="ls.isGB"
+    [label]="'payment.currency.liveRate' | lang"
+    name="isAutoCatch"
+    label-width="250px"
+    required
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <div *ngIf="!formGroup.value.isDigital">
+        <div>1{{ getCurrencyName }} = {{ data.realRate }}USDT</div>
+
+        <div class="d-flex">
+          <!--          <span class="mr-4">{{ 'payment.currency.buyFloat' | lang }}</span>-->
+          <span class="mr-4">{{ 'payment.currency.buyPrice' | lang }}</span>
+          <span class="mr-12">{{ data.buyRateSpread || 0 }}%</span>
+          <span class="color-999">{{ (buyPrice | toFormatMoney: { maximumDecimalPlaces: 9 }) || '-' }}USDT</span>
+        </div>
+
+        <div class="d-flex">
+          <!--          <span class="mr-4">{{ 'payment.currency.sellFloat' | lang }}</span>-->
+          <span class="mr-4">{{ 'payment.currency.buyPrice' | lang }}</span>
+          <span class="mr-12">{{ data.sellRateSpread || 0 }}%</span>
+          <span class="color-999">{{ (sellPrice | toFormatMoney: { maximumDecimalPlaces: 9 }) || '-' }}USDT</span>
+        </div>
+      </div>
+
+      <div *ngIf="formGroup.value.isDigital">
+        <div>{{ 'system.exchange.middlePrice' | lang }}：{{ data?.realRate }}</div>
+
+        <!--        <form-row [label]="'payment.currency.autoGet' | lang" [control]="control">-->
+        <!--          <ng-template let-control="formControl" let-invalid="invalid">-->
+        <!--            <label class="switch switch-success">-->
+        <!--              <input type="checkbox" [formControl]="control" />-->
+        <!--              <span></span>-->
+        <!--            </label>-->
+        <!--          </ng-template>-->
+        <!--        </form-row>-->
+
+        <div class="d-flex py-2">
+          <span class="mr-4">{{ 'payment.currency.buyPrice' | lang }}</span>
+
+          <!--          <ng-container *ngIf="!formGroup.value.isAutoCatch; else buyTpl">-->
+          <ng-container>
+            <!--            <input-->
+            <!--              [style.width.px]="160"-->
+            <!--              class="form-control text-center"-->
+            <!--              style="caret-color: inherit"-->
+            <!--              type="text"-->
+            <!--              autocomplete="off"-->
+            <!--              [input-float]="8"-->
+            <!--              [negative]="true"-->
+            <!--              [formControl]="formGroup.controls.buyRateSpread"-->
+            <!--            />-->
+            {{ formGroup.value.buyRateSpread }}
+            <!--            <span class="ml-2">%</span>-->
+          </ng-container>
+          <!--          <ng-template #buyTpl>-->
+          <!--            <span>{{ data.realRate }}</span>-->
+          <!--          </ng-template>-->
+          <div class="pl-12">{{ buyPrice | toFormatMoney: { maximumDecimalPlaces: 9 } }}USDT</div>
+        </div>
+
+        <div class="d-flex py-2">
+          <span class="mr-4">{{ 'payment.currency.sellPrice' | lang }}</span>
+
+          <!--          <ng-container *ngIf="!formGroup.value.isAutoCatch; else sellTpl">-->
+          <ng-container>
+            <!--            <input-->
+            <!--              [style.width.px]="160"-->
+            <!--              class="form-control text-center"-->
+            <!--              style="caret-color: inherit"-->
+            <!--              type="text"-->
+            <!--              autocomplete="off"-->
+            <!--              [input-float]="8"-->
+            <!--              [negative]="true"-->
+            <!--              [formControl]="formGroup.controls.sellRateSpread"-->
+            <!--            />-->
+            {{ formGroup.value.sellRateSpread }}
+            <!--            <span class="ml-2">%</span>-->
+          </ng-container>
+          <!--          <ng-template #sellTpl>-->
+          <!--            <span>{{ data.realRate }}</span>-->
+          <!--          </ng-template>-->
+          <div class="pl-12">{{ sellPrice | toFormatMoney: { maximumDecimalPlaces: 9 } }}USDT</div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 国家地区 -->
+  <ng-template #countryLabel>
+    <div>
+      <span class="vam">{{ 'payment.currency.countryRegion' | lang }}</span>
+      <svg-icon
+        [ngbTooltip]="'payment.currency.countryRegionTips' | lang"
+        [src]="'./assets/images/svg/question.svg'"
+        class="svg-icon svg-icon-1x5 ml-2 tip"
+        placement="right"
+      ></svg-icon>
+    </div>
+  </ng-template>
+  <form-row [label]="countryLabel" label-width="250px">
+    <ng-template>
+      <div class="d-flex flex-wrap flex-1">
+        <ng-container *ngFor="let item of country">
+          <div class="country-item">
+            <span>{{ lang.isLocal ? item.countryName : item.countryEnName }}</span>
+            <svg-icon
+              (click)="delCountry(item.countryCode)"
+              class="cursor-pointer p-2 svg-icon svg-icon-1x"
+              [src]="'assets/images/svg/close.svg'"
+            ></svg-icon>
+          </div>
+        </ng-container>
+
+        <div class="position-relative">
+          <div class="country-item-edit" (click)="openCountrySelect()"></div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 风险评估问卷 -->
+  <!-- [ 2023/8/29 上午10:01] Durk：屏蔽掉 -->
+  <!-- <form-row name="risk" required [label]="'payment.currency.risk' | lang" label-width="250px">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <div class="d-flex">
+        {{ 'payment.currency.riskreduce' | lang }}
+        <input
+          [class.is-invalid]="invalid"
+          class="form-control ml-2"
+          [formControl]="control"
+          [style.width.px]="300"
+          type="text"
+          input-number
+        />
+      </div>
+    </ng-template>
+  </form-row> -->
+
+  <div class="modal-footer btn-wrap mt-12">
+    <button class="c-btn c-btn-default" type="button" (click)="router.navigate(['/pay/currency'])">
+      {{ 'common.back' | lang }}
+    </button>
+    <button class="c-btn c-btn-primary" type="button" (click)="submit()" *ngIf="merchantId && currency">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

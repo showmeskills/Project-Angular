@@ -1,0 +1,228 @@
+<div class="sub-theme-container">
+  <div class="sub-theme-header">
+    <div class="sub-theme-left">
+      <i class="header-icon"></i>
+      <span class="header-title">{{ 'mem_manage' | translate }}</span>
+    </div>
+  </div>
+  <!-- 表单 -->
+  <ng-container *ngTemplateOutlet="formField"></ng-container>
+
+  <app-table-component
+    [tableHeader]="tableHead"
+    [tableBodyTmp]="tableBodyTmp"
+    [h5DataTemp]="h5DataTemp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="userList.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="false"
+    [infoTips]="'sent_i' | translate"
+  >
+  </app-table-component>
+</div>
+
+<ng-template #formField>
+  <div class="field">
+    <div class="form-field">
+      <div class="member-id">
+        <p class="label-text" for="mid">{{ 'degrade_uid' | translate }}：</p>
+        <div class="select-field">
+          <app-customize-input
+            [placeholder]="'member_id' | translate"
+            size="medium"
+            [(value)]="data.userId"
+            width="100%"
+          >
+          </app-customize-input>
+        </div>
+      </div>
+      <div class="statistic-date">
+        <p class="label-text">{{ ('statis_date' | translate) + '：' }}</p>
+        <div class="calendar-group">
+          <app-datepicker
+            [readonly]="true"
+            [(dateValue)]="data.logStartDate"
+            placeholder="YYYY-MM-DD"
+            (dateValueChange)="onClearDate()"
+          >
+          </app-datepicker>
+          <span class="calendar-text">{{ isH5 ? ('f_to' | translate) : '-' }}</span>
+          <app-datepicker
+            [readonly]="true"
+            [(dateValue)]="data.logEndDate"
+            [minDate]="data.logStartDate"
+            [maxDate]="logMaxDate"
+            [disabled]="!data.logStartDate"
+            (dateValueChange)="onClearDate()"
+            placeholder="{{ !data.logStartDate ? ('sel_start_time00' | translate) : 'YYYY-MM-DD' }}"
+          >
+          </app-datepicker>
+        </div>
+      </div>
+      <div class="reg-date">
+        <p class="label-text">{{ ('reg_date' | translate) + '：' }}</p>
+        <div class="calendar-group">
+          <app-datepicker
+            [readonly]="true"
+            [(dateValue)]="data.regStartDate"
+            placeholder="YYYY-MM-DD"
+            (dateValueChange)="onClearDate()"
+          >
+          </app-datepicker>
+          <span class="calendar-text">{{ isH5 ? ('f_to' | translate) : '-' }}</span>
+          <app-datepicker
+            [readonly]="true"
+            [(dateValue)]="data.regEndDate"
+            [minDate]="data.regStartDate"
+            [maxDate]="regMaxDate"
+            [disabled]="!data.regStartDate"
+            (dateValueChange)="onClearDate()"
+            placeholder="{{ !data.regStartDate ? ('sel_start_time00' | translate) : 'YYYY-MM-DD' }}"
+          >
+          </app-datepicker>
+        </div>
+      </div>
+    </div>
+    <div class="button-field">
+      <customize-button
+        [disabled]="loading"
+        size="medium"
+        [width]="isH5 ? '100%' : ''"
+        [minWidth]="isH5 ? '' : '180px'"
+        (onClick)="onReset()"
+      >
+        {{ 'reset' | translate }}
+      </customize-button>
+      <customize-button
+        size="medium"
+        type="primary"
+        [disabled]="loading"
+        [width]="isH5 ? '100%' : ''"
+        [minWidth]="isH5 ? '' : '180px'"
+        (onClick)="loadData()"
+      >
+        {{ isH5 ? ('confirm_button' | translate) : ('filter' | translate) }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 表格模版 -->
+<ng-template #tableBodyTmp>
+  <tr *ngFor="let item of userList">
+    <td>{{ item?.uid || '' }}</td>
+    <td>{{ item?.vip ? 'VIP' + item.vip : '' }}</td>
+    <td>
+      {{ item?.deposit || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      {{ item?.withdraw || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td [class.positive-income]="item.totalWinLoss > 0" [class.negative-income]="item.totalWinLoss < 0">
+      {{ item?.totalWinLoss > 0 ? '+' : '' }}{{ item?.totalWinLoss || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      {{ item?.bonus || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      {{ item?.commission || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+
+    <td>{{ item?.lastLoginTime ? (item.lastLoginTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}</td>
+    <td>{{ item?.regTime ? (item.regTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}</td>
+    <td
+      class="onact96-not"
+      [class]="item.status === 1 ? 'status-pending' : 'status-process'"
+      (click)="removeUser(item.uid, item.status)"
+    >
+      {{ (item.status === 1 ? 'remov_m' : 'check') | translate }}
+    </td>
+  </tr>
+</ng-template>
+<!-- h5数据 -->
+<ng-template #h5DataTemp>
+  <div class="h5-agent-table-data" *ngFor="let item of userList">
+    <div class="group">
+      <p class="group-text">{{ 'degrade_uid' | translate }}</p>
+      <p class="group-text">
+        {{ item?.uid || '' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">VIP{{ 'level' | translate }}</p>
+      <p class="group-text group-text-red">
+        {{ item?.vip ? 'VIP' + item.vip : '' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'deposit_in' | translate }}</p>
+      <p class="group-text">
+        {{ item?.deposit || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'withdrawal_out' | translate }}</p>
+      <p class="group-text">
+        {{ item?.withdraw || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'total_win00' | translate }}</p>
+      <p
+        class="group-text"
+        [class.positive-income]="item.totalWinLoss > 0"
+        [class.negative-income]="item.totalWinLoss < 0"
+      >
+        {{ item?.totalWinLoss > 0 ? '+' : '' }}{{ item?.totalWinLoss || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'bonus' | translate }}</p>
+      <p class="group-text">
+        {{ item?.bonus || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'commission' | translate }}</p>
+      <p class="group-text">
+        {{ item?.commission || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'l_logon' | translate }}</p>
+      <p class="group-text">
+        {{ item?.lastLoginTime ? (item.lastLoginTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'reg_time' | translate }}</p>
+      <p class="group-text">
+        {{ item?.regTime ? (item.regTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'action' | translate }}</p>
+      <p
+        class="group-text onact96-not"
+        [class]="item.status === 1 ? 'group-text-red' : 'group-text-yellow'"
+        (click)="removeUser(item.uid, item.status)"
+      >
+        <img class="icon icon-right" src="assets/images/friend/h5-move.svg" />
+        {{ (item.status === 1 ? 'remov_m' : 'check') | translate }}
+      </p>
+    </div>
+  </div>
+</ng-template>

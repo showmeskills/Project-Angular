@@ -1,0 +1,49 @@
+.time-wrap {
+  padding: 4px;
+  width: auto;
+}
+
+.time-item {
+  width: 34px;
+  flex: 0 0 34px;
+  height: 100%;
+  margin: 0 5px;
+  text-align: center;
+  color: #969BAD;
+  transition: all .15s ease-in;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .time-item-custom {
+    width: 100% !important;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: -1;
+  }
+
+  &.active {
+    background: #009ef7;
+    color: #fff;
+  }
+
+  &:hover:not(.active) {
+    color: #3699ff;
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}

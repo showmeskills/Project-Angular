@@ -1,0 +1,185 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12 mt-8">
+  <!-- 类型 -->
+  <form-row [label]="'common.type' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of categoryList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 不良数据值 -->
+  <form-row [label]="'risk.badData.value' | lang" class="mr-8">
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.badValue"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 时间 -->
+  <form-row [label]="'risk.badData.addTime' | lang" class="mr-8" [contentWidth]="264">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card card-body mt-8">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">
+      {{ 'nav.badData' | lang }}
+    </div>
+
+    <div>
+      <!-- 新增 -->
+      <button
+        type="button"
+        class="btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32 ml-6"
+        (click)="onAddPopup()"
+      >
+        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'risk.badData.add' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0 mt-2">
+    <thead>
+      <tr>
+        <!-- 类型 -->
+        <th>
+          <span class="cell">{{ 'common.type' | lang }}</span>
+        </th>
+        <!-- 不良数据值 -->
+        <th>
+          <span class="cell">{{ 'risk.badData.value' | lang }}</span>
+        </th>
+        <!-- 评论信息 -->
+        <th>
+          <span class="cell">{{ 'risk.badData.commentInformation' | lang }}</span>
+        </th>
+        <!-- 品牌 -->
+        <th>
+          <span class="cell">{{ 'risk.badData.brand' | lang }}</span>
+        </th>
+        <!-- 添加人 -->
+        <th>
+          <span class="cell">{{ 'risk.badData.addPerson' | lang }}</span>
+        </th>
+        <!-- 添加时间 -->
+        <th>
+          <span class="cell">{{ 'risk.badData.addTime' | lang }}</span>
+        </th>
+        <!-- 操作 -->
+        <th>
+          <span class="cell">{{ 'luckRoulette.actAction' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list; let i = index">
+        <td>
+          <span class="cell">{{ getCategoryLang(item.type) | lang }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <div class="text-two-hidden">{{ item.value || '-' }}</div>
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <div class="text-two-hidden">{{ item.comment || '-' }}</div>
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <div class="d-flex flex-wrap" style="gap: 5px">
+              <app-label type="success" *ngFor="let item of getMerchantNameList(item.tenantIds)">{{
+                item.name
+              }}</app-label>
+            </div>
+          </span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createdUserName || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.createdTime | timeFormat }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <!-- 详情 -->
+            <div class="text-hover-underline text-primary operation-btn" (click)="toDetail(item.id)">
+              {{ 'common.details' | lang }}
+            </div>
+
+            <!-- 删除 -->
+            <div class="text-hover-underline text-danger operation-btn" (click)="onDeletion(item.id)">
+              {{ 'common.delete' | lang }}
+            </div>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty *ngIf="!list.length"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

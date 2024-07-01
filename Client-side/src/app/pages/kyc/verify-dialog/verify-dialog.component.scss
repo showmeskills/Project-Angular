@@ -1,0 +1,12 @@
+.verify-container {
+  background-color: transparent;
+  overflow: auto;
+  display: flex;
+  min-height: 400px;
+  min-width: 488px;
+  @media (max-width: 767px) {
+    min-height: unset;
+    min-width: 100%;
+    height: 100%;
+  }
+}

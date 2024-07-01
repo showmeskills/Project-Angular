@@ -1,0 +1,278 @@
+<ng-template #depositSettingTpl let-data>
+  <div class="d-flex flex-wrap" [formGroup]="data">
+    <span class="mr-4">{{ 'member.overview.deposit' | lang }}&ge;</span>
+    <form-row class="py-0" name="minDepositUsdt">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input
+          class="form-control"
+          [class.is-invalid]="invalid"
+          type="text"
+          [style.width.px]="180"
+          [formControl]="control"
+          input-float
+          *ngIf="!isReadonly"
+        />
+        <span *ngIf="isReadonly">{{ control.value }}</span>
+      </ng-template>
+    </form-row>
+    <img class="mx-4 vam" [style.margin-top.px]="11" currencyIcon="USDT" currencySize="18" alt="" />
+    <span>USDT</span>
+
+    <!-- 奖券 -->
+    <div class="flex-1 d-flex flex-wrap flex-ac">
+      <form-row class="py-0 ml-12" name="prizeId" [showLabel]="false">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <div
+            class="my-4"
+            style="line-height: 1.3"
+            [class.color-999]="!control.value && !invalid"
+            [class.text-danger]="invalid"
+          >
+            <ng-container *ngIf="control.value">
+              <div class="d-flex">
+                <!-- 奖品 -->
+                <span class="fz-16 mr-4 d-flex" *ngIf="control.value.id">
+                  {{ control.value.prizeName }}
+                  ({{ control.value | prizeConfig }})
+                  <span class="text-danger ml-2" *ngIf="control.value.status !== 2">
+                    ({{ getPrizeSatus(control.value.status) | lang }})
+                  </span>
+                </span>
+                <!-- 奖品：上限金额 -->
+                <span class="d-flex flex-ac mr-5" *ngIf="control.value?.amountType === 2">
+                  （{{ 'member.activity.prizeCommon.capAmount' | lang }}：
+                  {{ control.value.rateLimit }}
+                  <img [currencyIcon]="control.value.currency" currencySize="20" class="mx-2" />
+                  {{ control.value.currency }}）
+                </span>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!control.value">{{ 'member.activity.sencli13.selPrizePls' | lang }}</ng-container>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 选择奖励 -->
+      <span (click)="onSelectPrize(data)" class="btn btn-light-primary ml-12" *ngIf="!isReadonly">{{
+        'member.activity.sencli13.selPrize' | lang
+      }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<form-row [control]="form.controls.dailyMaxLimit" label-width="160px" [label]="'bonus.activity.simpleDayLimit' | lang">
+  <ng-template let-invalid="invalid" let-control="formControl">
+    <div class="d-flex flex-ac">
+      <input
+        class="form-control"
+        type="text"
+        [class.is-invalid]="invalid"
+        [formControl]="control"
+        [style.width.px]="180"
+        input-float
+        *ngIf="!isReadonly"
+      />
+      <span *ngIf="isReadonly">{{ control.value }}</span>
+      <span class="ml-4">USDT</span>
+    </div>
+  </ng-template>
+</form-row>
+
+<div class="pt-8">
+  <div class="pb-16" [formGroup]="item" *ngFor="let item of group.controls; index as i">
+    <!-- 支付组合方式 -->
+    <ng-template #paymentLabelTpl> {{ 'bonus.activity.paymentCombine' | lang }}{{ i + 1 }}) </ng-template>
+    <form-row name="payment" label-width="160px" [label]="paymentLabelTpl">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="d-flex flex-ac flex-wrap">
+          <div class="payment-combine" [class.is-invalid]="invalid">
+            <div
+              class="payment-combine-item d-flex flex-ac"
+              *ngFor="let pay of item.controls?.payment?.value || []; index as pi"
+            >
+              <img *ngIf="pay.images.length" [src]="pay.images[0]" alt="" width="28" height="28" />
+              <span class="color-333 mx-2">{{ lang.isLocal ? pay.nameLocal : pay.nameEn }}</span>
+              <svg-icon
+                *ngIf="!isReadonly"
+                (click)="onDelPayment(control, pi)"
+                [src]="'./assets/images/svg/admin-del.svg'"
+                class="svg-icon lh-1 svg-icon-2x5 cursor-pointer"
+              ></svg-icon>
+            </div>
+
+            <div
+              class="add text-primary d-flex flex-center"
+              *ngIf="!isReadonly"
+              (click)="onOpenPayment(paymentSelectTpl, item, i)"
+            >
+              <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+            </div>
+          </div>
+
+          <!-- 删除 -->
+          <div class="p-4 cursor-pointer" (click)="onDelPaymentCombine(i)" *ngIf="!isReadonly">
+            <svg-icon [src]="'./assets/images/svg/admin-del.svg'" class="svg-icon lh-1 svg-icon-2x5"></svg-icon>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 首次额外奖励 -->
+    <form-row label-width="160px" [label]="'member.activity.sencli13.firstExtra' | lang">
+      <ng-template>
+        <ng-container *ngTemplateOutlet="depositSettingTpl; context: { $implicit: item.controls.first }"></ng-container>
+      </ng-template>
+    </form-row>
+
+    <!-- 下次额外奖励 -->
+    <form-row name="nextExtraRewardType" label-width="160px" [label]="'member.activity.sencli13.nextExtra' | lang">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="d-flex flex-wrap">
+          <!-- 每次相同 -->
+          <label class="radio radio-lg lh-32 my-2 fz-16 mr-12" [attrDisabled]="isReadonly">
+            <input
+              type="radio"
+              [name]="'nextExtraReward_' + i"
+              [value]="'same'"
+              [formControl]="control"
+              (change)="onSame(item)"
+            />
+            <span class="mr-4"></span>{{ 'member.activity.sencli13.some' | lang: { $defaultValue: '-' } }}
+          </label>
+
+          <!-- 每次不相同 -->
+          <label class="radio radio-lg lh-32 my-2 fz-16 mr-12" [attrDisabled]="isReadonly">
+            <input
+              type="radio"
+              [name]="'nextExtraReward_' + i"
+              [value]="'different'"
+              [formControl]="control"
+              (change)="onDifferent($any(item))"
+            />
+            <span class="mr-4"></span>{{ 'member.activity.sencli13.different' | lang: { $defaultValue: '-' } }}
+          </label>
+        </div>
+
+        <!-- 下次相同编辑 -->
+        <ng-container
+          *ngIf="item.value.nextExtraRewardType === 'same'"
+          [ngTemplateOutlet]="depositSettingTpl"
+          [ngTemplateOutletContext]="{ $implicit: item.controls.next.controls[0] }"
+        ></ng-container>
+      </ng-template>
+    </form-row>
+
+    <!-- 不相同 -->
+    <ng-container *ngIf="item.value.nextExtraRewardType === 'different'">
+      <!-- 下次奖励次数 -->
+      <form-row
+        name="nextExtraRewardCount"
+        label-width="160px"
+        [label]="'member.activity.sencli13.nextExtraCount' | lang"
+      >
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <div class="d-flex flex-ac">
+            <div
+              class="d-flex flex-ac h26 pr-4 cursor-pointer"
+              style="border-right: 1px solid #e6edf1"
+              (click)="onPrizeTimesEdit(-1, $any(item))"
+              *ngIf="!isReadonly"
+            >
+              <svg-icon [src]="'./assets/images/svg/sub.svg'" class="svg-icon svg-icon-xl text-primary"></svg-icon>
+            </div>
+            <input
+              class="form-control text-center disabled"
+              autocomplete="off"
+              type="text"
+              [style.user-select]="'none'"
+              [formControl]="control"
+              [disabled]="true"
+              [style.width.px]="120"
+              *ngIf="!isReadonly"
+              readonly
+            />
+            <span *ngIf="isReadonly">{{ control.value }}</span>
+            <div
+              class="d-flex flex-ac h26 pl-4 cursor-pointer"
+              style="border-left: 1px solid #e6edf1"
+              (click)="onPrizeTimesEdit(+1, $any(item))"
+              *ngIf="!isReadonly"
+            >
+              <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl text-primary"></svg-icon>
+            </div>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 次数设置 -->
+      <ng-container *ngFor="let item of item.controls.next?.controls || []; index as i">
+        <form-row label-width="160px" [label]="i + 2 + ('member.activity.sencli13.count' | lang)">
+          <ng-container
+            [ngTemplateOutlet]="depositSettingTpl"
+            [ngTemplateOutletContext]="{ $implicit: item }"
+          ></ng-container>
+        </form-row>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- 添加支付组合方式 -->
+  <div class="btn btn-primary" (click)="onAddPayment()" *ngIf="!isReadonly">
+    <svg-icon class="svg-icon svg-icon-2x" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+    <span class="vam ml-2">{{ 'member.activity.sencli13.addPaymentCombine' | lang }}</span>
+  </div>
+
+  <!-- 提示 -->
+  <div class="text-danger fz-14 py-4">* {{ 'member.activity.sencli13.tips' | lang }}</div>
+
+  <div class="pt-16 flex-center btn-wrap" *ngIf="!isReadonly; else showFooterBtnTpl">
+    <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'luckRoulette.lastStep' | lang }}</button>
+    <button
+      type="button"
+      class="c-btn btn btn-primary"
+      (click)="onSubmit()"
+      [class.disabled]="appService.loading$ | async"
+    >
+      {{ 'luckRoulette.submit' | lang }}
+    </button>
+  </div>
+
+  <ng-template #showFooterBtnTpl>
+    <div class="pt-10 btn-wrap flex-center">
+      <button type="button" class="c-btn btn btn-light" (click)="jump('qualifications')">
+        {{ 'luckRoulette.lastStep' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" (click)="toList()">
+        {{ 'common.back' | lang }}
+      </button>
+    </div>
+  </ng-template>
+</div>
+
+<!-- 支付方式编辑 -->
+<ng-template #paymentSelectTpl let-data let-d="dismiss" let-c="close">
+  <modal-title [title]="('bonus.activity.paymentCombine' | lang) + (data.index + 1) + ')'" (close)="c()"></modal-title>
+
+  <div class="modal-body">
+    <div class="d-flex flex-wrap">
+      <div class="extra-payment-item" *ngFor="let item of data.allowPaymentList">
+        <label class="position-relative d-flex flex-ac cursor-pointer">
+          <span class="extra-payment-item-icon">
+            <img [src]="item.images?.[0]" class="vam" alt="" />
+          </span>
+          <span class="px-4">{{ lang.isLocal ? item.nameLocal : item.nameEn }}</span>
+          <label class="fz-16 checkbox checkbox-lg">
+            <input
+              type="checkbox"
+              [checked]="onPaymentIsChecked(data, item)"
+              (change)="onPaymentSelChange(data, item)"
+            />
+            <span></span>
+          </label>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <modal-footer (confirm)="c(data.select)" (dismiss)="d()"></modal-footer>
+</ng-template>

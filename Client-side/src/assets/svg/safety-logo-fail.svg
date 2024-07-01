@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="86.438" height="95.026">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#929aa5"/>
+            <stop offset="1" stop-color="#778190"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-2" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#76808f"/>
+            <stop offset="1" stop-color="#76808f"/>
+        </linearGradient>
+        <style>
+            .cls-5{fill:#fff}
+        </style>
+    </defs>
+    <g id="Group_3529" data-name="Group 3529" transform="translate(-7800 -98)">
+        <path id="Path_5183" data-name="Path 5183" d="M2317.549 84.715v67.95l41 27.076 41-27.076v-67.95z" transform="translate(5482.451 13.285)" style="fill:url(#linear-gradient)"/>
+        <path id="Path_5184" data-name="Path 5184" d="M2328.549 96.1v49.72l30 19.812 30-19.812V96.1z" transform="translate(5482.451 13.285)" style="fill:url(#linear-gradient-2)"/>
+        <path id="Rectangle_1957" data-name="Rectangle 1957" transform="rotate(45 3769.734 9527.249)" style="fill:#e6e8ea" d="M0 0h22.488v22.488H0z"/>
+        <circle id="Ellipse_7" data-name="Ellipse 7" cx="17.5" cy="17.5" r="17.5" transform="translate(7851.438 153.509)" style="fill:#f04e23"/>
+        <path id="Rectangle_1958" data-name="Rectangle 1958" class="cls-5" transform="translate(7867.174 161.293)" d="M0 0h4v14H0z"/>
+        <path id="Rectangle_1959" data-name="Rectangle 1959" class="cls-5" transform="translate(7867.174 178.29)" d="M0 0h4v4H0z"/>
+    </g>
+</svg>

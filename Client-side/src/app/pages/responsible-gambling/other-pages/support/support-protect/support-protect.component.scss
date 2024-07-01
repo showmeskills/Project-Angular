@@ -1,0 +1,29 @@
+.protect-container {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.flex-layout {
+  display: flex;
+}
+
+::ng-deep {
+  .bottom-container {
+    @media (max-width: 767px) {
+      padding-top: 20px;
+    }
+
+    .text-one {
+      @media (max-width: 767px) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .customize-text {
+    font-size: 14px;
+    color: var(--text-color-20);
+    line-height: 1.68;
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,219 @@
+<div class="container" [appLoading]="loading">
+  <div class="search-bar">
+    <div class="options">
+      <div class="search-column-container">
+        <div class="search-column">
+          <div class="search-title">{{ 'asset' | translate }}</div>
+          <div class="input-container onact96" (click)="showAssetsOptions()" (clickOutside)="showAssetTypeMenu = false">
+            <!-- 过滤 assetTypeOptions 中 value 值等于selectedAssetType 的成员 ，显示这个成员的 name 值  -->
+            <input
+              type="text"
+              [value]="assetTypeOptions | filterByKeyValue : 'value' : selectedAssetType : 'name'"
+              disabled
+            />
+            <div class="grey-down-arraw" *ngIf="!showAssetTypeMenu"></div>
+            <div class="up-arraw" *ngIf="showAssetTypeMenu"></div>
+          </div>
+          <div class="options" *ngIf="showAssetTypeMenu">
+            <ul class="form-control">
+              <ng-container *ngFor="let item of assetTypeOptions">
+                <li class="onact96-not" [class.active]="item.active" (click)="assetTypeClick(item)">{{ item.name }}</li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-column-container">
+        <div class="search-column">
+          <div class="search-title">{{ 'curr' | translate }}</div>
+          <div class="input-container onact96" (click)="showCoinMenu()" (clickOutside)="coinTypeMenu = false">
+            <input type="text" [value]="selectedCoinType || ('all' | translate)" disabled />
+            <div class="grey-down-arraw" *ngIf="!coinTypeMenu"></div>
+            <div class="up-arraw" *ngIf="coinTypeMenu"></div>
+          </div>
+          <div class="options" *ngIf="coinTypeMenu">
+            <ul class="form-control">
+              <!-- 过滤后压入一个'全部'的选项 -->
+              <ng-container
+                *ngFor="
+                  let item of currencies
+                    | filterByKeyValue : 'isDigital' : selectedAssetType === 'crypto'
+                    | unshift : allCoinItem
+                "
+              >
+                <li class="onact96-not" [class.active]="item.active" (click)="coinTypeClick(item)">
+                  {{ item.currency || ('all' | translate) }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-column-container">
+        <div class="search-column">
+          <div class="search-title">{{ 'scope' | translate }}</div>
+          <div class="input-container onact96" (click)="showTimeOptions()" (clickOutside)="openTimeMenu = false">
+            <!-- TODO: 交互优化：自定义时间时没地方显示具体时间 -->
+            <input type="text" [value]="timeOptions | filterByKeyValue : 'value' : selectedTime : 'name'" disabled />
+            <div class="grey-down-arraw" *ngIf="!openTimeMenu"></div>
+            <div class="up-arraw" *ngIf="openTimeMenu"></div>
+          </div>
+          <div class="options" *ngIf="openTimeMenu">
+            <ul class="form-control">
+              <ng-container *ngFor="let item of timeOptions">
+                <li class="onact96-not" [class.active]="item.active" (click)="timeClick(item)">{{ item.name }}</li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-column-container" *ngIf="categoryData">
+        <div class="search-column">
+          <div class="search-title">{{ 'categ00' | translate }}</div>
+          <div class="input-container onact96" (click)="showCategoryMenu()" (clickOutside)="categoryMenu = false">
+            <input
+              type="text"
+              [value]="categoryData | filterByKeyValue : 'code' : selectedCategory : 'description'"
+              disabled
+            />
+            <div class="grey-down-arraw" *ngIf="!categoryMenu"></div>
+            <div class="up-arraw" *ngIf="categoryMenu"></div>
+          </div>
+          <div class="options" *ngIf="categoryMenu">
+            <ul class="form-control">
+              <ng-container *ngFor="let item of categoryData">
+                <li class="onact96-not" [class.active]="item.code === selectedCategory" (click)="categoryClick(item)">
+                  {{ item.description }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-column-container" *ngIf="providerData">
+        <div class="search-column">
+          <div class="search-title">{{ 'venue' | translate }}</div>
+          <div class="input-container onact96" (click)="showProviderMenu()" (clickOutside)="providerMenu = false">
+            <!-- 压入一个'全部'的选项,之后过滤 -->
+            <input
+              type="text"
+              [value]="
+                providerData
+                  | unshift : allProviderItem
+                  | filterByKeyValue : 'providerCatId' : selectedProvider : 'providerName'
+              "
+              disabled
+            />
+            <div class="grey-down-arraw" *ngIf="!providerMenu"></div>
+            <div class="up-arraw" *ngIf="providerMenu"></div>
+          </div>
+          <div class="options" *ngIf="providerMenu">
+            <ul class="form-control">
+              <!-- 压入一个'全部'的选项 -->
+              <ng-container *ngFor="let item of providerData | unshift : allProviderItem">
+                <li
+                  class="onact96-not"
+                  [class.active]="item.providerCatId === selectedProvider"
+                  (click)="providerClick(item)"
+                >
+                  {{ item.providerName }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-column-container" *ngIf="wagerStatusList">
+        <div class="search-column">
+          <div class="search-title">{{ 'stat' | translate }}</div>
+          <div class="input-container onact96" (click)="showStatusMenu()" (clickOutside)="statusMenuFlag = false">
+            <!-- 压入一个'全部'的选项,之后过滤 -->
+            <input
+              type="text"
+              [value]="
+                wagerStatusList
+                  | unshift : allSatatusItem
+                  | filterByKeyValue : 'code' : selcetedSatatusCode : 'description'
+              "
+              disabled
+            />
+            <div class="grey-down-arraw" *ngIf="!statusMenuFlag"></div>
+            <div class="up-arraw" *ngIf="statusMenuFlag"></div>
+          </div>
+          <div class="options" *ngIf="statusMenuFlag">
+            <ul class="form-control">
+              <!-- 压入一个'全部'的选项 -->
+              <ng-container *ngFor="let item of wagerStatusList | unshift : allSatatusItem">
+                <li class="onact96-not" [class.active]="item.code === selcetedSatatusCode" (click)="statusClick(item)">
+                  {{ item.description }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="search-btn-group">
+        <div class="btn reset-btn onact96-not" (click)="onReset()">{{ 'reset' | translate }}</div>
+        <div class="btn filterr-btn onact96-not" (click)="onReLoad(selectedAssetType)">{{ 'filter' | translate }}</div>
+      </div>
+      <!-- 筛选icon H5显示 TODO: 未完善 -->
+      <div class="mobile-filter onact96" (click)="handleFilter()">
+        <div class="filter-icon"></div>
+      </div>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <th>{{ 'dates' | translate }}</th>
+      <th>{{ 'bet_slip_num00' | translate }}</th>
+      <th>{{ 'curr' | translate }}</th>
+      <th>{{ 'bet_am00' | translate }}</th>
+      <th>{{ 'wol' | translate }}</th>
+      <th>{{ 'effective_flow' | translate }}</th>
+      <th>{{ 'stat' | translate }}</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of wagerHistory">
+        <td>{{ item.date | mdate : 'YYYY-MM-DD HH:mm' }}</td>
+        <td>{{ item.wagerNum }}</td>
+        <td>{{ item.currency }}</td>
+        <td>
+          <p class="text">{{ item.amount }}</p>
+          <img class="currency-img" [src]="item.currency | currencyIcon" />
+        </td>
+        <td>{{ item.winAmout }}</td>
+        <td>{{ item.activeFlow }}</td>
+        <td>{{ statusList | filterByKeyValue : 'code' : item.status : 'description' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <app-empty *ngIf="wagerHistory.length <= 0 && !loading"></app-empty>
+
+  <app-paginator
+    [(page)]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [disabled]="loading"
+    [loading]="loading"
+    (onPageChange)="onSearch(selectedAssetType)"
+  >
+  </app-paginator>
+  <!-- H5状态下显示 TODO: 未完善 -->
+  <!-- <div class="h5-list">
+    <ng-container *ngFor="let item of withdrawData" >
+      <div class="list-row" (click)="openDetail(item)" >
+        <div class="row1">
+          <div class="left">
+            <div class="coin">{{item.coin}}</div>
+            <div class="type">{{item.type}}</div>
+          </div>
+          <div class="right">{{item.amount}}</div>
+        </div>
+        <div class="row2">
+          <div class="date">{{item.date}}</div>
+          <div class="status">{{item.status}}</div>
+        </div>
+      </div>
+    </ng-container>
+  </div> -->
+</div>

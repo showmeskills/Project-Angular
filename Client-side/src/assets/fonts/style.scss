@@ -1,0 +1,1222 @@
+@font-face {
+  font-family: "dinpro";
+  src: url(./dinpro.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+/* @font-face {
+  font-family: "dinpro";
+  src: url(./dinpro.otf) format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: block;
+} */
+
+@font-face {
+  font-family: "roboto";
+  src: url(./roboto.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "iconfont";
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+  src: url(./iconfont.woff2) format("woff2"),
+    url(./iconfont.woff) format("woff"),
+    url(./iconfont.ttf) format("truetype");
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"].inherit:before,
+[class*=" icon-"].inherit:before {
+  color: inherit;
+}
+
+/*----------------- 自定义图标 START --------------------*/
+
+.icon-zan::before{
+  content: '\e765';
+}
+
+.icon-coin-switch::before{
+  content: '\e764';
+}
+
+.icon-chat2::before{
+  content: '\e757';
+}
+
+.icon-chat::before{
+  content: '\e756';
+}
+
+.icon-plus::before{
+  content: '\e758';
+}
+
+.icon-emj::before{
+  content: '\e759';
+}
+
+.icon-resend::before{
+  content: '\e763';
+}
+
+.icon-send::before{
+  content: '\e760';
+}
+
+.icon-file::before{
+  content: '\e761';
+}
+
+.icon-img::before{
+  content: '\e762';
+}
+
+.icon-18plus::before{
+  content: '\e755';
+}
+
+.icon-tournamen-flag::before{
+  content: "\e754";
+}
+
+.icon-coupon-2::before{
+  content: "\e753";
+}
+
+.icon-six-dots::before{
+  content: "\e751"
+}
+
+.icon-gorden::before{
+  content: "\e740";
+}
+
+.icon-pm::before{
+  content: '\e736'
+}
+
+.icon-fb-sport::before {
+  content: '\e735'
+}
+
+.icon-race-clock::before {
+  content: '\e734'
+}
+
+.icon-line-chart::before {
+  content: '\e733'
+}
+
+.icon-pingbo-eSport::before {
+  content: "\e732";
+}
+
+.icon-imSport::before {
+  content: "\e731";
+}
+
+
+.icon-big-thumb::before {
+  content: '\e730';
+}
+
+.icon-double-arrow::before {
+  content: "\e728";
+}
+
+
+.icon-pingbo::before {
+  content: "\e727";
+}
+
+.icon-league:before {
+  content: "\e718";
+}
+
+.icon-copy-3:before {
+  content: "\e716";
+}
+
+.icon-share:before {
+  content: "\e717";
+}
+
+.icon-share2:before {
+  content: "\e724";
+}
+
+.icon-link2:before {
+  content: "\e726";
+}
+
+.icon-download-3:before {
+  content: "\e725";
+}
+
+.icon-ob:before {
+  content: "\e713";
+}
+
+.icon-wallet3:before {
+  content: "\e712";
+}
+
+.icon-bold-arrow:before {
+  content: "\e70b";
+}
+
+.icon-refresh2:before {
+  content: "\e711";
+}
+
+.icon-partner:before {
+  content: '\e70f';
+}
+
+.icon-agent:before {
+  content: '\e70d';
+}
+
+
+.icon-friend:before {
+  content: '\e70e';
+}
+
+.icon-cunkuan:before {
+  content: "\e705";
+}
+
+.icon-guanbi:before {
+  content: "\e706";
+}
+
+.icon-huodong:before {
+  content: "\e707";
+}
+
+.icon-jinzhi:before {
+  content: "\e708";
+}
+
+.icon-naozhong:before {
+  content: "\e709";
+}
+
+.icon-zanting:before {
+  content: "\e70a";
+}
+
+.icon-info:before {
+  content: "\e704";
+}
+
+.icon-play-right:before {
+  content: "\e693";
+}
+
+.icon-cancel-order:before {
+  content: "\e699";
+}
+
+.icon-full-screen:before {
+  content: "\e01C";
+}
+
+.icon-narrow:before {
+  content: "\e714";
+}
+
+.icon-close-circle:before {
+  content: "\e715";
+}
+
+.icon-bottom-menu:before {
+  content: "\e018";
+}
+
+.icon-bottom-search:before {
+  content: "\e01a";
+}
+
+.icon-bottom-activity:before {
+  content: "\e017";
+}
+
+.icon-bottom-setting:before {
+  content: "\e01b";
+}
+
+.icon-bottom-assets:before {
+  content: "\e019";
+}
+
+//
+
+.icon-xianjin:before {
+  content: "\e015";
+}
+
+.icon-wallet2:before {
+  content: "\e016";
+}
+
+/* 体育项目图标 sc + code START*/
+
+.icon-sc00012:before {
+  content: "\e001";
+}
+
+.icon-sc00023:before {
+  content: "\e002";
+}
+
+.icon-sc00016:before {
+  content: "\e003";
+}
+
+.icon-sc00003:before {
+  content: "\e004";
+}
+
+.icon-sc00034:before {
+  content: "\e005";
+}
+
+.icon-sc00015:before {
+  content: "\e006";
+}
+
+.icon-sc00026:before {
+  content: "\e007";
+}
+
+.icon-sc00007:before {
+  content: "\e008";
+}
+
+.icon-sc00111:before {
+  content: "\e009";
+}
+
+.icon-sc00006:before {
+  content: "\e00a";
+}
+
+.icon-sc00004:before {
+  content: "\e00b";
+}
+
+.icon-sc00029:before {
+  content: "\e00c";
+}
+
+.icon-sc00031:before {
+  content: "\e00d";
+}
+
+.icon-sc00021:before {
+  content: "\e00e";
+}
+
+.icon-sc00028:before {
+  content: "\e00f";
+}
+
+.icon-sc00022:before {
+  content: "\e010";
+}
+
+.icon-sc00001:before {
+  content: "\e011";
+}
+
+.icon-sc00005:before {
+  content: "\e012";
+}
+
+.icon-sc00020:before {
+  content: "\e013";
+}
+
+.icon-sc00002:before {
+  content: "\e014";
+}
+
+/* 体育项目图标 sc + code End*/
+
+/* 新浪 */
+.icon-sina:before {
+  content: "\e690";
+}
+
+/* 下载箭头在一个圆圈里面 */
+.icon-ring-download:before {
+  content: "\e68c";
+}
+
+/* ins */
+.icon-ins:before {
+  content: "\e68f";
+}
+
+/* twitter */
+.icon-twitter:before {
+  content: "\e68e";
+}
+
+/* fb */
+.icon-fb:before {
+  content: "\e68d";
+}
+
+/* qq */
+.icon-qq:before {
+  content: "\e691";
+}
+
+/* 一对箭头 < > */
+.icon-right-arrow:before {
+  content: "\e68b";
+}
+
+.icon-left-arrow:before {
+  content: "\e68a";
+}
+
+/* 篮球 */
+.icon-basketball:before {
+  content: "\e689"
+}
+
+/* 红桃心 */
+.icon-poker-heart:before {
+  content: "\e687";
+}
+
+/* 8号球 */
+.icon-ball-n8:before {
+  content: "\e686"
+}
+
+/* 2组硬币 */
+.icon-double-coin:before {
+  content: "\e688";
+}
+
+/* 笔 */
+.icon-pen:before {
+  content: "\e685";
+}
+
+/* 三条线 */
+.icon-three-line:before {
+  content: "\e684";
+}
+
+/* 复制icon2 */
+.icon-copy-2:before {
+  content: '\e682';
+  color: var(--text-color-20);
+}
+
+/* 编辑图标 */
+.icon-edit:before {
+  content: "\e683";
+}
+
+/* 信息提醒闹钟 */
+.icon-clock:before {
+  content: "\e60c";
+}
+
+/*实心五角星*/
+.icon-full-start:before {
+  content: "\e60b";
+}
+
+/* pcgame */
+.icon-wallet-coin:before {
+  content: "\e620";
+}
+
+/*钱*/
+.icon-money:before {
+  content: "\e604";
+}
+
+/*下载icon*/
+.icon-download-2:before {
+  content: "\e60a";
+}
+
+/*向下三角形*/
+.icon-drop-down:before {
+  content: "\e607";
+}
+
+/*日历*/
+.icon-calendar:before {
+  content: "\e609";
+}
+
+/*大漏斗*/
+.icon-big-filter:before {
+  content: "\e605";
+}
+
+.icon-fov:before {
+  content: "\e60d";
+}
+
+.icon-chart:before {
+  content: "\e60f";
+}
+
+.icon-full:before {
+  content: "\e610";
+}
+
+.icon-theatre:before {
+  content: "\e611";
+}
+
+.icon-poker:before {
+  content: "\e675";
+}
+
+.icon-chidou:before {
+  content: "\e676";
+}
+
+.icon-game777:before {
+  content: "\e677";
+}
+
+.icon-qian:before {
+  content: "\e678";
+}
+
+.icon-lunpan:before {
+  content: "\e679";
+}
+
+.icon-buyu:before {
+  content: "\e67a";
+}
+
+/* 玩家 */
+.icon-people:before {
+  content: "\e674";
+}
+
+/* 返回（粗） */
+.icon-back:before {
+  content: "\e673";
+}
+
+/* 复制 */
+.icon-copy:before {
+  content: "\e603";
+}
+
+/* 链接 */
+.icon-link:before {
+  content: "\e602";
+}
+
+.icon-clear-fill:before {
+  content: "\e672";
+}
+
+.icon-kefu:before {
+  content: "\e671";
+}
+
+.icon-arrow-left:before {
+  content: "\e66d";
+}
+
+.icon-sun-light:before {
+  content: "\e66e";
+}
+
+.icon-setting:before {
+  content: "\e66f";
+}
+
+.icon-moon-light:before {
+  content: "\e670";
+}
+
+/* 失败提示 */
+.icon-toast-fail:before {
+  content: "\e66b";
+}
+
+/* 成功提示 */
+.icon-toast-success:before {
+  content: "\e66c";
+}
+
+/* 过滤漏斗 */
+.icon-filter:before {
+  content: "\e66a";
+}
+
+/* 小钱包 */
+.icon-tinybag:before {
+  content: "\e668";
+}
+
+/* 提示 */
+.icon-tips:before {
+  content: "\e669";
+}
+
+/* 提现 */
+.icon-tixian:before {
+  content: "\e662";
+}
+
+/* 历史记录 */
+.icon-history:before {
+  content: "\e663";
+}
+
+/* 银行卡 */
+.icon-bankcard:before {
+  content: "\e664";
+}
+
+/* 数字货币 */
+.icon-shuzihuobi:before {
+  content: "\e665";
+}
+
+/* 充值 */
+.icon-chongzhi:before {
+  content: "\e666";
+}
+
+/* 兑换 */
+.icon-duihuan:before {
+  content: "\e667";
+}
+
+/* 下载 */
+.icon-download:before {
+  content: "\e661";
+}
+
+/* 粗右箭头 */
+.icon-arrow-bold-right:before {
+  content: "\e660";
+}
+
+/* 粗左箭头 */
+.icon-arrow-bold-left:before {
+  content: "\e65f";
+}
+
+/* 会员-填充 */
+.icon-user-fill:before {
+  content: "\e65e";
+}
+
+/* 左侧菜单集合 */
+.icon-bingo:before {
+  content: "\e65d";
+}
+
+.icon-rg:before {
+  content: "\e623";
+}
+
+.icon-188-sport:before {
+  content: "\e723";
+}
+
+.icon-im:before {
+  content: "\e681";
+}
+
+.icon-original:before {
+  content: "\e680";
+}
+
+.icon-yulechang:before {
+  content: "\e625";
+}
+
+.icon-glunpan:before {
+  content: "\e624";
+}
+
+.icon-pkshi:before {
+  content: "\e622";
+}
+
+.icon-blackjack:before {
+  content: "\e61d";
+}
+
+.icon-small-tv:before {
+  content: "\e621";
+}
+
+.icon-kuailecai:before {
+  content: "\e61e";
+}
+
+.icon-shijiele:before {
+  content: "\e61f";
+}
+
+.icon-fivein11:before {
+  content: "\e619";
+}
+
+.icon-threed:before {
+  content: "\e617";
+}
+
+.icon-lucky-boat:before {
+  content: "\e618";
+}
+
+.icon-dipincai:before {
+  content: "\e616";
+}
+
+.icon-shuangse:before {
+  content: "\e614";
+}
+
+.icon-ky:before {
+  content: "\e613";
+}
+
+.icon-xxgame:before {
+  content: "\e612";
+}
+
+.icon-buyuyx:before {
+  content: "\e67f";
+}
+
+.icon-shishicai:before {
+  content: "\e61c";
+}
+
+.icon-yuenancai:before {
+  content: "\e615";
+}
+
+.icon-pcgame:before {
+  content: "\e620";
+}
+
+.icon-jikaicai:before {
+  content: "\e61b";
+}
+
+.icon-kuaisan:before {
+  content: "\e61a";
+}
+
+.icon-wangqiu:before {
+  content: "\e651";
+}
+
+.icon-zmyouxi:before {
+  content: "\e65b";
+}
+
+.icon-lanqiu:before {
+  content: "\e65c";
+}
+
+.icon-laohuji:before {
+  content: "\e658";
+}
+
+.icon-yxjiemu:before {
+  content: "\e659";
+}
+
+.icon-newgame:before {
+  content: "\e653";
+}
+
+.icon-csgo:before {
+  content: "\e654";
+}
+
+.icon-pingpang:before {
+  content: "\e655";
+}
+
+.icon-hotgame:before {
+  content: "\e656";
+}
+
+.icon-ltyuanch:before {
+  content: "\e657";
+}
+
+.icon-jackpot:before {
+  content: "\e652";
+}
+
+.icon-shoucang:before {
+  content: "\e64c";
+}
+
+.icon-jijiang:before {
+  content: "\e64d";
+}
+
+.icon-weilaisaishi:before {
+  content: "\e698";
+}
+
+.icon-saishi:before {
+  content: "\e64e";
+}
+
+.icon-zuqiu:before {
+  content: "\e64f";
+}
+
+.icon-dota:before {
+  content: "\e650";
+}
+
+.icon-sbtiyu:before {
+  content: "\e65a";
+}
+
+.icon-tiyu:before {
+  content: "\e649";
+}
+
+.icon-caipiao:before {
+  content: "\e64a";
+}
+
+.icon-yulecheng:before {
+  content: "\e64b";
+}
+
+/*-----------------*/
+
+/* 放大 */
+.icon-enlarge:before{
+  content:'\e737';
+}
+
+
+/* 太阳 */
+.icon-sun:before {
+  content: "\e647";
+}
+
+/* 月亮 */
+.icon-moon:before {
+  content: "\e648";
+}
+
+/* 顶部左侧菜单 */
+.icon-menu-trigger:before {
+  content: "\e646";
+}
+
+/* 三个点 */
+.icon-three-dot:before {
+  content: "\e645";
+}
+
+/* 简单右箭头 就是 > 这个样子 */
+.icon-arrow-right-simple:before {
+  content: "\e644";
+}
+
+/* 简单左箭头 就是 < 这个样子 */
+.icon-arrow-left-simple:before {
+  content: "\e644";
+  transform: scaleX(-1);
+  display: inline-block;
+}
+
+/* 简单上箭头 就是类似 ^ 这个样子 */
+.icon-arrow-up-simple:before {
+  content: "\e644";
+  transform: rotate(-90deg) translateY(0.15em);
+  display: inline-block;
+}
+
+/* 简单下箭头 就是类似 v 这个样子 */
+.icon-arrow-down-simple:before {
+  content: "\e644";
+  transform: rotate(90deg);
+  display: inline-block;
+  color: var(--text-color-20);
+}
+
+/* 登出 */
+.icon-exit:before {
+  content: "\e643";
+}
+
+/* 语言 */
+.icon-global:before {
+  content: "\e641";
+}
+
+/* 主题 */
+.icon-theme:before {
+  content: "\e642";
+}
+
+/* 文本框清除 */
+.icon-clear::before {
+  content: "\e630";
+  color: #d8dce1;
+}
+
+/* 刷新 */
+.icon-refresh::before {
+  content: "\e628";
+  color: #d8dce1;
+}
+
+/* 密码隐藏 */
+.icon-pwd-hidden::before {
+  content: "\e638";
+  color: #d8dce1;
+}
+
+/* 密码显示 */
+.icon-pwd-show::before {
+  content: "\e631";
+  color: #d8dce1;
+}
+
+/* 搜索 */
+.icon-search::before {
+  content: "\e635";
+  color: #d8dce1;
+}
+
+/* 圈圈惊叹号 */
+.icon-warning::before {
+  content: "\e639";
+  // color: #707a8a;
+  color: var(--text-color-20);
+}
+
+/* 关闭 */
+.icon-close-simple::before {
+  content: "\e62f";
+  // color: #383c41;
+  color: var(--text-color-20);
+
+}
+
+/* 下箭头 */
+.icon-arrow-down::before {
+  content: "\e63a";
+  // color: #707a8a;
+  color: var(--text-color-20);
+}
+
+/* 正确 */
+.icon-correct::before {
+  content: "\e633";
+  color: #15bf7b;
+}
+
+/* 错误 */
+.icon-error::before {
+  content: "\e626";
+  color: #ff7272;
+}
+
+/* 上箭头 */
+.icon-arrow-up::before {
+  content: "\e640";
+  // color: #707a8a;
+  color: var(--text-color-20);
+}
+
+/* 用户头像 */
+.icon-user::before {
+  content: "\e62a";
+}
+
+/* 钱包 */
+.icon-wallet::before {
+  content: "\e629";
+}
+
+/* 交易历史 */
+.icon-shopping::before {
+  content: "\e637";
+}
+
+/* 积分商城 */
+.icon-pad::before {
+  content: "\e632";
+}
+
+/* 钻石 */
+.icon-diamond::before {
+  content: "\e627";
+}
+
+/* 礼物 */
+.icon-gift::before {
+  content: "\e62e";
+}
+
+/* 清单 */
+.icon-list::before {
+  content: "\e62b";
+  color: #73787c;
+}
+
+/* 两个用户头像 */
+.icon-users::before {
+  content: "\e63e";
+}
+
+/* 盾牌 */
+.icon-shield::before {
+  content: "\e63f";
+}
+
+/* 控制开关 */
+.icon-control::before {
+  content: "\e63b";
+}
+
+/* 纸片-有节制博彩 */
+.icon-note::before {
+  content: "\e63d";
+}
+
+/* 书签 */
+.icon-bookmark::before {
+  content: "\e63c";
+}
+
+/* 铃铛 */
+.icon-bell::before {
+  content: "\e634";
+}
+
+/* 成功 */
+.icon-success::before {
+  content: "\e636";
+}
+
+/* 失敗 */
+.icon-fail::before {
+  content: "\e62c";
+}
+
+/* 右箭头 */
+.icon-arrow-right::before {
+  content: "\e62d";
+}
+
+/* 卡劵中心icon */
+.icon-coupon::before {
+  content: "\e606";
+}
+
+/* 小游戏filter*/
+.icon-filter-2::before {
+  content: "\e608";
+}
+
+/* 排序热门 */
+.icon-sort-hot:before {
+  content: "\e67b";
+}
+
+/* 排序za */
+.icon-sort-za:before {
+  content: "\e67c";
+}
+
+/* 排序az */
+.icon-sort-az:before {
+  content: "\e67d";
+}
+
+/* 排序重点介绍 */
+.icon-sort-focus:before {
+  content: "\e67e";
+}
+
+/* 带耳机 */
+.icon-listen::before {
+  content: "\e694";
+}
+
+/* 图片 */
+.icon-png::before {
+  content: "\e695";
+}
+
+/* 播放视频 */
+.icon-play-video::before {
+  content: "\e696";
+}
+
+/* 云上传 */
+.icon-cloud-upload::before {
+  content: "\e697";
+}
+
+/* apple logo*/
+.icon-apple::before {
+  content: "\e700";
+}
+
+/* 谷歌商店 logo */
+.icon-googleplay::before {
+  content: "\e701";
+}
+
+/* kyc驾照 */
+.icon-license::before {
+  content: "\e702";
+}
+
+/* kyc护照 */
+.icon-passport::before {
+  content: "\e703";
+}
+
+/* kyc保护 */
+.icon-kyc-protect::before {
+  content: "\e710";
+}
+
+/* kyc相机*/
+.icon-kyc-camera::before {
+  content: "\e70c";
+}
+
+/* 骰宝*/
+.icon-shaibao::before {
+  content: "\e721";
+}
+
+/* 4D*/
+.icon-wanzifour::before {
+  content: "\e719";
+}
+
+/* LOL*/
+.icon-leaguelegends::before {
+  content: "\e720";
+}
+
+/* 全部菜单*/
+.icon-menu-all::before {
+  content: "\e722";
+}
+
+/* 视频播放符号*/
+.icon-video-play::before {
+  content: "\e729";
+}
+
+/* 博雅棋牌*/
+.icon-boya::before {
+  content: "\e738";
+}
+
+/* 双赢棋牌*/
+.icon-sgwinchess::before {
+  content: "\e739";
+}
+
+/* 人脸识别*/
+.icon-face::before {
+  content: "\e741";
+}
+
+/* 实名认证*/
+.icon-kyc-name::before {
+  content: "\e742";
+}
+
+/* 地址认证*/
+.icon-add::before {
+  content: "\e743";
+}
+
+/* 全套认证*/
+.icon-kyc-full::before {
+  content: "\e744";
+}
+
+/* 最大化*/
+.icon-maximize::before {
+  content: "\e745";
+}
+/* 手机认证*/
+.icon-kyc-phone::before {
+  content: "\e746";
+}
+/* 扫描二维码*/
+.icon-scan-qr::before {
+  content: "\e747";
+}
+/* YYChess*/
+.icon-yychess::before {
+  content: "\e748";
+  font-size: 12px;
+}
+
+/* wallet setting */
+.icon-wallet-setting::before {
+  content: "\e749";
+  font-size: 12px;
+}
+
+/* wallet setting */
+.icon-wallet-search::before {
+  content: "\e750";
+  font-size: 12px;
+}
+
+/* wallet setting */
+.icon-warn-tip::before {
+  content: "\e752";
+}
+

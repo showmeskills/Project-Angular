@@ -1,0 +1,33 @@
+.mat-mdc-checkbox {
+  > label {
+    margin-bottom: 0;
+  }
+}
+
+.mat-pseudo-checkbox {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+// 重置mat-select样式下的选择框
+mat-option {
+  .mdc-list-item__primary-text + .mat-pseudo-checkbox {
+    display: none;
+  }
+}
+
+.mat-mdc-option .mat-icon,
+.mat-mdc-option .mat-pseudo-checkbox-full {
+  border-color: transparent;
+  background: transparent;
+}
+
+.mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full,
+.mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-full {
+  border-color: transparent;
+  background: transparent;
+
+  &::after {
+    color: #009ef7;
+  }
+}

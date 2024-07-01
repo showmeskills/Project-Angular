@@ -1,0 +1,115 @@
+<div class="wrapper" [class.h5]="isH5">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="crash"
+      [(isAnimation)]="isAnimation"
+      [(fairnessData)]="fairnessData"
+      [isFast]="false"
+      [isTrend]="false"
+      [isOverlapp]="true"
+      [(isHotkey)]="isHotkey"
+    ></orignal-bar>
+  </div>
+  <!--H5 history-->
+  <div class="history-h5-container" *ngIf="isH5">
+    <div class="numbers">
+      <div class="zoushi"><img src="assets/orignal/images/crash/zoushi.svg" alt="" /></div>
+      <ng-container *ngFor="let item of historyList">
+        <div class="item" [style.background]="historybackground(item)">{{ item }}x</div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="content" [class.h5]="isH5">
+    <div class="game-number" [class.h5]="isH5">
+      <div class="animation-bar" [class.h5]="isH5">
+        <div class="postion-bet-container" *ngIf="!isH5">
+          <!--实时下注-->
+          <orignal-real-bet [currentCurrencyData]="currentCurrencyData"></orignal-real-bet>
+        </div>
+        <!--web history-->
+        <div class="history" *ngIf="!isH5">
+          <div class="numbers" [class.h5]="isH5">
+            <div class="zoushi"><img src="assets/orignal/images/crash/zoushi.svg" alt="" /></div>
+            <ng-container *ngFor="let item of historyList">
+              <div class="item" [style.background]="historybackground(item)">{{ item }}x</div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="cont" [class.h5]="isH5" [class.settlement]="isboom">
+          <div class="border-out">
+            <div class="border-side" [class.h5]="isH5">
+              <!--投注数 && 倒计时-->
+              <div class="center">
+                <div class="number">{{ stepValue }}x</div>
+                <div class="countdown" *ngIf="isBet && !isboom">
+                  {{ 'betting' | translate }}
+                  <div class="progress-wrapper">
+                    <div class="progress" [style.width]="progressWidth"></div>
+                  </div>
+                  <div class="time">{{ currentCountDown }}</div>
+                </div>
+                <div class="countdown" *ngIf="action == 'actionCrashStopBettingApi'">
+                  {{ 'stop_betting' | translate }}
+                </div>
+              </div>
+
+              <!-- 网络状态 -->
+              <div class="network" [class.h5]="isH5">
+                {{ 'network_status' | translate }}
+                <div class="status success"></div>
+              </div>
+
+              <!-- 动画 -->
+              <div class="game-chart" [class.visibility]="!isAnimation">
+                <svg #gameChartSg>
+                  <defs>
+                    <mask id="Mask">
+                      <circle id="m-circle" r="600" fill="url(#grad)" />
+                    </mask>
+                    <radialGradient id="grad" cx="0.5" cy="0.5" r="0.5">
+                      <stop offset="0%" stop-color="#fff" stop-opacity="1" />
+                      <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+                    </radialGradient>
+                  </defs>
+                </svg>
+                <div class="plane-container" #plane>
+                  <img
+                    *ngIf="!isboom"
+                    #airship
+                    class="plane"
+                    (load)="loaded()"
+                    src="assets/orignal/images/crash/airship.webp"
+                  />
+                  <img *ngIf="isboom" class="boom" src="assets/orignal/images/crash/boom.svg" />
+                  <img
+                    *ngIf="isParachute"
+                    [class.move_parachute]="isParachute"
+                    class="parachute"
+                    src="assets/orignal/images/crash/parachute.png"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 山峰月亮背景 -->
+
+          <div class="peaks_moon" [class.visibility]="!isAnimation" [class.bgmove]="isFly" [class.h5]="isH5"></div>
+          <div class="peaks_moon_no" [class.visibility]="isAnimation" [class.h5]="isH5"></div>
+          <div class="auto_bg" [class.visibility]="!isAnimation" [class.bgmove]="isFly" [class.h5]="isH5"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <orignal-bet
+    type="crash"
+    [isDice]="false"
+    [(rate)]="rate"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [operate]="operate"
+    [isRealHistory]="true"
+  >
+  </orignal-bet>
+</div>

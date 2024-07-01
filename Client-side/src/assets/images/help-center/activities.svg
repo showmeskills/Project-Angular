@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <defs>
+        <clipPath id="kh8unvc87a">
+            <path data-name="矩形 8547" transform="translate(10 10)" style="fill:#fff;stroke:#707070" d="M0 0h20v20H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="组 8191" transform="translate(-10 -10)" style="clip-path:url(#kh8unvc87a)">
+        <g data-name="组 8192">
+            <path data-name="路径 13351" d="M22.164 15.754c.483-1.08 1.219-2.193 1.923-2.193a.729.729 0 0 1 .2.025c.288.085.638.269.581.7-.069.542-.896 1.362-2.704 1.468z"/>
+            <path data-name="路径 13352" d="M561.65 493.194h5.6v8.313h-5.6z" transform="translate(-540.762 -473.496)" style="fill:#fb5107"/>
+            <path data-name="路径 13353" d="M15.365 14.314a.645.645 0 0 1 .581-.687.563.563 0 0 1 .2-.033c.7 0 1.424 1.129 1.931 2.2-1.812-.105-2.651-.931-2.712-1.48z"/>
+            <path data-name="路径 13354" d="M148.819 493.194h5.6v8.313h-5.6z" transform="translate(-135.303 -473.496)" style="fill:#fb5107"/>
+            <path data-name="路径 13355" d="M86.677 68.674v-2.5h-2.995a2.98 2.98 0 0 0 1.571-2.086 2.189 2.189 0 0 0-1.71-2.414 2.27 2.27 0 0 0-.646-.09c-2.045 0-3.24 2.708-3.666 3.854h-.613c-.466-1.162-1.612-3.821-3.657-3.821a2.3 2.3 0 0 0-.646.1 2.194 2.194 0 0 0-1.71 2.414 2.993 2.993 0 0 0 1.514 2.046h-3.184v2.5z" transform="translate(-58.809 -49.59)" style="fill:#fb5107"/>
+        </g>
+    </g>
+</svg>

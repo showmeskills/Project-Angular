@@ -1,0 +1,226 @@
+<div class="card hd mt-11">
+  <div class="fz-20 flex-1">{{ 'budget.record.balanceStatistics' | lang }}</div>
+  <div class="hd-serach">
+    <div class="d-flex flex-ac">
+      <ul class="timeList">
+        <li
+          *ngFor="let item of timeMenuList"
+          [class.active]="selectedTimeValue === item.value"
+          (click)="onSelectTimeMenu(item.value)"
+        >
+          {{ item.title | lang }}
+        </li>
+      </ul>
+
+      <form-row [label]="'budget.record.transactionHour' | lang" [contentWidth]="230">
+        <ng-template>
+          <input
+            class="text-center form-control w-100"
+            type="text"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="time"
+            (dateTimeChange)="endTimeChange()"
+          />
+
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+    </div>
+  </div>
+  <ul class="hd-main">
+    <li class="hd-main-item" *ngFor="let item of balanceData">
+      <div class="item-head">
+        <p class="item-head-left">{{ item.providerName }}</p>
+        <div class="item-head-right">
+          <svg-icon class="vam lh-18 svg-icon svg-icon-2x2" [src]="'./assets/images/svg/admin-error.svg'"> </svg-icon>
+          <div class="detail">
+            <div class="detail-title">{{ 'budget.record.balanceDetails' | lang }}</div>
+            <div class="detail-group" *ngFor="let item of item.multiCurrency | keyvalue">
+              <span>{{ item.key }}：</span>
+              <span>{{ item.value | currencyValue: $any(item.key) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="item-content">
+        <li class="group one">
+          <div class="group-left">
+            <div class="dot"></div>
+            <div class="status">
+              <p>{{ 'budget.record.InitialBalance' | lang }}：</p>
+              <span class="fz-16">{{ item.initBalance | currencyValue: 'USDT' }}</span>
+            </div>
+          </div>
+          <div class="gorup-right">USDT</div>
+        </li>
+        <li class="group two">
+          <div class="group-left">
+            <div class="dot"></div>
+            <div class="status">
+              <p>
+                <span>{{ 'budget.record.transferIn' | lang }}</span>
+                <span>：</span>
+              </p>
+              <span class="fz-16">{{ item.intoAmount | currencyValue: 'USDT' }}</span>
+            </div>
+          </div>
+          <div class="gorup-right">USDT</div>
+        </li>
+        <li class="group three">
+          <div class="group-left">
+            <div class="dot"></div>
+            <div class="status">
+              <p>
+                <span>{{ 'budget.record.transferOut' | lang }}</span>
+                <span>：</span>
+              </p>
+              <span class="fz-16">{{ item.outAmount < 0 ? '-' : '' }}{{ item.outAmount | currencyValue: 'USDT' }}</span>
+            </div>
+          </div>
+          <div class="gorup-right">USDT</div>
+        </li>
+        <li class="group two">
+          <div class="group-left">
+            <div class="dot"></div>
+            <div class="status">
+              <p>
+                <span>{{ 'budget.record.winLose' | lang }}</span>
+                <span>：</span>
+              </p>
+              <ng-container *win="item.payoutAmount; let value; prev as prev">
+                <span [winColor]="value" [winColorReverse]="true">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+              </ng-container>
+              <!-- <span class="fz-16">{{ item.payoutAmount | toFormatMoney }}</span> -->
+            </div>
+          </div>
+          <div class="gorup-right">USDT</div>
+        </li>
+        <li class="group five">
+          <div class="group-left">
+            <div class="dot"></div>
+            <div class="status">
+              <p>
+                <span>{{ 'budget.record.balance' | lang }}</span>
+                <span>：</span>
+              </p>
+              <span class="fz-16">{{ item.finalBalance | currencyValue: 'USDT' }}</span>
+            </div>
+          </div>
+          <div class="gorup-right">USDT</div>
+        </li>
+      </ul>
+    </li>
+
+    <!-- 空状态 -->
+    <div class="container-empty" style="flex: 1; height: 272px" *ngIf="!balanceData.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+  </ul>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="fz-20 flex-1">{{ 'game.provider.trans_list' | lang }}</div>
+
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead sticky>
+          <tr>
+            <th>
+              <span class="cell">{{ 'game.transactionOrderNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.provider.game_manu' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.trans_content' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.quantity' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'game.provider.trans_time' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.status' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of transactionList; let i = index">
+            <td>
+              <span class="cell">{{ item.transactionId }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.providerName }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ getTransferType(item.transferType) }}</span>
+            </td>
+            <td>
+              <span class="cell"
+                >{{ item.transferType === 'TransferInto' ? '+' : '-' }}
+                {{ item.amount | currencyValue: item.currency }}
+                <img class="ml-2" [currencyIcon]="item.currency"
+              /></span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createdTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell" [ngSwitch]="item.status">
+                <!-- 成功 -->
+                <app-label *ngSwitchCase="1" type="success">{{ 'common.success' | lang }}</app-label>
+                <!-- 失败 -->
+                <app-label *ngSwitchCase="2" type="danger">{{ 'common.fail' | lang }}</app-label>
+                <!-- 待确认 -->
+                <app-label *ngSwitchCase="3" type="warning">{{ 'dashboard.confirmed' | lang }}</app-label>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!transactionList.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="transactionList.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="getTransferHistoryList()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="getTransferHistoryList()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

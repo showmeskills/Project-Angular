@@ -1,0 +1,66 @@
+<div class="top-role-container">
+  <!-- 好友介绍 -->
+  <div class="introduction-body">
+    <div class="introduction-img img-box">
+      <img src="assets/images/friend/role-img-0.png" alt='' lazy='loading' />
+    </div>
+    <div class="introduction-uc">
+      <div class="introduction-title-uc">Giới thiệu quy tắc</div>
+      <div class="introduction-context-uc">
+        <p>Người mời có thể chia sẻ hoa hồng thu được với người mời và tự đặt tỷ lệ chia sẻ, như sau:</p>
+        <p>1. Nếu người mời là người dùng bình thường, "tỷ lệ chiết khấu hoa hồng" là 2 ‰ và người mời có thể đặt lợi
+          nhuận giao dịch 0 ‰, 0,5 ‰, 1 ‰.</p>
+        <p>2. Nếu người mời là thành viên liên minh, "tỷ lệ hoàn lại" là 2 ‰ và người mời có thể đặt năm mức "tỷ lệ hoàn
+          lại cho các giao dịch của người được mời" là 0 ‰, 0,5 ‰, 1 ‰, 1,5 ‰, 2 ‰.</p>
+        <p>Thời gian diễn ra sự kiện: từ ngày 30/6/2022</p>
+      </div>
+    </div>
+  </div>
+  <div class="links-uc">
+    <ul>
+      <li class="mid-li">
+        <p><span class="linked-link-to">></span>>> Tạo liên kết giới thiệu độc quyền</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-1.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>><span class="linked-link-to">></span>> mời bạn bè</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-2.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>>><span class="linked-link-to">></span> cùng nhau làm giàu</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-3.png" alt='' lazy='loading' />
+        </div>
+      </li>
+    </ul>
+  </div>
+  <p class="introduction-title-uc">Mô tả sự kiện:</p>
+  <!-- 好友介绍 -->
+  <div class="introduction-context-uc" *ngIf="whichRouter == 'friend'">
+    <p>1. Tỷ lệ hoàn tiền được tính theo thời gian thực và khoản tiền hoàn lại sẽ được trả lại vào tài khoản của người
+      mời hoặc người được mời trong vòng 24 giờ.</p>
+    <p>2. Giảm giá hoa hồng và chiết khấu giới thiệu được tính dựa trên doanh thu hiệu quả thực tế của người dùng. Để
+      biết phương pháp tính toán doanh thu hiệu quả, vui lòng tham khảo: <span class="linked-link-to"
+        data-page='{{onJunmpToPage}}'>{{rebLinkName1}}</a>
+    </p>
+    <p>3. Người được mời phải đăng ký bằng liên kết giới thiệu độc quyền (mã QR, ID) để được hoàn tiền tương ứng, nếu
+      bạn nhập trực tiếp ID người giới thiệu ban đầu khi đăng ký, bạn sẽ không thể hưởng tiền hoàn lại; </p>
+    <p>4. Không giới hạn số lượng bạn bè được mời cho một tài khoản; </p>
+    <p>5. Khoản tiền hoàn lại sẽ không làm tăng giới hạn rút tiền; </p>
+    <p>6. {Brand} và có quyền điều chỉnh các quy tắc hoạt động. </p>
+    <p>7. {Brand} Sau khi được xác
+      minh, tất cả các khoản chiết khấu hoa hồng sẽ bị hủy và lợi nhuận giới thiệu của tài khoản được mời cũng sẽ bị
+      hủy. </p>
+    <p>8. Các tình huống khác mà khoản hoàn trả sẽ bị hủy: <span class="linked-link-to"
+        data-page='{{onJunmpToPage}}'>{{rebLinkName1}}</a>
+    </p>
+  </div>
+  <p class="introduction-title-uc">*{{attentionTitle}}</p>
+  <div class="introduction-context-uc">
+    {{attentionContext}}
+  </div>
+</div>

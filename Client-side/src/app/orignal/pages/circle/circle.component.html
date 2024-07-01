@@ -1,0 +1,93 @@
+<div class="wrapper">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="circle"
+      [isFast]="false"
+      [isTrend]="false"
+      [(fairnessData)]="fairnessData"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+
+  <div class="game-field">
+    <div class="game-field__inner">
+      <div class="ring-results">
+        <div class="ring-results__item" *ngFor="let item of results" [class]="item.lotteryIssueNumberData">
+          <span></span>
+          <div class="result-popup">
+            <p>
+              <b>Hash:</b>&nbsp;
+              {{ item.numberPublicKey }}
+            </p>
+            <p><b>Random:</b> &nbsp;{{ item.numberSecretKey }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="circle_sides">
+        <div class="leftside">
+          <img [src]="'assets/orignal/images/circle/side_' + theme + '.svg'" alt="" class="leftside_img" />
+        </div>
+        <div class="circle-img" #circleSides>
+          <img
+            [src]="'assets/orignal/images/circle/circle_' + theme + '.svg'"
+            alt=""
+            style="transform: scale(1) rotate(0deg)"
+            #circleWheel
+          />
+          <span class="time" *ngIf="showState == 1">{{ currentCountDown }}</span>
+          <span class="label" *ngIf="showState == 1">{{ 'place_bets' | translate }}</span>
+          <!-- 停止下注 -->
+          <span class="label" *ngIf="showState == 2">{{ 'stop_betting' | translate }}</span>
+          <!-- 显示结果 -->
+          <span class="label" *ngIf="showState == 3">{{ 'obtain_result' | translate }}</span>
+          <span class="text" *ngIf="showState == 5" [style]="'color:' + color">{{ role }}</span>
+          <span class="label" *ngIf="showState == 5">{{ 'show_result' | translate }}</span>
+          <!-- 准备下一轮 -->
+          <span class="label" *ngIf="showState == 4">{{ 'next_round' | translate }}</span>
+          <div class="spinn" *ngIf="showState != 1 && showState != 5">
+            <div class="loadingio-spinner-ripple">
+              <div class="ldio">
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+          <span class="arrow-down" #arrowDown style="border-color: #5d6b8f transparent transparent"></span>
+        </div>
+        <div class="rightside"><img [src]="'assets/orignal/images/circle/side_' + theme + '.svg'" alt="" /></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 投注 -->
+  <orignal-bet-list type="circle" [betList]="betList" (toBet)="toBet($event)" [operate]="operate"> </orignal-bet-list>
+
+  <!-- 实时下注 -->
+  <div class="real-history">
+    <div class="h5-container">
+      <div class="title-row">
+        <em>{{ 'real_history ' | translate }}</em>
+        <div class="img-bar">
+          <img src="assets/orignal/images/dice/union.svg" alt="" />
+          <em>{{ realHistoryList.length }}</em>
+        </div>
+      </div>
+    </div>
+    <div class="item-container" *ngIf="realHistoryList.length > 0">
+      <div class="play-list" *ngFor="let item of realHistoryList">
+        <div class="name-part">
+          <div class="name">{{ item.userName }}</div>
+          <div [class]="item.color">x{{ item.multiplier }}</div>
+        </div>
+        <div class="money">
+          <img class="currency-icon" [src]="item.icon" />
+          <span>{{ item.BetAmount }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="empty" *ngIf="realHistoryList.length == 0">
+      <span>No information</span>
+    </div>
+  </div>
+</div>

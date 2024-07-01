@@ -1,0 +1,485 @@
+<div>
+  <form-row [label]="'payment.channelConfig.channelName' | lang" label-width="120px">
+    <ng-template>{{ detail.channelId }}</ng-template>
+  </form-row>
+
+  <!-- 支持币种 -->
+  <div class="d-flex py-2">
+    <label class="mr-4 mb-0 label-title">{{ 'payment.channelConfig.supCurrencies' | lang }}：</label>
+
+    <!-- tab -->
+    <div class="tab min-w-0">
+      <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+      <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel">
+        <div
+          mat-tab-link
+          class="tab-hd-item"
+          [active]="curTab === i"
+          *ngFor="let nav of currency; let i = index"
+          (click)="curTab = i"
+        >
+          {{ nav }}
+        </div>
+      </div>
+
+      <div class="tab-bd pb-0">
+        <ng-container *ngFor="let _ of currency; let i = index">
+          <div *ngIf="curTab === i">
+            <div class="w-100 d-flex py-2" *ngIf="currencyDeposit.length">
+              <label class="mr-0 mb-0 label-title">{{ 'payment.channelConfig.depositMethod' | lang }}：</label>
+
+              <div class="d-flex flex-wrap flex-1">
+                <mat-tab-group class="w-100">
+                  <mat-tab [label]="getCurrencyLabel(cry.paymentMethodId)" *ngFor="let cry of currencyDeposit">
+                    <div class="d-flex flex-wrap">
+                      <form-row [label]="'payment.channelConfig.depositCharges' | lang" class="mr-10">
+                        <ng-template>
+                          <div class="d-flex">
+                            <input
+                              type="text"
+                              class="form-control text-center"
+                              autocomplete="off"
+                              [style.width.px]="72"
+                              [(ngModel)]="cry.feeRate"
+                            />
+                            <span class="ml-2">%</span>
+                          </div>
+                        </ng-template>
+                      </form-row>
+
+                      <form-row [label]="'payment.channelConfig.lowest' | lang" class="mr-10">
+                        <ng-template>
+                          <input
+                            type="text"
+                            class="form-control text-center"
+                            autocomplete="off"
+                            [style.width.px]="90"
+                            [(ngModel)]="cry.feeMin"
+                            [decimal]="8"
+                            input-float
+                          />
+                        </ng-template>
+                      </form-row>
+
+                      <form-row [label]="'payment.channelConfig.highest' | lang" class="mr-10">
+                        <ng-template>
+                          <input
+                            type="text"
+                            class="form-control text-center"
+                            autocomplete="off"
+                            [style.width.px]="90"
+                            [(ngModel)]="cry.feeMax"
+                            [decimal]="8"
+                            input-float
+                          />
+                        </ng-template>
+                      </form-row>
+
+                      <form-row [label]="'payment.channelConfig.validityPeriod' | lang" class="mr-10">
+                        <ng-template>
+                          <div class="d-flex">
+                            <input
+                              type="text"
+                              class="form-control text-center"
+                              autocomplete="off"
+                              [style.width.px]="72"
+                              [(ngModel)]="cry.validPeriodTime"
+                            />
+                            <span class="ml-2">{{ 'payment.channelConfig.minute' | lang }}</span>
+                          </div>
+                        </ng-template>
+                      </form-row>
+
+                      <form-row [label]="'payment.channelConfig.withdrawalLimit' | lang" class="mr-10">
+                        <ng-template>
+                          <div class="d-flex">
+                            <input
+                              type="text"
+                              class="form-control text-center"
+                              autocomplete="off"
+                              input-number
+                              [style.width.px]="72"
+                            />
+                            <span class="ml-2">{{ 'payment.channelConfig.times' | lang }}</span>
+                          </div>
+                        </ng-template>
+                      </form-row>
+
+                      <form-row [label]="'payment.channelConfig.creditRating' | lang" class="mr-10">
+                        <ng-template>
+                          <mat-form-field [style.width.px]="100">
+                            <mat-select class="form-control" [(ngModel)]="cry.creditRating">
+                              <mat-option *ngFor="let item of creditList" [value]="item.code">
+                                {{ item.name }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </ng-template>
+                      </form-row>
+
+                      <!-- 重送次数 -->
+                      <form-row
+                        [label]="'payment.channelConfig.numberRetransmissions' | lang"
+                        [label-width]="lang.isLocal ? '110' : '240'"
+                        *ngIf="currencyValue === 'CNY'"
+                      >
+                        <ng-template>
+                          <mat-form-field>
+                            <mat-select class="form-control" [(ngModel)]="cry.resendLimit">
+                              <mat-option *ngFor="let item of [0, 1, 2, 3, 4, 5]" [value]="item">{{ item }}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </ng-template>
+                      </form-row>
+                    </div>
+
+                    <form-row
+                      [label]="'payment.channelConfig.labelSettings' | lang"
+                      [label-width]="lang.isLocal ? '95' : '120'"
+                    >
+                      <ng-template>
+                        <div class="d-flex flex-wrap py-2 lh-34">
+                          <label class="checkbox checkbox-lg mr-10 fz-16" *ngFor="let item of wallList"
+                            ><input type="checkbox" /> <span class="mr-4"></span>{{ item | lang }}
+                          </label>
+                        </div>
+                      </ng-template>
+                    </form-row>
+
+                    <!-- 风控设定 -->
+                    <!--                    <form-row-->
+                    <!--                      [label]="'payment.channelConfig.riskControlSettings' | lang"-->
+                    <!--                      [label-width]="lang.isLocal ? '95' : '180'"-->
+                    <!--                    >-->
+                    <!--                      <ng-template>-->
+                    <!--                        <div class="d-flex flex-wrap py-2 lh-34">-->
+                    <!--                          <label class="checkbox checkbox-lg mr-10 fz-16" *ngFor="let item of riskList">-->
+                    <!--                            <input-->
+                    <!--                              type="checkbox"-->
+                    <!--                              [checked]="cry.riskControl.includes(item.code)"-->
+                    <!--                              (change)="toggleArr(cry.riskControl, item.code)"-->
+                    <!--                            />-->
+                    <!--                            <span class="mr-4"></span>{{ item.name }}-->
+                    <!--                          </label>-->
+                    <!--                        </div>-->
+                    <!--                      </ng-template>-->
+                    <!--                    </form-row>-->
+
+                    <!-- 状态 -->
+                    <div class="d-flex flex-wrap">
+                      <div class="d-flex py-2 flex-ac mr-40" style="flex: 0 0 196px">
+                        <label class="mr-0 mb-0 label-title">{{ 'common.status' | lang }} ：</label>
+                        <label class="switch switch-success mb-0 cursor-pointer user-select-none">
+                          <input type="checkbox" [checked]="cry.isEnable" (change)="cry.isEnable = !cry.isEnable" />
+                          <span class="mr-4"></span
+                          >{{ cry.isEnable ? ('payment.currency.open' | lang) : ('payment.currency.shutDown' | lang) }}
+                        </label>
+                      </div>
+
+                      <div class="d-flex py-2 flex-ac">
+                        <label class="mr-0 mb-0 label-title">{{ 'payment.channelConfig.schedule' | lang }} ：</label>
+                        <label class="switch switch-success mb-0 cursor-pointer user-select-none">
+                          <input
+                            type="checkbox"
+                            [checked]="cry.isEnableMaintenance"
+                            (change)="cry.isEnableMaintenance = !cry.isEnableMaintenance"
+                          />
+                          <span class="mr-4"></span
+                          >{{
+                            cry.isEnableMaintenance
+                              ? ('payment.currency.open' | lang)
+                              : ('payment.currency.shutDown' | lang)
+                          }}
+                        </label>
+                      </div>
+                    </div>
+
+                    <ng-container *ngIf="cry.isEnableMaintenance">
+                      <!-- 维护时间 -->
+                      <div class="d-flex py-2 fz-16">
+                        <label class="mr-4 mb-0 label-title" style="line-height: 42px"
+                          >{{ 'payment.channelConfig.start' | lang }}：</label
+                        >
+                        <div class="text-nowrap">
+                          <span
+                            cdkOverlayOrigin
+                            #cryTriggerStart="cdkOverlayOrigin"
+                            class="cursor-pointer d-inline-flex flex-center vam form-control"
+                            [style.width.px]="73"
+                            (click)="cryTriggerStart['show'] = !cryTriggerStart['show']"
+                            >{{ cry.maintenanceStartTime }}</span
+                          >
+
+                          <time-picker
+                            [(value)]="cry.maintenanceStartTime"
+                            [origin]="cryTriggerStart"
+                            [(show)]="cryTriggerStart['show']"
+                          ></time-picker>
+                          <!--                          <div class="invalid-feedback" *ngIf="validRangeTime()">开始时间需小于结束时间</div>-->
+                          <!--                          <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'timeStart')">请选择一个时间</div>-->
+                        </div>
+
+                        <label class="mr-4 mb-0 form-title" style="margin-left: 66px; line-height: 42px"
+                          >{{ 'payment.channelConfig.end' | lang }}：</label
+                        >
+                        <div class="text-nowrap d-flex flex-column">
+                          <span
+                            cdkOverlayOrigin
+                            #cryTriggerEnd="cdkOverlayOrigin"
+                            class="cursor-pointer d-inline-flex flex-center vam form-control"
+                            [style.width.px]="73"
+                            (click)="cryTriggerEnd['show'] = !cryTriggerEnd['show']"
+                            >{{ cry.maintenanceEndTime }}</span
+                          >
+                          <!--                            [class.is-invalid]="validRangeTime() || validator.isControlInvalid('timeEnd')"-->
+
+                          <time-picker
+                            [(value)]="cry.maintenanceEndTime"
+                            [origin]="cryTriggerEnd"
+                            [(show)]="cryTriggerEnd['show']"
+                          ></time-picker>
+                          <!--                          <div class="invalid-feedback" *ngIf="validRangeTime()">结束时间需大于开始时间</div>-->
+                          <!--  -->
+                          <!--        <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'timeEnd')">请选择一个时间</div>-->
+                        </div>
+                      </div>
+
+                      <!-- 维护周期 -->
+                      <div class="d-flex py-2 flex-ac fz-16">
+                        <label class="mr-4 mb-0 label-title">{{ 'payment.channelConfig.cycle' | lang }}：</label>
+                        <div class="d-flex switch-btn-circle">
+                          <span
+                            *ngFor="let week of weekList"
+                            [class.active]="cry.weekDays?.includes(week.value)"
+                            (click)="toggleArr(cry.weekDays, week.value)"
+                            >{{ week.lang | lang }}</span
+                          >
+                        </div>
+                      </div>
+                    </ng-container>
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+            </div>
+
+            <div class="w-100 d-flex py-2" *ngIf="currencyWithdraw.length">
+              <label class="mr-0 mb-0 label-title">{{ 'payment.channelConfig.withdrawMethod' | lang }}：</label>
+
+              <div class="flex-1">
+                <mat-tab-group>
+                  <mat-tab [label]="getCurrencyLabel(wrd.paymentMethodId)" *ngFor="let wrd of currencyWithdraw">
+                    <div class="d-flex flex-wrap">
+                      <div class="d-flex flex-ac py-2 mr-10">
+                        <label>{{ 'payment.channelConfig.withdrawalCharges' | lang }}：</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          autocomplete="off"
+                          [style.width.px]="72"
+                          [(ngModel)]="wrd.feeRate"
+                        />
+                        <span class="ml-2">%</span>
+                      </div>
+
+                      <div class="d-flex flex-ac mr-10">
+                        <label>{{ 'payment.channelConfig.lowest' | lang }}：</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          autocomplete="off"
+                          input-float
+                          [decimal]="8"
+                          [style.width.px]="90"
+                          [(ngModel)]="wrd.feeMin"
+                        />
+                      </div>
+
+                      <div class="d-flex flex-ac py-2 mr-10">
+                        <label>{{ 'payment.channelConfig.highest' | lang }}：</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          autocomplete="off"
+                          input-float
+                          [decimal]="8"
+                          [style.width.px]="90"
+                          [(ngModel)]="wrd.feeMax"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <div class="d-flex py-2 flex-ac mr-40" style="flex: 0 0 196px">
+                        <label class="mr-0 mb-0 label-title">{{ 'common.status' | lang }} ：</label>
+                        <label class="switch switch-success mb-0 cursor-pointer user-select-none">
+                          <input type="checkbox" [checked]="wrd.isEnable" (change)="wrd.isEnable = !wrd.isEnable" />
+                          <span class="mr-4"></span
+                          >{{ wrd.isEnable ? ('payment.currency.open' | lang) : ('payment.currency.shutDown' | lang) }}
+                        </label>
+                      </div>
+
+                      <div class="d-flex py-2 flex-ac">
+                        <label class="mr-0 mb-0 label-title">{{ 'payment.channelConfig.schedule' | lang }}：</label>
+                        <label class="switch switch-success mb-0 cursor-pointer user-select-none">
+                          <input
+                            type="checkbox"
+                            [checked]="wrd.isEnableMaintenance"
+                            (change)="wrd.isEnableMaintenance = !wrd.isEnableMaintenance"
+                          />
+                          <span class="mr-4"></span
+                          >{{
+                            wrd.isEnableMaintenance
+                              ? ('payment.currency.open' | lang)
+                              : ('payment.currency.shutDown' | lang)
+                          }}
+                        </label>
+                      </div>
+                    </div>
+
+                    <ng-container *ngIf="wrd.isEnableMaintenance">
+                      <!-- 维护时间 -->
+                      <div class="d-flex py-2 fz-16">
+                        <label class="mr-4 mb-0 label-title" style="line-height: 42px"
+                          >{{ 'payment.channelConfig.start' | lang }}：</label
+                        >
+                        <div class="text-nowrap">
+                          <span
+                            cdkOverlayOrigin
+                            #wrdTriggerStart="cdkOverlayOrigin"
+                            class="cursor-pointer d-inline-flex flex-center vam form-control"
+                            [style.width.px]="73"
+                            (click)="wrdTriggerStart['show'] = !wrdTriggerStart['show']"
+                            >{{ wrd.maintenanceStartTime }}</span
+                          >
+                          <!--                          [class.is-invalid]="validRangeTime() || validator.isControlInvalid('timeStart')"-->
+
+                          <time-picker
+                            [(value)]="wrd.maintenanceStartTime"
+                            [origin]="wrdTriggerStart"
+                            [(show)]="wrdTriggerStart['show']"
+                          ></time-picker>
+                          <!--                          <div class="invalid-feedback" *ngIf="validRangeTime()">开始时间需小于结束时间</div>-->
+                          <!--                          <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'timeStart')">-->
+                          <!--                            请选择一个时间-->
+                          <!--                          </div>-->
+                        </div>
+
+                        <label class="mr-4 mb-0 form-title" style="margin-left: 66px; line-height: 42px"
+                          >{{ 'payment.channelConfig.end' | lang }}：</label
+                        >
+                        <div class="text-nowrap d-flex flex-column">
+                          <span
+                            cdkOverlayOrigin
+                            #wrdTriggerEnd="cdkOverlayOrigin"
+                            class="cursor-pointer d-inline-flex flex-center vam form-control"
+                            [style.width.px]="73"
+                            (click)="wrdTriggerEnd['show'] = !wrdTriggerEnd['show']"
+                            >{{ wrd.maintenanceEndTime }}</span
+                          >
+                          <!--                            [class.is-invalid]="validRangeTime() || validator.isControlInvalid('timeEnd')"-->
+
+                          <time-picker
+                            [(value)]="wrd.maintenanceEndTime"
+                            [origin]="wrdTriggerEnd"
+                            [(show)]="wrdTriggerEnd['show']"
+                          ></time-picker>
+                          <!--                          <div class="invalid-feedback" *ngIf="validRangeTime()">结束时间需大于开始时间</div>-->
+                          <!--  -->
+                          <!--        <div class="invalid-feedback" *ngIf="validator.controlHasError('required', 'timeEnd')">请选择一个时间</div>-->
+                        </div>
+                      </div>
+
+                      <!-- 维护周期 -->
+                      <div class="d-flex py-2 flex-ac fz-16">
+                        <label class="mr-4 mb-0 label-title">{{ 'payment.channelConfig.cycle' | lang }}：</label>
+                        <div class="d-flex switch-btn-circle">
+                          <span
+                            *ngFor="let week of weekList"
+                            [class.active]="wrd.weekDays?.includes(week.value)"
+                            (click)="toggleArr(wrd.weekDays, week.value)"
+                            >{{ week.lang | lang }}</span
+                          >
+                        </div>
+                      </div>
+                    </ng-container>
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+            </div>
+
+            <!-- 服务地区 -->
+            <form-row [label]="'payment.channelConfig.serviceArea' | lang" label-width="110">
+              <ng-template>
+                <!--                        <span [class]="['rounded-circle', 'area', 'country-' + wrd.serviceArea]"-->
+                <!--                          style="background-image: url('./assets/images/countries.png')"-->
+                <!--                          *ngIf="wrd.serviceArea"></span>-->
+                <span class="fz-16 lh-1n">{{
+                  secondData.serviceArea?.join(',') || ('payment.channelConfig.allRegions' | lang)
+                }}</span>
+              </ng-template>
+            </form-row>
+
+            <!-- 时区配置 -->
+            <form-row [label]="'payment.channelConfig.timeZoneConfiguration' | lang" label-width="110">
+              <ng-template>
+                <div class="fz-16">GMT+{{ secondData.timeZone }}</div>
+              </ng-template>
+            </form-row>
+
+            <!-- 场景 -->
+            <form-row [label]="'payment.channelConfig.scenes' | lang" label-width="110">
+              <ng-template>
+                <div class="d-flex">
+                  <label class="checkbox checkbox-lg mr-10 fz-16">
+                    <input
+                      type="checkbox"
+                      [checked]="secondData.platforms.includes('APP')"
+                      (change)="setPlat(secondData.platforms, ['APP'])"
+                    />
+                    <span class="mr-4"></span>APP
+                  </label>
+                  <label class="checkbox checkbox-lg mr-10 fz-16">
+                    <input
+                      type="checkbox"
+                      [checked]="secondData.platforms.includes('Web') && secondData.platforms.includes('H5')"
+                      (change)="setPlat(secondData.platforms, ['Web', 'H5'])"
+                    />
+                    <span class="mr-4"></span>WEB/H5
+                  </label>
+                </div>
+              </ng-template>
+            </form-row>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <form-row [label]="'payment.channelConfig.callbackIP' | lang" label-width="120" class="mt-2" [formGroup]="formGroup">
+    <ng-template>
+      <input
+        formControlName="callbackIP"
+        class="form-control"
+        [placeholder]="'payment.channelConfig.multiple' | lang"
+        type="text"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.channelConfig.remarks' | lang" [label-width]="120" class="mt-2" [formGroup]="formGroup">
+    <ng-template>
+      <input
+        formControlName="description"
+        class="form-control"
+        [placeholder]="'payment.channelConfig.noteCopy' | lang"
+        type="text"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 按钮组 -->
+  <div class="btn-wrap mt-12 pt-8 flex-center d-flex border-top">
+    <button class="c-btn c-btn-default ml-0" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<app-support-theme-layout [themeTitle]="themeTitle" type="FAQ" [themeList]="faqList" [footTemplate]="themeFooter">
+</app-support-theme-layout>
+<ng-template #themeFooter>
+  <!-- web热门问题 -->
+  <div class="footer">
+    <div class="footer-container">
+      <div class="left">
+        <p class="footer-title">{{ 'top_faq' | translate }}</p>
+        <p
+          class="article-title onact96"
+          [appLoading]="isLoading"
+          *ngFor="let item of hotFaqBeforeThreeItems"
+          (click)="onGotoDetailsPage(item)"
+        >
+          {{ item.title }}
+        </p>
+      </div>
+      <div class="mid">
+        <p class="h-20"></p>
+        <p
+          class="article-title onact96"
+          [appLoading]="isLoading"
+          *ngFor="let item of hotFaqAfterThreeItems"
+          (click)="onGotoDetailsPage(item)"
+        >
+          {{ item.title }}
+        </p>
+      </div>
+      <div class="right">
+        <p class="footer-title">{{ 'more' | translate }}</p>
+        <ng-container *ngIf="!isH5">
+          <div class="questions">
+            <img src="assets/images/help-center/common-q-mark.png" alt="" />
+            <p class="questions-info">{{ 'need_help' | translate }}</p>
+          </div>
+          <p class="service-text">{{ 'contact_us' | translate }}</p>
+          <span class="service" (click)="onLineService()"> {{ 'online_cs' | translate }}</span>
+        </ng-container>
+        <ng-container *ngIf="isH5">
+          <div class="h5-questions">
+            <img src="assets/images/help-center/common-q-mark.png" alt="" />
+            <div class="text-group">
+              <p class="help">{{ 'need_help' | translate }}</p>
+              <p class="service-text">{{ 'contact_us' | translate }}</p>
+              <span class="service" (click)="onLineService()">{{ 'online_cs' | translate }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>

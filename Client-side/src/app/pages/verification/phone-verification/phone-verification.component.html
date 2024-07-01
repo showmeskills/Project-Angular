@@ -1,0 +1,106 @@
+<div class="page-container">
+  <app-header-title-bar
+    [title]="userAccountInfor?.isBindMobile ? ('modify_change' | translate) : ('bound_phone' | translate)"
+    [clickForRouterBack]="true"
+  ></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <!-- 公共title -->
+      <mat-horizontal-stepper
+        linear
+        labelPosition="bottom"
+        matStepperIcon="edit"
+        [disableRipple]="isRipple"
+        #stepper
+        class="line-selected-{{ stepper.selectedIndex }}"
+      >
+        <!-- step1  ：输入手机号码-->
+        <mat-step
+          [label]="userAccountInfor?.isBindMobile ? ('change_p' | translate) : ('enter_phone_label' | translate)"
+        >
+          <div class="form-clonum">
+            <div class="header">
+              {{ userAccountInfor?.isBindMobile ? ('enter_pw' | translate) : ('enter_phone_code' | translate) }}
+            </div>
+            <div class="form-group">
+              <label>{{ 'phone' | translate }}</label>
+              <!--手机区号选择-->
+              <div class="phone-container">
+                <div class="area-code onact96" (click)="handleSelectPhone()">
+                  <div class="country-image">
+                    <i class="country" class="{{ fogClassName }}"></i>
+                  </div>
+                  <p class="code">{{ currentPhoneZone }}</p>
+                  <i class="icon-arrow-down"></i>
+                </div>
+                <!--手机号输入框-->
+                <app-customize-input
+                  [type]="'number'"
+                  [size]="'large'"
+                  #iPhone
+                  [error]="!!phone && phoneError"
+                  (keyup.enter)="checkToSubmit2(stepper)"
+                  (onChange)="onPhoneInput(iPhone)"
+                  [(value)]="phone"
+                >
+                </app-customize-input>
+              </div>
+              <!-- 输入框下面的错误信息 -->
+              <div class="error-msg" *ngIf="phoneError && !iPhone.foc">{{ 'phone_error_msg' | translate }}</div>
+              <!--手机验证码 -->
+              <app-verify-code
+                class="mt-26"
+                [otpType]="otpType"
+                [currentPhoneZone]="currentPhoneZone"
+                [phone]="phone"
+                [inputLabel]="'p_code' | translate"
+                [authStatus]="authStatus"
+                (onChangeAuthStatus)="handleAuthStatus($event)"
+                (verfityInputSuccess)="onOtpCode($event)"
+                (keyup.enter)="checkToSubmit2(stepper)"
+                [submitLoading]="!(phone.length >= 2 && !phoneError)"
+              >
+              </app-verify-code>
+            </div>
+            <customize-button
+              class="next-btn"
+              width="100%"
+              type="primary"
+              size="large"
+              [loading]="isLoading"
+              [disabled]="!canSubmit2()"
+              (onClick)="goForward(stepper)"
+              >{{ 'next' | translate }}</customize-button
+            >
+          </div>
+        </mat-step>
+        <!-- step2  ：绑定成功-->
+        <mat-step
+          [label]="userAccountInfor?.isBindMobile ? ('change_success_msg' | translate) : ('bound_success' | translate)"
+        >
+          <div class="form-clonum">
+            <app-success-verification
+              [header]="
+                userAccountInfor?.isBindMobile ? ('p_change_success' | translate) : ('bound_success' | translate)
+              "
+              [successText]="
+                userAccountInfor?.isBindMobile ? ('change_p_success' | translate) : ('bounded_success' | translate)
+              "
+            >
+            </app-success-verification>
+            <customize-button class="back-btn" width="100%" type="primary" size="large" (onClick)="handleback()">
+              {{ 'return' | translate }}
+            </customize-button>
+          </div>
+        </mat-step>
+        <!--步骤条显示-->
+        <ng-template matStepperIcon="number" let-index="index" optional="false">
+          <mat-icon>{{ index === 0 ? '1' : '2' }}</mat-icon>
+        </ng-template>
+        <ng-template matStepperIcon="edit" let-index="index" optional="false">
+          <mat-icon>{{ index === 0 ? '1' : '2' }}</mat-icon>
+        </ng-template>
+      </mat-horizontal-stepper>
+    </div>
+  </div>
+</div>

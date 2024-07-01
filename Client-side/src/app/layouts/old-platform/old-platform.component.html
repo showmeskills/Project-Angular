@@ -1,0 +1,9 @@
+<div class="old-platform" *ngIf="isShowBtn">
+  <a class="mutual-opacity link onact96-a" [href]="'old_platform_link' | translate" rel="noopener" target="_blank">
+    <div class="img-wrapper">
+      <img src="assets/images/old-platform/logo.svg" alt="" lazy="loading" />
+    </div>
+    <p class="text">{{ 'old_platform_btn' | translate }}</p>
+  </a>
+  <i class="icon-close-simple mutual-opacity onact96-not" (click)="isShowBtn = !isShowBtn"></i>
+</div>

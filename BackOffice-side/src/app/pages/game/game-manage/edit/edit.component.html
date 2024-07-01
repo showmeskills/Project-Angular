@@ -1,0 +1,558 @@
+<div class="card card-body">
+  <div class="fz-20 mb-10">
+    {{ isAdd ? ('game.provider.now_adds' | lang) : ('game.provider.edit' | lang) }}{{ 'game.game' | lang }}
+  </div>
+
+  <form class="form w-100" [formGroup]="formGroup" #form>
+    <!-- 状态 -->
+    <form-row class="mb-10" [label]="'common.status' | lang" label-width="220" name="state" required>
+      <ng-template let-invalid="invalid">
+        <div class="d-flex flex-ac flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of gameStatusList">
+            <input type="radio" name="limit" [value]="item.code" formControlName="state" />
+            <span class="mr-4"></span>{{ item.description }}
+          </label>
+        </div>
+        <div class="is-invalid"></div>
+        <div class="invalid-feedback lh-20 mb-2" *ngIf="validator.controlHasError('required', 'state')">
+          {{ 'game.provider.choose_statu' | lang }}
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 显示/隐藏 -->
+    <form-row class="mb-10" [label]="'game.provider.gameShow' | lang" label-width="220" name="isShow" required>
+      <ng-template let-invalid="invalid">
+        <div class="d-flex flex-ac flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of showStatus">
+            <input type="radio" name="isShow" [value]="item.code" formControlName="isShow" />
+            <span class="mr-4"></span>{{ item.description | lang }}
+          </label>
+        </div>
+        <div class="is-invalid"></div>
+        <div class="invalid-feedback lh-20 mb-2" *ngIf="validator.controlHasError('required', 'isShow')">
+          {{ 'game.provider.chooseShowStatus' | lang }}
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 游戏厂商 -->
+    <!-- <form-row class="mb-10" [label]="'game.provider.gameProvider' | lang" label-width="220" name="vendor" required>
+      <ng-template let-invalid="invalid">
+        <mat-form-field [style.width.px]="430" *ngIf="isAdd">
+          <mat-select
+            class="form-control"
+            formControlName="vendor"
+            [class.is-invalid]="invalid"
+            (selectionChange)="onProviderChange($event)"
+          >
+            <mat-option *ngFor="let item of providerList" [value]="item.providerCatId">
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div *ngIf="isEdit">{{ providerName }}</div>
+      </ng-template>
+    </form-row> -->
+    <!-- 游戏供应商 -->
+    <form-row
+      [label]="'game.provider.gameProvider' | lang"
+      required
+      label-width="220"
+      [contentStyle]="{ maxWidth: '433px' }"
+      name="vendor"
+    >
+      <ng-template let-invalid="invalid">
+        <div class="form-control custom-field" [class.is-invalid]="invalid" (click)="onOpen()" *ngIf="isAdd">
+          <div class="flex-1 color-999">
+            {{ providerName ? providerName : ('game.provider.selectProvider' | lang) }}
+          </div>
+          <div class="mat-select-arrow"></div>
+        </div>
+        <div *ngIf="isEdit">{{ providerName }}</div>
+      </ng-template>
+    </form-row>
+    <!-- 游戏厂商 -> 游戏ID -->
+    <form-row
+      class="mb-10"
+      [label]="'game.provider.game_id' | lang"
+      label-width="220"
+      name="id"
+      required
+      *ngIf="formGroup.value['vendor']"
+    >
+      <ng-template let-invalid="invalid">
+        <mat-form-field [style.width.px]="430" *ngIf="isAdd">
+          <mat-select class="form-control" formControlName="id" [class.is-invalid]="invalid">
+            <mat-option *ngFor="let item of gameCodeList" [value]="item">
+              {{ item }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div *ngIf="isEdit">{{ formGroup.value['id'] }}</div>
+      </ng-template>
+    </form-row>
+
+    <!-- 游戏厂商 - logo -->
+    <form-row class="mb-10" [label]="'game.provider.game_manu_logo' | lang" label-width="220">
+      <ng-template>
+        <div class="manu-logo">
+          <img nz-image [src]="providerLogo" />
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 显示顺序 -->
+    <form-row class="mb-10" [label]="'game.provider.order' | lang" label-width="220" [contentWidth]="430" name="sort">
+      <ng-template let-invalid="invalid">
+        <input
+          type="text"
+          class="form-control"
+          autocomplete="off"
+          [class.is-invalid]="invalid"
+          formControlName="sort"
+          oninput="this.value=this.value.replace(/\D/g,'')"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 多语系 -->
+    <lang-tab #langTab formArrayName="lang" [(value)]="selectLang" (languageChange)="updateLanguageForm()">
+      <ng-template let-i="i" let-current="current">
+        <!-- 游戏名称 -->
+        <form-row
+          required
+          name="gameName"
+          label-width="200"
+          [label]="('game.provider.game_name' | lang) + '（' + current?.name + '）'"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input [class.is-invalid]="invalid" [formControl]="control" class="form-control" type="text" />
+          </ng-template>
+        </form-row>
+
+        <!-- 游戏简介 -->
+        <form-row
+          required
+          name="gameDesc"
+          label-width="200"
+          [label]="('game.provider.game_bri' | lang) + '（' + current?.name + '）'"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <textarea
+              type="text"
+              class="form-control"
+              autocomplete="off"
+              rows="7"
+              [class.is-invalid]="invalid"
+              [formControl]="control"
+            ></textarea>
+          </ng-template>
+        </form-row>
+
+        <!-- <form-row
+          required
+          name="webLogo"
+          label-width="200"
+          [group]="langArrayForm.controls[i]"
+          [label]="('game.provider.main_game' | lang) + '（' + current?.name + '）'"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <div class="mb-8">
+              <upload
+                type="Games"
+                [style.width.px]="180"
+                [style.height.px]="200"
+                [showLimitText]="false"
+                [formControl]="control"
+                [class.is-invalid]="invalid"
+              ></upload>
+            </div>
+          </ng-template>
+        </form-row> -->
+
+        <!-- 游戏主图 -->
+        <form-row [label]="('game.provider.main_game' | lang) + '（' + current?.name + '）'" label-width="200">
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <div class="d-flex mr-20 mb-8" *ngFor="let key of ['Web', 'App']">
+                <div class="fz-16 vam" style="line-height: 200px; min-width: 32px">
+                  {{ key }}
+                </div>
+
+                <div class="flex-1 ml-2">
+                  <upload
+                    type="Games"
+                    [style.width.px]="180"
+                    [style.height.px]="200"
+                    [formControl]="langArrayForm.controls[i]['controls'][key.toLowerCase() + 'Logo']"
+                    [class.is-invalid]="
+                      validator.isControlInvalid(key.toLowerCase() + 'Logo', langArrayForm.controls[i])
+                    "
+                    [showLimitText]="false"
+                  ></upload>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+  </form>
+
+  <!-- 标签配置 -->
+  <form-row [label]="'game.provider.label_manage' | lang" label-width="220" class="mb-10 mt-10" required>
+    <ng-template>
+      <div
+        class="w-100 label-box hall-label-box"
+        [class.label-is-invalid]="validator.isControlInvalid('gameLabelLength')"
+        [class.is-valid]="validator.isControlValid('gameLabelLength')"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div *ngFor="let item of labelConfigList; let i = index" cdkDrag class="game-label-list-item">
+          <img [src]="item.iconAddress + item.icon" width="18" height="18" />
+          <p>{{ item.name }}</p>
+          <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+          <svg-icon
+            [src]="'./assets/images/svg/admin-del.svg'"
+            class="svg-icon svg-icon-2x"
+            (click)="onDelLabel(i)"
+          ></svg-icon>
+        </div>
+        <div class="addHall" (click)="openAddLabelPopup(addLabelPoup)">
+          <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <div class="fz-20 mb-10">{{ 'game.provider.game_statu' | lang }}</div>
+
+  <div class="d-flex flex-ac flex-wrap">
+    <div class="d-flex flex-ac flex-wrap status-wrap">
+      <!-- 参与返水 -->
+      <form-row class="mb-5 flex-3" [label]="'game.join_return' | lang" label-width="220" required>
+        <ng-template>
+          <label class="switch switch-success" [style.height.px]="42">
+            <input type="checkbox" [(ngModel)]="isReBate" [disabled]="!isValidWaterCalc" />
+            <span></span>
+            <div class="ml-2">{{ isReBate ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- 试玩模式 -->
+      <form-row class="mb-5 flex-3" [label]="'game.try_mode' | lang" label-width="220" required>
+        <ng-template>
+          <label class="switch switch-success" [style.height.px]="42">
+            <input type="checkbox" [(ngModel)]="isTry" />
+            <span></span>
+            <div class="ml-2">{{ isTry ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- 是否全屏 -->
+      <form-row class="mb-5 flex-3" [label]="'game.manage.full_screen' | lang" label-width="220" required>
+        <ng-template>
+          <label class="switch switch-success" [style.height.px]="42">
+            <input type="checkbox" [(ngModel)]="isFullScreen" />
+            <span></span>
+            <div class="ml-2">{{ isFullScreen ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- 热门推荐 -->
+      <form-row class="mb-5 flex-3" [label]="'game.hotRecommend' | lang" label-width="220" required>
+        <ng-template>
+          <label class="switch switch-success" [style.height.px]="42">
+            <input type="checkbox" [(ngModel)]="isHot" />
+            <span></span>
+            <div class="ml-2">{{ isHot ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- 首页推荐 -->
+      <form-row class="mb-5 flex-3" [label]="'game.home_re' | lang" label-width="220" required>
+        <ng-template>
+          <label class="switch switch-success" [style.height.px]="42">
+            <input type="checkbox" [(ngModel)]="isRecomment" />
+            <span></span>
+            <div class="ml-2">{{ isRecomment ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- FreeSpin -->
+      <form-row class="mb-5 disabled flex-3" label="FreeSpin" label-width="220" required>
+        <ng-template>
+          <label class="switch switch-success" [style.height.px]="42">
+            <input type="checkbox" [(ngModel)]="isFreeSpin" />
+            <span></span>
+            <div class="ml-2">{{ isFreeSpin ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- 有效流水计算 -->
+      <form-row class="mb-5 flex-3" [label]="'game.manage.validwaterComputed' | lang" label-width="220" required>
+        <ng-template>
+          <label class="switch switch-success" [style.height.px]="42">
+            <input type="checkbox" [(ngModel)]="isValidWaterCalc" (ngModelChange)="onIsValidWaterCale()" />
+            <span></span>
+            <div class="ml-2">{{ isValidWaterCalc ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <!-- 有效流水计算百分比 -->
+      <form-row class="mb-5 flex-3" [label]="'game.manage.validWaterPercentage' | lang" label-width="220" required>
+        <ng-template>
+          <label form-wrap [class.disabled]="!isValidWaterCalc">
+            <input
+              [(ngModel)]="validWaterPercentage"
+              type="text"
+              input-percentage
+              decimal="0"
+              [disabled]="!isValidWaterCalc"
+            />
+            <span suffix>%</span>
+          </label>
+        </ng-template>
+      </form-row>
+
+      <div class="flex-3"></div>
+      <div class="flex-3"></div>
+    </div>
+
+    <!-- 庄家优势 -->
+    <ng-container [formGroup]="formGroup" *ngIf="formGroup">
+      <form-row
+        [label]="'game.banker_a' | lang"
+        label-width="220"
+        name="advantage"
+        class="mb-5 w-100"
+        required
+        [invalidFeedback]="{ numberRequired: 'game.banker_adv' | lang }"
+      >
+        <ng-template let-invalid="invalid">
+          <form-wrap [style.width.px]="120" [invalid]="invalid">
+            <input formControlName="advantage" type="text" class="form-control" autocomplete="off" input-percentage />
+            <span suffix class="color-aaa fz-14">%</span>
+          </form-wrap>
+        </ng-template>
+      </form-row>
+    </ng-container>
+
+    <!-- 其他打开方式 -->
+    <ng-container [formGroup]="formGroup" *ngIf="formGroup">
+      <form-row [label]="'game.other_option' | lang" label-width="220" name="webRedirectUrl" class="mb-5 w-100">
+        <ng-template>
+          <div class="d-flex flex-ac">
+            <!-- 打开方式：通过输入WEB链接打开 -->
+            <form-wrap [style.width.px]="300" class="mr-5">
+              <span class="color-aaa">Web:</span>
+              <input
+                formControlName="webRedirectUrl"
+                [placeholder]="'game.enter_link' | lang"
+                type="text"
+                class="form-control"
+              />
+            </form-wrap>
+            <!-- 打开方式：通过输入App链接打开 -->
+            <form-wrap [style.width.px]="300" name="appRedirectUrl">
+              <span class="color-aaa">App:</span>
+              <input
+                formControlName="appRedirectUrl"
+                [placeholder]="'game.enter_link' | lang"
+                type="text"
+                class="form-control"
+              />
+            </form-wrap>
+          </div>
+        </ng-template>
+      </form-row>
+    </ng-container>
+
+    <!-- APP打开方式 -->
+    <form-row class="mb-5 w-100" [label]="'game.appLinkTarget' | lang" label-width="220" required>
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap">
+          <div class="color-aaa mr-4">IOS</div>
+          <mat-form-field>
+            <mat-select class="form-control" [(ngModel)]="openMethod.appIos">
+              <mat-option [value]="'WithinApp'">{{ 'game.openWithinApp' | lang }}</mat-option>
+              <mat-option [value]="'Browser'">{{ 'game.openBrowser' | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="color-aaa ml-10 mr-4">{{ 'game.android' | lang }}</div>
+          <mat-form-field>
+            <mat-select class="form-control" [(ngModel)]="openMethod.appAndroid">
+              <mat-option [value]="'WithinApp'">{{ 'game.openWithinApp' | lang }}</mat-option>
+              <mat-option [value]="'Browser'">{{ 'game.openBrowser' | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 累计交易 -->
+    <form-row *ngIf="!isAdd" class="mb-5 w-100" [label]="'luckRoulette.totalTrans' | lang" label-width="220">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          {{ totalBetAmount | currencyValue: 'USDT' }}
+          <img class="ml-2" [currencyIcon]="'USDT'" />
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 累计派彩 -->
+    <form-row *ngIf="!isAdd" class="mb-5 w-100" [label]="'game.totalPayout' | lang" label-width="220">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          {{ payoutAmount | currencyValue: 'USDT' }}
+          <img class="ml-2" [currencyIcon]="'USDT'" />
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <!-- <form-row class="mb-5" label="庄家优势" label-width="220">
+    <ng-template>
+      <div>3.40%</div>
+    </ng-template>
+  </form-row> -->
+
+  <!-- 累计交易 -->
+  <!-- <form-row class="mb-5" label="累计交易" label-width="220">
+    <ng-template>
+      <div class="d-flex flex-ac">
+        2887.00987788
+        <img class="ml-2" [currencyIcon]="'USDT'" />
+      </div>
+    </ng-template>
+  </form-row> -->
+
+  <!-- 累计派彩 -->
+  <!-- <form-row label="累计交易" label-width="220">
+    <ng-template>
+      <div class="d-flex flex-ac">
+        0.11100345
+        <img class="ml-2" [currencyIcon]="'USDT'" />
+      </div>
+    </ng-template>
+  </form-row> -->
+
+  <!-- 列表 -->
+  <!-- <div class="w-100 mt-10">
+    <div class="lang-hd">
+      <div class="mr-4 d-flex">
+        <div
+          class="lang-hd-item"
+          *ngFor="let item of ['大赢家', '幸运玩家', '最近投注']; let i = index"
+          [class.active]="curTypeValue === i"
+          (click)="curTypeValue = i"
+        >
+          {{ item }}
+        </div>
+      </div>
+    </div>
+    <div class="lang-bd">
+      <table class="table">
+        <thead>
+          <tr>
+            <th><span class="cell">玩家</span></th>
+            <th><span class="cell">时间</span></th>
+            <th><span class="cell">下注金额</span></th>
+            <th><span class="cell">乘数</span></th>
+            <th><span class="cell">支付额</span></th>
+          </tr>
+        </thead>
+        <tbody class="color-222">
+          <tr *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; let i = index">
+            <td>
+              <span class="cell">Tom1787</span>
+            </td>
+            <td>
+              <span class="cell">2021-09-17 11:21:32</span>
+            </td>
+            <td>
+              <span class="cell">
+                100.00
+                <img class="ml-2" [currencyIcon]="'CNY'" />
+              </span>
+            </td>
+            <td>
+              <span class="cell">6.45×</span>
+            </td>
+            <td>
+              <span class="cell">
+                771.28
+                <img class="ml-2" [currencyIcon]="'CNY'" />
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+  <div class="btn-wrap pt-14 flex-center d-flex">
+    <button type="button" class="c-btn c-btn-default ml-0" (click)="router.navigate(['/game/manage'])">
+      {{ 'common.back' | lang }}
+    </button>
+    <button type="button" class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'game.provider.confirm' | lang }}</button>
+  </div>
+</div>
+
+<!-- sortIcon -->
+<ng-template #sortIcon>
+  <span class="info-icon cursor-move">
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+  </span>
+</ng-template>
+
+<!-- 新增 游戏标签 -->
+<ng-template #addLabelPoup let-c="close" let-d="dismiss">
+  <div class="modal-content addLabelPopup">
+    <modal-title title="添加" (close)="d()"></modal-title>
+    <!-- 标签模糊搜索 -->
+    <div class="d-flex flex-ac flex-center search">
+      <form-wrap [style.width.px]="557" class="mr-8">
+        <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+        <input
+          class="form-control"
+          autocomplete="off"
+          type="text"
+          [(ngModel)]="inputLabelName"
+          [placeholder]="'game.manage.keyword' | lang"
+          (keyup)="$event.keyCode === 13 && serachChange()"
+        />
+      </form-wrap>
+      <button class="c-btn btn btn-primary h40" (mousedown)="serachChange()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="main">
+        <div class="item" *ngFor="let item of addLabelList">
+          <img [src]="item.iconAddress + item.icon" />
+          <span class="name">{{ item.name }}</span>
+          <label class="checkbox">
+            <input type="checkbox" [(ngModel)]="item.checked" />
+            <span></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <modal-footer (confirm)="onAddLabelSubmit(c)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

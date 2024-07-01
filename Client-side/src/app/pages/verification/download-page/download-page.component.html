@@ -1,0 +1,31 @@
+<div class="download-page-clonum">
+  <div class="header">
+    {{ 'down_auth' | translate }}
+  </div>
+  <div class="download-app-row">
+    <div
+      class="app-colnum mutual-opacity onact96"
+      (click)="jumpToGoogleAuthStore('https://apps.apple.com/au/app/google-authenticator/id388497605')"
+    >
+      <i class="icon-apple"></i>
+      <span class="text">Download From</span>
+      <span class="text-bold">App Store</span>
+    </div>
+    <div
+      class="app-colnum mutual-opacity onact96"
+      (click)="
+        jumpToGoogleAuthStore('https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2')
+      "
+    >
+      <i class="icon-googleplay"></i>
+      <span class="text">Download From</span>
+      <span class="text-bold">Android APK</span>
+    </div>
+  </div>
+  <div class="footer onact96" (click)="toDetailPage()">
+    <i class="document-icon"></i>
+    <span>
+      {{ 'use_auth' | translate }}
+    </span>
+  </div>
+</div>

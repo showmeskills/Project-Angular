@@ -1,0 +1,305 @@
+<div class="card">
+  <div class="px-12 d-flex flex-ac" [style.height.px]="74">
+    <!-- 交易概览 -->
+    <span class="fw-bolder fz-20">{{ 'member.detail.transactionOverview' | lang }}</span>
+
+    <div class="fz-14 ml-8">
+      <div class="d-flex flex-ac">
+        <!-- 取消警报： -->
+        <span>{{ 'member.detail.cancelTheAlert' | lang }}</span>
+        <ng-container *ngFor="let item of providerTop?.cancelTop">
+          <img [iconSrc]="item.webLogo" iconSize="18px" class="mr-2" />
+          <span class="mr-2">{{ item.providerName }}:</span>
+
+          <span class="mr-4"> {{ item.cancelCountRate || 0 }}% </span>
+
+          <img [currencyIcon]="'USDT'" currencySize="16" class="mr-2" />
+          <span class="mr-4">{{ item.cancelTotalRate }}%</span>
+        </ng-container>
+      </div>
+
+      <div class="d-flex flex-ac mt-2">
+        <!-- 胜率警报： -->
+        <span>{{ 'member.detail.winRateAlert' | lang }}</span>
+        <ng-container *ngFor="let item of providerTop?.winTop">
+          <img [iconSrc]="item.webLogo" iconSize="18px" class="mr-2" />
+          <span class="mr-2">{{ item.providerName }}:</span>
+
+          <span class="mr-4"> {{ item.winCountRate || 0 }}% </span>
+
+          <img [currencyIcon]="'USDT'" currencySize="16" class="mr-2" />
+          <span class="mr-4">{{ item.winTotalRate }}%</span>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body px-6 pt-6 pb-2 border-top">
+    <div class="plane">
+      <div class="px-5 py-4 d-flex" [class]="'circle-' + (i + 1)" *ngFor="let item of grid; index as i">
+        <div class="fz-16 flex-1">
+          <div *ngIf="item.titleMap">{{ item.titleMap | lang }}</div>
+          <div class="fst-italic" *ngIf="!item.titleMap">{{ item.title }}</div>
+          <div class="mt-2 d-flex" [style.color]="item.color">
+            <span class="vam">{{
+              [5, 6].includes(item.id) ? (item?.value | currencyValue: 'USDT') : (item?.value | integer)
+            }}</span>
+            <span class="vam">{{ item.suffix }}</span>
+            <img class="vam ml-2" *ngIf="[5, 6].includes(item.id)" currencyIcon="USDT" [currencySize]="'18px'" />
+          </div>
+        </div>
+        <pp-progress
+          type="circle"
+          trackColor="#fff"
+          [color]="item.color"
+          [percentage]="item?.value"
+          [width]="48"
+          [strokeWidth]="4"
+        >
+          <ng-template progressText>
+            <span class="color-333 fz-12">
+              {{ item?.value | integer }}
+              {{ item.suffix }}
+            </span>
+          </ng-template>
+        </pp-progress>
+      </div>
+
+      <div class="px-5 py-4 custom-scroll-y circle-8" [style.height.px]="67">
+        <div class="fz-16">
+          <div>{{ 'member.detail.currency' | lang }}</div>
+          <div class="mt-2">
+            <img *ngFor="let item of allWalletList" [currencyIcon]="item.currency" currencySize="18" class="mr-2" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 d-flex" [style.height.px]="380" style="background: #f9fcff">
+      <div class="flex-1" *ngIf="ProviderStatList.length">
+        <table class="table transaction-table">
+          <tbody>
+            <ng-container *ngFor="let item of ProviderStatList; index as i">
+              <tr>
+                <td>
+                  <span class="cell">
+                    <img *ngIf="item.webLogo" [iconSrc]="item.webLogo" iconSize="18px" class="mr-2" />
+                    <span>{{ item.providerName || '-' }}</span>
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span>{{ item.activeFlowTotal | currencyValue: 'USDT' }}</span>
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <ng-container *win="item.payoutTotal; let value; prev as prev">
+                      <span [winColor]="value">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+                    </ng-container>
+
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span>
+                      <!-- arthur: 非体育和电竞类的厂商，不需要显示取消数，只需要显示总数 -->
+                      <ng-container *ngIf="['SportsBook', 'Esports'].includes(item.gameCategory)">
+                        {{ item.cancelCount || '-' }}/
+                      </ng-container>
+                      {{ item.wagerCount || '-' }}
+                    </span>
+                    <svg-icon class="ml-2" [src]="'./assets/images/svg/member/doc.svg'"></svg-icon>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex-1" *ngIf="false">
+        <table class="table transaction-table">
+          <tbody>
+            <ng-container *ngFor="let item of ProviderStatList; index as i">
+              <tr *ngIf="i % 2">
+                <td>
+                  <span class="cell">
+                    <img [iconSrc]="item.webLogo" iconSize="18px" class="mr-2" />
+                    <span>{{ item.providerName || '-' }}</span>
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span>{{ item.activeFlowTotal | currencyValue: 'USDT' }}</span>
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <ng-container *win="item.payoutTotal; let value; prev as prev">
+                      <span [winColor]="value">{{ prev }}{{ value | currencyValue: 'USDT' }}</span>
+                    </ng-container>
+
+                    <img [currencyIcon]="'USDT'" currencySize="16" class="ml-2" />
+                  </span>
+                </td>
+                <td>
+                  <span class="cell">
+                    <span
+                      ><!-- arthur: 非体育和电竞类的厂商，不需要显示取消数，只需要显示总数 -->
+                      <ng-container *ngIf="['SportsBook', 'Esports'].includes(item.gameCategory)">
+                        {{ item.cancelCount || '-' }}/
+                      </ng-container>
+                      {{ item.wagerCount || '-' }}
+                    </span>
+                    <svg-icon class="ml-2" [src]="'./assets/images/svg/member/doc.svg'"></svg-icon>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="container-empty h-100 w-100" *ngIf="!ProviderStatList.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+    </div>
+    <!-- 页码 -->
+    <div class="d-flex flex-between py-5 table-footer" *ngIf="ProviderStatList.length > 0">
+      <div></div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="getProviderStatList()"
+        ></app-paginator>
+      </div>
+    </div>
+
+    <!--    <div class="mb-4 flex-1 d-flex justify-content-between p-6 rounded flex-ac" style="background: #e8fff3">-->
+    <!--      <div class="d-flex flex-column justify-content-between" [style.min-height.px]="80">-->
+    <!--        <h3 class="mb-0 fz-16 fw-bolder">存流比</h3>-->
+
+    <!--        <div>-->
+    <!--          <div>-->
+    <!--            <span class="fz-12">存款金额：</span>-->
+    <!--            <span class="fz-14 fw-bolder">{{ data.depositTotal | toFormatMoney }}</span>-->
+    <!--          </div>-->
+    <!--          <div class="gray">-->
+    <!--            <span class="fz-12">有效流水：</span>-->
+    <!--            <span class="fz-12">{{ data.activeFlowTotal | toFormatMoney }}</span>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+
+    <!--      <pp-progress-->
+    <!--        type="circle"-->
+    <!--        trackColor="#fff"-->
+    <!--        [status]="'success'"-->
+    <!--        [percentage]="data.depositRatio"-->
+    <!--        [width]="80"-->
+    <!--        [strokeWidth]="6"-->
+    <!--      >-->
+    <!--        <ng-template progressText>-->
+    <!--          <span style="color: #3f4254">-->
+    <!--            <span class="fz-18 fw-bolder">{{ data.depositRatio | integer }}</span>-->
+    <!--            <span class="fz-14">%</span>-->
+    <!--          </span>-->
+    <!--        </ng-template>-->
+    <!--      </pp-progress>-->
+    <!--    </div>-->
+
+    <!--    <div class="mb-4 flex-1 d-flex justify-content-between p-6 rounded flex-ac" style="background: #f1faff">-->
+    <!--      <div class="d-flex flex-column justify-content-between" [style.min-height.px]="80">-->
+    <!--        <h3 class="mb-0 fz-16 fw-bolder">红流比</h3>-->
+
+    <!--        <div>-->
+    <!--          <div>-->
+    <!--            <span class="fz-12">红利金额：</span>-->
+    <!--            <span class="fz-14 fw-bolder">{{ data.bonusTotal | toFormatMoney }}</span>-->
+    <!--          </div>-->
+    <!--          <div class="gray">-->
+    <!--            <span class="fz-12">有效流水：</span>-->
+    <!--            <span class="fz-12">{{ data.activeFlowTotal | toFormatMoney }}</span>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+
+    <!--      <pp-progress type="circle" trackColor="#fff" [percentage]="data.bonusRatio" [width]="80" [strokeWidth]="6">-->
+    <!--        <ng-template progressText>-->
+    <!--          <span style="color: #3f4254">-->
+    <!--            <span class="fz-18 fw-bolder">{{ data.bonusRatio | integer }}</span>-->
+    <!--            <span class="fz-14">%</span>-->
+    <!--          </span>-->
+    <!--        </ng-template>-->
+    <!--      </pp-progress>-->
+    <!--    </div>-->
+
+    <!--    <div class="mb-4 flex-1 d-flex justify-content-between p-6 rounded flex-ac" style="background: #fff5f8">-->
+    <!--      <div class="d-flex flex-column justify-content-between" [style.min-height.px]="80">-->
+    <!--        <h3 class="mb-0 fz-16 fw-bolder">返还率</h3>-->
+
+    <!--        <div>-->
+    <!--          <div>-->
+    <!--            <span class="fz-12">返还金额：</span>-->
+    <!--            <span class="fz-14 fw-bolder">{{ data.returnTotal | toFormatMoney }}</span>-->
+    <!--          </div>-->
+    <!--          <div class="gray">-->
+    <!--            <span class="fz-12">有效流水：</span>-->
+    <!--            <span class="fz-12">{{ data.activeFlowTotal | toFormatMoney }}</span>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+
+    <!--      <pp-progress-->
+    <!--        type="circle"-->
+    <!--        trackColor="#fff"-->
+    <!--        [status]="'exception'"-->
+    <!--        [percentage]="data.returnRatio"-->
+    <!--        [width]="80"-->
+    <!--        [strokeWidth]="6"-->
+    <!--      >-->
+    <!--        <ng-template progressText>-->
+    <!--          <span style="color: #3f4254">-->
+    <!--            <span class="fz-18 fw-bolder">{{ data.returnRatio | integer }}</span>-->
+    <!--            <span class="fz-14">%</span>-->
+    <!--          </span>-->
+    <!--        </ng-template>-->
+    <!--      </pp-progress>-->
+    <!--    </div>-->
+
+    <!--    <div class="mb-4 flex-1 d-flex justify-content-between p-6 rounded flex-ac" style="background: #f8f3ff">-->
+    <!--      <div class="d-flex flex-column justify-content-between w-100" [style.min-height.px]="80">-->
+    <!--        <div class="d-flex">-->
+    <!--          <h3 class="mb-0 fz-16 fw-bolder flex-1">体育注单</h3>-->
+    <!--          <div class="fz-16" style="color: #7e4aeb">NaN</div>-->
+    <!--        </div>-->
+
+    <!--        <div class="fz-14">-->
+    <!--          <div class="d-flex">-->
+    <!--            <div class="flex-1">-->
+    <!--              <span>取消：</span>-->
+    <!--              <span>NaN</span>-->
+    <!--            </div>-->
+    <!--            <span>0%</span>-->
+    <!--          </div>-->
+
+    <!--          <div class="d-flex">-->
+    <!--            <div class="flex-1">-->
+    <!--              <span>高水：</span>-->
+    <!--              <span>NaN</span>-->
+    <!--            </div>-->
+    <!--            <span>0%</span>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+  </div>
+</div>

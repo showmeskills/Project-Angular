@@ -1,0 +1,69 @@
+<div class="page-container">
+  <app-header-title-bar [title]="'dis_third_acc' | translate" [clickForRouterBack]="true"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <div class="form-clonum">
+        <!--验证表单-->
+        <div class="form-group">
+          <app-customize-input
+            [type]="'password'"
+            [size]="'large'"
+            [label]="'password_text' | translate"
+            #iPwd
+            [error]="!!password && !$any(iPwd).isValid"
+            (onChange)="onPasswordInput(iPwd)"
+            [(value)]="password"
+            (onFocus)="onFocus(iPwd)"
+            (onBlur)="onBlur(iPwd)"
+          >
+            <i
+              class="onact96-not"
+              right-content
+              [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+              (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+            ></i>
+          </app-customize-input>
+          <!-- 输入框下面的错误信息 -->
+          <div class="error-msg">
+            {{ 'enter_pwd' | translate }}
+          </div>
+        </div>
+        <div class="verify-container">
+          <!--otp验证-->
+          <app-verify-code
+            [otpType]="otpType"
+            [phone]="phone"
+            [inputLabel]="'p_code' | translate"
+            [authStatus]="authStatus"
+            [tips]="
+              ('enter_phone' | translate) +
+              (userSocicalInfo?.areaCode || '') +
+              ' ' +
+              (userSocicalInfo?.mobile || '') +
+              ('ver_code' | translate)
+            "
+            (onChangeAuthStatus)="onfirstSendAuthcode($event)"
+            (verfityInputSuccess)="onOtpCode($event)"
+          >
+          </app-verify-code>
+          <!-- 输入框下面的错误信息 -->
+          <div class="error-msg" *ngIf="!!showErrorText">
+            {{ showErrorText }}
+          </div>
+        </div>
+
+        <customize-button
+          class="final-btn"
+          width="100%"
+          type="primary"
+          size="large"
+          [loading]="isLoading"
+          (onClick)="unBindSocial()"
+          [disabled]="!canSubmit()"
+        >
+          {{ 'unbinding_button' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</div>

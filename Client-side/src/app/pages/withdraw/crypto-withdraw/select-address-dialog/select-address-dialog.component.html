@@ -1,0 +1,68 @@
+<div class="container" [appLoading]="isLoading">
+  <div class="header-row">
+    <span class="title">{{ 'select_add_book' | translate }}</span>
+    <i class="icon-close mutual-opacity onact96-not" (click)="dialogRef.close()"></i>
+  </div>
+  <div class="content-hub" [class.has-content]="hasdata">
+    <ng-container *ngIf="hasdata">
+      <app-scrollbar>
+        <ng-container *ngFor="let item of userAddressList">
+          <ng-container *ngIf="item.available">
+            <div class="address-container mutual-opacity onact96" (click)="clickAddress(item)">
+              <div class="type">
+                <div>
+                  <ng-container *ngIf="item.paymentMethod">
+                    {{
+                      ewalletpaymentlist | filterByKeyValue : 'code' : item.paymentMethod : 'name' : item.paymentMethod
+                    }}
+                  </ng-container>
+                  <ng-container *ngIf="!item.paymentMethod">
+                    {{ item.currency ? ('general_add' | translate) : ('common_add' | translate) }}
+                    <i
+                      class="mutual-opacity icon-warning"
+                      (click)="tooltip.toggle()"
+                      *ngIf="!item.currency"
+                      #tooltip="matTooltip"
+                      matTooltip="{{ 'steps' | translate }}"
+                      matTooltipPosition="right"
+                      matTooltipClass="generally-tooltip type-tooltip"
+                    ></i>
+                  </ng-container>
+                </div>
+                <div class="h5-header">{{ item.remark }}</div>
+              </div>
+              <span class="header">{{ item.remark }}</span>
+              <div class="address-row">
+                <div>
+                  <em>{{ 'wd_curr_add' | translate }}</em>
+                  <span>{{ item.address }}</span>
+                </div>
+                <div *ngIf="item.network">
+                  <em>{{ 'trans_network' | translate }}</em>
+                  <span>{{ item.network }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </app-scrollbar>
+    </ng-container>
+    <app-empty *ngIf="!hasdata && !isLoading" [smallText]="true" [text]="'easy_iden' | translate">
+      <ng-container [ngTemplateOutlet]="addbtn"></ng-container>
+    </app-empty>
+  </div>
+  <ng-container *ngIf="hasdata" [ngTemplateOutlet]="addbtn"></ng-container>
+</div>
+
+<ng-template #addbtn>
+  <customize-button
+    width="100%"
+    class="m-auto"
+    [routerLink]="[appService.languageCode, 'wallet', 'address']"
+    type="primary"
+    size="large"
+    (onClick)="dialogRef.close()"
+  >
+    {{ 'add_wd_address' | translate }}
+  </customize-button>
+</ng-template>

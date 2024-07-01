@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+    <defs>
+        <clipPath id="qaamw0br7a">
+            <path data-name="矩形 9999" transform="translate(358 727)" style="stroke:#707070;fill:#fff" d="M0 0h28v28H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="组 2354" transform="translate(-358 -727)" style="clip-path:url(#qaamw0br7a)">
+        <g data-name="959b1e1c-d493-4b2b-9731-b4cbcc9fe6a4">
+            <path data-name="路径 16106" d="M.982 3.961a2.37 2.37 0 0 1 2.37-2.726L8.093 1A2.489 2.489 0 0 1 10.7 3.25l1.067 9.363a2.43 2.43 0 0 1-2.015 2.667l-4.859.711a2.43 2.43 0 0 1-2.726-2.074L.982 3.9z" transform="translate(362.113 731.424)" style="fill-rule:evenodd;fill:none;stroke:#fb6943;stroke-width:1.5px"/>
+            <path data-name="路径 16107" d="M8.571 15.355a16.671 16.671 0 0 1 .948-1.719c.711-1.007 1.778-1.482 1.719-2.785-.118-1.007-.652-1.778-1.838-1.659s-1.3 2.133-1.3 2.133-.533-1.956-1.719-1.9a1.69 1.69 0 0 0-1.6 2.074c.178 1.126 1.363 1.541 2.37 2.43a14.21 14.21 0 0 1 1.422 1.422z" transform="translate(360.568 728.089)" style="fill:#fb6943;fill-rule:evenodd"/>
+            <path data-name="路径 16108" d="m20.828 4.436 4.741 1.185a2.37 2.37 0 0 1 1.659 2.963l-2.37 9.126a2.37 2.37 0 0 1-2.958 1.719l-4.741-1.185a2.37 2.37 0 0 1-1.719-2.963l2.489-9.126a2.37 2.37 0 0 1 2.963-1.719z" transform="translate(356.252 730.06)" style="fill-rule:evenodd;fill:#fff"/>
+            <path data-name="路径 16109" d="M17.927 6.154a2.37 2.37 0 0 1 2.963-1.718l4.622 1.185a2.37 2.37 0 0 1 1.778 2.963L24.8 17.71a2.37 2.37 0 0 1-2.963 1.719l-4.622-1.185a2.37 2.37 0 0 1-1.778-2.963z" transform="translate(356.249 730.06)" style="fill-rule:evenodd;fill:none;stroke:#fb6943;stroke-width:1.5px"/>
+            <path data-name="路径 16110" d="M24.256 12.6 20.7 14.97l1.9 3.73 3.556-2.37-1.9-3.674z" transform="translate(354.069 726.696)" style="fill:#fb6943;fill-rule:evenodd"/>
+        </g>
+    </g>
+</svg>

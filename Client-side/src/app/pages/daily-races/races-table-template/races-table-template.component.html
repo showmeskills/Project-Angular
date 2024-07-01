@@ -1,0 +1,32 @@
+<div class="list-container">
+  <ng-container *ngIf="customizedHeader; else defaultHeader">
+    <ng-container *ngTemplateOutlet="customizedHeader"></ng-container>
+  </ng-container>
+  <ng-template #defaultHeader>
+    <div class="list-header">
+      <p class="title text-14" *ngFor="let item of tableHeader">
+        {{ item | translate }}
+      </p>
+    </div>
+  </ng-template>
+  <ng-container *ngIf="!loading; else skeletonLoading">
+    <ng-container *ngIf="renderTableData() && customizedData; else empty">
+      <ng-container *ngTemplateOutlet="customizedData"></ng-container>
+    </ng-container>
+    <ng-template #empty>
+      <div class="empty-container" [style.height]="emptyHeight + 'px'">
+        <app-empty></app-empty>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
+
+<ng-template #skeletonLoading let-titles="titles">
+  <div class="skeleton-container">
+    <ng-container *ngFor="let item of skeletonLength">
+      <div class="skeleton-row" [style.grid-template-columns]="'repeat(' + columns + ', 1fr)'">
+        <p class="skeleton-loading" *ngFor="let item of tableHeader"></p>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

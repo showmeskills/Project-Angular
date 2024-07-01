@@ -1,0 +1,50 @@
+<div class="popup-common guide-container step{{ step }}">
+  <div class="tit">
+    <span>{{ 'tutorial_t' | translate }}</span>
+    <i class="icon-close-simple mutual-opacity onact96-not" (click)="close()"></i>
+  </div>
+  <div class="img-box">
+    <ng-container [ngSwitch]="step">
+      <ng-container *ngSwitchCase="1">
+        <img class="web-img" src="assets/images/guide/guide-web01.jpg" />
+        <img class="h5-img" src="assets/images/guide/guide-mb01.jpg" />
+        <div class="text-box">
+          点击<em>充值按钮</em>即可选择法币或数字货币进行存款
+          <!-- <app-customize-text [text]="'tutorial_s1' | translate"></app-customize-text> -->
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="2">
+        <img class="web-img" src="assets/images/guide/guide-web02.jpg" />
+        <img class="h5-img" src="assets/images/guide/guide-mb02.jpg" />
+        <div class="text-box">
+          选择您需要<em>充值的方式</em>进行存款
+          <!-- <app-customize-text [text]="'tutorial_s2' | translate"></app-customize-text> -->
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="3">
+        <img class="web-img" src="assets/images/guide/guide-web03.jpg" />
+        <img class="h5-img" src="assets/images/guide/guide-mb03.jpg" />
+        <div class="text-box">
+          点击金额框即可查看您所有<em>币种的余额</em>
+          <!-- <app-customize-text [text]="'tutorial_s3' | translate"></app-customize-text> -->
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="4">
+        <img class="web-img" src="assets/images/guide/guide-web04.jpg" />
+        <img class="h5-img" src="assets/images/guide/guide-mb04.jpg" />
+        <div class="text-box">
+          充值完成后，点击您喜欢的游戏封面，即可开始游戏。点击<em>左上角标题</em>即可浏览该类型所有的游戏
+          <!-- <app-customize-text [text]="'tutorial_s4' | translate"></app-customize-text> -->
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="foot">
+    <customize-button type="primary" width="100%" (onClick)="nextStep()">
+      {{ step < 4 ? ('next' | translate) : ('finish' | translate) }}
+    </customize-button>
+    <div *ngIf="step < 4" class="skip mutual-opacity onact96-not" (click)="close()">
+      {{ 'tutorial_skip' | translate }}
+    </div>
+  </div>
+</div>

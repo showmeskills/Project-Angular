@@ -1,0 +1,219 @@
+<div class="card rounded">
+  <div class="card-header py-8">
+    <div class="d-flex py-2 flex-wrap">
+      <div class="d-flex flex-ac mr-16 pb-4">
+        <div class="d-flex pb-4 flex-ac mr-16">
+          <div class="title">{{ 'payment.companyAccountManagement.merchantName' | lang }}:</div>
+          <mat-form-field [style.margin-left.px]="15" [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="data.merchantName" (selectionChange)="loadData$.next()">
+              <mat-option *ngFor="let item of merchantsList" [value]="item.id">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex flex-ac mr-16 pb-4">
+        <div class="d-flex pb-4 flex-ac mr-16">
+          <div class="title">{{ 'common.currency' | lang }}:</div>
+          <mat-form-field [style.margin-left.px]="15" [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData$.next()">
+              <mat-option *ngFor="let item of currenciesList" [value]="item.code">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex flex-ac pb-4">
+        <div class="d-flex pb-4 flex-ac">
+          <div class="title">{{ 'payment.companyAccountManagement.remittance' | lang }}:</div>
+          <mat-form-field [style.margin-left.px]="15" [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="data.paymentMethod" (selectionChange)="loadData$.next()">
+              <mat-option *ngFor="let item of paymentMethodList" [value]="item.code">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="btn-wrap">
+        <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="loadData$.next()">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-ac justify-content-end">
+      <div>
+        <button
+          (click)="router.navigate(['/money/companyAccountManagement/add'])"
+          type="button"
+          class="btn btn-light-primary px-9 fz-14 py-2"
+        >
+          <svg-icon [src]="'./assets/images/svg/admin-add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          <span class="vam">{{ 'payment.companyAccountManagement.addAccount' | lang }}</span>
+        </button>
+
+        <span class="vam">
+          <span class="color-aaa ml-8">{{ 'payment.companyAccountManagement.distributionRules' | lang }}</span>
+
+          <ng-template #tipContent>
+            <div class="text-left">
+              {{ 'payment.companyAccountManagement.tips' | lang }}
+            </div>
+          </ng-template>
+
+          <span class="containers-button ml-4 d-inline-block" placement="left" [ngbTooltip]="tipContent">
+            <span class="containers-button-text">?</span>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <!--begin::Datatable-->
+      <table class="table mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.merchantName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.currency' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.remittance' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.payee' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.receivingAccount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.beneficiaryBank' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.branchInformation' | lang }}</span>
+            </th>
+            <th><span class="cell">SWIFT CODE</span></th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.getPaidDay' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.payToDay' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.theoBalance' | lang }}</span>
+            </th>
+            <th [style.width.px]="100">
+              <span class="cell">{{ 'common.status' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.companyAccountManagement.transactionRecord' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.operate' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ getMerchantName(item.merchantId) }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.payType }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.payeeName }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.beneficiaryAccountNumber }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.beneficiaryBank }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.bankBranches }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.swiftCode }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.todayIncome | currencyValue : item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.todayOutcome | currencyValue : item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.balance | currencyValue : item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <app-label *ngIf="item.status === 'NotActivated'" type="danger">
+                  {{ 'payment.companyAccountManagement.inactivated' | lang }}
+                </app-label>
+                <app-label *ngIf="item.status === 'Assigned'" type="success">
+                  {{ 'payment.companyAccountManagement.allocating' | lang }}
+                </app-label>
+                <app-label *ngIf="item.status === 'Wait'" type="yellow">
+                  {{ 'payment.companyAccountManagement.pendingAllocation' | lang }}
+                </app-label>
+                <app-label *ngIf="item.status === 'Full'" type="danger">
+                  {{ 'payment.companyAccountManagement.full' | lang }}
+                </app-label>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="edit" (click)="onDetail(item)">{{ 'common.review' | lang }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <span class="edit" (click)="toEditAccount(item.id)">{{ 'common.edit' | lang }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30 align-items-end">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

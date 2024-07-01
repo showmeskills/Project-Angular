@@ -1,0 +1,37 @@
+<div class="content-box">
+  <div class="content-head">
+    <a
+      (click)="toAll(); $event.preventDefault()"
+      [href]="domain + '/' + appService.languageCode + '/casino/category/' + showFor"
+    >
+      <span class="title mutual-opacity onact96" (click)="toAll()">
+        <img *ngIf="subIcon || currentTab?.icon" [src]="subIcon || currentTab?.icon" />
+        <span>{{ subName || currentTab?.labelName }}</span>
+      </span>
+    </a>
+  </div>
+
+  <ng-container *ngIf="currentGameList && currentGameList.length > 0">
+    <div class="game-list grid-8-3-gap-11-6">
+      <!-- 游戏单元 最多显示24个 -->
+      <app-game-unit
+        *ngFor="let item of currentGameList.slice(0, 24)"
+        [item]="item"
+        [hasHover]="true"
+        [hasMask]="true"
+        (clickItem)="clickItem($event)"
+      ></app-game-unit>
+    </div>
+    <div class="more-btns" *ngIf="gameCout > 24">
+      <div class="mutual-opacity onact96-not" (click)="toAll()">
+        {{ 'view_all' | translate }} {{ subName || currentTab?.labelName }}
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- loading ，无数据也会一直显示，暂不单独考虑无数据 -->
+  <ng-container *ngIf="loadingGameList || !currentGameList || currentGameList.length < 1">
+    <div class="skeleton" app-game-item-skeleton></div>
+    <div class="skeleton" app-game-item-skeleton></div>
+  </ng-container>
+</div>

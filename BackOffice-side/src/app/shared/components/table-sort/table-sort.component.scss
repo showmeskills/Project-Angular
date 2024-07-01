@@ -1,0 +1,6 @@
+@use 'sass/tools';
+@include tools.triangle;
+
+:host {
+  display: flex;
+}

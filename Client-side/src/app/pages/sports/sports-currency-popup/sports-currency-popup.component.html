@@ -1,0 +1,58 @@
+<div class="popup-common standard-popup">
+  <div class="header">
+    <p class="title">{{ 'show_curr' | translate }}</p>
+    <i class="close-btn icon-close-simple mutual-opacity onact96-not" (click)="onClose()"></i>
+  </div>
+  <app-customize-select
+    [disabled]="data.currency.length === 1"
+    width="100%"
+    [options]="data.currency"
+    [textKey]="'currency'"
+    [valueKey]="'currency'"
+    [(value)]="data.selectedPlayCoin"
+    [inputTemplate]="inputTemplate"
+    [optionsTemplate]="optionsTemplate"
+  ></app-customize-select>
+  <ng-container
+    *ngTemplateOutlet="
+      currencyTip;
+      context: {
+        ratio: data?.currencyRatio ?? [] | filterByKeyValue: 'currency' : data.selectedPlayCoin : 'ratio'
+      }
+    "
+  >
+  </ng-container>
+  <customize-button width="100%" type="primary" (onClick)="onConfirm()">
+    {{ 'confirm_button' | translate }}
+  </customize-button>
+</div>
+
+<ng-template #currencyTip let-ratio="ratio">
+  <div *ngIf="showTip" class="currency-tip">
+    <span class="tip">{{ 'game_currency_tip' | translate: ratio }}</span>
+    <app-tool-tip>
+      <i origin class="currency-tip-icon icon-warning mutual-opacity"></i>
+      <span tooltip class="currency-tip-text">
+        {{ 'game_currency_tip_d' | translate: ratio : data.selectedPlayCoin }}
+      </span>
+    </app-tool-tip>
+  </div>
+</ng-template>
+
+<ng-template #inputTemplate>
+  <div class="currency">
+    <img [src]="data.selectedPlayCoin | usdChangeToUsdt | currencyIcon" />
+    <span>{{ data.selectedPlayCoin | usdChangeToUsdt }}</span>
+  </div>
+</ng-template>
+
+<ng-template #optionsTemplate>
+  <div class="custom-item">
+    @for (item of data.currency; track item) {
+      <div class="currency mutual-opacity onact96-not" (click)="onSelectCurrency(item)">
+        <img [src]="item | usdChangeToUsdt | currencyIcon" />
+        <span>{{ item | usdChangeToUsdt }}</span>
+      </div>
+    }
+  </div>
+</ng-template>

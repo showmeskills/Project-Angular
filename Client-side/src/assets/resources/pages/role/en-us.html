@@ -1,0 +1,67 @@
+<div class="top-role-container ">
+  <!-- 好友介绍 -->
+  <div class="introduction-body">
+    <div class="introduction-img img-box">
+      <img src="assets/images/friend/role-img-0.png" alt='' lazy='loading' />
+    </div>
+    <div class="introduction-uc">
+      <div class="introduction-title-uc">Rules Introduction</div>
+      <div class="introduction-context-uc">
+        <p>The inviter can share the commission obtained with the invitee, and set the sharing ratio by himself, as
+          follows:</p>
+        <p>1. If the inviter is an ordinary user, the "commission rebate ratio" is 2‰, and the inviter can set 0‰, 0.5‰,
+          1‰ transaction return.</p>
+        <p>2. If the inviter is an alliance member, the "rebate rate" is 2‰, and the inviter can set five levels of
+          "rebate rate for invitee transactions" of 0‰, 0.5‰, 1‰, 1.5‰, 2‰.</p>
+        <p>Event time: from June 30, 2022</p>
+      </div>
+    </div>
+  </div>
+  <div class="links-uc">
+    <ul>
+      <li class="mid-li">
+        <p><span class="linked">></span>>> Generate exclusive referral links</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-1.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>><span class="linked">></span>> invite friends</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-2.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>>><span class="linked">></span> get rich together</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-3.png" alt='' lazy='loading' />
+        </div>
+      </li>
+    </ul>
+  </div>
+  <p class="introduction-title-uc">Event Description:</p>
+  <!-- 好友介绍 -->
+  <div class="introduction-context-uc" *ngIf="whichRouter == 'friend'">
+    <p>1. Both referrer (Inviter) and referee (Invitee) will receive the referral rewards within 24 hours in their [Main
+      Wallet]. </p>
+    <p>2. Commission and Rebate are calculated based on effective turnover of the user. For the calculation method of
+      effective turnover , please refer to :<span class="linked" data-page='{{onJunmpToPage}}'>{{rebLinkName1}}</span>
+    </p>
+    <p>3. Each referee must register an account with referrer invitation link or QR Code or Invitation ID for both of
+      you to be eligible to receive the commission rebate. If directly enter the referrer ID when registering, will not
+      be able to receive the rebate. </p>
+    <p>4. There is no limit to the number of invited friends for a single account. </p>
+    <p>5. Commission Rebate will not increase the withdrawal limit. </p>
+    <p>6.{Brand} will adjust the Rebate rate according to the future trend,and reserve the right to adjust
+      the program rules. </p>
+    <p>7.{Brand} will check for duplicate or fake accounts and will not pay out the referral rewards on these
+      accounts. Usage of duplicate or fake accounts will result in disqualification from the program. </p>
+    <p>8.Other cases where the rebate will be cancelled:<span class="linked"
+        data-page='{{onJunmpToPage}}'>{{rebLinkName1}}</span>
+    </p>
+  </div>
+  <p class="introduction-title-uc">*{{attentionTitle}}</p>
+  <div class="introduction-context-uc">
+    {{attentionContext}}
+  </div>
+</div>

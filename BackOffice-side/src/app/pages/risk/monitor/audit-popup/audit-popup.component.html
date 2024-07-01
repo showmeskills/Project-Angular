@@ -1,0 +1,346 @@
+<div class="modal-content">
+  <modal-title [title]="getTitle ? (getTitle | lang) : '-'" (close)="modal.dismiss()"></modal-title>
+
+  <div class="modal-body">
+    <ng-container [ngSwitch]="type">
+      <!-- 类型：活动审核 -->
+      <ng-container *ngSwitchCase="'Activity'">
+        <form-row [label]="'common.type' | lang" label-width="140">
+          <ng-template>{{ activityService.getLangText(data?.detail?.type) }}</ng-template>
+        </form-row>
+        <form-row class="flex-1" [label]="'member.activity.sencliCommon.eventName' | lang" label-width="140">
+          <ng-template>
+            <!-- 这里的status为审核状态 0为已开启需要停止的审核 此时跳查看页 -->
+            <span class="cursor-pointer text-primary text-decoration-underline" (click)="toActivity()">{{
+              data?.detail?.name
+            }}</span>
+          </ng-template>
+        </form-row>
+        <form-row [label]="'common.operate' | lang" label-width="140">
+          <ng-template>{{ (data?.detail?.status === 1 ? 'risk.openEvent' : 'risk.closeEvent') | lang }}</ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 类型：操作审核 - 负值清零 -->
+      <ng-container *ngSwitchCase="OperationReviewCategoryObjEnum.NegativeClear">
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" label="UID" label-width="140">
+            <ng-template>
+              <span class="copy" (click)="appService.copy(data?.uid)">{{ data?.uid || '-' }}</span>
+            </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'common.userName' | lang" label-width="140">
+            <ng-template> {{ data?.userName || '-' }} </ng-template>
+          </form-row>
+        </div>
+        <div class="d-flex flex-ac">
+          <!-- 金额 -->
+          <form-row class="flex-1" [label]="'common.amount' | lang" label-width="140">
+            <ng-template>
+              <ng-container *win="data?.detail?.amount; let value; prev as prev">
+                {{ prev }}{{ value | currencyValue: data?.detail?.currency }}
+              </ng-container>
+            </ng-template>
+          </form-row>
+          <!-- 币种 -->
+          <form-row class="flex-1" [label]="'walle.coin' | lang" label-width="140">
+            <ng-template> {{ data?.detail?.currency || '-' }} </ng-template>
+          </form-row>
+        </div>
+      </ng-container>
+
+      <!-- 类型：操作审核 - 调账 -->
+      <ng-container *ngSwitchCase="OperationReviewCategoryObjEnum.AdjustWallet">
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" label="UID" label-width="140">
+            <ng-template>
+              <span class="copy" (click)="appService.copy(data?.uid)">{{ data?.uid || '-' }}</span>
+            </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'common.userName' | lang" label-width="140">
+            <ng-template> {{ data?.userName || '-' }} </ng-template>
+          </form-row>
+        </div>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'risk.account' | lang" label-width="140">
+            <ng-template>
+              {{ data?.detail?.category === 'Main' ? ('risk.mainAcc' | lang) : ('risk.unknow' | lang) }}
+            </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'walle.coin' | lang" label-width="140">
+            <ng-template> {{ data?.detail?.currency || '-' }} </ng-template>
+          </form-row>
+        </div>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'walle.balance' | lang" label-width="140">
+            <ng-template>
+              <ng-container *win="data?.detail?.amount; let value; prev as prev">
+                {{ prev }}{{ value | currencyValue: data?.detail?.currency }}
+              </ng-container>
+            </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'bonus.activity.depositLimit' | lang" label-width="140">
+            <ng-template>
+              <ng-container *win="data?.detail?.withdrawLimit; let value; prev as prev">
+                {{ prev }}{{ value | currencyValue: data?.detail?.currency }}
+              </ng-container>
+            </ng-template>
+          </form-row>
+        </div>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'risk.remark' | lang" label-width="140">
+            <ng-template> {{ data?.detail?.remark || '-' }} </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'common.type' | lang" label-width="140">
+            <ng-template> {{ getDepositType(data?.detail?.adjustType) | lang }} </ng-template>
+          </form-row>
+        </div>
+        <form-row [label]="'risk.att' | lang" label-width="140">
+          <ng-template let-invalid="invalid">
+            <upload
+              type="AdminOperateAudit"
+              class="w-100"
+              [style.height.px]="140"
+              desc=""
+              [limit]="1024 * 5"
+              [accept]="['jpg', 'png', 'gif', 'bmp', 'pdf']"
+              [(ngModel)]="imageUrl"
+            ></upload>
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 类型：操作审核 - 手机号码重置 -->
+      <ng-container *ngSwitchCase="OperationReviewCategoryObjEnum.ResetBindMobile">
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" label="UID" label-width="140">
+            <ng-template>
+              <span class="copy" (click)="appService.copy(data?.uid)">{{ data?.uid || '-' }}</span>
+            </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'common.userName' | lang" label-width="140">
+            <ng-template> {{ data?.userName || '-' }} </ng-template>
+          </form-row>
+        </div>
+        <form-row [label]="'risk.addPhone' | lang" label-width="140">
+          <ng-template> {{ data?.detail?.areaCode || '-' }} {{ data?.detail?.mobile || '-' }} </ng-template>
+        </form-row>
+        <form-row [label]="'risk.unbindUid' | lang" label-width="140">
+          <ng-template> {{ data?.detail?.unBindUid || '-' }} </ng-template>
+        </form-row>
+        <form-row [label]="'risk.att' | lang" label-width="140">
+          <ng-template let-invalid="invalid">
+            <upload
+              type="AdminOperateAudit"
+              class="w-100"
+              [style.height.px]="140"
+              desc=""
+              [limit]="1024 * 5"
+              [accept]="['jpg', 'png', 'gif', 'bmp', 'pdf']"
+              [(ngModel)]="imageUrl"
+            ></upload>
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 启用登录，游戏等-->
+      <ng-container *ngSwitchCase="OperationReviewCategoryObjEnum.EnablePlayer">
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" label="UID" label-width="140">
+            <ng-template>
+              <span class="copy" (click)="appService.copy(data?.uid)">{{ data?.uid || '-' }}</span>
+            </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'common.userName' | lang" label-width="140">
+            <ng-template> {{ data?.userName || '-' }} </ng-template>
+          </form-row>
+        </div>
+        <!-- 需求待确认暂时隐藏 -->
+        <div class="d-flex flex-ac" *ngIf="false">
+          <form-row class="flex-1" [label]="'risk.timeFrame' | lang" label-width="140">
+            <ng-template> {{ 123 }} </ng-template>
+          </form-row>
+        </div>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'risk.enable' | lang" label-width="140">
+            <ng-template> {{ enableResult || this.data.detail.enableInfo }}</ng-template>
+          </form-row>
+        </div>
+      </ng-container>
+
+      <!-- 优惠券审核-->
+      <ng-container *ngSwitchCase="['Coupon', 'SendCoupon'].includes(type) ? type : ''">
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'common.name' | lang" label-width="140">
+            <ng-template>
+              <span class="cursor-pointer text-primary text-decoration-underline" (click)="checkCoupnPopup()">{{
+                data?.voucherName || '-'
+              }}</span>
+            </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'member.coupon.couponCode' | lang" label-width="140">
+            <ng-template> {{ data?.tmpCode || '-' }}</ng-template>
+          </form-row>
+        </div>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'common.type' | lang" label-width="140">
+            <ng-template> {{ this.couponService.getCouponTypeLang(data?.voucherType) | lang }}</ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'common.amount' | lang" label-width="140">
+            <ng-template>
+              <span class="vam">
+                {{ data?.amount | currencyValue: data?.currency }}
+              </span>
+              <img class="ml-2" [currencyIcon]="data?.currency" />
+            </ng-template>
+          </form-row>
+        </div>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'common.operate' | lang" label-width="140">
+            <ng-template>
+              <ng-container *ngIf="type === 'SendCoupon'">{{ 'member.coupon.sendCoupon' | lang }}</ng-container>
+              <ng-container *ngIf="type === 'Coupon'">
+                {{
+                  data?.detail?.status === 1
+                    ? ('member.coupon.listCoupons' | lang)
+                    : ('member.coupon.removeCoupons' | lang)
+                }}
+              </ng-container>
+            </ng-template>
+          </form-row>
+
+          <form-row class="flex-1" label="UID" label-width="140" *ngIf="type === 'SendCoupon'">
+            <ng-template>{{ data?.uid }}</ng-template>
+          </form-row>
+        </div>
+      </ng-container>
+
+      <!-- 注单：取消 -->
+      <cancel-bet-apply
+        *ngSwitchCase="OperationReviewCategoryObjEnum.CancelWager"
+        [isView]="true"
+        [data]="cancelWagerData"
+      ></cancel-bet-apply>
+
+      <!-- 会员基本信息：修改 -->
+      <ng-container *ngSwitchCase="OperationReviewCategoryObjEnum.MemberBasicInfo">
+        <div class="fz-16 lh-22 fw-bolder mb-4">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+        <div class="px-8 baseInfo-box mb-5">
+          <div class="py-4 d-flex box-items">
+            <!-- 亚洲 -->
+            <ng-container *ngIf="!data?.detail?.isEurope; else NameEuropeTpl">
+              <!-- 姓名 -->
+              <div class="pr-4 flex-1 item">
+                <div class="fz-14 color-aaa">{{ 'payment.transactionList.name' | lang }}：</div>
+                <div class="fz-16 pt-2">
+                  {{ data?.detail?.fullName || '-' }}
+                </div>
+              </div>
+            </ng-container>
+            <!-- 欧洲 -->
+            <ng-template #NameEuropeTpl>
+              <!-- 名字 -->
+              <div class="pr-4 flex-1 item">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.firstName' | lang }}：</div>
+                <div class="fz-16 pt-2">
+                  {{ data?.detail?.firstName || '-' }}
+                </div>
+              </div>
+              <!-- 姓氏 -->
+              <div class="px-4 flex-1 item">
+                <div class="fz-14 color-aaa">{{ 'member.kyc.model.lastName' | lang }}：</div>
+                <div class="fz-16 pt-2">
+                  {{ data?.detail?.lastName || '-' }}
+                </div>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 邮箱：gogaming -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'auManage.sys.email' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ data?.detail?.email || '-' }}</div>
+            </div>
+            <!-- 出生日期 -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.dateofBirth' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ data?.detail?.birthday | timeFormat: 'YYYY-MM-DD' }}</div>
+            </div>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 地址： -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.land' | lang }}：</div>
+              <div class="fz-16 pt-2">{{ data?.detail?.address || '-' }}</div>
+            </div>
+            <!-- 邮政编码： -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.postalCode' | lang }}：</div>
+              <div class="fz-16 pt-2">
+                {{ data?.detail?.zipCode || '-' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="py-4 d-flex box-items">
+            <!-- 城市 -->
+            <div class="item pr-4 flex-1">
+              <div class="fz-14 color-aaa">{{ 'member.kyc.model.city' | lang }}</div>
+              <div class="fz-16 pt-2">
+                {{ data?.detail?.city || '-' }}
+              </div>
+            </div>
+            <!-- UID -->
+            <div class="item px-4 flex-1">
+              <div class="fz-14 color-aaa">UID：</div>
+              <div class="fz-16 pt-2">{{ data?.uid || '-' }}</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- 通用：审核 -->
+      <ng-container *ngIf="isReview">
+        <form-row [label]="'risk.check' | lang" label-width="140">
+          <ng-template>
+            <div class="d-flex flex-wrap">
+              <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of auditList">
+                <input type="radio" name="audit" [value]="item.value" [(ngModel)]="audit" />
+                <span class="mr-4"></span>{{ item.lang | lang }}
+              </label>
+            </div>
+          </ng-template>
+        </form-row>
+        <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="audit === 'Rejected'" required>
+          <ng-template>
+            <input class="form-control w-100" type="text" [(ngModel)]="remark" />
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 通用：详情 -->
+      <ng-container *ngIf="!isReview">
+        <form-row [label]="'risk.check' | lang" label-width="140">
+          <ng-template>
+            {{ data?.status === 'Finish' ? ('risk.passing' | lang) : ('risk.noPass' | lang) }}
+          </ng-template>
+        </form-row>
+        <div class="d-flex flex-ac">
+          <form-row class="flex-1" [label]="'risk.checkTime' | lang" label-width="140">
+            <ng-template> {{ (data?.modifiedTime | timeFormat) || '-' }} </ng-template>
+          </form-row>
+          <form-row class="flex-1" [label]="'risk.viewr' | lang" label-width="140">
+            <ng-template> {{ data?.modifiedUserName || '-' }} </ng-template>
+          </form-row>
+        </div>
+        <form-row [label]="'risk.remark' | lang" label-width="140" *ngIf="data?.status === 'Rejected'">
+          <ng-template> {{ data?.remark || '-' }} </ng-template>
+        </form-row>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>
+</div>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <g data-name="Group 484">
+        <path data-name="Rectangle 2337" style="fill:none" d="M0 0h20v20H0z"/>
+        <g data-name="Group 473">
+            <path data-name="Rectangle 2335" transform="rotate(45 1.212 16.267)" style="fill:#009ef7" d="M0 0h6v10H0z"/>
+            <path data-name="Polygon 2" d="m3 0 3 5H0z" transform="rotate(-135 6.631 8.24)" style="opacity:.5;fill:#009ef7"/>
+            <path data-name="Rectangle 2336" d="M1 0h4a1 1 0 0 1 1 1v2.768H0V1a1 1 0 0 1 1-1z" style="opacity:.5;fill:#009ef7" transform="rotate(45 5.76 18.151)"/>
+            <path data-name="Intersection 11" d="M1.2 2 0 0h2.4z" transform="rotate(45 -15.378 11.94)" style="fill:#009ef7"/>
+        </g>
+    </g>
+</svg>

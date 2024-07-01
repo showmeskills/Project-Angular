@@ -1,0 +1,33 @@
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+<div class="category-menu">
+  <div class="menu-wrapper" *ngIf="menus && menus.length > 0" mat-tab-nav-bar [tabPanel]="tabPanel">
+    <div
+      class="item"
+      mat-tab-link
+      *ngFor="let item of menus; let index = index"
+      [disableRipple]="true"
+      [active]="item === currentMenu"
+      [class.active]="item === currentMenu"
+      (click)="changeMenuIndex(item)"
+    >
+      <svg-icon
+        class="svg-icon svg-icon-3x svg-icon-primary"
+        [src]="'/assets/images/svg/lottery/icon-category-' + index + '.svg'"
+      ></svg-icon>
+      <div class="lottery-name">{{ item.lang | lang }}</div>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div
+      *ngFor="let item of currentData; let index = index"
+      class="option-area"
+      (click)="changeSubMenu(item.lotteryId)"
+    >
+      <div [class.active]="currentSubMenu === item.lotteryId">
+        {{ item.lotteryName }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<div class="mt-12" [formGroup]="formGroup" *ngIf="formGroup">
+  <lang-tab #langTab formArrayName="lang" [(value)]="selectLang" (languageChange)="updateLanguageForm()">
+    <ng-template let-control="formControl">
+      <div class="pb-8" [formGroup]="control">
+        <!-- 标题 -->
+        <form-row name="title" [label]="'common.title' | lang" label-width="150" required>
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input
+              [class.is-invalid]="invalid"
+              [formControl]="control"
+              [placeholder]="'member.activity.sencli12.max50' | lang"
+              maxlength="50"
+              class="form-control"
+              type="text"
+            />
+          </ng-template>
+        </form-row>
+
+        <!-- 副标题 -->
+        <form-row name="subTitle" [label]="'member.activity.sencli12.subName' | lang" label-width="150">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input
+              [class.is-invalid]="invalid"
+              [formControl]="control"
+              [placeholder]="'member.activity.sencli12.max50' | lang"
+              maxlength="50"
+              class="form-control"
+              type="text"
+            />
+          </ng-template>
+        </form-row>
+
+        <!-- T & C -->
+        <form-row name="tc" [label]="'T & C'" label-width="150" required>
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <ueditor
+              type="Bonus"
+              class="form-control rounded border-1 h-auto"
+              [class.is-invalid]="invalid"
+              [formControl]="control"
+            ></ueditor>
+            <ng-template #showTpl>
+              <div class="word-break lh-1 pt-5" [innerHTML]="control.value"></div>
+            </ng-template>
+          </ng-template>
+        </form-row>
+      </div>
+    </ng-template>
+  </lang-tab>
+</div>
+
+<!-- 营销图 -->
+<form-row [label]="'member.activity.sencli12.thumbnails' | lang" label-width="150" class="pl-8 pt-5">
+  <ng-template>
+    <upload desc="420*350" [(ngModel)]="thumbnailsImage"> </upload>
+  </ng-template>
+</form-row>
+
+<!-- 按钮组 -->
+<div class="btn-wrap pt-14 flex-center d-flex">
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ (isProcessingEdit ? 'common.save' : 'luckRoulette.next') | lang }}
+  </button>
+</div>

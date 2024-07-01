@@ -1,0 +1,56 @@
+<div class="cashier-container" [appLoading]="loading" [class.disabled]="bonusLoading">
+  <ng-container *ngIf="isShowCoinLimit && paymentIqCoinLimit">
+    <div class="withdrawal-limit m-top-10">
+      <div class="content">
+        <p class="text">
+          {{ 'avai_amount' | translate }}
+          {{ paymentIqCoinLimit.availQuota || 0 | currencyValue: paymentIqCoinLimit.currency || '' }}
+          {{ paymentIqCoinLimit.currency || '' }}
+        </p>
+        <p class="text h5-top-10">
+          {{ 'with_amount' | translate }}
+          {{ paymentIqCoinLimit.withdrawQuota || 0 | currencyValue: paymentIqCoinLimit.currency || '' }}
+          {{ paymentIqCoinLimit.currency || '' }}
+        </p>
+      </div>
+      <div class="content m-top-10">
+        <p class="text">
+          {{ 'avai_amount_24' | translate }}
+          <ng-container *ngIf="paymentIqCoinLimit.todayQuota !== -1; else default">
+            {{ paymentIqCoinLimit.todayQuota || 0 | currencyValue: 'USDT' }}
+            USDT
+          </ng-container>
+          <ng-template #default> {{ 'no_limit' | translate }} </ng-template>
+        </p>
+        <p class="text h5-top-10">
+          {{ 'widthdrawal_amount' | translate }}
+          {{ paymentIqCoinLimit.canUseQuota || 0 | currencyValue: paymentIqCoinLimit.currency || '' }}
+          {{ paymentIqCoinLimit.currency || '' }}
+        </p>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="method === 'deposit' && !loading && !isHiddenBonusPopup">
+    <app-select-deposit-bonus
+      [depositType]="'paymentIQ'"
+      (voucherPopup)="openDividendOptions()"
+      [voucherLoading]="bonusLoading"
+      [voucherList]="bonuslist"
+      [selectedVoucher]="seletedDividend()"
+      [currency]="selectedCurrency || 'USDT'"
+      [amount]="0"
+      (handleCallback)="bonusCallback($event)"
+    ></app-select-deposit-bonus>
+  </ng-container>
+  <div #cashier id="cashier"></div>
+  <customize-button
+    *ngIf="isShowHomeBtn"
+    class="back-home"
+    type="primary"
+    size="large"
+    width="100%"
+    (onClick)="toHome()"
+  >
+    {{ 'return_to_home' | translate }}
+  </customize-button>
+</div>

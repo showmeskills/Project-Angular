@@ -1,0 +1,62 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.misunderstand-container {
+  padding-top: 30px;
+
+  @media (max-width: 767px) {
+    padding-top: 20px;
+    padding-bottom: 58px;
+  }
+}
+
+.faq-ans {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 35px 0;
+  @include polyfills.flex-gap(5px, 'column nowrap');
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--default-border-color);
+  }
+}
+
+.nowrap {
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.line {
+  display: flex;
+  align-items: flex-start;
+  @include polyfills.flex-gap(20px, 'row nowrap');
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  margin-top: 3px;
+}
+
+.icon-correct {
+  font-size: 8px;
+  background-color: #15bf7b;
+  font-weight: bold;
+
+  &::before {
+    color: #fff;
+  }
+}
+
+.icon-fail {
+  font-size: 8px;
+  background-color: #cf304a;
+  font-weight: bold;
+
+  &::before {
+    color: #fff;
+  }
+}

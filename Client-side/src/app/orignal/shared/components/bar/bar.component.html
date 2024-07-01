@@ -1,0 +1,98 @@
+<div class="main" *ngIf="!isH5; else h5Layout">
+  <div class="item onact96 item-back" (click)="backPage()">
+    <i class="orignal-icon-back"></i>
+    <span>{{ 'back' | translate }}</span>
+  </div>
+  <!--web-->
+  <div class="bar">
+    <div
+      class="item onact96"
+      [class.active]="isPanel"
+      *ngIf="isTrend"
+      matTooltip="{{ 'turn_real' | translate }}"
+      matTooltipPosition="above"
+      (click)="setIcon(3)"
+    >
+      <i class="orignal-icon-trend"></i>
+    </div>
+    <div
+      class="item onact96"
+      *ngIf="type == 'crash' || type == 'limbo' || type == 'cryptos' || type == 'tower'"
+      [class.active]="isAnimation"
+      (click)="setIcon(2)"
+      matTooltip="{{ 'animation' | translate }}"
+      matTooltipPosition="above"
+    >
+      <i class="orignal-icon-circle-overlapping"></i>
+    </div>
+    <div
+      class="item onact96"
+      *ngIf="isFast"
+      [class.active]="isFastBet"
+      (click)="setIcon(1)"
+      matTooltip="{{ 'fast' | translate }}"
+      matTooltipPosition="above"
+    >
+      <i class="orignal-icon-fast"></i>
+    </div>
+    <div class="item onact96" (click)="showFairness()" matTooltip="{{ 'fair' | translate }}" matTooltipPosition="above">
+      <i class="orignal-icon-fairness"></i>
+    </div>
+    <div class="item onact96" (click)="showRules()" matTooltip="{{ 'rule' | translate }}" matTooltipPosition="above">
+      <i class="orignal-icon-help"></i>
+    </div>
+    <div
+      class="item onact96"
+      [class.active]="isSoundOpen"
+      (click)="setIcon(0)"
+      matTooltip="{{ 'voice' | translate }}"
+      matTooltipPosition="above"
+    >
+      <i [class]="isSoundOpen ? 'orignal-icon-voice' : 'orignal-icon-mute'"></i>
+    </div>
+    <div
+      class="item onact96"
+      [class.active]="isHotkey"
+      (click)="showHotkey()"
+      matTooltip="{{ 'hotkey' | translate }}"
+      matTooltipPosition="above"
+    >
+      <i class="orignal-icon-calendar"></i>
+    </div>
+  </div>
+</div>
+
+<!--H5-->
+<ng-template #h5Layout>
+  <div class="h5-layout">
+    <div class="item-row onact96 item-back" (click)="backPage()">
+      <i class="orignal-icon-back"></i>
+      <span>{{ 'back' | translate }}</span>
+    </div>
+    <!-- <div class="item-row" *ngIf="isTrend">
+      <i class="orignal-icon-trend"></i>
+    </div> -->
+
+    <div class="item-row onact96" *ngIf="type == 'crash'" (click)="setIcon(2)">
+      <i class="orignal-icon-circle-overlapping" [class.active]="isAnimation"></i>
+    </div>
+
+    <div class="item-row onact96" *ngIf="isFast" (click)="setIcon(1)" [class.active]="isFastBet">
+      <i class="orignal-icon-fast" [class.active]="isFastBet"></i>
+    </div>
+
+    <div class="item-row onact96" (click)="showFairness()">
+      <i class="orignal-icon-fairness" [class.active]="isFairness"></i>
+    </div>
+
+    <div class="item-row onact96" (click)="showRules()">
+      <i class="orignal-icon-help" [class.active]="isRules"></i>
+    </div>
+
+    <div class="item-row onact96" (click)="setIcon(0)" [class.active]="isSoundOpen">
+      <i [class.active]="isSoundOpen" [ngClass]="isSoundOpen ? 'orignal-icon-voice' : 'orignal-icon-mute'"></i>
+    </div>
+  </div>
+</ng-template>
+
+<app-statistics-panel></app-statistics-panel>

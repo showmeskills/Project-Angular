@@ -1,0 +1,34 @@
+<div class="new-user-prize">
+  <div class="head">
+    <div class="prize-desc">
+      <h2>{{ 'create_user' | translate }}</h2>
+      <p>{{ 'cho_need_bon_t' | translate }}</p>
+    </div>
+  </div>
+  <div class="mid-con">
+    <div class="tit">{{ 'cho_sp_bon_t' | translate }}</div>
+    <div class="con">
+      <app-scrollbar>
+        <ng-container *ngFor="let item of regBonusList">
+          <div
+            class="prize-item mutual-opacity"
+            [class.selected]="selectedPrize?.prizeCode === item.prizeCode"
+            (click)="selectedPrize = item"
+          >
+            <div class="prize-tit">{{ item.content.title }}</div>
+            <div class="prize-con">{{ item.content.prizeName }}</div>
+            <ng-container *ngIf="selectedPrize?.prizeCode === item.prizeCode">
+              <div class="selected-bg"></div>
+              <i class="selected-icon icon-success"></i>
+            </ng-container>
+          </div>
+        </ng-container>
+      </app-scrollbar>
+    </div>
+    <div class="btns">
+      <customize-button size="large" type="primary" [loading]="loading" (onClick)="submit()">
+        {{ 'confirm_button' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</div>

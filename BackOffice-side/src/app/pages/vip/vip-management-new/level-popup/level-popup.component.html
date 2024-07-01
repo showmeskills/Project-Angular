@@ -1,0 +1,54 @@
+<div class="modal-content">
+  <modal-title [title]="'member.management.vipc.levelDetails' | lang" (close)="modal.dismiss()"></modal-title>
+
+  <div class="modal-body p-6 custom-scroll-y" [style.height.px]="600">
+    <table class="table mb-0 level-table">
+      <thead>
+        <tr>
+          <th style="width: 40%">
+            <span class="cell">{{ 'member.management.vipc.level' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.management.numPerson' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'common.proportion' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="color-222">
+        <ng-container *ngFor="let items of list">
+          <tr class="level-table-fisrt" [class]="'vip-' + items?.vipGroupNameI8ncode">
+            <td>
+              <span class="cell">{{ items?.vipGroupName }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ items?.vipUserCount | toFormatMoney }}</span>
+            </td>
+            <td><span class="cell"></span></td>
+          </tr>
+
+          <ng-container *ngIf="items.vipLevelResDtoList?.length">
+            <tr *ngFor="let item of items.vipLevelResDtoList">
+              <td>
+                <span class="cell">{{ item?.vipName }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item?.vipUserCount | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell"> {{ item?.vipUserRatio * 100 | currencyValue: false }} % </span>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+  </div>
+
+  <modal-footer [confirmShow]="false" dismissKey="close" (dismiss)="modal.dismiss()"></modal-footer>
+</div>

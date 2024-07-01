@@ -1,0 +1,158 @@
+div {
+  display: flex;
+}
+
+.top-up-dialog-container {
+  width: 534px;
+  min-height: 346px;
+  padding: 24px;
+  flex-direction: column;
+  background-color: var(--container-bg-color);
+  border-radius: 6px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    padding: 40px 24px 24px 24px;
+    border-radius: 0;
+
+    &:host-context(.dark) & {
+      height: 100%;
+    }
+  }
+
+  .header-row {
+    width: 100%;
+    justify-content: space-between;
+    color: var(--text-color);
+    font-size: 24px;
+
+    .close-icon {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  .contant-clounm {
+    color: var(--text-color-20);
+    font-size: 14px;
+    flex-direction: column;
+
+    .way {
+      padding-top: 10px;
+      padding-bottom: 24px;
+
+      @media (max-width: 767px) {
+        padding-top: 24px;
+        padding-bottom: 32px;
+      }
+    }
+
+    .ticket {
+      width: 486px;
+      height: 106px;
+      border-radius: 8px;
+      padding: 16px 20px 20px 16px;
+      align-items: center;
+      user-select: none;
+      @media (max-width: 767px) {
+        width: 100%;
+        padding: 0;
+      }
+
+      &.selected,
+      &:hover {
+        background-color: #f5f5f5;
+
+        &:host-context(.dark) & {
+          background-color: #2f4553;
+        }
+
+        .option-row {
+          .icon-arrow {
+            background-image: url(src/assets/svg/arrow_orange.svg);
+          }
+        }
+      }
+
+      //icon
+      .digital-wallet,
+      .currency-wallet,
+      .credit-wallet {
+        height: 57px;
+        width: 60px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        margin-right: 24px;
+      }
+
+      .digital-wallet {
+        background-image: url(src/assets/svg/digital.svg);
+      }
+
+      .currency-wallet {
+        background-image: url(src/assets/svg/currency.svg);
+      }
+
+      .credit-wallet {
+        background-image: url(src/assets/svg/credit.svg);
+      }
+
+      .option-row {
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        @media (max-width: 767px) {
+          align-items: baseline;
+        }
+
+        //内容
+        .clounm {
+          flex-direction: column;
+          width: 294px;
+          line-height: 1.43;
+
+          @media (max-width: 767px) {
+            width: 100%;
+            position: relative;
+          }
+
+          .text {
+            font-size: 20px;
+            color: var(--text-color);
+          }
+        }
+
+        .icon-arrow {
+          background-size: 100%;
+          height: 16px;
+          width: 18px;
+          background-repeat: no-repeat;
+          background-image: url(src/assets/svg/arrow_gray.svg);
+
+          @media (max-width: 767px) {
+            height: 24.6px;
+            width: 24.6px;
+            position: absolute;
+            right: 62px;
+          }
+
+          @media (max-width: 376px) {
+            right: 27px;
+          }
+
+          &.selected {
+            background-image: url(src/assets/svg/arrow_orange.svg);
+          }
+
+          &:hover {
+            background-image: url(src/assets/svg/arrow_orange.svg);
+          }
+        }
+      }
+    }
+  }
+}

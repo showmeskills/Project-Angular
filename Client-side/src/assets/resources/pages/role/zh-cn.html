@@ -1,0 +1,57 @@
+<div class="top-role-container">
+  <!-- 好友介绍 -->
+  <div class="introduction-body">
+    <div class="introduction-img img-box">
+      <img src="assets/images/friend/role-img-0.png" alt='' lazy='loading' />
+    </div>
+    <div class="introduction-uc">
+      <div class="introduction-title-uc">规则介绍</div>
+      <div class="introduction-context-uc">
+        <p>邀请人可分享获得的佣金给被邀请人，且对分享比例自行设置，具体如下：</p>
+        <p>1.若邀请人为普通用户，“返佣比例”为2‰，邀请人可以设置0‰，0.5‰，1‰的交易返还。</p>
+        <p>2.若邀请人为联盟成员，“返佣比例”为2‰，邀请人可以自行设置0‰，0.5‰，1‰，1.5‰，2‰的五档“被邀请人交易返还比例”。</p>
+        <p>活动时间：从2022年06月30日开始</p>
+      </div>
+    </div>
+  </div>
+  <div class="links-uc">
+    <ul>
+      <li class="mid-li">
+        <p><span class="linked">></span>>> 生成专属推荐链接</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-1.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>><span class="linked">></span>> 邀请好友</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-2.png" alt='' lazy='loading' />
+        </div>
+      </li>
+      <li class="mid-li">
+        <p>>><span class="linked">></span> 共同致富</p>
+        <div class="img-box">
+          <img src="assets/images/friend/role-img-3.png" alt='' lazy='loading' />
+        </div>
+      </li>
+    </ul>
+  </div>
+  <p class="introduction-title-uc">活动说明: </p>
+  <!-- 好友介绍 -->
+  <div class="introduction-context-uc" *ngIf="whichRouter == 'friend'">
+    <p>1. 返佣比例实时计算，24小时内返佣会返还到邀请人或被邀请人账户</p>
+    <p>2.佣金返还和推荐返还以用户实际有效流水金额计算，有效流水的计算方式请参考：<span class="linked" data-page='{{onJunmpToPage}}'>{{rebLinkName1}}</span>
+    </p>
+    <p>3. 被邀请人必须使用专属推荐链接（二维码、ID）注册才能享受对应比例返现，若注册时直接输入原有推荐人ID，将无法享受返现；</p>
+    <p>4. 单账户的邀请好友数量没有限制；</p>
+    <p>5. 返佣不会增加提款限额；</p>
+    <p>6. {Brand}后续将根据实际情况对返佣比例进行调整，并保留对活动规则调整的权利。 </p>
+    <p>7. {Brand}不允许任何用户通过多个账号进行自我邀请行为，一经查实，所有的返佣将会被取消，被邀请账号的推荐返还也会被取消。</p>
+    <p>8.其他返佣会被取消的情况：<span class="linked" data-page={{onJunmpToPage}}>{{rebLinkName1}}</span>
+    </p>
+  </div>
+  <p class="introduction-title-uc">*{{attentionTitle}}</p>
+  <div class="introduction-context-uc">
+    {{attentionContext}}
+  </div>
+</div>

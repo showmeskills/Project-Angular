@@ -1,0 +1,237 @@
+.header-icon {
+  background-image: url(src/assets/images/friend/customer-operation.svg);
+}
+
+//导航
+.nav-list {
+  margin-top: 30px;
+  display: flex;
+
+  ::ng-deep {
+    customize-button {
+      margin-left: 10px;
+    }
+  }
+
+  .active {
+    font-weight: 600;
+
+    @media (max-width: 767px) {
+      color: var(--text-color);
+      background-color: unset;
+      position: relative;
+
+      &::after {
+        position: absolute;
+        content: '';
+        width: 20px;
+        height: 3px;
+        background-color: var(--primary-color);
+        top: 38px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .trans-application {
+    margin-top: 20px;
+  }
+}
+
+// 表单
+.field {
+  margin-top: 14px;
+  padding: 34px 20px;
+  border-radius: 12px;
+  background-color: #fcfcfc;
+
+  &:host-context(.dark) & {
+    background-color: var(--container-bg-color);
+  }
+
+  .form-field {
+    .label-text {
+      font-size: 14px;
+      color: var(--text-color);
+      white-space: nowrap;
+      margin-right: 15px;
+
+      @media (max-width: 1155px) {
+        display: block;
+        margin-right: 0;
+      }
+    }
+
+    .input-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      @media (max-width: 1155px) {
+        display: block;
+      }
+
+      ::ng-deep {
+        .select-container {
+          flex-direction: row;
+          align-items: center;
+
+          .input-container {
+            width: 180px;
+
+            @media (max-width: 1155px) {
+              width: 100%;
+              height: 48px;
+            }
+          }
+
+          @media (max-width: 1155px) {
+            margin-top: 30px;
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+          .select-label {
+            margin-bottom: 0;
+            padding-left: 0;
+            white-space: nowrap;
+            color: var(--text-color);
+
+            @media (max-width: 1155px) {
+              margin-bottom: 23px;
+            }
+          }
+
+          .options-container {
+            min-width: 71%;
+            left: 71px;
+
+            @media (max-width: 1155px) {
+              min-width: 100%;
+              left: unset;
+            }
+          }
+        }
+      }
+    }
+
+    .customer-id,
+    .phone-number {
+      display: flex;
+      align-items: center;
+
+      @media (max-width: 1155px) {
+        display: block;
+        width: 100%;
+      }
+    }
+
+    .m-top-30 {
+      @media (max-width: 1155px) {
+        margin-top: 30px;
+      }
+    }
+
+    .number-field {
+      position: relative;
+
+      @media (max-width: 1155px) {
+        width: 100%;
+      }
+
+      .warning {
+        position: absolute;
+        bottom: -25px;
+        white-space: nowrap;
+        color: var(--txt-err-color);
+        font-size: 12px;
+      }
+    }
+
+    .button-field {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      .btn-right {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.text {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-color);
+}
+
+.data-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-top: 30px;
+
+  @media (max-width: 767px) {
+    font-size: 14px;
+    margin-top: 40px;
+  }
+}
+
+.bottom-text {
+  max-width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  padding-left: 16px;
+  line-height: 40px;
+  font-size: 12px;
+  color: var(--text-color);
+  background-color: var(--list-hover-bg-color);
+}
+
+.component-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-top: 34px;
+}
+
+.phone-container {
+  display: flex;
+
+  @media (max-width: 1155px) {
+    align-items: flex-end;
+  }
+
+  .area-code {
+    border: solid 1px var(--input-border-color);
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
+    display: flex;
+    margin-top: 0;
+    height: auto;
+
+    @media (max-width: 1155px) {
+      height: 40px;
+    }
+
+    @media (max-width: 767px) {
+      height: 48px;
+    }
+  }
+
+  .country-image {
+    display: flex;
+  }
+
+  .input-group {
+    margin-top: 4px;
+  }
+}

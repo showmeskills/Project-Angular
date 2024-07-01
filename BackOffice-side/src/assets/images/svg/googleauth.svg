@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <linearGradient id="d6iv1pstpa" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#ff7e10"/>
+            <stop offset="1" stop-color="#f5432c"/>
+        </linearGradient>
+    </defs>
+    <g data-name="组 6685">
+        <path data-name="矩形 1960" style="fill:none" d="M0 0h22v22H0z"/>
+        <g data-name="组 3404" transform="translate(-1159.501 -389.981)">
+            <circle data-name="椭圆 10" cx="8" cy="8" r="8" transform="translate(1162.501 390.965)" style="fill:url(#d6iv1pstpa)"/>
+            <path data-name="路径 5187" d="m1170.493 398.965.093.031-.085-.031v-8a8 8 0 0 0-5.661 13.653z" style="isolation:isolate;fill:#54616f"/>
+            <path data-name="矩形 1961" transform="translate(1162.501 408.997)" style="fill:#54616f" d="M0 0h7v2H0z"/>
+            <path data-name="矩形 1962" transform="translate(1171.501 408.997)" style="fill:#54616f" d="M0 0h7v2H0z"/>
+        </g>
+    </g>
+</svg>

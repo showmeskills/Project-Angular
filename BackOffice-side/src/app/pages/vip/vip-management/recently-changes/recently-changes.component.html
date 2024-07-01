@@ -1,0 +1,68 @@
+<header class="d-flex flex-between flex-ac">
+  <div class="fz-18 fw-bolder color-222">{{ 'member.management.recentChange' | lang }}</div>
+  <!-- <div class="btn btn-light cursor-pointer fz-14">{{ 'member.management.seeMore' | lang }}</div> -->
+</header>
+
+<div class="flex-fill mt-2">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>{{ 'member.table.memberUid' | lang }}</th>
+        <th>{{ 'member.table.grade' | lang }}</th>
+        <th>{{ 'member.table.date' | lang }}</th>
+        <th>{{ 'member.table.growthValue' | lang }}</th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>{{ item.uid }}</td>
+        <td>{{ item.afterLevel | vipName }}</td>
+        <td>{{ item.createTimeTimestamp | timeFormat }}</td>
+        <td>
+          <div class="d-flex flex-ac justify-content-center">
+            {{ item.totalPoints | toFormatMoney }}
+            <!-- <svg-icon *ngIf="expression" class="svg-icon ml-2"
+                  style="padding-bottom: 4px;" 
+                  [src]="'./assets/images/svg/admin-vip-top.svg'"
+                  >
+            </span> -->
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-between">
+  <div>
+    <mat-form-field [style.width.px]="68">
+      <mat-select
+        class="form-control"
+        [(ngModel)]="paginator.pageSize"
+        [style.height.px]="34"
+        [style.font-size.px]="14"
+        (selectionChange)="loadData()"
+      >
+        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="paginator.total">
+    <app-paginator
+      class="paginator d-flex justify-content-between align-items-center flex-wrap"
+      [paginator]="paginator"
+      (paginate)="loadData()"
+      [isLoading]="isLoading"
+    ></app-paginator>
+  </div>
+</div>

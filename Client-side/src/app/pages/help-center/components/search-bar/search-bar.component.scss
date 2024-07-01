@@ -1,0 +1,28 @@
+//搜索条
+.search-bar {
+  width: 327px;
+
+  ::ng-deep {
+    app-customize-input {
+      .input-container {
+        .input-box {
+          &:host-context(.dark) & {
+            input::placeholder {
+              opacity: 1;
+              color: var(--text-color-20);
+            }
+          }
+
+          @media (max-width: 767px) {
+            background-color: var(--container-bg-color);
+            border-radius: 30px;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}

@@ -1,0 +1,28 @@
+.monitor-item {
+  min-height: 66px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 10px 30px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 3px 7px 0 rgba(82, 63, 105, 0.05);
+  line-height: 1;
+  margin-bottom: 10px;
+  
+  > *:not(.last) {
+    flex: 0.8;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 2px;
+    line-height: 18px;
+  }
+
+  &.audit {
+    background-color: #fffdf7;
+    .title {
+      color: #ffc700;
+    }
+  }
+}

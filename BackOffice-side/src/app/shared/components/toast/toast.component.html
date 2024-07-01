@@ -1,0 +1,62 @@
+<ngb-toast
+  *ngFor="let item of toasts; let index = index"
+  [autohide]="item['autohide'] !== undefined ? item['autohide'] : true"
+  [delay]="item.duration !== undefined ? +item.duration : 3000"
+  (hidden)="remove(index)"
+  (mouseenter)="onEnter(item)"
+  (mouseleave)="onLeave(item, index)"
+  class="position-relative"
+>
+  <div class="d-flex">
+    <ng-container [ngSwitch]="item.type">
+      <svg-icon
+        *ngSwitchCase="'success'"
+        class="svg-icon svg-icon-3x span vat"
+        [src]="'./assets/images/svg/success.svg'"
+      ></svg-icon>
+      <svg-icon
+        *ngSwitchCase="'danger'"
+        class="svg-icon svg-icon-3x span vat"
+        [src]="'./assets/images/svg/error.svg'"
+      ></svg-icon>
+      <svg-icon
+        *ngSwitchCase="'warning'"
+        class="svg-icon svg-icon-3x span vat"
+        [src]="'./assets/images/svg/warning-solid.svg'"
+      ></svg-icon>
+    </ng-container>
+
+    <div class="flex-1 py-2 msg-wrap">
+      <span class="fz-16 text-wrap pr-8" (click)="toggleChild(item)">
+        <span>{{ item.msg }}</span>
+        <span
+          *ngIf="item.msgChildren && !item['msgChildrenOpen']"
+          class="text-primary fz-12 text-decoration-underline cursor-pointer vam ml-2"
+          style="word-break: keep-all"
+          >{{ 'common.viewDetail' | lang }}</span
+        >
+      </span>
+
+      <div class="child-wrap custom-scroll-y" *ngIf="item.msgChildren && item['msgChildrenOpen']">
+        <div *ngFor="let child of item.msgChildren">
+          <span class="fz-14 text-wrap">{{ child }}</span>
+        </div>
+
+        <!-- 空显示 -->
+        <div *ngIf="!item.msgChildren.length" class="text-center pt-4">
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon svg-icon-4x"></svg-icon>
+          <div class="fz-12 mt-2 color-999">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <span
+        (click)="toggleChild(item)"
+        *ngIf="item.msgChildren && item['msgChildrenOpen']"
+        class="text-primary fz-12 text-decoration-underline cursor-pointer vam"
+        >{{ 'common.viewDetailShrink' | lang }}</span
+      >
+    </div>
+
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon close" (click)="remove(index)"></svg-icon>
+  </div>
+</ngb-toast>

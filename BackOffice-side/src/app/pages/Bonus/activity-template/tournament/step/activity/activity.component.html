@@ -1,0 +1,97 @@
+<div class="mt-8">
+  <!-- 奖池 -->
+  <form-row [label]="'member.activity.sencli12.prizePool' | lang" label-width="150" required>
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap mb-4" *ngFor="let item of prizePoolList; index as i">
+        <!-- 名次 -->
+        <span class="color-aaa">{{ 'member.activity.sencli9.ranking' | lang }}</span>
+        <input
+          class="form-control mx-4 text-center"
+          [style.width.px]="80"
+          autocomplete="off"
+          type="text"
+          input-number
+          [input-float]="0"
+          [(ngModel)]="item.rankNumStart"
+        />
+        -
+        <input
+          class="form-control ml-4 mr-10 text-center"
+          [style.width.px]="80"
+          autocomplete="off"
+          type="text"
+          input-number
+          [input-float]="0"
+          [(ngModel)]="item.rankNumEnd"
+        />
+
+        <!-- 奖品：现金券的固定金额，实物 -->
+        <div class="fz-16 mr-4 d-flex flex-ac" *ngIf="item.prizeData?.id">
+          {{ item.prizeData?.prizeName || '-' }}
+          <!-- 金额显示 -->
+          <ng-container *ngIf="item.prizeData?.amountType === PrizeAmountType.Fixed">
+            （
+            {{ item.prizeData?.amount }}
+            <img [currencyIcon]="item.prizeData?.currency" currencySize="20" class="mx-2" />
+            {{ item.prizeData?.currency }}
+            ）
+          </ng-container>
+          <div class="text-danger ml-2" *ngIf="item.prizeData?.status !== 2">
+            ({{ getPrizeSatus(item.prizeData?.status) | lang }})
+          </div>
+        </div>
+
+        <!-- 新增/修改奖品 - 按钮 -->
+        <button type="button" class="btn btn-light-primary py-3 mr-5" (click)="onOpenSelectPrize(i)">
+          <svg-icon
+            class="vam svg-icon lh-18"
+            [src]="item.prizeData?.id ? './assets/images/svg/pen.svg' : './assets/images/svg/add.svg'"
+          ></svg-icon>
+          <span class="vam">{{
+            (item.prizeData?.id ? 'auManage.role.chnage' : 'member.activity.sencli2.addPrize') | lang
+          }}</span>
+        </button>
+
+        <!-- 删除名次 -->
+        <svg-icon
+          *ngIf="i > 0"
+          class="vam svg-icon svg-icon-3x lh-18 cursor-pointer"
+          [src]="'./assets/images/svg/bonus-delete.svg'"
+          (click)="prizePoolList.splice(i, 1)"
+        ></svg-icon>
+      </div>
+
+      <!-- 新增名次 -->
+      <button type="button" class="btn btn-light-primary py-3" (click)="onAddRank()">
+        <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        <span class="vam">{{ 'member.activity.sencli9.addRanking' | lang }}</span>
+      </button>
+    </ng-template>
+  </form-row>
+</div>
+
+<div class="pt-20 flex-center btn-wrap">
+  <!-- 上一步 -->
+  <button type="button" class="c-btn btn btn-light" (click)="jump('tournament-qualifications')">
+    {{ 'luckRoulette.lastStep' | lang }}
+  </button>
+
+  <!-- 预览 -->
+  <button
+    type="button"
+    class="c-btn btn btn-light"
+    [class.disabled]="appService.loading$ | async"
+    (click)="onOpenPreviewPopup()"
+  >
+    {{ 'member.activity.sencli12.preview' | lang }}
+  </button>
+
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ 'luckRoulette.submit' | lang }}
+  </button>
+</div>

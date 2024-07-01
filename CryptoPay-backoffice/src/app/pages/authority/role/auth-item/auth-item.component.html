@@ -1,0 +1,10 @@
+<div class="authority_title">{{ title }}：</div>
+<div class="authority clearfix">
+  <div class="line"></div>
+  <div class="list">
+    <div class="d-flex mb-2" *ngFor="let item of list">
+      <svg-icon [src]="'./assets/images/svg/role_auth.svg'" class="svg-icon menu-icon icon mr-2"></svg-icon>
+      {{ item.name }}
+    </div>
+  </div>
+</div>

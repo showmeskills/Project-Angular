@@ -1,0 +1,82 @@
+<div [appLoading]="vipPointsLoading">
+  <div class="d-flex flex-ac flex-between">
+    <div class="fz-20 fw-bolder">{{ 'member.management.vipc.growthConfiguration' | lang }}</div>
+    <div class="d-flex flex-ac">
+      <!-- 是否修改 -->
+      <button class="btn btn-light-primary px-9 mr-4" (click)="onGrowthValueEdit()" [disabled]="!growthList.length">
+        <svg-icon class="mr-2" [src]="'./assets/images/svg/pen.svg'"></svg-icon>
+        <span>{{ (isGrowthEdit ? 'common.cancel' : 'common.modify') | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex-fill custom-scroll-y">
+    <table class="table mb-0" [class.growth-table]="isGrowthEdit">
+      <thead>
+        <tr>
+          <!-- 项目 -->
+          <th style="width: 33.33%">
+            <span class="cell">{{ 'member.management.vipc.item' | lang }}</span>
+          </th>
+          <!-- 成长值 -->
+          <th style="width: 33.33%">
+            <span class="cell">{{ 'member.management.vipc.points' | lang }}</span>
+          </th>
+          <!-- 每日限额 -->
+          <th style="width: 33.33%">
+            <span class="cell">{{ 'member.management.vipc.limitDay' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of isGrowthEdit ? growthEditList : growthList; let i = index">
+          <td>
+            <span class="cell">
+              {{ item?.pointsName || '-' }}
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <input
+                *ngIf="isGrowthEdit; else pointsEditable"
+                class="form-control fz-16 w-100 text-center"
+                [style.height.px]="36"
+                autocomplete="off"
+                type="text"
+                [(ngModel)]="growthEditList[i].points"
+              />
+
+              <ng-template #pointsEditable>
+                {{ item.points | toFormatMoney }}
+              </ng-template>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <input
+                *ngIf="isGrowthEdit; else moenyEditable"
+                class="form-control fz-16 w-100 text-center"
+                [style.height.px]="36"
+                autocomplete="off"
+                type="text"
+                [(ngModel)]="growthEditList[i].dailyMaxPoints"
+              />
+
+              <ng-template #moenyEditable>
+                {{ item.dailyMaxPoints | toFormatMoney }}
+              </ng-template>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!growthList.length && !vipPointsLoading"></empty>
+
+    <div class="btn-wrap flex-center mt-8" *ngIf="isGrowthEdit">
+      <button class="c-btn c-btn-default" (click)="isGrowthEdit = false">{{ 'common.cancel' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="growthEdit()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>

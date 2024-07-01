@@ -1,0 +1,232 @@
+<div class="card">
+  <div class="container">
+    <div class="d-flex flex-wrap">
+      <form-row
+        class="flex-1"
+        [label]="'common.merchant' | lang"
+        [label-width]="lang.isLocal ? '120' : '190'"
+        contentWidth="340"
+      >
+        <ng-template>
+          <mat-form-field [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="data.merchantId">
+              <mat-option *ngFor="let item of merchantsList" [value]="item.id">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+      <form-row
+        [label]="'common.currency' | lang"
+        required
+        [label-width]="lang.isLocal ? '120' : '255'"
+        contentWidth="340"
+      >
+        <ng-template>
+          <mat-form-field [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="data.currency">
+              <mat-option *ngFor="let item of currenciesList" [value]="item.code">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <form-row
+        class="flex-1"
+        [label]="'payment.companyAccountManagement.payeeName' | lang"
+        required
+        [label-width]="lang.isLocal ? '120' : '190'"
+      >
+        <ng-template>
+          <input [style.width.px]="340" [(ngModel)]="data.payeeName" class="form-control" type="text" placeholder="" />
+        </ng-template>
+      </form-row>
+      <form-row
+        [label]="'payment.companyAccountManagement.receivingAccount' | lang"
+        required
+        [label-width]="lang.isLocal ? '120' : '255'"
+      >
+        <ng-template>
+          <input
+            [style.width.px]="340"
+            [(ngModel)]="data.beneficiaryAccountNumber"
+            class="form-control"
+            type="text"
+            placeholder=""
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <form-row
+        class="flex-1"
+        [label]="'payment.companyAccountManagement.beneficiaryBank' | lang"
+        required
+        [label-width]="lang.isLocal ? '120' : '190'"
+      >
+        <ng-template>
+          <input
+            [style.width.px]="340"
+            [(ngModel)]="data.beneficiaryBank"
+            class="form-control"
+            type="text"
+            placeholder=""
+          />
+        </ng-template>
+      </form-row>
+      <form-row
+        [label]="'payment.companyAccountManagement.branchInformation' | lang"
+        [label-width]="lang.isLocal ? '120' : '255'"
+      >
+        <ng-template>
+          <input
+            [style.width.px]="340"
+            [(ngModel)]="data.bankBranches"
+            class="form-control"
+            type="text"
+            placeholder=""
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <form-row class="flex-1" label="SWIFT CODE" [label-width]="lang.isLocal ? '120' : '190'">
+        <ng-template>
+          <input [style.width.px]="340" [(ngModel)]="data.swiftCode" class="form-control" type="text" placeholder="" />
+        </ng-template>
+      </form-row>
+      <form-row
+        [label]="'payment.companyAccountManagement.payeeAddress' | lang"
+        [label-width]="lang.isLocal ? '120' : '255'"
+      >
+        <ng-template>
+          <input
+            [style.width.px]="340"
+            [(ngModel)]="data.payeeAddress"
+            class="form-control"
+            type="text"
+            placeholder=""
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <div class="flex-1">
+        <form-row
+          [label]="'payment.companyAccountManagement.payeeBankAddress' | lang"
+          [label-width]="lang.isLocal ? '120' : '190'"
+        >
+          <ng-template>
+            <input
+              [style.width.px]="340"
+              [(ngModel)]="data.receivingBankAddress"
+              class="form-control"
+              type="text"
+              placeholder=""
+            />
+          </ng-template>
+        </form-row>
+        <form-row
+          [label]="'payment.companyAccountManagement.dailyDepositLimit' | lang"
+          [label-width]="lang.isLocal ? '120' : '190'"
+        >
+          <ng-template>
+            <input
+              [style.width.px]="340"
+              [(ngModel)]="data.singleDayDepositUpperLimit"
+              class="form-control"
+              type="text"
+              placeholder=""
+            />
+          </ng-template>
+        </form-row>
+      </div>
+      <form-row
+        [label]="'payment.companyAccountManagement.correBankInformation' | lang"
+        [label-width]="lang.isLocal ? '120' : '255'"
+        [contentStyle]="{ height: '100%' }"
+      >
+        <ng-template>
+          <textarea
+            [(ngModel)]="data.correspondentBankInfo"
+            [style.width.px]="340"
+            [style.height.%]="100"
+            class="form-control resize-none"
+          ></textarea>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <form-row
+        class="flex-1"
+        [label]="'payment.companyAccountManagement.balanceCap' | lang"
+        [label-width]="lang.isLocal ? '120' : '190'"
+      >
+        <ng-template>
+          <input
+            [(ngModel)]="data.balanceUpperLimit"
+            [style.width.px]="340"
+            class="form-control"
+            type="text"
+            placeholder=""
+          />
+        </ng-template>
+      </form-row>
+      <form-row
+        [label]="'payment.companyAccountManagement.singleDepositMinimum' | lang"
+        [label-width]="lang.isLocal ? '120' : '255'"
+      >
+        <ng-template>
+          <input
+            [(ngModel)]="data.singleDepositLowerLimit"
+            [style.width.px]="340"
+            class="form-control"
+            type="text"
+            placeholder=""
+          />
+        </ng-template>
+      </form-row>
+    </div>
+
+    <form-row
+      [label]="'payment.companyAccountManagement.singDepositLimit' | lang"
+      [label-width]="lang.isLocal ? '120' : '190'"
+    >
+      <ng-template>
+        <input
+          [(ngModel)]="data.singleDepositUpperLimit"
+          [style.width.px]="340"
+          class="form-control"
+          type="text"
+          placeholder=""
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'common.status' | lang" [label-width]="lang.isLocal ? '120' : '190'">
+      <ng-template>
+        <div class="d-inline-flex flex-ac">
+          <label class="switch switch-success mb-0 cursor-pointer">
+            <input type="checkbox" [(ngModel)]="data.isEnable" />
+            <span class="mr-4"></span
+            >{{
+              data.isEnable
+                ? ('payment.companyAccountManagement.activation' | lang)
+                : ('payment.bankMap.shutDown' | lang)
+            }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="modal-footer border-0 btn-wrap" [style.margin-top.px]="12">
+    <button class="c-btn c-btn-default" (click)="onBack()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onConfirm()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>

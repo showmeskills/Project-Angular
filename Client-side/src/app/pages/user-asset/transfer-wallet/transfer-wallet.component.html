@@ -1,0 +1,175 @@
+<div class="transfer-wallet-main-container">
+  <!-- 标题栏 -->
+  <div class="header-container">
+    <!-- 大标题 -->
+    <div class="title">{{ walletGategory | translate }}</div>
+    <div class="btn-group" *ngIf="!isH5">
+      <ng-container *ngTemplateOutlet="btnTemp"></ng-container>
+    </div>
+  </div>
+  <div class="overview-top-container" [appLoading]="loading">
+    <div class="overview-top">
+      <div class="container-title">{{ 'wal_det' | translate }}</div>
+      <div class="top-column" *ngIf="currentWallet && !loading">
+        <ng-container *ngIf="currentWallet.currencies.length > 1; else singleCurrency">
+          <div class="top-title">
+            {{ 'es_val' | translate }}
+            <app-tool-tip>
+              <i origin class="tooltip-origin icon-tips mutual-opacity"></i>
+              <ul tooltip class="tooltip-info">
+                <li *ngFor="let item of currentWallet.currencies">
+                  <span>{{ item.balance | currencyValue : item.currency }}</span>
+                  <div><img [src]="item.currency | currencyIcon" />{{ item.currency }}</div>
+                </li>
+              </ul>
+            </app-tool-tip>
+          </div>
+          <div class="number">
+            {{ currentWallet.totalBalance | currencyValue : 'USDT' : undefined : undefined : 2 }}
+            <div class="small">USDT</div>
+            <div class="divide"></div>
+            <div class="equal" *ngIf="currentWalletCurrency !== 'USDT'">
+              ≈
+              {{ afterRate(currentWallet.totalBalance, currentWalletCurrency) | currencyValue : currentWalletCurrency }}
+              {{ currentWalletCurrency }}
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #singleCurrency>
+          <div class="top-title">{{ 'total_amount' | translate }}</div>
+          <div class="number">
+            {{
+              currentWallet.currencies[0].balance
+                | currencyValue : currentWallet.currencies[0].currency : undefined : undefined : 2
+            }}
+            <div class="small">{{ currentWallet.currencies[0].currency }}</div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="fix-bgc">
+    <div class="btn-group" *ngIf="isH5">
+      <ng-container *ngTemplateOutlet="btnTemp"></ng-container>
+    </div>
+  </div>
+  <div class="table-list" *ngIf="!isH5" [appLoading]="loadingWalletInfo">
+    <ng-container *ngIf="transferDataList.length > 0; else isEmpty">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'tran_hour' | translate }}</th>
+            <th>{{ 'order' | translate }}</th>
+            <th>{{ 'tran_content' | translate }}</th>
+            <th>{{ 'amount' | translate }}</th>
+            <!-- <th>余额</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of transferDataList">
+            <td>{{ item.createdTime | mdate }}</td>
+            <td>{{ item.transactionId }}</td>
+            <td>{{ (item.transferType == 'TransferInto' ? 'acc_trans' : 'acc_out') | translate }}</td>
+            <td>
+              <div class="text">{{ item.amount }}</div>
+              <img class="currency-icon" [src]="item.currency | currencyIcon" />
+            </td>
+            <!-- <td>
+              <div class="text">{{item.available}}</div>
+              <img class="currency-icon " src="{{item.icon}}">
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+      <app-paginator
+        style="margin-top: 5px"
+        [disabled]="false"
+        [(page)]="paginator.page"
+        [total]="paginator.total"
+        [pageSize]="paginator.pageSize"
+        (onPageChange)="getWalletInforList()"
+      >
+      </app-paginator>
+    </ng-container>
+    <ng-template #isEmpty>
+      <app-empty *ngIf="!loadingWalletInfo"></app-empty>
+    </ng-template>
+  </div>
+</div>
+<ng-container *ngIf="isH5">
+  <ng-container *ngIf="transferDataList.length > 0; else isEmpty">
+    <div *ngFor="let item of transferDataList" class="h5-table-data" [appLoading]="loadingWalletInfo">
+      <div class="group">
+        <p class="text">{{ (item.transferType == 'TransferInto' ? 'acc_trans' : 'acc_out') | translate }}</p>
+        <p class="group-text text-color-black">
+          {{ item.amount }}
+          <img class="coin currency-icon m-left" [src]="item.currency | currencyIcon" />
+        </p>
+      </div>
+      <!-- <div class="group">
+        <p class="text text-color-gray">{{'balance'|translate}}</p>
+        <p class="group-text text-color-black">
+          {{item.available}}
+          <img class="coin currency-icon m-left" [src]="item.icon">
+        </p>
+      </div> -->
+      <div class="group">
+        <p class="text text-color-gray">{{ 'order' | translate }}</p>
+        <p class="text text-color-black">{{ item.transactionId }}</p>
+      </div>
+      <div class="group">
+        <p class="text text-color-gray">{{ 'date' | translate }}</p>
+        <p class="text text-color-black">{{ item.createdTime | mdate }}</p>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #isEmpty>
+    <app-empty *ngIf="!loadingWalletInfo"></app-empty>
+  </ng-template>
+</ng-container>
+
+<ng-template #btnTemp>
+  <ng-container *ngIf="currentWallet">
+    <ng-container *ngFor="let item of btnGroup">
+      <ng-container
+        *ngIf="
+          item.page === 'game' && currentWallet.providerCategorys && currentWallet.providerCategorys.length > 1;
+          else normalBtn
+        "
+      >
+        <app-tool-tip [light]="true" [arrow]="false" [direction]="['down', 'up', 'left', 'right']">
+          <customize-button
+            origin
+            type="text"
+            [plain]="true"
+            size="small"
+            width="100%"
+            (onClick)="$event.stopPropagation()"
+          >
+            {{ 'go_game' | translate }}
+            <i class="icon-arrow-down go-game-btn-icon"></i>
+          </customize-button>
+          <ul tooltip class="go-game-list">
+            <li
+              class="mutual-opacity onact96-not"
+              *ngFor="let providerCategory of currentWallet.providerCategorys"
+              (click)="handleClick(item, providerCategory)"
+            >
+              {{ walletGategory | translate }} - {{ providerCategory | providerCategoryName : true | translate }}
+            </li>
+          </ul>
+        </app-tool-tip>
+      </ng-container>
+      <ng-template #normalBtn>
+        <customize-button
+          [type]="item.isActive ? 'primary' : 'text'"
+          width="100%"
+          size="small"
+          [plain]="item.isActive ? false : true"
+          (onClick)="handleClick(item, currentWallet.providerCategorys[0])"
+          >{{ item.name | translate }}
+        </customize-button>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</ng-template>

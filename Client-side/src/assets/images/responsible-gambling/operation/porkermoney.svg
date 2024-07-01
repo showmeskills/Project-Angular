@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+    <defs>
+        <clipPath id="7tu1ytpfda">
+            <path data-name="矩形 9999" transform="translate(358 727)" style="fill:#fff;stroke:#707070" d="M0 0h28v28H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="蒙版组 2354" transform="translate(-358 -727)" style="clip-path:url(#7tu1ytpfda)">
+        <g data-name="组 8585">
+            <g transform="translate(359.229 735.609)" data-name="e9e0b710-65d9-4c75-a384-58a0edabf60f (1)">
+                <g data-name="组 8583">
+                    <path data-name="路径 16100" d="M6.551 7.034h1.066L6.6 8.269a1.118 1.118 0 0 1 .5-.115 1.2 1.2 0 0 1 1.168 1.27A1.407 1.407 0 0 1 6.707 10.8a1.526 1.526 0 0 1-1.134-.407 1.324 1.324 0 0 1-.373-.922A2.453 2.453 0 0 1 5.743 8.1zm.163 1.833a.594.594 0 0 0-.6.6.6.6 0 1 0 .6-.6zM7.794.821h-1.25l-.068.4a1.779 1.779 0 0 1 .292-.027 1.244 1.244 0 0 1 1.29 1.27 1.252 1.252 0 0 1-.5 1.018 1.757 1.757 0 0 1-1.018.278 2.142 2.142 0 0 1-1.188-.326l.136-.883a1.52 1.52 0 0 0 .991.421.571.571 0 0 0 .611-.543c0-.36-.339-.611-.815-.611a1.537 1.537 0 0 0-.679.149L5.9.02h1.887v.8z" transform="translate(14.999 -.02)" style="fill-rule:evenodd;fill:#fb6943"/>
+                </g>
+                <rect data-name="矩形 9998" width="25.542" height="9.96" rx="3" transform="translate(0 .462)" style="stroke-width:1.4px;fill:none;stroke:#fb6943"/>
+                <path data-name="路径 16101" d="M7.06 6.561H5.553v-.8h2.973L6.449 9.386H5.41zm8.575 0h-1.507v-.8h2.967l-2.071 3.625h-1.039z" transform="translate(-2.212 -1.863)" style="fill-rule:evenodd;fill:#fb6943"/>
+                <path data-name="路径 16102" d="M13.2.57v10.137M21.768.57v10.137" transform="translate(-4.713 -.197)" style="stroke-linecap:square;stroke-width:.5px;fill:none;stroke:#fb6943;fill-rule:evenodd"/>
+            </g>
+        </g>
+    </g>
+</svg>

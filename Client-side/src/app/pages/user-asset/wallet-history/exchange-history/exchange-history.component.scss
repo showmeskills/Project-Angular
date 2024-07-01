@@ -1,0 +1,327 @@
+div {
+  display: flex;
+}
+
+.container {
+  flex-direction: column;
+  min-height: 504px;
+
+  .search-bar {
+    align-items: flex-end;
+    justify-content: space-between;
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .options {
+      align-items: flex-end;
+
+      @media (max-width: 767px) {
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .search-column-container {
+        margin: 0px 16px 24px 0px;
+
+        @media (max-width: 767px) {
+          margin: 0px 16px 16px 0px;
+
+          &:nth-child(n + 2) {
+            display: none;
+          }
+        }
+
+        .search-column {
+          flex-direction: column;
+          position: relative;
+
+          .search-title {
+            font-size: 14px;
+            color: #707a8a;
+            margin-bottom: 8px;
+          }
+
+          .input-container {
+            position: relative;
+            align-items: center;
+
+            input[type='text'] {
+              outline: none;
+              padding: 6px 13px;
+              font-size: 14px;
+              color: #000;
+              border-color: #eaecef;
+              border-style: solid;
+              border-width: 1px;
+              width: 150px;
+              cursor: pointer;
+              background-color: #fff;
+            }
+
+            .grey-down-arraw,
+            .up-arraw {
+              width: 15px;
+              // height: 15px;
+              margin-right: 8px;
+              height: 100%;
+              cursor: pointer;
+              position: absolute;
+              right: 0;
+              user-select: none;
+            }
+          }
+
+          //下拉框样式
+          .options {
+            width: 100%;
+            height: auto;
+            font-size: 16px;
+            line-height: 34px;
+            position: absolute;
+            top: 55px;
+            box-shadow: 1px 6px 6px 0 rgba(0, 0, 0, 0.12);
+            background-color: #fff;
+            z-index: 3;
+
+            ul {
+              width: 100%;
+
+              li {
+                padding: 6px 0px 6px 16px;
+
+                &:hover {
+                  background-color: #f9f9fa;
+                }
+
+                &.active {
+                  color: var(--primary-color);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .search-btn-group {
+        align-items: center;
+        justify-content: center;
+        margin: 0px 16px 24px 8px;
+
+        @media (max-width: 767px) {
+          display: none;
+        }
+
+        .btn {
+          width: 60px;
+          margin-right: 16px;
+          border: solid 1px #ebedf0;
+          border-radius: 2px;
+          height: 30px;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 14px;
+          user-select: none;
+
+          &:hover {
+            border-color: var(--primary-color);
+          }
+        }
+
+        .filterr-btn {
+          color: var(--primary-color);
+          border-color: var(--primary-color);
+        }
+      }
+    }
+  }
+
+  // 表格样式
+  table {
+    border-collapse: collapse;
+
+    .currency-img {
+      width: 16px;
+      height: 16px;
+      margin-left: 10px;
+      vertical-align: text-bottom;
+    }
+
+    .text {
+      display: inline-block;
+    }
+  }
+
+  td,
+  th {
+    text-align: left;
+    padding: 17px;
+    color: #1e2329;
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  //表格头
+  thead {
+    background-color: #f9f9fa;
+
+    &:hover {
+      background-color: #f9f9fa;
+    }
+
+    td,
+    th {
+      color: #848e9c;
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
+
+  tr {
+    border-bottom: 1px solid #f9f9fa;
+    height: 74px;
+  }
+
+  tr:hover {
+    background-color: #f5f5f5;
+  }
+
+  // H5
+  .container-H5 {
+    width: 100%;
+
+    .item {
+      height: 180px;
+      padding: 20px 0;
+      box-shadow: 0 1px 0 0 #eaecef;
+      display: flex;
+      flex-flow: column;
+      justify-content: space-between;
+
+      .group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+
+        span {
+          color: #848e9c;
+        }
+
+        p {
+          color: #1e2329;
+          display: flex;
+          align-items: center;
+
+          img {
+            width: 16px;
+            margin-left: 5px;
+          }
+
+          span {
+            color: #848e9c;
+          }
+        }
+
+        &.first {
+          span {
+            color: #1e2329;
+          }
+
+          p {
+            i {
+              margin-left: 4px;
+              margin-top: 2px;
+              color: #848e9c;
+            }
+
+            &.success {
+              color: #15bf7b;
+            }
+
+            &.awit {
+              color: #ff9300;
+            }
+
+            &.fail {
+              color: #cf304a;
+            }
+
+            &.cancel {
+              color: #707a8a;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    .search {
+      display: none;
+    }
+
+    table {
+      display: none;
+    }
+  }
+}
+
+.h5-detail-popup {
+  width: 100vw;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 5px 11px 18px 0 rgba(0, 0, 0, 0.16);
+  background-color: #fff;
+  font-size: 14px;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+
+  .title {
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    padding: 0 16px;
+  }
+
+  .info-box {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 24px 20px 24px;
+
+    .group {
+      width: 100%;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      span {
+        color: #707a8a;
+      }
+
+      p {
+        color: #1e2329;
+        width: 50%;
+        word-wrap: break-word;
+        line-height: 18px;
+        text-align: right;
+
+        .icon-link {
+          margin: 0 10px;
+        }
+
+        span {
+          color: #707a8a;
+        }
+      }
+    }
+  }
+}

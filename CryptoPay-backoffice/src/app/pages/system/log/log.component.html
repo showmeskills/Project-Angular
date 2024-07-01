@@ -1,0 +1,162 @@
+<div class="card rounded">
+  <div class="card-header py-8 d-flex flex-wrap">
+    <form-row [label]="'common.merchant' | lang" class="mr-16" [contentWidth]="200">
+      <ng-template>
+        <mat-form-field [style.width.px]="200">
+          <mat-select class="form-control" [(ngModel)]="data.merchantId" (selectionChange)="loadData(true)">
+            <mat-option *ngFor="let item of subHeaderService.merchantListAll" [value]="item.value">{{
+              item.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'system.log.logType' | lang" class="mr-16" [contentWidth]="200">
+      <ng-template>
+        <mat-form-field [style.width.px]="200">
+          <mat-select class="form-control" [(ngModel)]="data.selectedType" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of typeList" [value]="item.operationTypeCode">{{
+              item.operationTypeDescription
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'system.log.operator' | lang" class="mr-16" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="data.userName"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'system.log.operatingTime' | lang" label-min-width="106">
+      <ng-template>
+        <div class="d-flex">
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeFrom"
+            [placeholder]="'common.startTime' | lang"
+            [style.width.px]="148"
+            [owlDateTime]="timeStart"
+            [owlDateTimeTrigger]="timeStart"
+            [(ngModel)]="data.time"
+          />
+          <owl-date-time class="fz-20" #timeStart></owl-date-time>
+
+          <div class="date-line lh-42"></div>
+
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeTo"
+            [placeholder]="'common.endTime' | lang"
+            [style.width.px]="148"
+            [owlDateTime]="timeEnd"
+            [owlDateTimeTrigger]="timeEnd"
+            [(ngModel)]="data.time"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time class="fz-20" #timeEnd></owl-date-time>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-1">
+      <span class="fz-20 flex-1">{{ 'system.log.operationLog' | lang }}</span>
+
+      <button type="button" class="ml-6 btn btn-light-primary" (click)="onExport()">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'common.export' | lang }}</span>
+      </button>
+    </div>
+
+    <div class="flex-fill mt-2">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'system.merchants.merchantName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'system.log.logType' | lang }}</span>
+            </th>
+            <th [style.width.%]="50">
+              <span class="cell">{{ 'system.log.operationItem' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.time' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'system.log.operator' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.tenantName }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.operationType }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.content }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createdTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.userName }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!list.length"></empty>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

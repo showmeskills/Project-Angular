@@ -1,0 +1,53 @@
+<modal-title [title]="'member.overview.resetConfirm' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="px-10 py-12">
+  <div class="fz-16">{{ 'member.overview.resetTips' | lang }}</div>
+
+  <form-row [label]="'member.overview.resetType' | lang" class="mt-4">
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-8 fz-16">
+          <input type="radio" name="resetType" [value]="1" [(ngModel)]="resetType" />
+          <span class="mr-4"></span>{{ 'member.overview.phoneNum' | lang }}
+        </label>
+        <!--        <label class="radio radio-lg radio-success radio-disabled mr-8 fz-16">-->
+        <!--          <input type="radio" name="resetType" [value]="2" [(ngModel)]="resetType" disabled />-->
+        <!--          <span class="mr-4"></span>{{ 'member.overview.loginPWD' | lang }}-->
+        <!--        </label>-->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <ng-container [formGroup]="formGroup" *ngIf="formGroup">
+    <form-row [label]="'member.overview.newPhone' | lang" name="newPhoneNum" required>
+      <ng-template let-invalid="invalid">
+        <div class="d-flex flex-ac">
+          <div class="form-field d-flex flex-ac cursor-pointer mr-2" [style.width.px]="100" (click)="onOpenArea()">
+            <!-- <img *ngIf="currencyName" class="mr-2" [currencyIcon]="currencyName" currencySize="18" /> -->
+            <span class="flex-fill">{{ areaCode }}</span>
+            <svg-icon [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+          </div>
+          <input
+            type="text"
+            class="w-100 form-control"
+            autocomplete="off"
+            [class.is-invalid]="invalid"
+            formControlName="newPhoneNum"
+          />
+        </div>
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <form-row [label]="'member.overview.unbindUid' | lang">
+    <ng-template>
+      <input type="text" class="form-control" autocomplete="off" [(ngModel)]="unBindUid" />
+    </ng-template>
+  </form-row>
+
+  <div class="color-999 mt-4 fz-16">{{ 'member.overview.resetUploadDesc' | lang }}</div>
+
+  <upload type="AdminOperateAudit" [limit]="100" class="mt-4" desc="300x200" [(ngModel)]="image"></upload>
+</div>
+
+<modal-footer (confirm)="onConfirm()" dismissClose></modal-footer>

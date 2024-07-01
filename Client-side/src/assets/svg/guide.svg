@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="65" viewBox="0 0 64 65">
+    <defs>
+        <linearGradient id="t8jf7cd40d" x1=".5" y1="1" x2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#ffac98"/>
+        </linearGradient>
+        <linearGradient id="jbggt2ou3a" x1=".026" y1=".5" x2="1.099" y2=".522" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#424851"/>
+            <stop offset="1" stop-color="#2d3239"/>
+        </linearGradient>
+        <linearGradient id="5u1ve3wo7f" x1=".974" x2="-.099" y2=".522" xlink:href="#jbggt2ou3a"/>
+        <linearGradient id="fenv70gdlc" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#373d45"/>
+            <stop offset="1" stop-color="#14171b"/>
+        </linearGradient>
+        <linearGradient id="r49qqo3hnb" x1="1" y1=".5" x2="0" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#ff896c" stop-opacity=".961"/>
+        </linearGradient>
+        <linearGradient id="932c51g2xg" x1="0" x2="1" xlink:href="#r49qqo3hnb"/>
+        <linearGradient id="hukpw00l9h" x1="1.052" x2="-.095" xlink:href="#r49qqo3hnb"/>
+        <linearGradient id="cbipzl8j1i" x1="1.089" x2="-1.19" xlink:href="#r49qqo3hnb"/>
+        <linearGradient id="57dkwk23cj" x1="0" x2="1.19" xlink:href="#r49qqo3hnb"/>
+        <linearGradient id="l47i73b7pk" x1=".5" y1="0" x2=".5" y2="1" xlink:href="#r49qqo3hnb"/>
+        <linearGradient id="si9e7jwtrl" x1=".5" x2="1.714" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#c7cbd0"/>
+            <stop offset="1" stop-color="#646668"/>
+        </linearGradient>
+        <linearGradient id="limau5mf6m" x1="1.073" y1=".312" x2=".059" y2=".5" xlink:href="#fenv70gdlc"/>
+        <clipPath id="5907s48o0e">
+            <ellipse data-name="椭圆 83" cx="32" cy="32.5" rx="32" ry="32.5" transform="translate(-3275 4577)" style="fill:#e6e7ea"/>
+        </clipPath>
+    </defs>
+    <g data-name="组 790--" transform="translate(3189 -4577)">
+        <g data-name="椭圆 86" transform="translate(-3181 4584)" style="fill:#fff;stroke:#707070">
+            <circle cx="6" cy="6" r="6" style="stroke:none"/>
+            <circle cx="6" cy="6" r="5.5" style="fill:none"/>
+        </g>
+        <path data-name="矩形 547" transform="translate(-3188 4583)" style="fill:#e95731" d="M0 0h2v4H0z"/>
+        <ellipse data-name="椭圆 90" cx="32" cy="32.5" rx="32" ry="32.5" transform="translate(-3189 4577)" style="fill:#e6e7ea"/>
+        <g data-name="组 346" transform="translate(86)">
+            <circle data-name="椭圆 87" cx="8" cy="8" r="8" transform="translate(-3269 4582)" style="fill:url(#t8jf7cd40d)"/>
+            <circle data-name="椭圆 88" cx="6" cy="6" r="6" transform="translate(-3267 4584)" style="fill:#f04e23"/>
+        </g>
+        <g data-name="蒙版组 12" transform="translate(86)" style="clip-path:url(#5907s48o0e)">
+            <g data-name="组 347">
+                <path data-name="联合 49" d="M3 4V0h35.921v4zm36.947-1V2h-1.026V1h1.026V0H42v3z" transform="translate(-3253 4600)" style="fill:#e8a37d"/>
+                <path data-name="多边形 42" d="m3 0 3 3-3 3-3-3z" transform="translate(-3257 4599.001)" style="fill:#e8a37d"/>
+                <path data-name="矩形 531" transform="translate(-3259 4613)" style="fill:#e8a37d" d="M0 0h11v5H0z"/>
+                <path data-name="矩形 536" transform="translate(-3243 4599)" style="fill:url(#jbggt2ou3a)" d="M0 0h6v6H0z"/>
+                <path data-name="矩形 551" transform="translate(-3227 4599)" style="fill:url(#5u1ve3wo7f)" d="M0 0h6v6H0z"/>
+                <circle data-name="椭圆 85" cx="2.5" cy="2.5" r="2.5" transform="translate(-3231 4587)" style="fill:url(#fenv70gdlc)"/>
+                <path data-name="减去 71" d="M7 22H2v-8h1a1 1 0 0 0 1-1V6h9.241A8.015 8.015 0 0 1 15 11v3a8.009 8.009 0 0 1-8 8z" transform="translate(-3242 4599)" style="fill:#bfc4ca"/>
+                <path data-name="矩形 540" transform="translate(-3268 4628)" style="fill:url(#r49qqo3hnb)" d="M0 0h13v5H0z"/>
+                <path data-name="矩形 543" transform="translate(-3238 4621)" style="fill:url(#932c51g2xg)" d="M0 0h20v5H0z"/>
+                <path data-name="矩形 544" transform="translate(-3234 4626)" style="fill:url(#hukpw00l9h)" d="M0 0h20v5H0z"/>
+                <path data-name="矩形 545" transform="translate(-3236 4631)" style="fill:url(#932c51g2xg)" d="M0 0h20v5H0z"/>
+                <path data-name="矩形 546" transform="translate(-3238 4636)" style="fill:url(#cbipzl8j1i)" d="M0 0h20v5H0z"/>
+                <path data-name="矩形 541" transform="translate(-3266 4633)" style="fill:url(#57dkwk23cj)" d="M0 0h18v5H0z"/>
+                <path data-name="矩形 542" transform="translate(-3268 4638)" style="fill:url(#l47i73b7pk)" d="M0 0h18v5H0z"/>
+                <path data-name="矩形 549" transform="translate(-3249 4613)" style="fill:url(#si9e7jwtrl)" d="M0 0h9v5H0z"/>
+                <path data-name="减去 68" d="M5 17H0V6a4 4 0 0 1 4-4h3v5H6a1 1 0 0 0-1 1v9z" transform="translate(-3246 4614)" style="fill:#e8a37d"/>
+                <path data-name="路径 136" d="M-3161 4628.9v8.922l7.828-7.828-2.972-3.082z" transform="translate(-85)" style="fill:#1e2026"/>
+                <path data-name="路径 135" d="m0 0 5 4.278V9H0z" transform="translate(-3261 4609)" style="fill:#1e2026"/>
+                <path data-name="矩形 537" transform="translate(-3238 4599)" style="fill:#707a8a" d="M0 0h12v14H0z"/>
+                <path data-name="减去 73" d="M10.744 3H2.256a4.5 4.5 0 0 1 8.487 0z" transform="translate(-3238 4589)" style="fill:url(#limau5mf6m)"/>
+                <path data-name="减去 72" d="M7.5 11a4.5 4.5 0 0 1-4.244-6h8.488A4.5 4.5 0 0 1 7.5 11z" transform="translate(-3239 4587)" style="fill:#e8a37d"/>
+            </g>
+        </g>
+    </g>
+</svg>

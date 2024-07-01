@@ -1,0 +1,117 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+div {
+  display: flex;
+}
+
+.container {
+  flex-direction: column;
+
+  .guide {
+    border-bottom: 1px solid #f5f5f5;
+
+    &:host-context(.dark) & {
+      border-color: var(--default-border-color);
+    }
+
+    @media (max-width: 944px) {
+      border-bottom: none;
+    }
+  }
+
+  .contants {
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 40px;
+    padding-bottom: 122px;
+
+    @media (max-width: 944px) {
+      flex-direction: column;
+    }
+
+    .left {
+      flex-direction: column;
+
+      // padding-right: 379px;
+      .ticket-clounm {
+        flex-direction: column;
+
+        .ticket {
+          width: 482px;
+          height: 130px;
+          border-radius: 4px;
+          // background-color: #f5f5f5;
+          background-color: var(--bg-color-10);
+          font-size: 14px;
+          // color: #1e2329;
+          color: var(--text-color);
+          flex-direction: column;
+          justify-content: center;
+          padding-left: 16px;
+
+          @media (max-width: 799px) {
+            padding-right: 16px;
+            width: 100%;
+          }
+
+          .offset-t {
+            padding-top: 12px;
+
+            @media (max-width: 799px) {
+              padding-top: 8px;
+            }
+          }
+
+          .item-row {
+            flex-direction: row;
+
+            @media (max-width: 799px) {
+              justify-content: space-between;
+            }
+
+            p.title {
+              width: 88px;
+              // color: #707a8a;
+              color: var(--text-color-20);
+            }
+
+            .value {
+              @media (max-width: 799px) {
+                text-align: end;
+                max-width: 218px;
+              }
+            }
+          }
+        }
+      }
+
+      .submit-btn {
+        margin-top: 40px;
+
+        @media (max-width: 944px) {
+          margin-top: 28px;
+        }
+      }
+    }
+
+    .tip {
+      padding-right: 169px;
+
+      @media (max-width: 944px) {
+        padding-top: 48px;
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+.amount-value {
+  display: flex;
+  @include polyfills.flex-gap(5px, 'row nowrap');
+  align-items: center;
+
+  img {
+    height: 14px;
+    width: 14px;
+  }
+}

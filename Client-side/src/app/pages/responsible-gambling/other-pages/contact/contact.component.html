@@ -1,0 +1,27 @@
+<app-other-pages-barnner [title]="title" [smallTitle]="smallTitle" [imgSrc]="imgSrc"></app-other-pages-barnner>
+
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container contact-container">
+    <p class="text-16">{{ 'respon_cc' | translate }}</p>
+    <div class="list">
+      <div class="list-item" *ngFor="let item of list">
+        <img [src]="item.iconUrl" lazy="loading" alt="" />
+        <div class="item-text">
+          <p class="text-primary-16">{{ item.title }}</p>
+          <p class="text-14 m-top-10">{{ item.info }}</p>
+          <customize-button
+            class="m-top-10"
+            type="text"
+            size="small"
+            [plain]="true"
+            [active]="true"
+            minWidth="127px"
+            (onClick)="commingSoon()"
+          >
+            {{ 'respon_cf' | translate }}
+          </customize-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

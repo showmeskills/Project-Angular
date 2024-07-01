@@ -1,0 +1,90 @@
+<div class="kyc-otp-container">
+  <label class="form-header">{{ 'phone' | translate }}<span class="required" *ngIf="required">*</span> </label>
+
+  <div class="phone-select">
+    <!--区号-->
+    <div class="select-row">
+      <div class="input-row">
+        <customize-button
+          class="select-btn onact96-btn"
+          type="text"
+          size="medium"
+          laoding="submitLoading"
+          [disabled]="submitLoading || boundPhone"
+          (onClick)="handleSelectPhone($event)"
+          [ngClass]="{ 'no-hover': boundPhone }"
+        >
+          <div class="fog-row">
+            <div class="country-image">
+              <i class="country" class="{{ fogClassName }}"></i>
+            </div>
+            <p>{{ currentPhoneZone }}</p>
+          </div>
+          <i class="icon-arrow-down"></i>
+        </customize-button>
+        <!--手机输入框-->
+        <app-customize-input
+          size="large"
+          [required]="true"
+          [(value)]="phone"
+          #phoneInput
+          [error]="phoneError"
+          [disabled]="submitLoading || boundPhone"
+          (onChange)="onPhoneInput()"
+          width="100%"
+          [type]="phoneInput.disabled ? 'text' : 'number'"
+        >
+        </app-customize-input>
+      </div>
+    </div>
+    <!-- 输入框下面的错误信息 -->
+    <div class="error-msg" *ngIf="phoneInput.error && !phoneInput.foc">
+      {{ 'phone_error_msg' | translate }}
+    </div>
+  </div>
+  <div class="auth-form" *ngIf="!boundPhone">
+    <app-customize-input
+      [required]="true"
+      size="large"
+      width="100%"
+      [(value)]="authcode"
+      type="number"
+      [label]="'verification_code_text' | translate"
+      [error]="!!authcode && !(authcode.length == 6) ? ('vercode_err' | translate) : ''"
+      (onChange)="onAuthcodeInput()"
+      [disabled]="submitLoading || phoneError"
+      [loading]="isLoading"
+    >
+      <!--获取验证码：第一次发送 && 未发送验证码-->
+      <!--重新获取： 发送验证码 && 倒计时结束-->
+      <div
+        class="input-group-txt get-code onact96"
+        right-content
+        (click)="send(false)"
+        *ngIf="authStatus !== 'sent' && !isLoading"
+        [class.disable]="!(phone.length > 4 && phone.length <= 13)"
+      >
+        {{ authStatus !== 'timeout' ? ('get_verification_code_button' | translate) : ('resend' | translate) }}
+      </div>
+      <div class="input-group-txt has-send-code" *ngIf="authStatus === 'sent' && !isLoading" right-content>
+        <span>
+          {{ 'vercode_send' | translate }}
+        </span>
+        <app-tool-tip>
+          <i origin class="icon-warning mutual-opacity"></i>
+          <div tooltip class="tooltip-info">
+            <div class="tooltip-info-text">{{ 'no_rece' | translate }}{{ timer }}{{ 'resend_info' | translate }}</div>
+          </div>
+        </app-tool-tip>
+      </div>
+    </app-customize-input>
+    <div class="tips-msg">
+      {{ 'verification_error_msg' | translate }}
+    </div>
+    <div class="voice-verification-tips" *ngIf="authStatus !== 'initial'">
+      <span class="link orange-txt" (click)="notReceiveCode()">{{ 'null' | translate }}</span>
+      {{ 'sms_info' | translate
+      }}<span class="link orange-txt onact96-not" (click)="send(true)">{{ 'null_t' | translate }}</span>
+    </div>
+  </div>
+</div>

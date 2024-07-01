@@ -1,0 +1,53 @@
+<div class="main-container">
+  <div class="header-row">
+    <span class="title">{{ data.isDigital ? ('sel_coin' | translate) : ('select_cur' | translate) }}</span>
+    <i class="icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="search-contanier">
+    <app-customize-input [width]="'100%'" [placeholder]="'search' | translate" [(value)]="keyword">
+    </app-customize-input>
+  </div>
+
+  <div class="options-container">
+    <app-scrollbar [appLoading]="isLoading">
+      <ng-container *ngIf="data.useData">
+        <ng-container *ngFor="let item of data.useData | filterByText : keyword : ['currency', 'name']">
+          <ng-container *ngTemplateOutlet="selectRow; context: { item: item }"></ng-container>
+        </ng-container>
+        <app-empty
+          *ngIf="(data.useData | filterByText : keyword : ['currency', 'name']).length === 0 && !isLoading"
+          [text]="'search_unfind' | translate"
+        ></app-empty>
+      </ng-container>
+      <ng-container *ngIf="!data.useData">
+        <ng-container *ngFor="let item of currencies | filterByText : keyword : ['currency', 'name']">
+          <ng-container *ngTemplateOutlet="selectRow; context: { item: item }"></ng-container>
+        </ng-container>
+        <app-empty
+          *ngIf="(currencies | filterByText : keyword : ['currency', 'name']).length === 0 && !isLoading"
+          [text]="'search_unfind' | translate"
+        ></app-empty>
+      </ng-container>
+    </app-scrollbar>
+  </div>
+</div>
+
+<ng-template #selectRow let-item="item">
+  <div class="select-row onact96" (click)="handleSelect(item)">
+    <div>
+      <img class="icon" [src]="item.currency | currencyIcon" />
+      <div class="infor">
+        <span class="span-1">{{ item.currency | uppercase }}</span>
+        <span>{{ item.name }}</span>
+      </div>
+    </div>
+    <div class="rate-clounm" *ngIf="data.showBalance">
+      <i class="animation-icon-loading-dot" *ngIf="isBalanceLoading"><i></i><i></i><i></i></i>
+      <ng-container *ngIf="!isBalanceLoading">
+        <p class="rate">{{ item.balance | currencyValue : item.currency }}</p>
+        <!-- 显示后两位 -->
+        <p>≈{{ item.exchangedAmount | currencyValue : 'USDT' : undefined : undefined : 2 }} USDT</p>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

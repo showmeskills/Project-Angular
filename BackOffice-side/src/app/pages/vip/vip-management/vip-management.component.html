@@ -1,0 +1,95 @@
+<div class="card">
+  <div class="people-header fz-20 fw-bolder">{{ 'member.management.numPerson' | lang }}</div>
+  <div class="d-flex vip-count-wrap" *ngIf="list.length > 0">
+    <div class="people py-11 px-12 d-flex flex-column justify-content-between" *ngIf="userDetialAll">
+      <div class="d-flex flex-between fw-bolder">
+        <div class="fz-20 vam">{{ 'common.total' | lang }}</div>
+        <div class="fz-18 vam din">{{ userDetialAll.proportion }}%</div>
+      </div>
+      <div class="d-flex flex-between">
+        <div class="fz-30 vam din fw-bolder total">
+          {{ userDetialAll.count | toFormatMoney }}
+        </div>
+        <div class="fz-18 vam din ml-4">
+          <!-- {{ userDetialAll.compareDaysCount > 0 ? '+' : '' }}{{ userDetialAll.compareDaysCount }} -->
+        </div>
+      </div>
+    </div>
+
+    <div class="vip-count" *ngFor="let _ of [1, 2, 3, 4, 5]; let i = index">
+      <div class="vip-count-first" *ngIf="userDetialList.length > 0">
+        <div class="d-flex flex-between">
+          <div class="vip-count-flag">VIP{{ (i + 1) * 2 - 2 }}</div>
+          <div>{{ userDetialList[(i + 1) * 2 - 2]?.proportion }}%</div>
+        </div>
+        <div class="d-flex flex-between mt-2">
+          <div class="color-222 fz-20 fw-bolder">
+            {{ userDetialList[(i + 1) * 2 - 2]?.count | toFormatMoney }}
+          </div>
+          <div
+            class="text-success ml-4"
+            [ngClass]="userDetialList[(i + 1) * 2 - 2]?.compareDaysCount >= 0 ? 'text-success' : 'text-danger'"
+          >
+            <!-- {{ userDetialList[(i + 1) * 2 - 2]?.compareDaysCount >= 0 ? '+' : '' }}
+            {{ userDetialList[(i + 1) * 2 - 2]?.compareDaysCount | toFormatMoney }} -->
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="userDetialList.length > 0">
+        <div class="d-flex flex-between">
+          <div class="vip-count-flag">VIP{{ (i + 1) * 2 - 1 }}</div>
+          <div>{{ userDetialList[(i + 1) * 2 - 1]?.proportion }}%</div>
+        </div>
+        <div class="d-flex flex-between mt-2">
+          <div class="color-222 fz-20 fw-bolder">
+            {{ userDetialList[(i + 1) * 2 - 1]?.count | toFormatMoney }}
+          </div>
+          <div
+            class="text-success ml-4"
+            [ngClass]="userDetialList[(i + 1) * 2 - 1]?.compareDaysCount >= 0 ? 'text-success' : 'text-danger'"
+          >
+            <!-- {{ userDetialList[(i + 1) * 2 - 1]?.compareDaysCount >= 0 ? '+' : '' }}
+            {{ userDetialList[(i + 1) * 2 - 1]?.compareDaysCount | toFormatMoney }} -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="people people-s py-11 px-12 d-flex flex-column justify-content-between" *ngIf="userDetialSvip">
+      <div class="d-flex flex-between">
+        <div class="people-flag">{{ userDetialSvip.currentVipLevel }}</div>
+        <div class="din">{{ userDetialSvip.proportion }}%</div>
+      </div>
+      <div class="d-flex flex-between">
+        <div class="fz-20 fw-bolder total">{{ userDetialSvip.count | toFormatMoney }}</div>
+        <div class="ml-4">
+          <!-- {{ userDetialSvip.compareDaysCount > 0 ? '+' : '' }}{{ userDetialSvip.compareDaysCount | toFormatMoney }} -->
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-fill"></div>
+  </div>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="list.length === 0 && !isLoading" [style.height.px]="200">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-8 w-100 d-flex justify-content-between">
+  <article class="article-left">
+    <app-recently-changes></app-recently-changes>
+  </article>
+  <article class="article-right">
+    <app-level-setting></app-level-setting>
+  </article>
+</div>
+
+<welfare-count></welfare-count>
+
+<app-welfare class="mt-8"></app-welfare>

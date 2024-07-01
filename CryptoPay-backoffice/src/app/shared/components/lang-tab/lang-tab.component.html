@@ -1,0 +1,54 @@
+<div class="lang-hd">
+  <div class="min-w-0">
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+    <div class="d-flex lang-hd-tab border-0" mat-tab-nav-bar [tabPanel]="tabPanel">
+      <div
+        mat-tab-link
+        class="lang-hd-item"
+        [class.active]="curCode === item.code"
+        *ngFor="let item of langTabList; let i = index"
+        (click)="curCode = item.code"
+      >
+        {{ item.name }}
+      </div>
+    </div>
+  </div>
+
+  <div class="edit position-relative ml-4" *ngIf="edit">
+    <button class="btn-cube sm" type="button" (click)="showEditTab = true">
+      <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+    </button>
+
+    <select-group
+      [position]="true"
+      [select]="value"
+      [(show)]="showEditTab"
+      [data]="service.list"
+      label="name"
+      value="code"
+      (confirm)="onLanguageChange($event)"
+    ></select-group>
+  </div>
+</div>
+
+<div class="lang-bd pb-0">
+  <!-- <div *ngFor="let lang of langTabList; let i = index" [hidden]="curCode !== lang.code"> -->
+  <ng-container *ngIf="ref">
+    <ng-container *ngFor="let lang of langTabList; let i = index">
+      <div *ngIf="curCode === lang.code">
+        <ng-container
+          [ngTemplateOutlet]="ref"
+          [ngTemplateOutletContext]="{
+            $implicit: lang,
+            code: curCode,
+            i: findIndex(lang.code),
+            list: value,
+            current: lang
+          }"
+        ></ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-content *ngIf="!ref" select="lang-tab-content"></ng-content>
+</div>

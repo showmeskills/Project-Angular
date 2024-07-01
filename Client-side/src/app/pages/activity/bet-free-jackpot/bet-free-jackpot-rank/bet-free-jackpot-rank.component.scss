@@ -1,0 +1,155 @@
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  min-height: 500px;
+  padding-top: 30px;
+  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-btn-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: -5px;
+  width: 100%;
+
+  > * {
+    margin: 5px;
+  }
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    margin: 0;
+
+    > * {
+      margin: 0;
+      width: 100%;
+
+      & + * {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    p {
+      font-size: 26px;
+      line-height: 40px;
+
+      @media (max-width: 767px) {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+.list-main {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.rank-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0 5px;
+  min-height: 46px;
+  padding: 10px 5px 10px 20px;
+  margin: 0 10px;
+  font-size: 14px;
+  color: var(--text-color);
+  word-break: break-all;
+
+  &.list-head {
+    font-weight: bold;
+
+    > div {
+      padding-left: 0 !important;
+    }
+  }
+
+  &.list-self {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      height: 1px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--primary-color);
+    }
+  }
+
+  &.list-all {
+    &:nth-child(odd) {
+      background-color: rgba(#000000, 0.05);
+
+      &:host-context(.dark) & {
+        background-color: rgba(#000000, 0.25);
+      }
+    }
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+    text-align: center;
+    padding-left: 8px;
+
+    &.gamer_col {
+      padding-left: 0 !important;
+      grid-column: span 2;
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rank-box {
+  margin-top: 30px;
+  position: relative;
+  border-radius: 4px;
+  background-color: transparent;
+  border: 1px solid var(--default-border-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  flex: 1;
+
+  &:host-context(.dark) & {
+    background-color: var(--bg-color-10);
+  }
+}
+
+.avatar {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  border-radius: 50%;
+}

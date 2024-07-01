@@ -1,0 +1,255 @@
+<div class="info-left">
+  <div class="item-wrap">
+    <div class="item-row">
+      <div class="item">
+        <div class="icon-wrap color-1-bg"><svg-icon [src]="'./assets/images/svg/proxy/1.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-1">
+            {{ data.monthFirstDeposit ? (data.monthFirstDeposit | currencyValue: 'USDT') : 0 }}
+          </div>
+          <div class="item-text">{{ 'game.proxy.firstDepositMonth' | lang }}</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="icon-wrap color-2-bg"><svg-icon [src]="'./assets/images/svg/proxy/2.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-2">{{ data.activePeople || 0 }}</div>
+          <div class="item-text">{{ 'game.proxy.activeOffline' | lang }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-row">
+      <div class="item">
+        <div class="icon-wrap color-3-bg"><svg-icon [src]="'./assets/images/svg/proxy/3.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-3">{{ data.subordinate || 0 }}</div>
+          <div class="item-text">{{ 'game.proxy.cumulativeOffline' | lang }}</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="icon-wrap color-4-bg"><svg-icon [src]="'./assets/images/svg/proxy/4.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-4 first-save-time">
+            <div class="din fz-18">
+              {{ data?.approveTime | date: 'dd/MM/yyyy' }}
+            </div>
+            <div class="din fz-14">
+              {{ data?.approveTime | timeFormat: 'HH:mm:ss' }}
+            </div>
+          </div>
+          <div class="item-text">{{ 'game.proxy.processingTime' | lang }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-row">
+      <div class="item">
+        <div class="icon-wrap color-5-bg"><svg-icon [src]="'./assets/images/svg/proxy/5.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-5">
+            {{ data.monthTransaction ? (data.monthTransaction | currencyValue: 'USDT') : 0 }}
+          </div>
+          <div class="item-text">{{ 'game.proxy.volumeMonth' | lang }}</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="icon-wrap color-6-bg"><svg-icon [src]="'./assets/images/svg/proxy/6.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-6">
+            {{ data.monthDeposit ? (data.monthDeposit | currencyValue: 'USDT') : 0 }}
+          </div>
+          <div class="item-text">{{ 'game.proxy.depositThisMonth' | lang }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-row">
+      <div class="item">
+        <div class="icon-wrap color-7-bg"><svg-icon [src]="'./assets/images/svg/proxy/7.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-7">
+            {{ data.monthDrawing ? (data.monthDrawing | currencyValue: 'USDT') : 0 }}
+          </div>
+          <div class="item-text">{{ 'game.proxy.withdrawalMonth' | lang }}</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="icon-wrap color-8-bg"><svg-icon [src]="'./assets/images/svg/proxy/8.svg'"></svg-icon></div>
+        <div class="item-info">
+          <div class="item-text color-8">{{ data.monthContribute || 0 | toFormatNumberDecimal: 2 }}</div>
+          <div class="item-text">{{ 'game.proxy.contributionThisMonth' | lang }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-center mt-5">
+    <div>{{ 'common.status' | lang }}</div>
+    <div class="status fw-bolder">{{ data.state || 0 }}</div>
+  </div>
+</div>
+
+<div class="info-right">
+  <ng-container *ngIf="isEdit; else rightTpl">
+    <div class="d-flex">
+      <div class="flex-1 mr-8" style="min-width: 0">
+        <mat-form-field class="w-100">
+          <mat-select class="form-control" [(value)]="editData.proxyState">
+            <mat-option value="0">{{ 'game.proxy.nonactivated' | lang }}</mat-option>
+            <mat-option value="1">{{ 'game.proxy.monthly' | lang }}</mat-option>
+            <mat-option value="2">{{ 'game.proxy.dayEnd' | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="text-center">{{ 'game.proxy.commissionSettlement' | lang }}</div>
+      </div>
+
+      <div class="flex-1 ml-8" style="min-width: 0">
+        <input type="text" class="form-control flex-1" [(ngModel)]="protectTime" disabled="true" />
+        <div class="text-center">{{ 'game.proxy.proxyProtection' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex mt-12">
+      <div class="flex-1 mr-8" style="min-width: 0">
+        <div class="d-flex flex-ac">
+          <input type="text" class="form-control flex-1" [(ngModel)]="editData.commissionRate" />
+          <span class="fz-16">%</span>
+        </div>
+        <div class="text-center">{{ 'game.proxy.commissionRate' | lang }}</div>
+      </div>
+
+      <div class="flex-1 ml-8" style="min-width: 0">
+        <div class="d-flex flex-ac">
+          <input type="text" class="form-control flex-1" [(ngModel)]="editData.basicsRate" />
+          <span class="fz-16">%</span>
+        </div>
+        <div class="text-center">{{ 'game.proxy.baseRatio' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex mt-12">
+      <div class="flex-1 mr-8" style="min-width: 0">
+        <div class="d-flex flex-ac">
+          <input type="text" class="form-control flex-1" [(ngModel)]="editData.taskRate" />
+          <span class="fz-16">%</span>
+        </div>
+        <div class="text-center">{{ 'game.proxy.commissionTaskRatio' | lang }}</div>
+      </div>
+
+      <div class="flex-1 ml-8" style="min-width: 0">
+        <div class="d-flex flex-ac">
+          <input type="text" class="form-control flex-1" [(ngModel)]="editData.extraRate" />
+          <span class="fz-16">%</span>
+        </div>
+        <div class="text-center">{{ 'game.proxy.extraScale' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex mt-12">
+      <div class="flex-1 mr-8" style="min-width: 0">
+        <div class="d-flex flex-ac">
+          <input type="text" class="form-control flex-1" [(ngModel)]="editData.protectCommission" />
+          <span class="fz-16">%</span>
+        </div>
+        <div class="text-center">{{ 'game.proxy.proxyProtectionRatio' | lang }}</div>
+        <div class="text-nowrap text-mini">{{ 'game.proxy.agencyProtectionTips' | lang }}</div>
+      </div>
+      <!-- 本期不做 -->
+      <div class="flex-1 ml-8" style="min-width: 0">
+        <div class="d-flex flex-center" [style.height.px]="42">
+          <label class="switch switch-success fz-16 mb-0">
+            <input type="checkbox" [(ngModel)]="editData.enableCommission" />
+            <span></span>
+          </label>
+        </div>
+        <div class="text-center">USDT{{ 'game.proxy.commission' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="flex-wrap d-flex flex-center mt-8">
+      <button class="c-btn c-btn-default mx-2 mb-4" (click)="isEdit = false">{{ 'common.cancel' | lang }}</button>
+      <button class="c-btn c-btn-primary mx-2 mb-4" (click)="isEdit = false; onSaveEdit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #rightTpl>
+  <div class="flex-1 px-8 right-show">
+    <div class="d-flex mt-6">
+      <div class="flex-1">
+        <div class="din fz-18 color-3">
+          {{
+            editData.proxyState === 0
+              ? ('game.proxy.nonactivated' | lang)
+              : editData.proxyState === 1
+                ? ('game.proxy.monthly' | lang)
+                : ('game.proxy.dayEnd' | lang)
+          }}
+        </div>
+        <div class="mt-4">{{ 'game.proxy.commissionSettlement' | lang }}</div>
+      </div>
+
+      <div class="flex-1 text-right">
+        <div class="d-flex flex-center fz-16 color-2">
+          <span *ngIf="!data.protectTime">{{ 'game.proxy.notSet' | lang }}</span>
+          <span *ngIf="data.protectTime && currentTime - data.protectTime > 0; else tpl">
+            {{ 'game.proxy.expired' | lang }}
+          </span>
+          <ng-template #tpl>
+            <span *ngIf="data.protectTime">{{ data.protectTime | timeFormat }}</span>
+          </ng-template>
+        </div>
+        <div class="mt-4">{{ 'game.proxy.proxyProtection' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex mt-20">
+      <div class="flex-1" style="min-width: 0">
+        <div class="din fz-18 color-3">{{ editData.commissionRate || 0 }}%</div>
+        <div class="mt-4">{{ 'game.proxy.commissionRate' | lang }}</div>
+      </div>
+
+      <div class="" style="min-width: 0">
+        <div class="d-flex fz-18 color-4">{{ editData.basicsRate || 0 }}%</div>
+        <div class="mt-4">{{ 'game.proxy.baseRatio' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex mt-20">
+      <div class="flex-1" style="min-width: 0">
+        <div class="din fz-18 color-5">{{ editData.taskRate || 0 }}%</div>
+        <div class="mt-4">{{ 'game.proxy.commissionTaskRatio' | lang }}</div>
+      </div>
+
+      <div class="" style="min-width: 0">
+        <div class="d-flex fz-18 color-6">{{ editData.extraRate || 0 }}%</div>
+        <div class="mt-4">{{ 'game.proxy.extraScale' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex mt-20">
+      <div class="flex-1" style="min-width: 0">
+        <div class="din fz-18 color-7">{{ editData.protectCommission || 0 }}%</div>
+        <div class="mt-4">{{ 'game.proxy.proxyProtectionRatio' | lang }}</div>
+        <div class="text-mini text-nowrap">{{ 'game.proxy.agencyProtectionTips' | lang }}</div>
+      </div>
+      <!-- 本期不做 -->
+      <div class="" style="min-width: 0">
+        <div class="d-flex fz-18 color-8">
+          {{ editData?.enableCommission ? ('game.proxy.activated' | lang) : ('game.proxy.closed' | lang) }}
+        </div>
+        <div class="mt-4">USDT{{ 'game.proxy.commission' | lang }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-center mt-12">
+      <div class="edit btn btn-light-primary" (click)="isEdit = true">
+        <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/admin-edit.svg'"></svg-icon>
+        <span>{{ 'common.edit' | lang }}</span>
+      </div>
+    </div>
+  </div>
+</ng-template>

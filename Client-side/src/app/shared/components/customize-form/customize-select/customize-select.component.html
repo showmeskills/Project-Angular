@@ -1,0 +1,96 @@
+<div *ngIf="true" [ngClass]="['select-container', 'select-' + id]" [class.disabled]="disabled">
+  <div class="select-label" *ngIf="label">{{ label }}</div>
+  <div
+    class="input-container"
+    [style.width]="width"
+    [style.height]="height"
+    [style.min-width]="minWidth"
+    [style.max-width]="maxWidth"
+    [class.fixed-height]="fixedHeight"
+    (click)="clickInput()"
+    (clickOutside)="expand = false"
+    [clickOutsideExcludeSelector]="showFilter || multipleChoice ? '.select-' + id + ' .options-container' : ''"
+  >
+    <ng-container *ngIf="inputTemplate; else defaultInputTemplate">
+      <ng-container *ngTemplateOutlet="inputTemplate; context: { options: options, value: value }"></ng-container>
+    </ng-container>
+    <ng-template #defaultInputTemplate>
+      <div class="input-text" [class.auto]="width === 'auto'" [class.imitation-placeholder]="showAsPlaceholder">
+        {{ (options | filterByKeyValue: valueKey : value : textKey) || defaultText
+        }}{{ timeDance && useUTC0 ? ' (GMT+0)' : '' }}
+      </div>
+    </ng-template>
+    <i *ngIf="rightArrow" class="{{ expand || overlayRef ? 'icon-arrow-up' : 'icon-arrow-down' }}"></i>
+  </div>
+  <ng-container *ngIf="!fixedOptions">
+    <div class="options-container customize-options-container absolute {{ optionsContainerClass }}" *ngIf="expand">
+      <ng-container *ngTemplateOutlet="optionstl"></ng-container>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #fixedOptionstl>
+  <div class="options-container customize-options-container fixed {{ optionsContainerClass }}">
+    <ng-container *ngTemplateOutlet="optionstl"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #optionstl>
+  <app-scrollbar>
+    <ng-container *ngIf="optionsTemplate; else defaultOptionsTemplate">
+      <ng-container
+        *ngTemplateOutlet="
+          optionsTemplate;
+          context: {
+            options: options,
+            textKey: textKey,
+            valueKey: valueKey,
+            clickItem: multipleChoice ? onCheck : onClick
+          }
+        "
+      >
+      </ng-container>
+    </ng-container>
+
+    <ng-template #defaultOptionsTemplate>
+      <div class="filter-box" *ngIf="showFilter">
+        <i class="icon-search"></i>
+        <input [(ngModel)]="filterValue" />
+        <i
+          class="icon-clear-fill mutual-opacity onact96-not"
+          [class.active]="filterValue"
+          (click)="filterValue = ''"
+        ></i>
+      </div>
+      <ul>
+        <ng-container *ngFor="let item of options">
+          <ng-container *ngIf="itemTemplate; else defaultItemTemplate">
+            <ng-container
+              *ngTemplateOutlet="
+                itemTemplate;
+                context: {
+                  item: item,
+                  textKey: textKey,
+                  valueKey: valueKey,
+                  clickItem: multipleChoice ? onCheck : onClick
+                }
+              "
+            >
+            </ng-container>
+          </ng-container>
+          <ng-template #defaultItemTemplate>
+            <li
+              class="general onact96"
+              *ngIf="!filterValue || item[textKey].toUpperCase().includes(filterValue.toUpperCase())"
+              [class.active]="item[valueKey] === value"
+              (click)="onClick(item, item[valueKey] === value)"
+            >
+              <img class="select-icon" *ngIf="iconKey && item[iconKey]" [src]="item[iconKey]" />
+              {{ item[textKey] || defaultText }}{{ timeDance && useUTC0 ? ' (GMT+0)' : '' }}
+            </li>
+          </ng-template>
+        </ng-container>
+      </ul>
+    </ng-template>
+  </app-scrollbar>
+</ng-template>

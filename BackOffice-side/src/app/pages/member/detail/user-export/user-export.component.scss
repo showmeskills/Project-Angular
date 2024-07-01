@@ -1,0 +1,26 @@
+.month-picker {
+  .mat-calendar-period-button {
+    pointer-events: none;
+  }
+
+  .mat-calendar-arrow {
+    display: none;
+  }
+
+
+  .mat-calendar-previous-button,
+  .mat-calendar-next-button {
+    display: none;
+  }
+}
+
+.user-export-month-input {
+  input {
+    color: var(--bs-gray-600);
+    cursor: default;
+  }
+
+  .mat-mdc-icon-button svg {
+    vertical-align: middle;
+  }
+}

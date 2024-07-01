@@ -1,0 +1,13 @@
+<div class="job container">
+  <div class="job-right" *ngIf="isH5">
+    <img [src]="bannerUrl" lazy="loadng" />
+  </div>
+  <div class="job-left">
+    <p class="text-one">{{ pageTitle || '' }}</p>
+    <p class="text-two">{{ bannerText || '' }}</p>
+  </div>
+  <div class="job-right" *ngIf="!isH5">
+    <img [src]="bannerUrl" lazy="loadng" />
+  </div>
+</div>
+<app-job-vacancy [cateId]="cateId"></app-job-vacancy>

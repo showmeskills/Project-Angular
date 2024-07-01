@@ -1,0 +1,249 @@
+<div class="card mb-8">
+  <div class="p-8 d-flex flex-wrap">
+    <form-row [label]="'开赛时间'" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <!-- 请选择开赛时间 -->
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'请选择开赛时间'"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <form-row label="地区" class="mr-8">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.area" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of areaList" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 状态 -->
+    <form-row [label]="'状态'" class="mr-8">
+      <ng-template>
+        <mat-form-field>
+          <!-- 请选择状态 -->
+          <mat-select class="form-control" [(ngModel)]="data.status" [placeholder]="'请选择状态'" multiple>
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of statusList" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<sports-category-menu (sportsChange)="sportsMenuChange($event)"></sports-category-menu>
+
+<div class="card card-body mt-8">
+  <div class="d-flex flex-ac flex-between">
+    <div class="fz-20 fw-bolder">赛事列表</div>
+    <form-wrap [style.width.px]="280">
+      <svg-icon
+        [src]="'./assets/images/svg/admin-search.svg'"
+        class="svg-icon svg-icon-2x5 svg-icon-primary"
+      ></svg-icon>
+      <input
+        class="form-control"
+        autocomplete="off"
+        type="text"
+        [(ngModel)]="matchSearch"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+        placeholder="请输入名称或ID查询"
+      />
+    </form-wrap>
+  </div>
+
+  <div class="flex-fill mt-2 match-list">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell"> 球种 </span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>开赛时间</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell"> 地区 </span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>联赛</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell"> 赛事 </span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>人数</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>未结算</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">
+              <span class="cursor-pointer" (click)="onSort('tmpExpiry')">
+                <span>已结算</span>
+                <span class="triangle d-inline-block">
+                  <div class="triangle-up"></div>
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell"> 输赢 </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">
+              <svg-icon
+                class="svg-icon svg-icon-2x5"
+                [src]="'./assets/images/svg/sports/icon-category-0.svg'"
+              ></svg-icon>
+            </span>
+          </td>
+          <td>
+            <span class="cell cursor-pointer" (click)="router.navigate(['/sports/finish-match/edit'])">
+              22/01/22 14:30
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <svg-icon class="svg-icon svg-icon-2x" [src]="'./assets/images/svg/sports/en-logo.svg'"></svg-icon>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <svg-icon
+                class="svg-icon svg-icon-lg mr-5"
+                [src]="'./assets/images/svg/sports/competition/team-logo.svg'"
+              ></svg-icon>
+              <span>英格兰足球超级联赛</span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <div class="d-flex flex-ac">
+                多特蒙德
+                <svg-icon
+                  class="svg-icon svg-icon-lg ml-2"
+                  [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                ></svg-icon>
+              </div>
+              <div class="mx-10">2 : 2</div>
+              <div class="d-flex flex-ac">
+                <svg-icon
+                  class="svg-icon svg-icon-lg mr-2"
+                  [src]="'./assets/images/svg/sports/competition/team-master.svg'"
+                ></svg-icon>
+                多特蒙德
+              </div>
+            </span>
+          </td>
+          <td>
+            <span class="cell"> 1543 </span>
+          </td>
+          <td>
+            <span class="cell"> ¥9,999,999.00 </span>
+          </td>
+          <td>
+            <span class="cell"> ¥9,999,999.00 </span>
+          </td>
+          <td>
+            <ng-container *win="123456; let value; prev as prev">
+              <span class="cell" [winColor]="value" [winColorReverse]="true">
+                {{ prev }}{{ (value | toFormatMoney) || '-' }}
+              </span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

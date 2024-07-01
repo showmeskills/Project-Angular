@@ -1,0 +1,45 @@
+.cashier-container {
+  min-height: 400px;
+
+  .m-top-10 {
+    margin-top: 10px;
+  }
+
+  .withdrawal-limit {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    border: solid 1px var(--default-border-color);
+    border-radius: 4px;
+
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      @media (max-width: 468px) {
+        display: block;
+      }
+    }
+
+    .text {
+      font-size: 14px;
+      color: var(--text-color-20);
+    }
+
+    .h5-top-10 {
+      @media (max-width: 468px) {
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .back-home {
+    margin-top: 12px;
+  }
+}
+
+.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}

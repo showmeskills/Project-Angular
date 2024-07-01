@@ -1,0 +1,88 @@
+<modal-title [title]="'member.activity.sencli12.addGmae' | lang" (close)="modal.dismiss()"></modal-title>
+
+<!-- 游戏搜索 -->
+<div class="d-flex flex-ac flex-center search">
+  <form-wrap [style.width.px]="557" class="mr-8">
+    <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+    <input
+      class="form-control"
+      autocomplete="off"
+      type="text"
+      (focus)="openGameSearch()"
+      (blur)="closeGameSearch()"
+      [(ngModel)]="gameName"
+      [disabled]="isLoading"
+      [placeholder]="'game.manage.keyword' | lang"
+      (ngModelChange)="serachChange()"
+      (keyup)="$event.keyCode === 13 && getGameList(true)"
+    />
+  </form-wrap>
+  <button class="c-btn btn btn-primary h40" [disabled]="isLoading" (mousedown)="gameSearch($event)">
+    {{ 'common.confirm' | lang }}
+  </button>
+
+  <!-- 搜索 - 内容框 -->
+  <div class="custom-scroll-y search-box" [appLoading]="gameLoading" *ngIf="isSearchFlag">
+    <div class="d-flex item" *ngFor="let item of gameList" (mousedown)="onAddGame(item)">
+      <div class="item-images">
+        <img class="w-100 h-100" [src]="item?.webLogo ? (item?.webLogo | host) : './assets/images/game-noCover.png'" />
+      </div>
+      <div class="item-content">
+        <div class="lh-22">{{ item?.name || '-' }}</div>
+        <div class="lh-22">{{ item.providerCatId || '-' }}</div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!gameLoading">
+      <!-- 空显示 -->
+      <empty *ngIf="!gameList.length"></empty>
+
+      <div
+        *ngIf="total && !isListEmptyFlag"
+        class="f-14 text-center cursor-pointer text-primary"
+        (mousedown)="getMoreList($event)"
+      >
+        {{ 'game.manage.load_more' | lang }}
+      </div>
+
+      <div *ngIf="isListEmptyFlag && gameList.length" class="f-14 text-center color-aaa">
+        {{ 'game.manage.no_more' | lang }}
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- 已选择的游戏 -->
+<div class="px-12 fz-16 color-aaa mb-4">{{ 'member.activity.sencli12.selectedGame' | lang }}：</div>
+<div
+  class="modal-body custom-scroll-y pb-8 pt-0 px-12 selected-game"
+  [style.height.px]="400"
+  [appLoading]="selectedGameLoading"
+>
+  <div class="game-box" *ngFor="let item of list; index as i">
+    <img [src]="item?.webLogo ? (item?.webLogo | host) : './assets/images/game-noCover.png'" />
+    <div class="game-content">
+      <div class="content-left">
+        <div class="lh-22 text-overflow" [style.width.px]="200">
+          {{ item?.name || '-' }}
+        </div>
+        <div class="lh-22">{{ item.providerCatId || '-' }}</div>
+      </div>
+      <svg-icon
+        [src]="'./assets/images/svg/admin-del.svg'"
+        class="svg-icon svg-icon-3x cursor-pointer"
+        (click)="list.splice(i, 1)"
+      ></svg-icon>
+    </div>
+  </div>
+
+  <!-- 空显示 -->
+  <empty
+    [style.width.px]="700"
+    [style.height.px]="330"
+    class="pl-20"
+    *ngIf="!list.length && !selectedGameLoading"
+  ></empty>
+</div>
+
+<modal-footer (confirm)="confirm()" (dismiss)="modal.dismiss()"></modal-footer>

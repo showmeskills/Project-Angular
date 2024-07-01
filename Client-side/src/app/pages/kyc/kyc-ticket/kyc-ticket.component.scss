@@ -1,0 +1,375 @@
+div {
+  display: flex;
+}
+
+.pending {
+  color: var(--primary-color) !important;
+}
+
+.decline {
+  color: rgba(207, 48, 74, 1);
+}
+
+.status-success {
+  color: #02c076;
+}
+
+.poa-id-title {
+  white-space: nowrap;
+}
+
+.supply {
+  margin-right: 6px;
+  word-break: break-word;
+  overflow: hidden;
+  max-width: 250px;
+  line-height: 1.48;
+}
+
+.poa-id-status {
+  margin-left: 6px;
+}
+
+.upload-click {
+  align-items: center;
+  flex-wrap: wrap;
+  .upload-btn {
+    align-items: center;
+    padding: 6px;
+    margin-left: 6px;
+    border: solid 1px var(--default-border-color);
+    background: var(--bg-color-10);
+  }
+
+  .icon-exit {
+    transform: rotate(270deg);
+    margin: 0 6px;
+    color: var(--primary-color);
+  }
+}
+
+.ticket-cntainer {
+  padding: 39px 20px 10px;
+  flex-direction: column;
+  background-color: var(--container-bg-color);
+  height: 100%;
+  @media (max-width: 1000px) {
+    padding: 20px 15px 0;
+  }
+
+  .header-1 {
+    font-size: 24px;
+    color: var(--text-color-30);
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    padding-bottom: 30px;
+    position: relative;
+    justify-content: space-between;
+    white-space: nowrap;
+
+    .span-2 {
+      color: #ff580e;
+      font-size: 16px;
+      font-weight: normal;
+    }
+
+    .icon-root {
+      display: none;
+    }
+  }
+
+  .header-2 {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #959cb6;
+    justify-content: space-between;
+    height: 256px;
+
+    .offset-top {
+      height: 210px;
+      flex-direction: column;
+
+      .info-container {
+        align-items: center;
+        width: 100%;
+
+        .star-icon {
+          display: none;
+        }
+
+        &:not(:last-child) {
+          .star-icon {
+            display: flex;
+          }
+        }
+
+        .info-row {
+          padding-bottom: 21px;
+          // display: flex;
+          flex-direction: row;
+          align-items: center;
+          font-weight: 300;
+          font-size: 14px;
+          //
+          display: flex;
+          flex: 1;
+          justify-content: space-between;
+
+          &.hide {
+            display: none;
+          }
+
+          .star-icon {
+            background-size: 100%;
+            height: 30px;
+            width: 30px;
+            background-image: url(src/assets/images/kyc/orang_correct.png);
+            // position: absolute;
+            right: 0;
+            top: 38.5px;
+          }
+
+          .icon-edit-simple,
+          .icon-location,
+          .icon-time,
+          .icon-phone,
+          .icon-bankcard,
+          .icon-ic,
+          .icon-face,
+          .icon-basic {
+            background-size: 100%;
+            height: 12px;
+            width: 12px;
+            margin-right: 5.8px;
+          }
+
+          .icon-edit-simple {
+            background-image: url(src/assets/images/kyc/edit.png);
+          }
+
+          .icon-time {
+            padding-bottom: 14px;
+            background-image: url(src/assets/images/kyc/time.png);
+          }
+
+          .icon-location {
+            background-image: url(src/assets/images/kyc/add_ic.png);
+          }
+
+          .icon-phone {
+            background-repeat: no-repeat;
+            background-size: 12px 12px;
+            background-image: url(src/assets/images/kyc/phone.png);
+          }
+
+          .icon-bankcard {
+            background-repeat: no-repeat;
+            background-size: 12px 13px;
+            background-image: url(src/assets/images/kyc/bankcard.png);
+          }
+
+          .icon-face {
+            background-image: url(src/assets/images/kyc/face_ic.png);
+          }
+
+          .icon-ic {
+            background-image: url(src/assets/images/kyc/ic_1.png);
+          }
+
+          .icon-basic {
+            background-image: url(src/assets/images/kyc/basic.png);
+          }
+        }
+      }
+
+      @media (max-width: 1000px) {
+        height: auto;
+        padding-bottom: 10px;
+      }
+    }
+
+    .pending-time {
+      height: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      padding-bottom: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .pending-time {
+      color: #ff580e;
+
+      .watch-icon {
+        background-size: 100%;
+        height: 20px;
+        width: 20px;
+        margin-right: 8px;
+        background-image: url(src/assets/images/kyc/timer.svg);
+      }
+    }
+
+    .reject-btn,
+    .pending-btn,
+    .pass-btn {
+      width: 100%;
+      height: 46px;
+      border-radius: 25px;
+      //background-color: #e2f9ef;
+      border-color: transparent;
+      font-weight: 300;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: center;
+      user-select: none;
+      line-height: 46px;
+    }
+
+    //------------已完成
+    .pass-btn {
+      color: #02c076 !important;
+      background-color: #e2f9ef !important;
+      cursor: not-allowed;
+    }
+
+    //------------ 审核中
+    .pending-btn {
+      background-color: #f9eee2 !important;
+      color: #ff580e !important;
+    }
+
+    //------------
+    .reject-btn {
+      color: orange !important;
+    }
+
+    //------------去认证
+    .initial-btn {
+      background-color: #ff580e !important;
+      color: var(--text-white-at-night) !important;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .initial-btn,
+    .invalid-btn {
+      width: 100%;
+      height: 46px;
+      border-radius: 4px;
+      border-color: transparent;
+      background-color: var(--default-border-color);
+      color: #b9bfc8;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      line-height: 46px;
+    }
+  }
+
+  .infor-container {
+    padding-top: 30px;
+    color: var(--text-color-20);
+    font-size: 14px;
+    font-weight: 300;
+    flex-direction: column;
+
+    .add-top-border {
+      padding-top: 20px;
+      border-top: 1px solid #ebecf0;
+      border-top-style: dotted;
+
+      &:host-context(.dark) & {
+        border-top-color: #2f4553;
+      }
+    }
+
+    .offset-right {
+      padding-left: 10px;
+      min-height: 79px;
+    }
+    .no-hei {
+      height: auto;
+    }
+
+    .info-column {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-bottom: 0;
+
+      .height {
+        height: 20px;
+        align-items: center;
+      }
+      .center {
+        align-items: center;
+      }
+
+      .icon-toast-success {
+        color: #02c075;
+        font-size: 20px;
+        margin-right: 5px;
+      }
+
+      .header-row {
+        padding-bottom: 20px;
+        .header-row-title {
+          line-height: 1.48;
+          display: block;
+        }
+        //间隙
+        .gap {
+          background-size: 100%;
+          height: 16px;
+          margin-right: 0.4rem;
+          padding-left: 16px;
+          padding-bottom: 1px;
+          width: 16px;
+        }
+      }
+
+      .acinfor-row {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        > * + * {
+          margin-bottom: 6px;
+        }
+        .acinfor-text {
+          line-height: 1.48;
+          font-size: 14px;
+          color: var(--text-color-30);
+          display: flex;
+          align-items: center;
+          word-break: break-word;
+          overflow: hidden;
+          max-width: 300px;
+        }
+      }
+    }
+  }
+}
+
+.reject-status {
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  .txt-container {
+    align-items: center;
+    .txt {
+      text-decoration: underline #f64e60;
+      color: #f64e60;
+      font-size: 14px;
+    }
+    .icon-close-simple {
+      margin: 5px 6px 0 0;
+      &::before {
+        color: var(--text-white-at-night);
+        background-color: var(--primary-color);
+        padding: 4px;
+        border-radius: 50%;
+      }
+    }
+  }
+}

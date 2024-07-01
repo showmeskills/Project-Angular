@@ -1,0 +1,30 @@
+.card-body {
+  padding-top: 20px;
+  .new-cc-tab {
+    display: flex;
+    flex-wrap: wrap;
+    .card-tab-cell {
+      height: 36px;
+      padding: 0 8px;
+      border-radius: 6px;
+      border: dashed 1px #e4e6ef;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      margin: 0 0 10px 20px;
+      color: #3f4254;
+      margin-bottom: 10px;
+      .tab-cc-title {
+        color: #a1a5b7;
+        margin-right: 6px;
+      }
+      &.tab-cell-right {
+        margin-left: auto;
+        border: 1px solid #ccc;
+      }
+    }
+    .card-tab-title {
+      padding-top: 6px;
+    }
+  }
+}

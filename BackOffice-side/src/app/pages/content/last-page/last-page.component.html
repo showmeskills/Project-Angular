@@ -1,0 +1,168 @@
+<ng-template #sortIcon>
+  <span class="info-icon cursor-move">
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+    <span class="icon-sort"></span>
+  </span>
+</ng-template>
+
+<app-last-page-edit
+  *ngIf="edit"
+  [type]="type"
+  (show)="edit = $event"
+  [data]="needUpdateData"
+  (update)="updateData($event)"
+></app-last-page-edit>
+
+<div class="card" [hidden]="edit">
+  <div class="card-body">
+    <div class="d-flex flex-ac mb-10">
+      <div
+        class="platform"
+        *ngFor="let item of platformList; let i = index"
+        [class.active]="selectPlatform.value === item.value"
+        (click)="onSelectedPlatfrom(item)"
+      >
+        {{ item.name }}
+      </div>
+    </div>
+
+    <!-- tab -->
+    <lang-tab [(value)]="selectLang" [(selection)]="curLang" (languageChange)="updateLanguageForm($event)" #lang>
+      <ng-template let-i="i" let-current="current">
+        <ng-container *ngFor="let item of list">
+          <ng-container *ngIf="item.languageCode === current.code">
+            <div class="menu w-100 mt-8">
+              <div class="group" *ngFor="let type of typeList">
+                <div class="fz-20 mb-8 fw-bolder w-100 pl-2">
+                  {{ 'content.foot.' + type.footerType.toLowerCase() | lang }}
+                </div>
+
+                <ng-container *ngFor="let child of item.info">
+                  <ng-container *ngIf="child['footerType'] === type.footerType">
+                    <div
+                      class="label-box"
+                      cdkDropList
+                      cdkDropListOrientation="vertical"
+                      (cdkDropListDropped)="drop($event, child.detail)"
+                    >
+                      <ng-container *ngFor="let foot of child.detail; let i = index">
+                        <div cdkDrag class="game-label-list-item">
+                          <ng-container [ngTemplateOutlet]="sortIcon"></ng-container>
+                          <p (click)="goAddEdit(child['footerType'] === 'Community' ? 'theme-icon' : 'theme', foot)">
+                            <ng-container *ngIf="child['footerType'] !== 'Community'">{{ foot.title }}</ng-container>
+                            <ng-container *ngIf="child['footerType'] === 'Community'">
+                              <img class="d-block" [iconSrc]="appService.joinHost(foot.title)" />
+                            </ng-container>
+                          </p>
+                          <svg-icon
+                            [src]="'./assets/images/svg/admin-del.svg'"
+                            class="svg-icon svg-icon-2x"
+                            (click)="confirm($event, confirmDelete, child.detail, foot)"
+                          ></svg-icon>
+                        </div>
+                      </ng-container>
+                    </div>
+
+                    <div
+                      class="add mt-4"
+                      (click)="
+                        goAddEdit(child['footerType'] === 'Community' ? 'theme-icon' : 'theme', undefined, child.detail)
+                      "
+                    >
+                      <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+                      <p>{{ 'walle.add' | lang }}</p>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="disclaimers w-100 mt-8">
+              <div class="d-flex flex-ac fz-20 mb-8">
+                <div class="fw-bolder">{{ 'content.foot.noRes' | lang }}</div>
+                <span style="color: #f1416c">*</span>
+              </div>
+              <textarea class="content w-100" [(ngModel)]="item.disclaimer.disclaimer"></textarea>
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </lang-tab>
+
+    <div class="w-100 mt-10">
+      <div class="fz-20 mb-8 fw-bolder">{{ 'content.foot.Ishow' | lang }}</div>
+
+      <div class="d-flex flex-ac flex-wrap">
+        <div
+          class="license d-flex flex-ac"
+          (click)="goAddEdit('license', item)"
+          *ngFor="let item of license; let i = index"
+        >
+          <img *ngIf="item.licenseType === 'Picture'" [src]="appService.joinHost(item.image)" alt="" />
+          <div class="license-wrap" *ngIf="item.licenseType === 'Code'">
+            <iframe [src]="item.image | safe: 'resourceUrl'" frameborder="0"></iframe>
+          </div>
+          <div class="license-close" (click)="onDelLicense($event, licenseDelTpl, i)"></div>
+        </div>
+
+        <div class="add" (click)="goAddEdit('license')">
+          <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+          <p>{{ 'walle.add' | lang }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-center w-100 mt-12 mb-12">
+      <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'content.info.save' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除类目 -->
+<ng-template #confirmDelete let-d="dismiss" let-c="close">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'game.provider.notice' | lang }}</div>
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'content.foot.sureDel' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'content.info.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 删除牌照 -->
+<ng-template #licenseDelTpl let-d="dismiss" let-c="close">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'game.provider.notice' | lang }}</div>
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'content.foot.sureDelP' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'content.info.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

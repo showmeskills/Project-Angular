@@ -1,0 +1,98 @@
+@use 'sass/tools' as *;
+
+.cardSelect {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+
+  .cardType {
+    font-size: 16px;
+    color: #373a49;
+    background-color: #fff;
+    padding: 9px 15px;
+    cursor: pointer;
+
+    &:first-child {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    &.active {
+      background-color: #009ef7;
+      color: #fff;
+    }
+  }
+}
+
+::ng-deep {
+  .bank-currency-modal .modal-dialog {
+    max-width: 1000px;
+
+    ::ng-deep {
+      .tab-group {
+        .mat-tab-label {
+          height: 70px;
+          background: #fff !important;
+          flex: 1;
+
+          .mat-tab-label-content {
+            font-size: 17px;
+            font-weight: 600;
+          }
+
+          &-active {
+            .mat-tab-label-content {
+              color: #009ef7;
+            }
+          }
+        }
+      }
+    }
+
+    table {
+      td,
+      th {
+        padding: 0;
+        .cell {
+          min-height: 42px;
+        }
+      }
+    }
+  }
+}
+
+label.form-title {
+  line-height: 42px;
+  margin-bottom: 0;
+}
+
+.tab-content {
+  padding: 0 28px;
+
+  @include tab-line {
+    @at-root {
+      %bd {
+        .suo {
+          width: 86px;
+          height: 34px;
+          text-align: center;
+          line-height: 34px;
+          border-radius: 6px;
+          background-color: #fff5f8;
+          color: #f1416c;
+        }
+
+        .jie {
+          color: #0095e8;
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,31 @@
+<modal-title (close)="modal.dismiss()">{{ 'common.preview' | lang }}</modal-title>
+
+<div>
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th *ngFor="let key of keyList">
+          <span class="cell">{{ key }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list; let i = index">
+        <td *ngFor="let columnKey of keyList; let last = last">
+          <span class="cell">
+            <span [class.text-danger]="columnKey === 'GGR(USDT)' && item[columnKey] < 0">
+              {{ item[columnKey] === 'Grand Total' && this.lang.isLocal ? '总计' : item[columnKey] }}
+            </span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-primary" (click)="modal.close()">
+    {{ 'common.confirm' | lang }}
+  </button>
+</div>

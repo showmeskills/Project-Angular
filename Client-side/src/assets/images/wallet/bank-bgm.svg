@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="370" height="210" viewBox="0 0 370 210">
+  <defs>
+    <clipPath id="clip-path">
+      <path id="路径_1" data-name="路径 1" d="M16,0H354c8.837,0,16,6.869,16,15.342V194.658c0,8.473-7.163,15.342-16,15.342H16c-8.837,0-16-6.869-16-15.342V15.342C0,6.869,7.163,0,16,0Z" transform="translate(33 1165)" fill="#707a8a"/>
+    </clipPath>
+  </defs>
+  <g id="组_804" data-name="组 804" transform="translate(-846 -1225)">
+    <g id="组_803" data-name="组 803">
+      <path id="路径_1-2" data-name="路径 1" d="M16,0H354c8.837,0,16,6.869,16,15.342V194.658c0,8.473-7.163,15.342-16,15.342H16c-8.837,0-16-6.869-16-15.342V15.342C0,6.869,7.163,0,16,0Z" transform="translate(846 1225)" fill="#707a8a"/>
+      <g id="蒙版组_17" data-name="蒙版组 17" transform="translate(813 60)" clip-path="url(#clip-path)">
+        <text id="bank" transform="translate(76 1377)" fill="#fff" font-size="105" font-family="Arial-Black, Arial" font-weight="800" opacity="0.1"><tspan x="0" y="0">BANK</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

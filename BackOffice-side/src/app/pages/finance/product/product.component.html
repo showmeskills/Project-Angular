@@ -1,0 +1,648 @@
+<div class="d-flex flex-wrap">
+  <div class="bg-fff rounded flex-1 product-chart-box">
+    <div class="left-nav">
+      <ul class="chart-box-ul">
+        <li class="active">
+          <div class="li-title">ALL Sports</div>
+          <div class="li-text">34,057.49</div>
+          <div class="li-tip red-text">-0.97%</div>
+        </li>
+        <li>
+          <div class="li-title">ALL Sports</div>
+          <div class="li-text">34,057.49</div>
+          <div class="li-tip red-text">-0.97%</div>
+        </li>
+        <li>
+          <div class="li-title">ALL Sports</div>
+          <div class="li-text">34,057.49</div>
+          <div class="li-tip red-text">-0.97%</div>
+        </li>
+        <li>
+          <div class="li-title">ALL Sports</div>
+          <div class="li-text">34,057.49</div>
+          <div class="li-tip red-text">-0.97%</div>
+        </li>
+      </ul>
+    </div>
+    <div class="right-box">
+      <div class="table-btn-list d-flex">
+        <div class="list-btn active">输赢</div>
+        <div class="list-btn">交易额</div>
+      </div>
+      <div class="charts-box">
+        <apx-chart
+          [series]="lineChart.series"
+          [chart]="lineChart.chart"
+          [xaxis]="lineChart.xAxis"
+          [yaxis]="lineChart.yAxis"
+          [grid]="lineChart.grid"
+          [dataLabels]="lineChart.dataLabels"
+          [stroke]="lineChart.stroke"
+          [fill]="lineChart.fill"
+          [tooltip]="lineChart.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+  <div class="bg-fff rounded flex-1 ml-5 product-chart_uc-box">
+    <div class="table-title-ul-box d-flex">
+      <ul class="table-title-ul">
+        <li class="active">
+          <div class="text-box">盈亏用户分析</div>
+        </li>
+        <li>
+          <div class="text-box">NGR分析</div>
+        </li>
+      </ul>
+    </div>
+    <div class="charts-box">
+      <apx-chart
+        style="width: 100%; height: 100%"
+        [series]="lineChart2.series"
+        [chart]="lineChart2.chart"
+        [xaxis]="lineChart2.xAxis"
+        [yaxis]="lineChart2.yAxis"
+        [grid]="lineChart2.grid"
+        [dataLabels]="lineChart2.dataLabels"
+        [stroke]="lineChart2.stroke"
+        [fill]="lineChart2.fill"
+        [tooltip]="lineChart2.tooltip"
+        #lineChartObj2
+      ></apx-chart>
+    </div>
+    <div class="chart-line-box">
+      <!-- <div class="line-box">
+        <div class="left-line"></div>
+        <div class="mid-line"></div>
+        <div class="right-line"></div>
+      </div> -->
+      <div class="line-text">
+        <div class="line-txt red-text">Decliners:3438</div>
+        <div class="line-txt green-text">Advancers:3438</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="d-flex flex-wrap mt-5">
+  <div class="bg-fff rounded flex-1 product-box">
+    <div class="table-title-ul-box d-flex">
+      <ul class="table-title-ul">
+        <li class="active">
+          <div class="text-box">top gainers</div>
+        </li>
+        <li>
+          <div class="text-box">top losers</div>
+        </li>
+      </ul>
+      <div class="right">币种：USDT<img class="vam rounded-circle" [currencyIcon]="'USDT'" alt="" /></div>
+    </div>
+
+    <div class="table-btn-list d-flex">
+      <div class="list-btn active">30Mins</div>
+      <div class="list-btn">1Hr</div>
+      <div class="list-btn">1Day</div>
+      <div class="list-btn">7Day</div>
+      <div class="list-btn">1M</div>
+      <div class="list-btn">3M</div>
+      <div class="list-btn">1Y</div>
+    </div>
+    <table class="w-100 fz-12 mt-4 table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>交易额</th>
+          <th>累计输赢</th>
+          <th>用户余额</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="icon-country"><i class="country countryIcon country-China"></i></span>
+            01111232
+          </td>
+          <td>3.000</td>
+          <td class="green-text">+38,800,00</td>
+          <td>62,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="more-btn" (click)="openPopup(0)">查看全部 ></div>
+  </div>
+  <div class="bg-fff rounded flex-1 ml-5 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">Most active</div>
+    </div>
+    <div class="table-btn-list d-flex">
+      <div class="list-btn active">交易额</div>
+      <div class="list-btn">交易量</div>
+      <div class="list-btn">赢利率</div>
+      <div class="list-btn">大赢家</div>
+    </div>
+    <table class="w-100 fz-12 mt-4 table">
+      <thead>
+        <tr>
+          <th>名次</th>
+          <th>UID</th>
+          <th>交易额</th>
+          <th>累计输赢</th>
+          <th>用户余额</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <svg-icon src="./assets/images/dashboard/gold.svg"></svg-icon>
+          </td>
+          <td>
+            <span class="icon-country"><i class="country countryIcon country-China"></i></span>
+            01111232
+          </td>
+          <td>3.000</td>
+          <td class="green-text">+38,800,00</td>
+          <td>62,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="more-btn" (click)="openPopup(1)">查看全部 ></div>
+  </div>
+  <div class="bg-fff rounded flex-1 ml-5 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">产品中心</div>
+    </div>
+    <ul class="ul-table-list">
+      <li>
+        <div class="li-title">体育</div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">注单数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易人数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易金额</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">输赢</p>
+        </div>
+        <div class="li-more-icon">></div>
+      </li>
+      <li>
+        <div class="li-title green-title">原创&彩票</div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">注单数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易人数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易金额</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">输赢</p>
+        </div>
+        <div class="li-more-icon">></div>
+      </li>
+      <li>
+        <div class="li-title red-title">小游戏</div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">注单数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易人数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易金额</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">输赢</p>
+        </div>
+        <div class="li-more-icon">></div>
+      </li>
+      <li>
+        <div class="li-title purple-title">真人</div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">注单数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易人数</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">交易金额</p>
+        </div>
+        <div class="li-text">
+          <p>123123</p>
+          <p class="p-tip">输赢</p>
+        </div>
+        <div class="li-more-icon">></div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="d-flex flex-wrap mt-5">
+  <div class="bg-fff rounded flex-1 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">体育&电子竞技</div>
+    </div>
+    <div class="table-btn-list d-flex">
+      <div class="list-btn active">取消率</div>
+      <div class="list-btn">赢利率</div>
+      <div class="list-btn">兑现率</div>
+      <div class="list-btn">低返还</div>
+      <div class="list-btn">大赢家</div>
+    </div>
+    <table class="w-100 fz-12 mt-4 table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>交易额</th>
+          <th>累计输赢</th>
+          <th>用户余额</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>01111232</td>
+          <td>3.000</td>
+          <td class="green-text">+38,800,00</td>
+          <td>62,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="more-btn" (click)="openPopup(1)">查看全部 ></div>
+  </div>
+  <div class="bg-fff rounded flex-1 ml-5 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">原创&彩票</div>
+    </div>
+    <div class="table-btn-list d-flex">
+      <div class="list-btn active">交易额</div>
+      <div class="list-btn">交易量</div>
+      <div class="list-btn">赢利率</div>
+      <div class="list-btn">大赢家</div>
+    </div>
+    <table class="w-100 fz-12 mt-4 table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>交易额</th>
+          <th>累计输赢</th>
+          <th>用户余额</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>01111232</td>
+          <td>3.000</td>
+          <td class="green-text">+38,800,00</td>
+          <td>62,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="more-btn" (click)="openPopup(1)">查看全部 ></div>
+  </div>
+  <div class="bg-fff rounded flex-1 ml-5 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">5分钟高频交易</div>
+    </div>
+    <ul class="chart-ul">
+      <li>
+        <div class="title-text">英格兰超级联赛</div>
+        <div class="p-text">曼城VS利物浦</div>
+        <div class="tip-text red-text">15-20</div>
+        <div class="tip-text green-text">65.5%</div>
+        <div class="chart-box">
+          <apx-chart
+            [series]="barChartOptions.series"
+            [chart]="barChartOptions.chart"
+            [xaxis]="barChartOptions.xAxis"
+            [yaxis]="barChartOptions.yAxis"
+            [grid]="barChartOptions.grid"
+            [dataLabels]="barChartOptions.dataLabels"
+            [stroke]="barChartOptions.stroke"
+            [fill]="barChartOptions.fill"
+            [tooltip]="barChartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </li>
+      <li class="mid-li">
+        <div class="title-text">英格兰超级联赛</div>
+        <div class="p-text">曼城VS利物浦</div>
+        <div class="tip-text red-text">15-20</div>
+        <div class="tip-text green-text">65.5%</div>
+        <div class="chart-box">
+          <apx-chart
+            [series]="barChartOptions.series"
+            [chart]="barChartOptions.chart"
+            [xaxis]="barChartOptions.xAxis"
+            [yaxis]="barChartOptions.yAxis"
+            [grid]="barChartOptions.grid"
+            [dataLabels]="barChartOptions.dataLabels"
+            [stroke]="barChartOptions.stroke"
+            [fill]="barChartOptions.fill"
+            [tooltip]="barChartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </li>
+      <li>
+        <div class="title-text">英格兰超级联赛</div>
+        <div class="p-text">曼城VS利物浦</div>
+        <div class="tip-text red-text">15-20</div>
+        <div class="tip-text green-text">65.5%</div>
+        <div class="chart-box">
+          <apx-chart
+            [series]="barChartOptions.series"
+            [chart]="barChartOptions.chart"
+            [xaxis]="barChartOptions.xAxis"
+            [yaxis]="barChartOptions.yAxis"
+            [grid]="barChartOptions.grid"
+            [dataLabels]="barChartOptions.dataLabels"
+            [stroke]="barChartOptions.stroke"
+            [fill]="barChartOptions.fill"
+            [tooltip]="barChartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </li>
+    </ul>
+    <ul class="chart-ul">
+      <li>
+        <div class="title-text">英格兰超级联赛</div>
+        <div class="p-text">曼城VS利物浦</div>
+        <div class="tip-text red-text">15-20</div>
+        <div class="tip-text green-text">65.5%</div>
+        <div class="chart-box">
+          <apx-chart
+            [series]="barChartOptions.series"
+            [chart]="barChartOptions.chart"
+            [xaxis]="barChartOptions.xAxis"
+            [yaxis]="barChartOptions.yAxis"
+            [grid]="barChartOptions.grid"
+            [dataLabels]="barChartOptions.dataLabels"
+            [stroke]="barChartOptions.stroke"
+            [fill]="barChartOptions.fill"
+            [tooltip]="barChartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </li>
+      <li class="mid-li">
+        <div class="title-text">英格兰超级联赛</div>
+        <div class="p-text">曼城VS利物浦</div>
+        <div class="tip-text red-text">15-20</div>
+        <div class="tip-text green-text">65.5%</div>
+        <div class="chart-box">
+          <apx-chart
+            [series]="barChartOptions.series"
+            [chart]="barChartOptions.chart"
+            [xaxis]="barChartOptions.xAxis"
+            [yaxis]="barChartOptions.yAxis"
+            [grid]="barChartOptions.grid"
+            [dataLabels]="barChartOptions.dataLabels"
+            [stroke]="barChartOptions.stroke"
+            [fill]="barChartOptions.fill"
+            [tooltip]="barChartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </li>
+      <li>
+        <div class="title-text">英格兰超级联赛</div>
+        <div class="p-text">曼城VS利物浦</div>
+        <div class="tip-text red-text">15-20</div>
+        <div class="tip-text green-text">65.5%</div>
+        <div class="chart-box">
+          <apx-chart
+            [series]="barChartOptions.series"
+            [chart]="barChartOptions.chart"
+            [xaxis]="barChartOptions.xAxis"
+            [yaxis]="barChartOptions.yAxis"
+            [grid]="barChartOptions.grid"
+            [dataLabels]="barChartOptions.dataLabels"
+            [stroke]="barChartOptions.stroke"
+            [fill]="barChartOptions.fill"
+            [tooltip]="barChartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </li>
+    </ul>
+    <div class="more-btn" (click)="openPopup(1)">查看全部 ></div>
+  </div>
+</div>
+<div class="d-flex flex-wrap mt-5">
+  <div class="bg-fff rounded flex-1 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">真人娱乐</div>
+    </div>
+    <div class="table-btn-list d-flex">
+      <div class="list-btn active">交易额</div>
+      <div class="list-btn">交易量</div>
+      <div class="list-btn">盈利率</div>
+      <div class="list-btn">大赢家</div>
+    </div>
+    <table class="w-100 fz-12 mt-4 table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>交易额</th>
+          <th>累计输赢</th>
+          <th>用户余额</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>01111232</td>
+          <td>3.000</td>
+          <td class="green-text">+38,800,00</td>
+          <td>62,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="more-btn" (click)="openPopup(1)">查看全部 ></div>
+  </div>
+  <div class="bg-fff rounded flex-1 ml-5 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">casino</div>
+    </div>
+    <div class="table-btn-list d-flex">
+      <div class="list-btn active">交易额</div>
+      <div class="list-btn">交易量</div>
+      <div class="list-btn">盈利率</div>
+      <div class="list-btn">大赢家</div>
+    </div>
+    <table class="w-100 fz-12 mt-4 table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>交易额</th>
+          <th>累计输赢</th>
+          <th>用户余额</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>01111232</td>
+          <td>3.000</td>
+          <td class="green-text">+38,800,00</td>
+          <td>62,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="more-btn" (click)="openPopup(1)">查看全部 ></div>
+  </div>
+  <div class="bg-fff rounded flex-1 ml-5 product-box">
+    <div class="table-title-box">
+      <div class="fz-20">棋牌</div>
+    </div>
+    <div class="table-btn-list d-flex">
+      <div class="list-btn active">交易额</div>
+      <div class="list-btn">交易量</div>
+      <div class="list-btn">盈利率</div>
+    </div>
+    <table class="w-100 fz-12 mt-4 table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>交易额</th>
+          <th>累计输赢</th>
+          <th>用户余额</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>01111232</td>
+          <td>3.000</td>
+          <td class="green-text">+38,800,00</td>
+          <td>62,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="more-btn" (click)="openPopup(1)">查看全部 ></div>
+  </div>
+</div>
+
+<!-- 列表弹窗组件 -->
+<ng-template #listPopup>
+  <div class="modal-content user-popup h-100">
+    <div class="modal-header">
+      <div class="modal-title">
+        <svg-icon
+          (click)="closeListPopup()"
+          [src]="'./assets/images/svg/admin-close.svg'"
+          class="svg-icon cursor-pointer"
+        ></svg-icon>
+        <span class="text-vertical ml-10">Top Gainers</span>
+      </div>
+    </div>
+
+    <main class="modal-body custom-scroll-y">
+      <div class="table-title-ul-box d-flex" *ngIf="listPopupKey === 0; else allTitle">
+        <ul class="table-title-ul">
+          <li class="active">
+            <div class="text-box">top gainers</div>
+          </li>
+          <li>
+            <div class="text-box">top losers</div>
+          </li>
+        </ul>
+        <div class="right">
+          <form-row label="产品" class="pb-0 pt-0" [contentWidth]="100">
+            <ng-template>
+              <mat-form-field [style.width.px]="100">
+                <mat-select class="form-control">
+                  <mat-option value="">体育</mat-option>
+                  <mat-option value="1">体育</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </ng-template>
+          </form-row>
+        </div>
+      </div>
+      <ng-template #allTitle>
+        <div class="d-flex flex-ac">
+          <button class="btn-primary btn text-nowrap px-6 mx-2">体育</button>
+          <button class="btn-default btn text-nowrap px-6 mx-2">真人</button>
+          <button class="btn-default btn text-nowrap px-6 mx-2">小游戏</button>
+          <button class="btn-default btn text-nowrap px-6 mx-2">原创游戏</button>
+        </div>
+      </ng-template>
+
+      <div class="user-popup-content custom-scroll-y">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>
+                <span class="cell">UID</span>
+              </th>
+              <th>
+                <span class="cell">交易量</span>
+              </th>
+              <th>
+                <span class="cell">累计输赢</span>
+              </th>
+              <th>
+                <span class="cell">用户余额</span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="color-222">
+            <tr *ngFor="let item of list; let i = index">
+              <td>
+                <span class="icon-country"><i class="country countryIcon country-China"></i></span>
+                01111232
+              </td>
+              <td>3.000</td>
+              <td class="green-text">+38,800,00</td>
+              <td>62,000</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- 空显示 -->
+        <div class="container-empty" *ngIf="!list.length && !isLoading">
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt">{{ 'common.emptyText' | lang }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between flex-ac w-100 mt-8" *ngIf="list.length > 0">
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginator"
+          [isLoading]="isLoading"
+        ></app-paginator>
+      </div>
+    </main>
+  </div>
+</ng-template>

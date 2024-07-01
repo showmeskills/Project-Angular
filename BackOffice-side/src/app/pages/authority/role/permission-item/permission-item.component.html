@@ -1,0 +1,102 @@
+<ng-template #permissionTpl let-item let-disabled="disabled">
+  <!-- 末尾权限显示 -->
+  <ng-container *ngIf="item?.permissions?.length">
+    <div class="d-flex pl-8 pr-6">
+      <!-- 权限组名 -->
+      <div class="expansion-item-header">
+        <label
+          [attrDisabled]="disabled"
+          class="checkbox checkbox-lg"
+          [class.checkbox-indeterminate]="item['indeterminatePermission']"
+        >
+          <input
+            [disabled]="disabled"
+            type="checkbox"
+            [(ngModel)]="item['checkedPermission']"
+            (change)="onChangeSub(item)"
+          />
+          <span class="mr-4"></span>{{ item.name }}
+        </label>
+      </div>
+
+      <!-- 权限内容 -->
+      <div class="item-list text-nowrap d-flex flex-wrap">
+        <div class="d-flex flex-wrap mr-8" *ngFor="let sub of item.permissions">
+          <label class="checkbox checkbox-lg" [attrDisabled]="disabled">
+            <input [disabled]="disabled" type="checkbox" [(ngModel)]="sub['checked']" (change)="onChange(sub)" />
+            <span class="mr-4"></span>{{ sub.name }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<div class="expansion-wrap" *ngIf="data">
+  <ng-container *ngIf="data?.subTitles?.length || data?.permissions?.length">
+    <div class="expansion-header" (click)="onChangeOpen($event)">
+      <!-- 组名 -->
+      <div>
+        <label
+          class="checkbox checkbox-lg"
+          [class.checkbox-indeterminate]="data['indeterminate']"
+          [attrDisabled]="hasDisabled"
+        >
+          <input
+            type="checkbox"
+            [disabled]="hasDisabled"
+            [(ngModel)]="data['checked']"
+            (change)="onChange(data, true)"
+          />
+          <span class="mr-4"></span>{{ data.name }}
+        </label>
+      </div>
+
+      <div class="mat-select-arrow arrow" *ngIf="hasPermission(data)"></div>
+    </div>
+
+    <!-- 权限渲染 Ver.2 -->
+    <ng-container *ngIf="data?.permissions?.length">
+      <div class="expansion-list" *ngIf="open">
+        <div class="expansion-item">
+          <!-- 层级嵌套 -->
+          <ng-container
+            [ngTemplateOutlet]="permissionTpl"
+            [ngTemplateOutletContext]="{ $implicit: data, disabled: hasDisabled }"
+          ></ng-container>
+        </div>
+      </div>
+    </ng-container>
+    <!-- 权限渲染 Ver.2 /.结束 -->
+
+    <!-- 分组下的权限渲染 -->
+    <ng-container *ngIf="data?.subTitles?.length">
+      <div class="expansion-list" *ngIf="open">
+        <ng-container *ngFor="let item of data.subTitles">
+          <div class="expansion-item" *ngIf="item?.permissions?.length || item.subTitles.length">
+            <!-- 层级嵌套 -->
+            <ng-container
+              [ngTemplateOutlet]="permissionTpl"
+              [ngTemplateOutletContext]="{ $implicit: item, disabled: hasDisabled }"
+            ></ng-container>
+
+            <ng-container *ngIf="item.subTitles.length">
+              <permission-item
+                [disabled]="hasDisabled"
+                [data]="item"
+                (updateCheck)="_updateAllCheckStatus()"
+              ></permission-item>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <!-- 只有权限渲染 Ver.1 -->
+  <!--  <ng-container-->
+  <!--    *ngIf="!data?.subTitles?.length && data?.permissions?.length"-->
+  <!--    [ngTemplateOutlet]="permissionTpl"-->
+  <!--    [ngTemplateOutletContext]="{ $implicit: data }"-->
+  <!--  ></ng-container>-->
+</div>

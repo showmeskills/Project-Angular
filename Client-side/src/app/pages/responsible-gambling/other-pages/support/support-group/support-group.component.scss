@@ -1,0 +1,66 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.group-container {
+  padding-top: 50px;
+  padding-bottom: 68px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text-decoration {
+  text-decoration: underline;
+}
+
+.text-center {
+  text-align: center;
+
+  @media (max-width: 767px) {
+    text-align: left;
+  }
+}
+
+.second-line {
+  margin-left: 30px;
+  color: inherit;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  max-width: 471px;
+  flex: 1;
+
+  @media (max-width: 767px) {
+    max-width: 100%;
+  }
+
+  .level-two {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @media (max-width: 767px) {
+      display: block;
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+  }
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  @include polyfills.flex-gap(10px, 'row nowrap');
+}
+
+.cut-line {
+  width: 100%;
+  height: 1px;
+  background-color: var(--default-border-color);
+}

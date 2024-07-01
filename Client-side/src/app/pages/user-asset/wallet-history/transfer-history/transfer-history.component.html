@@ -1,0 +1,274 @@
+<div class="container">
+  <ng-container *ngIf="!isH5; else H5page">
+    <div class="search-bar" [class.disabled]="loading">
+      <div class="options">
+        <app-customize-form-group>
+          <div class="wallet-switch">
+            <app-customize-select
+              [(value)]="selectedFromWallet"
+              [label]="'from' | translate"
+              [options]="fromWalletOptions"
+              [valueKey]="'code'"
+              [textKey]="'description'"
+              (onSelect)="changeFromWallet()"
+            >
+            </app-customize-select>
+            <div
+              class="switch-icon mutual-opacity onact96-not"
+              [class.disabled]="selectedToWallet === ''"
+              (click)="switchWallet()"
+            ></div>
+            <app-customize-select
+              [(value)]="selectedToWallet"
+              [label]="'to' | translate"
+              [options]="toWalletOptions | unshift : allToWalletOption"
+              [valueKey]="'code'"
+              [textKey]="'description'"
+              (onSelect)="changeToWallet()"
+            ></app-customize-select>
+          </div>
+          <app-customize-select
+            [(value)]="selectedCurrency"
+            [label]="'curr' | translate"
+            [options]="currencies | unshift : walletHistoryService.CURRENCY_ALL"
+            [valueKey]="'currency'"
+            [textKey]="'currency'"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="selectedTimeValue"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [label]="'scope' | translate"
+            [options]="timeOptions"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="selectedStatus"
+            [label]="'status' | translate"
+            [options]="statusOptions"
+            [valueKey]="'value'"
+            [textKey]="'name'"
+          ></app-customize-select>
+          <div class="form-group-align">
+            <customize-button size="small" type="text" (onClick)="reset()" [plain]="true">
+              {{ 'reset' | translate }}
+            </customize-button>
+            <customize-button size="small" type="text" (onClick)="searchLoadData()" [plain]="true" [active]="true">
+              {{ 'filter' | translate }}
+            </customize-button>
+          </div>
+        </app-customize-form-group>
+      </div>
+    </div>
+
+    <!-- web -->
+    <div class="data-list" [appLoading]="loading">
+      <table *ngIf="transferData.length > 0">
+        <thead>
+          <th>{{ 'dates' | translate }}</th>
+          <th>{{ 'order' | translate }}</th>
+          <th>{{ 'from' | translate }}</th>
+          <th>{{ 'to' | translate }}</th>
+          <th>{{ 'amount' | translate }}</th>
+          <th>{{ 'status' | translate }}</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of transferData">
+            <td>{{ item.createdTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+            <td>{{ item.transactionId }}</td>
+            <td>{{ item.fromWallet }}</td>
+            <td>{{ item.toWallet }}</td>
+            <td [attr.data-label]="'amount' | translate">
+              <p class="text">
+                {{ item.amount | currencyValue : item.currency }}
+              </p>
+              <img class="currency-img" [src]="item.currency | currencyIcon" />
+            </td>
+            <td>{{ getStatusTemplate(item.status)?.text }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <app-empty *ngIf="transferData.length === 0 && !loading"></app-empty>
+      <app-paginator
+        *ngIf="transferData.length > 0"
+        [(page)]="paginator.page"
+        [total]="paginator.total"
+        [pageSize]="paginator.pageSize"
+        [disabled]="loading"
+        [loading]="loading"
+        (onPageChange)="loadData()"
+      >
+      </app-paginator>
+    </div>
+  </ng-container>
+
+  <!-- H5 -->
+  <ng-template #H5page>
+    <div class="search-bar">
+      <app-customize-form-group>
+        <div class="form-group-align margin-left-auto">
+          <i class="search-h5-bar-filter icon-filter mutual-opacity onact96-not" (click)="openh5Filter()"></i>
+        </div>
+      </app-customize-form-group>
+    </div>
+
+    <ul class="data-h5-list" [appLoading]="loading">
+      <li class="item" *ngFor="let item of transferData">
+        <div class="group first">
+          <span>{{ 'trans' | translate }}</span>
+          <p class="onact96-not" [ngClass]="[getStatusTemplate(item.status)?.calss]" (click)="openh5Detail(item)">
+            {{ getStatusTemplate(item.status)?.text }}
+            <i class="icon-arrow-right-simple"></i>
+          </p>
+        </div>
+        <div class="group">
+          <span>{{ 'dates' | translate }}：</span>
+          <p>{{ item.createdTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+        </div>
+        <div class="group">
+          <span>{{ 'amount' | translate }}：</span>
+          <p>
+            {{ item.amount }}
+            <img [src]="item.currency | currencyIcon" />
+          </p>
+        </div>
+        <div class="group">
+          <span>{{ 'trans' | translate }}</span>
+          <p>
+            <span>{{ 'from' | translate }}</span
+            >&nbsp;{{ item.fromWallet }}&nbsp;<span>{{ 'to' | translate }}</span
+            >&nbsp;{{ item.toWallet }}
+          </p>
+        </div>
+        <div class="group">
+          <span>{{ 'order' | translate }}：</span>
+          <p>{{ item.transactionId }}</p>
+        </div>
+      </li>
+      <app-empty *ngIf="transferData.length === 0 && !loading" [text]="'no_record' | translate"></app-empty>
+
+      <app-paginator
+        [(page)]="paginator.page"
+        [total]="paginator.total"
+        [pageSize]="paginator.pageSize"
+        [disabled]="loading"
+        [loading]="loading"
+        (onPageChange)="loadData()"
+      >
+      </app-paginator>
+    </ul>
+  </ng-template>
+</div>
+
+<!-- h5选择选项弹窗模板 -->
+<ng-template #h5Filter>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="h5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <div class="wallet-switch-h5">
+          <div class="left">
+            <app-customize-select
+              [(value)]="selectedFromWallet"
+              [label]="'from' | translate"
+              [options]="fromWalletOptions"
+              [valueKey]="'code'"
+              [textKey]="'description'"
+              (onSelect)="changeFromWallet()"
+            ></app-customize-select>
+            <app-customize-select
+              [(value)]="selectedToWallet"
+              [label]="'to' | translate"
+              [options]="toWalletOptions | unshift : allToWalletOption"
+              [valueKey]="'code'"
+              [textKey]="'description'"
+              (onSelect)="changeToWallet()"
+            ></app-customize-select>
+          </div>
+          <div
+            class="switch-icon rotate mutual-opacity onact96-not"
+            [class.disabled]="selectedToWallet === ''"
+            (click)="switchWallet()"
+          ></div>
+        </div>
+        <app-customize-select
+          [(value)]="selectedCurrency"
+          [label]="'curr' | translate"
+          [options]="currencies | unshift : walletHistoryService.CURRENCY_ALL"
+          [valueKey]="'currency'"
+          [textKey]="'currency'"
+        ></app-customize-select>
+        <app-customize-select
+          [(value)]="selectedTimeValue"
+          [(timeValue)]="selectedTime"
+          [timeDance]="true"
+          [label]="'scope' | translate"
+          [options]="timeOptions"
+        ></app-customize-select>
+        <app-customize-select
+          [(value)]="selectedStatus"
+          [label]="'status' | translate"
+          [options]="statusOptions"
+          [valueKey]="'value'"
+          [textKey]="'name'"
+        ></app-customize-select>
+      </app-customize-form-group>
+      <div class="popup-btn-group">
+        <customize-button width="100%" (onClick)="reset()">
+          {{ 'reset' | translate }}
+        </customize-button>
+        <customize-button
+          class="popup-btn-margin-left"
+          type="primary"
+          width="100%"
+          (onClick)="h5FilterPopup.close(); searchLoadData()"
+        >
+          {{ 'filter' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- h5详情弹窗模板 -->
+<ng-template #detailData>
+  <div class="h5-detail-popup" *ngIf="selectedItem">
+    <div class="title">
+      <span>{{ 'trans_details' | translate }}</span>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="detailDataPopup.close()"></i>
+    </div>
+    <ul class="info-box">
+      <li class="group">
+        <span>{{ 'date' | translate }}</span>
+        <p>{{ selectedItem.createdTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'order' | translate }}</span>
+        <p>{{ selectedItem.transactionId }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'wallet' | translate }}</span>
+        <p>
+          <span>{{ 'from' | translate }} </span>
+          {{ selectedItem.fromWallet }}
+          <span> {{ 'to' | translate }} </span>
+          {{ selectedItem.toWallet }}
+        </p>
+      </li>
+      <li class="group">
+        <span>{{ 'curr' | translate }}</span>
+        <p>{{ selectedItem.currency }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'trans_quantity' | translate }}</span>
+        <p>{{ selectedItem.amount }}</p>
+      </li>
+      <li class="group">
+        <span>{{ 'status' | translate }}</span>
+        <p>{{ getStatusTemplate(selectedItem.status)?.text }}</p>
+      </li>
+    </ul>
+  </div>
+</ng-template>

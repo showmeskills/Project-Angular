@@ -1,0 +1,61 @@
+<div class="modal-content addLabelPoup">
+  <modal-title
+    [title]="isEdit ? ('session.theme.editTheme' | lang) : ('session.theme.addTheme' | lang)"
+    (close)="modal.dismiss()"
+  ></modal-title>
+  <div class="modal-body">
+    <div class="main mb-10">
+      <!-- <form-row [label]="'session.theme.themeName' | lang" label-width="150" required>
+        <ng-template>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="typeName"
+            [placeholder]="'session.theme.placeholderThemeName' | lang"
+          />
+        </ng-template>
+      </form-row> -->
+
+      <div class="mb-10">
+        <form-row [label]="'session.theme.type' | lang" label-width="150" required>
+          <ng-template>
+            <mat-form-field class="w-100">
+              <mat-select class="form-control" [(ngModel)]="categoryId">
+                <mat-option *ngFor="let item of list" [value]="item.id">
+                  {{ lang.isLocal ? item.nameCn : item.nameEn }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+      </div>
+      <lang-tab #langTab formArrayName="lang" [(value)]="selectLang" [edit]="false">
+        <ng-template let-i="i" let-current="current">
+          <form-row
+            [label]="i === 0 ? ('session.theme.themeName' | lang) : ('session.theme.themeNameEn' | lang)"
+            label-width="150"
+            required
+          >
+            <ng-template>
+              <input
+                *ngIf="i === 0"
+                type="text"
+                class="form-control"
+                [(ngModel)]="nameCn"
+                [placeholder]="'session.theme.placeholderThemeName' | lang"
+              />
+              <input
+                *ngIf="i === 1"
+                type="text"
+                class="form-control"
+                [(ngModel)]="nameEn"
+                [placeholder]="'session.theme.placeholderThemeName' | lang"
+              />
+            </ng-template>
+          </form-row>
+        </ng-template>
+      </lang-tab>
+    </div>
+    <modal-footer (confirm)="onAddLabelSubmit()" (dismiss)="modal.dismiss()"></modal-footer>
+  </div>
+</div>

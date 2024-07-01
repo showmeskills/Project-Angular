@@ -1,0 +1,491 @@
+<div class="none-sticky-container" [class.disabled]="renderComponentLoading()">
+  <div class="card-banner-container">
+    <img class="logo" src="assets/images/card-center/none-sticky-logo.png" lazy="loading" />
+    <div class="none-sticky-details">
+      <ng-container *ngFor="let item of renderOverview() | keyvalue; let index = index">
+        <div class="details-item">
+          <div class="defails-text">
+            {{ item.value.text || '' }}
+            <app-tool-tip class="none-sticky-tips" *ngIf="item.value?.showToolTips && !renderOverviewLoading()">
+              <i origin class="icon-warning mutual-opacity"></i>
+              <div tooltip class="tip-details" *ngFor="let tips of item.value.cashableBonusInfos">
+                {{ tips.currency }}:
+                {{ tips.amount | currencyValue: tips.currency || 'USDT' | replace: ',' : '' | stripTrailingZeros }}
+              </div>
+            </app-tool-tip>
+          </div>
+          <div class="defails-amount" [class.active-amount]="index === 0">
+            {{
+              item.value.amount | currencyValue: item.value.currency || 'USDT' | replace: ',' : '' | stripTrailingZeros
+            }}
+            {{ item.value.currency }}
+          </div>
+        </div>
+        <div class="line" *ngIf="index < 3"></div>
+      </ng-container>
+    </div>
+    <div class="btn-group">
+      <customize-button
+        class="receive-btn"
+        type="primary"
+        size="medium"
+        (onClick)="onReceiveAll()"
+        [disabled]="isCanClickOneCall() || renderOneCallLoading()"
+        [loading]="renderOneCallLoading()"
+      >
+        {{ 'get_card' | translate }}
+      </customize-button>
+      <app-exchange-btn (reloadData)="onReload()"></app-exchange-btn>
+    </div>
+  </div>
+  <div class="none-sticky-cards" [appLoading]="renderActivatedCardsLoading() || renderInActivatedLoading()">
+    <div class="sticky-title" *ngIf="renderActivatedCards()">{{ 'active_rewards' | translate }}</div>
+    <div class="active-card" [class.grid]="renderActivatedCards()">
+      <ng-container *ngIf="renderActivatedCards()">
+        <ng-container *ngFor="let card of renderActivatedCards() | keyvalue; let index = index">
+          <div class="active-card-details" *ngIf="card.value">
+            <p class="details-title">{{ (card.key === 'casinoBonus' ? 'cas' : 'live_cas') | translate }}</p>
+            <div
+              class="card"
+              [class.casino-card]="card.key === 'casinoBonus'"
+              [class.live-casino]="card.key !== 'casinoBonus'"
+            >
+              <div class="card-left">
+                <p class="card-title">{{ (card.key === 'casinoBonus' ? 'cas' : 'live_cas') | translate }}</p>
+                <ng-container *ngIf="!card.value.showIntro">
+                  <i
+                    class="icon-warning mutual-opacity"
+                    *ngIf="!card.value.loading"
+                    (click)="getNoneStickyDetail(card.value)"
+                  ></i>
+                  <i class="animation-icon-loading-dot icon-warning-dot" *ngIf="card.value.loading"
+                    ><i></i><i></i><i></i
+                  ></i>
+                  <img
+                    class="type-img"
+                    *ngIf="!card.value.isFreeSpin; else freeSpinImg"
+                    [src]="'assets/images/card-center/' + card.value.typeCode + '.png'"
+                    #typeImg
+                    (error)="onImageError(typeImg)"
+                  />
+                  <ng-template #freeSpinImg>
+                    <app-lazy-image [lazy]="card.value.freeSpinImage || defaultImg" [radius]="160"></app-lazy-image>
+                  </ng-template>
+                </ng-container>
+                <ng-container *ngIf="card.value.showIntro">
+                  <i class="icon-close-simple mutual-opacity" (click)="card.value.showIntro = false"></i>
+                  <div class="intro" [class.active-intro]="isH5() && card.value.showIntro">
+                    <app-scrollbar>
+                      <div class="card-left-num">
+                        <p class="text">{{ 'bet_requirement' | translate }}</p>
+                        <p class="txt-number">{{ card.value.rates }}</p>
+                      </div>
+                      <ng-container
+                        *ngTemplateOutlet="
+                          activeCard;
+                          context: { card: card, show: isH5() && card.value.showIntro, showBar: false }
+                        "
+                      ></ng-container>
+                      <div class="card-title title" *ngIf="!card.value.loading">{{ 'terms' | translate }}</div>
+                      <p class="card-content" *ngIf="!card.value.loading" [innerHtml]="card.value.intro"></p>
+                    </app-scrollbar>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="card-right">
+                <ng-container
+                  *ngTemplateOutlet="activeCard; context: { card: card, show: !isH5(), showBar: true }"
+                ></ng-container>
+                <ng-container
+                  *ngTemplateOutlet="
+                    activeCard;
+                    context: { card: card, show: isH5() && !card.value.showIntro, showBar: true }
+                  "
+                ></ng-container>
+                <ng-container *ngIf="isH5() && !card.value.showIntro"> </ng-container>
+                <customize-button
+                  class="active-btn"
+                  [radius]="'30px'"
+                  size="medium"
+                  [class.give-up]="card.value.showIntro"
+                  (onClick)="onHandleActiveCard(card.value)"
+                  [disabled]="
+                    card.value.submitLoading || card.value.loading || (card.value.isLocked && !card.value.showIntro)
+                  "
+                  [loading]="card.value.submitLoading"
+                >
+                  {{ card.value.showIntro ? ('give_up_1' | translate) : ('go_to_bet' | translate) }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <app-empty
+        *ngIf="
+          !renderActivatedCards() &&
+          !renderInActivatedCards() &&
+          !renderInActivatedLoading() &&
+          !renderComponentLoading()
+        "
+        [icon]="'assets/images/card-center/empty.png'"
+        [text]="'no_coupons_yet' | translate"
+      >
+      </app-empty>
+    </div>
+    <div class="sticky-title" *ngIf="renderInActivatedCards()">{{ 'eligible_rewards' | translate }}</div>
+    <ng-container *ngFor="let inactivateCard of renderInActivatedCards() | keyvalue; let index = index">
+      <ng-container
+        *ngTemplateOutlet="
+          inactiveCardTmp;
+          context: {
+            inactivateCard: inactivateCard,
+            index
+          }
+        "
+      ></ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #activeCard let-card="card" let-show="show" let-showBar="showBar">
+  <ng-container *ngIf="show">
+    <p class="right-title" [class.text-left]="card.value.showIntro && isH5()">{{ card?.value?.name || '' }}</p>
+    <div class="right-processing-bar" *ngIf="showBar">
+      <div
+        class="bar"
+        [class.casino-bar]="card.key === 'casinoBonus'"
+        [class.live-casino-bar]="card.key !== 'casinoBonus'"
+        [style.width]="card.value.processed + '%'"
+      ></div>
+      <div
+        class="target"
+        [style.left]="card.value.calc"
+        [class.casino-target]="card?.key === 'casinoBonus'"
+        [class.live-casino-target]="card?.key !== 'casinoBonus'"
+      ></div>
+      <div class="bar-present" [style.left]="card.value.isLeft">{{ card.value.processed }}%</div>
+    </div>
+    <!-- 等对接完接口 做 代码合并 -->
+    <div class="right-details">
+      <div class="to-wager">
+        <p class="text">{{ 'left_to_wallet' | translate }}</p>
+        <p class="txt-number">
+          {{ card.value.leftToWallet | currencyValue: card.value.currency | replace: ',' : '' | stripTrailingZeros }}
+          {{ card.value.currency }}
+        </p>
+      </div>
+      <div class="per-line" *ngIf="card.value?.maxBetPerSpin">
+        <p class="text">{{ 'max_bet_per_line' | translate }}</p>
+        <p class="txt-number">
+          {{ card.value.maxBetPerSpin | currencyValue: 'USDT' | replace: ',' : '' | stripTrailingZeros }} USDT
+        </p>
+      </div>
+      <div class="date">
+        <ng-container *ngIf="card.value?.expires === 0; else default">
+          <p class="text">{{ 'no_expires' | translate }}</p>
+        </ng-container>
+        <ng-template #default>
+          <p class="text">{{ 'expires' | translate }}</p>
+          <p class="txt-number">{{ card.value?.expires | mdate: 'YYYY-MM-DD HH:mm:ss' }}</p>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #inactiveCardTmp let-inactivateCard="inactivateCard" let-empty="empty" let-index="index">
+  <p class="details-title" *ngIf="inactivateCard.value?.length" [class.m-top-20]="index === 1">
+    {{ (inactivateCard.key === 'casinoBonusList' ? 'cas' : 'live_cas') | translate }}
+  </p>
+  <div class="none-active-card" *ngIf="inactivateCard.value?.length">
+    <ng-container *ngFor="let card of inactivateCard.value; let index = index">
+      <ng-container *ngTemplateOutlet="inactiveCard; context: { card: card, key: inactivateCard.key }"></ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #inactiveCard let-showIndex="showIndex" let-card="card" let-key="key">
+  <div
+    class="none-active-card-details"
+    [class.casino-card]="key === 'casinoBonusList'"
+    [class.live-casino]="key !== 'casinoBonusList'"
+  >
+    <p class="waiting-activate" *ngIf="!card?.isDeposit && !card?.isFreeSpin">
+      {{ 'none_sticky_waiting' | translate }}
+    </p>
+    <div class="card-top" [class.m-top-10]="!card?.isDeposit && !card?.isFreeSpin">
+      <p class="card-title">{{ (key === 'casinoBonusList' ? 'cas' : 'live_cas') | translate }}</p>
+      <ng-container *ngIf="!card?.showIntro">
+        <i class="icon-warning mutual-opacity" *ngIf="!card.loading" (click)="getNoneStickyDetail(card)"></i>
+        <i class="animation-icon-loading-dot icon-warning-dot" *ngIf="card.loading"><i></i><i></i><i></i></i>
+        <img
+          class="type-img"
+          *ngIf="!card.isFreeSpin; else freeSpinImg"
+          [src]="'assets/images/card-center/' + card.typeCode + '.png'"
+          #typeImg
+          (error)="onImageError(typeImg)"
+        />
+        <ng-template #freeSpinImg>
+          <app-lazy-image [lazy]="card.freeSpinImage || defaultImg" [radius]="160"></app-lazy-image>
+        </ng-template>
+      </ng-container>
+      <ng-container *ngIf="card?.showIntro">
+        <i class="icon-close-simple mutual-opacity" (click)="card.showIntro = false"></i>
+        <div class="intro inactive-intro">
+          <app-scrollbar>
+            <ng-container
+              *ngTemplateOutlet="inactiveCardContent; context: { show: card?.showIntro, card, isFront: false }"
+            ></ng-container>
+            <div class="card-title title">{{ 'terms' | translate }}</div>
+            <div class="card-content" [innerHtml]="card.intro"></div>
+          </app-scrollbar>
+        </div>
+      </ng-container>
+    </div>
+    <ng-container
+      *ngTemplateOutlet="inactiveCardContent; context: { show: !card?.showIntro, card, isFront: true }"
+    ></ng-container>
+    <customize-button
+      class="active-btn"
+      [radius]="'30px'"
+      size="medium"
+      (onClick)="onHandleInactiveCard(card, key)"
+      [loading]="card.submitLoading || card.loading"
+      [disabled]="card.submitLoading || card.loading"
+      [class.hight-light-active]="!card?.isDeposit"
+      [class.unlock-card]="isUserNeedToVerify() && card?.isDeposit"
+    >
+      <ng-container *ngIf="isUserNeedToVerify() && card?.isDeposit; else default">
+        {{ 'nonsticky_verify_unlock' | translate }}</ng-container
+      >
+      <ng-template #default>
+        {{
+          card?.isDeposit
+            ? ('recharge' | translate)
+            : card?.isFreeSpin
+              ? ('go_to_bet' | translate)
+              : ('active_now' | translate)
+        }}
+      </ng-template>
+    </customize-button>
+  </div>
+</ng-template>
+
+<ng-template #inactiveCardContent let-show="show" let-card="card" let-isFront="isFront">
+  <ng-container *ngIf="show">
+    <p class="right-title" [class.text-left]="!isFront">{{ card?.name || '' }}</p>
+    <!-- 未激活正面 -->
+    <ng-container *ngIf="isFront; else backend">
+      <!-- 充值卡活动 -->
+      <ng-container *ngIf="card?.isDeposit; else deposited">
+        <div class="right-details">
+          <!-- 未充值 -->
+          <ng-container *ngIf="!card?.isFreeSpin; else freeSpinTmpDeposit">
+            <div class="to-wager">
+              <p class="text">{{ 'mini_deposit' | translate }}</p>
+              <p class="txt-number">
+                {{ card.minimumDeposit | currencyValue: 'USDT' | replace: ',' : '' | stripTrailingZeros }} USDT
+              </p>
+            </div>
+            <div class="max-spin">
+              <p class="text">{{ 'wager_requirement' | translate }}</p>
+              <p class="txt-number">{{ card.betMultiple }}X</p>
+            </div>
+          </ng-container>
+          <!-- 未充值 Free Spin  正面-->
+          <ng-template #freeSpinTmpDeposit>
+            <div>
+              <p class="text">{{ 'mini_deposit' | translate }}</p>
+              <p class="txt-number">
+                {{ card.minimumDeposit | currencyValue: 'USDT' | replace: ',' : '' | stripTrailingZeros }} USDT
+              </p>
+            </div>
+            <div>
+              <p class="text">{{ 'spin_value' | translate }}</p>
+              <p class="txt-number">
+                {{ card.amount | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div *ngIf="card?.maxBonusAmount || card?.maxBonusAmount != 0">
+              <p class="text">{{ 'bonus_cap' | translate }}</p>
+              <p class="txt-number">
+                {{ card.maxBonusAmount | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
+      <!-- 已经充值 -->
+      <ng-template #deposited>
+        <div class="right-details">
+          <ng-container *ngIf="!card?.isFreeSpin; else freeSpinTmpDeposited">
+            <div class="bonus">
+              <p class="text">{{ 'none_bonus' | translate }}</p>
+              <p class="txt-number">
+                {{ card.amount | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div class="max-spin">
+              <p class="text">{{ 'wager_requirement' | translate }}</p>
+              <p class="txt-number">{{ card.betMultiple }}X</p>
+            </div>
+          </ng-container>
+          <ng-template #freeSpinTmpDeposited>
+            <div>
+              <p class="text">{{ 'amount_of_free_spin' | translate }}</p>
+              <p class="txt-number">
+                <ng-container *ngIf="card?.currentSpinNum == 0; else fractionTmp">
+                  {{ card?.maxSpinNum || 0 }}
+                </ng-container>
+                <ng-template #fractionTmp> {{ card?.currentSpinNum || 0 }} / {{ card?.maxSpinNum || 0 }} </ng-template>
+              </p>
+            </div>
+            <div>
+              <p class="text">{{ 'spin_value' | translate }}</p>
+              <p class="txt-number">
+                {{ card?.amount || 0 | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div *ngIf="card?.maxBonusAmount || card?.maxBonusAmount != 0">
+              <p class="text">{{ 'bonus_cap' | translate }}</p>
+              <p class="txt-number">
+                {{ card.maxBonusAmount | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+          </ng-template>
+        </div>
+      </ng-template>
+    </ng-container>
+    <!-- 未激活反面 -->
+    <ng-template #backend>
+      <!-- 非充值卡活动 -->
+      <ng-container *ngIf="card?.isDeposit; else deposited">
+        <div class="right-details">
+          <ng-container *ngIf="!card?.isFreeSpin; else freeSpinTmpDepositBackend">
+            <div class="to-cashback">
+              <p class="text">{{ 'cash_back' | translate }}</p>
+              <p class="txt-number">{{ card.rate }}</p>
+            </div>
+            <div class="to-wager">
+              <p class="text">{{ 'mini_deposit' | translate }}</p>
+              <p class="txt-number">
+                {{ card.minimumDeposit | currencyValue: 'USDT' | replace: ',' : '' | stripTrailingZeros }} USDT
+              </p>
+            </div>
+            <div class="max-spin">
+              <p class="text">{{ 'wager_requirement' | translate }}</p>
+              <p class="txt-number">{{ card.betMultiple }}X</p>
+            </div>
+            <div class="max-duration">
+              <p class="text">{{ 'after_activated' | translate }}</p>
+              <ng-container *ngIf="card.durationDaysAfterActivation !== 0; else default">
+                <p class="txt-number">{{ card.durationDaysAfterActivation }}{{ 'days' | translate }}</p>
+              </ng-container>
+              <ng-template #default>
+                <p class="txt-number">{{ 'no_expires' | translate }}</p>
+              </ng-template>
+            </div>
+          </ng-container>
+          <!-- 未充值 Free Spin 背面 -->
+          <ng-template #freeSpinTmpDepositBackend>
+            <div>
+              <p class="text">{{ 'amount_of_free_spin' | translate }}</p>
+              <p class="txt-number">{{ card?.maxSpinNum || 0 }}</p>
+            </div>
+            <div>
+              <p class="text">{{ 'mini_deposit' | translate }}</p>
+              <p class="txt-number">
+                {{ card.minimumDeposit | currencyValue: 'USDT' | replace: ',' : '' | stripTrailingZeros }} USDT
+              </p>
+            </div>
+            <div>
+              <p class="text">{{ 'spin_value' | translate }}</p>
+              <p class="txt-number">
+                {{ card.amount | currencyValue: 'USDT' | replace: ',' : '' | stripTrailingZeros }} {{ card.currency }}
+              </p>
+            </div>
+            <div *ngIf="card?.maxBonusAmount || card?.maxBonusAmount != 0">
+              <p class="text">{{ 'bonus_cap' | translate }}</p>
+              <p class="txt-number">
+                {{ card.maxBonusAmount | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div>
+              <p class="text game-name">{{ card.gameName }}</p>
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
+      <!-- 已经充值 -->
+      <ng-template #deposited>
+        <div class="right-details">
+          <!-- 一般非黏性與Free Spin完成旋轉次數樣式相同-->
+          <ng-container *ngIf="!card?.isFreeSpin; else freeSpinTmpDepositedBackend">
+            <div class="bonus">
+              <p class="text">{{ 'none_bonus' | translate }}</p>
+              <p class="txt-number">
+                {{ card.amount | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div class="max-spin">
+              <p class="text">{{ 'wager_requirement' | translate }}</p>
+              <p class="txt-number">{{ card.betMultiple }}X</p>
+            </div>
+            <div class="max-duration">
+              <p class="text">{{ 'after_activated' | translate }}</p>
+              <ng-container *ngIf="card.durationDaysAfterActivation !== 0; else default">
+                <p class="txt-number">{{ card.durationDaysAfterActivation }}{{ 'days' | translate }}</p>
+              </ng-container>
+              <ng-template #default>
+                <p class="txt-number">{{ 'no_expires' | translate }}</p>
+              </ng-template>
+            </div>
+          </ng-container>
+          <ng-template #freeSpinTmpDepositedBackend>
+            <div>
+              <p class="text">{{ 'amount_of_free_spin' | translate }}</p>
+              <p class="txt-number">
+                <ng-container *ngIf="card?.currentSpinNum == 0; else fractionTmp">
+                  {{ card?.maxSpinNum || 0 }}
+                </ng-container>
+                <ng-template #fractionTmp> {{ card?.currentSpinNum || 0 }} / {{ card?.maxSpinNum || 0 }} </ng-template>
+              </p>
+            </div>
+            <div>
+              <p class="text">{{ 'spin_bonus' | translate }}</p>
+              <p class="txt-number">
+                {{ card?.balance || 0 | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div>
+              <p class="text">{{ 'spin_value' | translate }}</p>
+              <p class="txt-number">
+                {{ card?.amount || 0 | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div *ngIf="card?.maxBonusAmount || card?.maxBonusAmount != 0">
+              <p class="text">{{ 'bonus_cap' | translate }}</p>
+              <p class="txt-number">
+                {{ card.maxBonusAmount | currencyValue: card.currency | replace: ',' : '' | stripTrailingZeros }}
+                {{ card.currency }}
+              </p>
+            </div>
+            <div>
+              <p class="text game-name">{{ card.gameName }}</p>
+            </div>
+          </ng-template>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ng-container>
+</ng-template>

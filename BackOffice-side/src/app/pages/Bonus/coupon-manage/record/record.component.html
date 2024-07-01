@@ -1,0 +1,194 @@
+<div class="card rounded mb-12">
+  <div class="card-header py-8 d-flex flex-wrap">
+    <form-row [label]="'common.name' | lang" class="mr-8" [contentWidth]="250">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="data.name"
+          [placeholder]="'member.coupon.keyword' | lang"
+          (keyup)="$event.keyCode === 13 && getList(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row label="UID" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.keyCode === 13 && getList(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'common.userName' | lang" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control w-100"
+          type="text"
+          [(ngModel)]="data.uact"
+          (keyup)="$event.keyCode === 13 && getList(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'common.type' | lang" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <mat-form-field [style.width.px]="200">
+          <mat-select class="form-control" [(ngModel)]="data.type" (selectionChange)="getList(true)">
+            <mat-option value="">{{ 'common.all' | lang }} </mat-option>
+            <mat-option *ngFor="let item of typeList" [value]="item.value">
+              {{ item.lang | lang }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'member.coupon.creadTime' | lang" class="mr-8" [contentWidth]="250">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.coupon.model.selectTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.createTime"
+          (dateTimeChange)="getList(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'member.coupon.model.exchangeTime' | lang" [contentWidth]="250">
+      <ng-template>
+        <input
+          class="text-center w-100 form-control"
+          type="text"
+          [placeholder]="'member.coupon.model.select RedemptionTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="settlementPicker"
+          [owlDateTimeTrigger]="settlementPicker"
+          [(ngModel)]="data.receivedTime"
+          (dateTimeChange)="getList(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #settlementPicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="getList(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card list">
+  <div class="card-body">
+    <div class="fz-20 fw-bolder">{{ 'member.coupon.model.usageRecord' | lang }}</div>
+
+    <div class="pt-5">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th [style.width]="'30%'">
+              <span class="cell">{{ 'common.name' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.model.couponCode' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.type' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <span class="cursor-pointer" (click)="onSort('receivedTime')">
+                  <span>{{ 'member.coupon.model.exchangeTime' | lang }}</span>
+                  <span class="triangle d-inline-block">
+                    <div class="triangle-up" [class.active]="data.order === 'receivedTime' && data.isAsc"></div>
+                    <div class="triangle-down" [class.active]="data.order === 'receivedTime' && !data.isAsc"></div>
+                  </span>
+                </span>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'member.coupon.model.quantity' | lang }}</span>
+            </th>
+            <!-- <th><span class="cell">会员</span></th> -->
+            <th><span class="cell">UID</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.voucherName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.tmpCode || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ this.couponService.getCouponTypeLang(item.releaseType) | lang }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.receivedTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                {{ item.money | currencyValue: item.moneyType }}
+                <img class="ml-2" [currencyIcon]="item.moneyType" />
+              </span>
+            </td>
+            <!-- <td>
+              <span class="cell">{{ item.uact || '-' }}</span>
+            </td> -->
+            <td>
+              <span class="cell">{{ item.uid || '-' }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="getList()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="getList()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

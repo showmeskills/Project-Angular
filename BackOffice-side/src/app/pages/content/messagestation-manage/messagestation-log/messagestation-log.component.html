@@ -1,0 +1,196 @@
+<div class="bg-fff rounded-2 mt-6 d-flex p-8 pb-4 flex-wrap">
+  <div class="d-flex flex-ac mr-8 pb-4">
+    <label class="mb-0 mr-6 label-title">{{ 'content.insite.enterInTitle' | lang }}</label>
+    <input
+      [style.width.px]="200"
+      [(ngModel)]="searchData.Title"
+      class="form-control form-control-lg"
+      type="text"
+      placeholder=""
+      (keyup)="$event.keyCode === 13 && loadData(true)"
+    />
+  </div>
+
+  <div class="d-flex flex-ac mr-8 pb-4">
+    <label class="mb-0 mr-6 label-title">{{ 'content.insite.enterSender' | lang }}</label>
+    <input
+      [style.width.px]="200"
+      [(ngModel)]="searchData.SendUserName"
+      class="form-control form-control-lg"
+      type="text"
+      placeholder=""
+      (keyup)="$event.keyCode === 13 && loadData(true)"
+    />
+  </div>
+
+  <div class="d-flex flex-ac mr-8 pb-4">
+    <label class="form-title mr-6">{{ 'content.insite.stu' | lang }}：</label>
+    <mat-form-field [style.width.px]="110">
+      <mat-select class="form-control" [(ngModel)]="searchData.Status" (selectionChange)="loadData(true)">
+        <mat-option *ngFor="let item of statusList" [value]="item.value">{{ item.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="flex-row-fluid d-flex flex-ac flex-wrap">
+    <div class="d-flex flex-ac mr-8 pb-4">
+      <label class="mb-0 mr-6 label-title">{{ 'content.insite.time' | lang }}</label>
+      <div class="d-flex flex-ac">
+        <input
+          [style.width.px]="210"
+          class="form-control text-center"
+          type="text"
+          placeholder=""
+          selectMode="date-range"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [(ngModel)]="time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-wrap flex-nowrap text-nowrap pb-4">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-6 list">
+  <div class="card-body p-12">
+    <div class="d-flex flex-ac flex-between">
+      <div class="fz-20 fw-bolder">{{ 'content.insite.rec' | lang }}</div>
+    </div>
+
+    <div class="pt-10">
+      <!--begin::Datatable-->
+      <table class="table align-middle table-row-dashed fs-6 gy-5 mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th class="fw-normal">
+              <span class="cell">{{ 'content.insite.inId' | lang }}</span>
+            </th>
+            <th class="fw-normal">
+              <span class="cell">{{ 'content.insite.type' | lang }}</span>
+            </th>
+            <th class="fw-normal" style="width: 17%">
+              <span class="cell">{{ 'content.insite.inTitle' | lang }}</span>
+            </th>
+            <th class="fw-normal" style="width: 17%">
+              <span class="cell">{{ 'content.insite.inContent' | lang }}</span>
+            </th>
+            <th class="fw-normal">
+              <span class="cell">{{ 'content.insite.readRate' | lang }}</span>
+            </th>
+            <th class="fw-normal">
+              <span class="cell">{{ 'content.insite.sendTime' | lang }}</span>
+            </th>
+            <th class="fw-normal">
+              <span class="cell">{{ 'content.insite.op' | lang }}</span>
+            </th>
+            <th class="fw-normal">
+              <span class="cell">{{ 'content.insite.stu' | lang }}</span>
+            </th>
+            <th class="fw-normal">
+              <span class="cell">{{ 'content.insite.act' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.id }}</span>
+            </td>
+            <td>
+              <span class="cell" [ngSwitch]="item.noticeType">
+                <div *ngSwitchCase="'System'" class="status_normal status">
+                  {{ 'content.insite.sysInfo' | lang }}
+                </div>
+                <div *ngSwitchCase="'Transaction'" class="status_normal status">
+                  {{ 'content.insite.transInfo' | lang }}
+                </div>
+                <div *ngSwitchCase="'Activity'" class="status_stop status">{{ 'content.insite.acInfo' | lang }}</div>
+                <div *ngSwitchCase="'Information'" class="status_stop status">
+                  {{ 'content.insite.PlatAsk' | lang }}
+                </div>
+              </span>
+            </td>
+            <td>
+              <span class="txt-omit">{{ item.title }}</span>
+            </td>
+            <td>
+              <span class="txt-omit">{{ item.content }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.readedCount }}/{{ item.sendCount }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.sendTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.modifiedUserName }}</span>
+            </td>
+            <td>
+              <span class="cell" [ngSwitch]="item.status">
+                <div *ngSwitchCase="'Sended'" class="status_normal status">{{ 'content.insite.sended' | lang }}</div>
+                <div *ngSwitchCase="'Modified'" class="status_normal status">{{ 'content.insite.edited' | lang }}</div>
+                <div *ngSwitchCase="'Canceled'" class="status_stop status">{{ 'content.insite.ce' | lang }}</div>
+              </span>
+            </td>
+            <td>
+              <span class="cell text-nowrap" style="flex-flow: nowrap">
+                <span
+                  class="btn btn-default mx-2"
+                  (click)="router.navigate(['/content/messagestation-manage/messagestation-log', item.id])"
+                >
+                  {{ 'common.edit' | lang }}
+                </span>
+                <span *ngIf="item.status !== 'Canceled'" (click)="cancel(item.id)" class="btn btn-light-danger mx-2">
+                  {{ 'content.insite.back' | lang }}
+                </span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

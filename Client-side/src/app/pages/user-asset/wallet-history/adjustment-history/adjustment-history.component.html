@@ -1,0 +1,263 @@
+<div class="container">
+  <div class="content-box">
+    <ng-container *ngIf="!isH5; else H5page">
+      <div class="search-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [(value)]="selectedAssetType"
+            [label]="'asset' | translate"
+            [options]="assetTypeOptions"
+            [valueKey]="'value'"
+            [textKey]="'name'"
+            (onSelect)="assetValueChange($event)"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="selectedCurrency"
+            [label]="'curr' | translate"
+            [options]="currencyList"
+            [valueKey]="'currency'"
+            [textKey]="'currency'"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="selectedTimeValue"
+            [(timeValue)]="selectedTime"
+            [timeDance]="true"
+            [label]="'scope' | translate"
+            [options]="timeOptions"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="selectedAccount"
+            [label]="'account' | translate"
+            [options]="accountOptions"
+            [valueKey]="'value'"
+            [textKey]="'name'"
+          ></app-customize-select>
+          <app-customize-select
+            [(value)]="selectedStatus"
+            [label]="'status' | translate"
+            [options]="statusOptions"
+            [valueKey]="'value'"
+            [textKey]="'name'"
+          ></app-customize-select>
+
+          <div class="form-group-align">
+            <customize-button size="small" type="text" (onClick)="reset()" [plain]="true">
+              {{ 'reset' | translate }}
+            </customize-button>
+            <customize-button size="small" type="text" (onClick)="searchLoadData()" [plain]="true" [active]="true">
+              {{ 'filter' | translate }}
+            </customize-button>
+          </div>
+        </app-customize-form-group>
+      </div>
+
+      <div class="data-list" [appLoading]="loading">
+        <table *ngIf="adjustmentHistoryData.length > 0">
+          <thead>
+            <th>{{ 'dates' | translate }}</th>
+            <th>{{ 'order' | translate }}</th>
+            <th>{{ 'account' | translate }}</th>
+            <th>{{ 'amount' | translate }}</th>
+            <th>{{ 'status' | translate }}</th>
+            <th>{{ 'remark' | translate }}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of adjustmentHistoryData; let i = index">
+              <td>{{ item.date | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+              <td>{{ item.orderNum }}</td>
+              <td>{{ getAccountName(item.walletType) }}</td>
+              <td>
+                <p class="text">{{ item.amount > 0 ? '+' : '' }}{{ item.amount | currencyValue : item.currency }}</p>
+                <img class="currency-img" [src]="item.currency | currencyIcon" />
+              </td>
+              <td>{{ item.amount > 0 ? ('add' | translate) : ('deductions' | translate) }}</td>
+              <td>
+                <div class="remark" (mouseover)="selectedIndex = i" (mouseout)="selectedIndex = -1">
+                  <p class="remark-textEllipsis">{{ item.remark }}</p>
+                  <div *ngIf="selectedIndex === i" class="remark-detail">{{ item.remark }}</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <app-empty *ngIf="adjustmentHistoryData.length === 0 && !loading" [text]="'no_record' | translate"></app-empty>
+
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+      </div>
+    </ng-container>
+
+    <ng-template #H5page>
+      <div class="search-h5-bar" [class.disabled]="loading">
+        <app-customize-form-group>
+          <app-customize-select
+            [width]="'40vw'"
+            [fixedHeight]="true"
+            [(value)]="selectedStatus"
+            [label]="'status' | translate"
+            [options]="statusOptions"
+            [valueKey]="'value'"
+            [textKey]="'name'"
+            (onSelect)="searchLoadData()"
+          >
+          </app-customize-select>
+          <div class="form-group-align margin-left-auto">
+            <i class="search-h5-bar-filter icon-filter mutual-opacity onact96-not" (click)="openh5Filter()"></i>
+          </div>
+        </app-customize-form-group>
+      </div>
+
+      <ul class="data-h5-list" [appLoading]="loading">
+        <li class="item" *ngFor="let item of adjustmentHistoryData">
+          <div class="group first">
+            <span>{{ 'trans_acc' | translate }}</span>
+            <p class="onact96" [ngClass]="[item.amount > 0 ? 'success' : 'fail']" (click)="openh5Detail(item)">
+              <span>{{ item.amount > 0 ? ('add' | translate) : ('deductions' | translate) }}</span>
+              <i class="icon-arrow-right-simple"></i>
+            </p>
+          </div>
+          <div class="group">
+            <span>{{ 'dates' | translate }}：</span>
+            <p>{{ item.date | mdate : 'YYYY-MM-DD HH:mm' }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 're_quan' | translate }}：</span>
+            <p>
+              {{ item.amount > 0 ? '+' + item.amount : item.amount }}
+              <img [src]="item.currency | currencyIcon" />
+            </p>
+          </div>
+          <div class="group">
+            <span>{{ 'account' | translate }}：</span>
+            <p>{{ getAccountName(item.walletType) }}</p>
+          </div>
+          <div class="group">
+            <span>{{ 'order' | translate }}：</span>
+            <p>{{ item.orderNum }}</p>
+          </div>
+          <div class="group last">
+            <span>{{ 'remark' | translate }}：</span>
+            <p>{{ item.remark }}</p>
+          </div>
+        </li>
+
+        <app-empty *ngIf="adjustmentHistoryData.length === 0 && !loading" [text]="'no_record' | translate"></app-empty>
+
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          [disabled]="loading"
+          [loading]="loading"
+          (onPageChange)="loadData()"
+        >
+        </app-paginator>
+      </ul>
+    </ng-template>
+  </div>
+</div>
+
+<!-- h5选择选项弹窗模板 -->
+<ng-template #h5Filter>
+  <div class="popup-full select-popup h5FilterPopup">
+    <div class="popup-head">
+      <div class="title">{{ 'filter' | translate }}</div>
+      <span class="popup-close-icon onact96-not" (click)="h5FilterPopup.close()"></span>
+    </div>
+    <div class="popup-body">
+      <app-customize-form-group [column]="true">
+        <app-customize-select
+          [(value)]="selectedCurrency"
+          [label]="'curr' | translate"
+          [options]="currencyList"
+          [valueKey]="'currency'"
+          [textKey]="'currency'"
+        ></app-customize-select>
+        <app-customize-select
+          [(value)]="selectedTimeValue"
+          [(timeValue)]="selectedTime"
+          [timeDance]="true"
+          [label]="'scope' | translate"
+          [options]="timeOptions"
+        ></app-customize-select>
+        <app-customize-select
+          [(value)]="selectedAccount"
+          [label]="'account' | translate"
+          [options]="accountOptions"
+          [valueKey]="'value'"
+          [textKey]="'name'"
+        ></app-customize-select>
+        <app-customize-select
+          [(value)]="selectedStatus"
+          [label]="'status' | translate"
+          [options]="statusOptions"
+          [valueKey]="'value'"
+          [textKey]="'name'"
+        ></app-customize-select>
+      </app-customize-form-group>
+      <div class="popup-btn-group">
+        <customize-button width="100%" (onClick)="reset()">
+          {{ 'reset' | translate }}
+        </customize-button>
+        <customize-button
+          class="popup-btn-margin-left"
+          type="primary"
+          width="100%"
+          (onClick)="h5FilterPopup.close(); searchLoadData()"
+        >
+          {{ 'filter' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- h5详情弹窗模板 -->
+<ng-template #detailData>
+  <div class="h5-detail-popup" *ngIf="selectedItem">
+    <div class="title">
+      <span>{{ 'tran_details' | translate }}</span>
+      <i class="mutual-opacity icon-close-simple onact96-not" (click)="detailDataPopup.close()"></i>
+    </div>
+    <ul class="info-box">
+      <li class="group">
+        <p>{{ 'dates' | translate }}</p>
+        <span>{{ selectedItem.date | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'order' | translate }}</p>
+        <span>{{ selectedItem.orderNum }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'account' | translate }}</p>
+        <span>{{ getAccountName(selectedItem.walletType) }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'curr' | translate }}</p>
+        <span>{{ selectedItem.currency }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'amount' | translate }}</p>
+        <span>{{ selectedItem.amount > 0 ? '+' + selectedItem.amount : selectedItem.amount }}</span>
+      </li>
+      <li class="group">
+        <p>{{ 'status' | translate }}</p>
+        <span>{{ selectedItem.amount > 0 ? ('add' | translate) : ('deductions' | translate) }}</span>
+      </li>
+      <li class="group remark">
+        <p>{{ 'remark' | translate }}</p>
+        <div class="remark-content">
+          {{ selectedItem.remark }}
+        </div>
+      </li>
+    </ul>
+  </div>
+</ng-template>

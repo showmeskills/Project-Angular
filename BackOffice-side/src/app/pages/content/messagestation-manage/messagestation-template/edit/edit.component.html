@@ -1,0 +1,73 @@
+<main class="main">
+  <div class="h2-title">{{ 'content.insite.set' | lang }}</div>
+  <div class="w-100 d-flex py-2">
+    <label class="mr-0 mb-0 label-title">{{ 'content.insite.type' | lang }}：</label>
+    <div class="flex-1">
+      <div class="d-flex flex-wrap h-100">
+        <label class="radio radio-lg">
+          <input type="radio" checked value="" />
+          <span></span>
+          <b [ngSwitch]="detail.noticeType">
+            <b *ngSwitchCase="'System'">{{ 'content.insite.sysInfo' | lang }}</b>
+            <b *ngSwitchCase="'Transaction'">{{ 'content.insite.transInfo' | lang }}</b>
+            <b *ngSwitchCase="'Activity'">{{ 'content.insite.acInfo' | lang }}</b>
+            <b *ngSwitchCase="'Information'">{{ 'content.insite.PlatAsk' | lang }}</b>
+          </b>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="h2-title">{{ 'conten.content' | lang }}</div>
+  <form class="form" [formGroup]="formGroup" #form>
+    <lang-tab [(value)]="selectLang" formArrayName="lang" #langTab (languageChange)="updateLanguageForm()">
+      <ng-template let-i="i" let-current="current">
+        <form-row
+          name="title"
+          [label]="('conten.labels' | lang) + '（' + current?.name + '）'"
+          label-width="220"
+          [invalidFeedback]="{
+            required: ('content.insite.enterTitle' | lang) + '（' + current?.name + '）'
+          }"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input [formControl]="control" [class.is-invalid]="invalid" class="form-control w-100" type="text" />
+          </ng-template>
+        </form-row>
+
+        <form-row
+          name="content"
+          [label]="('content.insite.inContent' | lang) + '（' + current?.name + '）'"
+          label-width="220"
+          [invalidFeedback]="{
+            required: ('content.insite.enterContent' | lang) + '（' + current?.name + '）'
+          }"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid">
+            <textarea
+              [class.is-invalid]="invalid"
+              class="form-control"
+              autocomplete="off"
+              [formControl]="langArrayForm.controls[i]['controls']['content']"
+              rows="7"
+            ></textarea>
+            <div class="tip-text">{{ detail.remark }}</div>
+          </ng-template>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+  </form>
+
+  <!-- 按钮组 -->
+  <div class="btn-wrap pt-12 flex-center d-flex">
+    <button
+      type="button"
+      class="c-btn c-btn-default ml-0"
+      (click)="router.navigate(['/content/messagestation-manage/messagestation-template'])"
+    >
+      {{ 'common.back' | lang }}
+    </button>
+    <button type="button" class="c-btn c-btn-primary" (click)="onSubmit(langTab)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</main>

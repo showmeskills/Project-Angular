@@ -1,0 +1,182 @@
+:host {
+  width: 100%;
+}
+
+div {
+  display: flex;
+}
+
+.kyc-otp-container {
+  width: 100%;
+  flex-direction: column;
+
+  .form-header {
+    padding-bottom: 9px;
+    color: var(--text-color-20);
+    font-size: 14px;
+
+    .required {
+      color: #ff7172;
+    }
+  }
+
+  .phone-select {
+    width: 100%;
+    margin-bottom: 27px;
+    flex-direction: column;
+
+    //输入框错误信息
+    .error-msg {
+      color: var(--txt-err-color);
+      font-size: 14px;
+      line-height: 14px;
+      margin-top: 7px;
+    }
+
+    .select-row {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      .input-row {
+        width: inherit;
+
+        .btn-disable {
+          background-color: var(--default-border-color) !important;
+          border-color: var(--default-border-color) !important;
+          color: #707a8a !important;
+        }
+
+        .select-btn {
+          margin-right: 30px;
+
+          &:hover:not(.no-hover) {
+            border-color: var(--primary-color);
+          }
+
+          &.disabled {
+            background-color: var(--container-bg-color);
+            border: none;
+            cursor: not-allowed;
+            &:hover {
+              border-color: initial; /* 防止hover样式的影响 */
+            }
+          }
+
+          ::ng-deep {
+            .customize-button,
+            .medium {
+              padding: 0;
+              padding-left: 6px;
+              display: flex;
+              align-items: center;
+              height: 100%;
+              > * + * {
+                margin-left: 10px;
+              }
+            }
+          }
+        }
+
+        .select-btn,
+        .btn-disable {
+          height: 48px;
+          width: 96px;
+          background-color: #fff;
+          font-size: 14px;
+          color: #333333;
+          border-radius: 4px;
+          border: 1px solid var(--input-border-color);
+          display: flex;
+          align-items: center;
+          position: relative;
+
+          &:host-context(.dark) & {
+            background-color: var(--container-bg-color);
+            color: var(--text-white-at-night);
+          }
+
+          .fog-row {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+
+            .country-image {
+              width: 22px;
+              height: 22px;
+              margin-right: 6px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .voice-verification-tips {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #b3bad1;
+
+    .orange-txt {
+      color: var(--primary-color);
+    }
+  }
+
+  .auth-form {
+    flex-direction: column;
+
+    .tips-msg {
+      color: var(--text-color-20);
+      font-size: 14px;
+      padding-top: 5px;
+    }
+
+    .input-group-txt {
+      font-size: 14px;
+      align-items: center;
+      > * + * {
+        margin-left: 10px;
+      }
+
+      &.get-code {
+        color: var(--primary-color);
+        cursor: pointer;
+        user-select: none;
+
+        &.disable {
+          cursor: not-allowed;
+          color: var(--text-color-20);
+        }
+      }
+
+      &.has-send-code {
+        color: var(--text-color-20);
+      }
+
+      &:hover,
+      &.focus {
+        border-color: var(--primary-color);
+      }
+
+      &.disabled {
+        background-color: var(--container-bg-color);
+        border: none;
+        cursor: not-allowed;
+      }
+    }
+
+    .voice-verification-tips {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #b3bad1;
+
+      .orange-txt {
+        color: var(--primary-color);
+      }
+    }
+  }
+}
+
+app-customize-input {
+  flex: 1 !important;
+}

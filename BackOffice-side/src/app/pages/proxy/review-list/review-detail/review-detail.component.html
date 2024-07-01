@@ -1,0 +1,238 @@
+<div class="d-flex justify-content-end detail-header">
+  <div class="btn-group flex-wrap">
+    <!--    <button type="button" class="btn fz-16 py-4 btn-primary">本次申请</button>-->
+    <!--    <button type="button" class="btn fz-16 py-4 btn-default">第二次申请</button>-->
+    <button
+      type="button"
+      class="btn fz-16 py-4 btn-default"
+      *ngFor="let item of tabHeader; let i = index"
+      [class.btn-primary]="i === tabIndex"
+      (click)="onTab(i)"
+    >
+      <!-- 第{{n+1}}次申请 -->
+      <!-- {{ 'marketing.pendingList.first' | lang }}{{ i + 1 }}次申请 -->
+      {{ 'marketing.pendingList.application' | lang: { n: i + 1 } }}
+    </button>
+  </div>
+</div>
+
+<div class="modal-content mt-8">
+  <div class="pl-14 pr-12 py-10">
+    <div class="d-flex flex-ac">
+      <div class="fz-20 flex-1">{{ 'marketing.pendingList.model.agentReviewed' | lang }}</div>
+      <span class="btn btn-light btn-hover-light-primary" (click)="back()">{{ 'common.back' | lang }}</span>
+    </div>
+    <form-row [label]="'marketing.pendingList.model.ProxyUid' | lang" label-width="85">
+      <span class="fz-16">{{ curInfo.uid }}</span>
+    </form-row>
+    <!-- 基本信息 -->
+    <div class="fz-20 mt-14 detail-title">{{ 'marketing.pendingList.model.basicInfo' | lang }}</div>
+    <div class="d-flex flex-wrap">
+      <form-row [label]="'marketing.pendingList.model.nickName' | lang" [style.width.px]="293">
+        <span class="fz-16">{{ curInfo.nickname }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.accountNumber' | lang" [style.width.px]="293">
+        <span class="fz-16">{{ curInfo.uid }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.contactInformation' | lang" [style.width.px]="293">
+        <span class="fz-16">{{ curInfo.contact }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.countryOrRegion' | lang" [style.width.px]="293">
+        <span class="fz-16">{{ curInfo.userAddress }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.agentType' | lang" [style.width.px]="293">
+        <span class="fz-16" *ngIf="+curInfo.proxyType === 1">{{ 'marketing.pendingList.model.personal' | lang }}</span>
+        <span class="fz-16" *ngIf="+curInfo.proxyType === 2">{{
+          'marketing.pendingList.model.businessOrganization' | lang
+        }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.TradingAreas' | lang">
+        <span class="fz-16">{{ curInfo.transactionRegion }}</span>
+      </form-row>
+    </div>
+
+    <form-row [label]="'marketing.pendingList.model.basicInformation' | lang">
+      <span class="fz-16 paragraph">{{ curInfo.platformOverview }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.LinksToOn' | lang">
+      <span class="fz-16 paragraph">{{ curInfo.platformAddress }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.howManyFans' | lang">
+      <span class="fz-16 paragraph">{{ curInfo.fansNumber }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.Allcommunity' | lang"></form-row>
+    <div class="d-flex snap-wrap">
+      <div class="snap text-center">
+        <img class="h-100 max-w-100 cursor-pointer" [src]="curInfo.fansNumberProveUrl" nz-image alt="" />
+      </div>
+    </div>
+    <!-- 相熟的渠道经理名称信息 -->
+    <form-row [label]="'marketing.pendingList.model.familiarChannelManager' | lang">
+      <span class="fz-16">{{ curInfo.channelManager }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.industryMedia' | lang">
+      <span class="fz-16">{{ curInfo.industryMedia }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.tradingPlatform' | lang">
+      <span class="fz-16">{{ curInfo.transactionPlatform }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.telegramGroup' | lang">
+      <span class="fz-16">{{ curInfo.telegramGroup }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.weiboNickname' | lang">
+      <span class="fz-16">{{ curInfo.weibo }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.weChatGroup' | lang">
+      <span class="fz-16">{{ curInfo.wechat }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.secretCircle' | lang">
+      <span class="fz-16">{{ curInfo.circle }}</span>
+    </form-row>
+
+    <form-row [label]="'marketing.pendingList.model.remarks' | lang">
+      <span class="fz-16">{{ curInfo.remarks }}</span>
+    </form-row>
+
+    <div class="fz-20 mt-14 detail-title">{{ 'marketing.pendingList.model.referFriend' | lang }}</div>
+    <div class="d-flex flex-wrap">
+      <form-row [label]="'marketing.pendingList.model.numberOfActive' | lang" [style.width.px]="370">
+        <span class="fz-16">{{ curData.trading }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.contribution' | lang" [style.width.px]="370">
+        <span class="fz-16">{{ curData.contribution }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.depositAmount' | lang" [style.width.px]="370">
+        <span class="fz-16">{{ curInfo.depositTotal }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.transactionAmount' | lang" [style.width.px]="370">
+        <span class="fz-16">{{ curData.transaction }}</span>
+      </form-row>
+      <form-row [label]="'marketing.pendingList.model.userBalance' | lang" [style.width.px]="370">
+        <span class="fz-16">{{ curData.deposit }}</span>
+      </form-row>
+    </div>
+    <!-- 审批历史 -->
+    <div class="fz-20 mt-14 detail-title">{{ 'marketing.pendingList.model.approvaHistory' | lang }}</div>
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.model.historyApplications' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.model.time' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.model.approver' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'marketing.pendingList.model.description' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data.auditList; let i = index">
+          <td>
+            <span class="cell"> {{ 'marketing.pendingList.application' | lang: { n: i + 1 } }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.applyTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.reviewer }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.explain ? item.explain.slice(0, 16) : '' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 说明 -->
+    <div class="fz-20 mt-14 detail-title">{{ 'marketing.pendingList.model.description' | lang }}</div>
+    <textarea
+      [readonly]="!isPending"
+      class="form-control w-100 resize-none"
+      rows="7"
+      [(ngModel)]="sendData.explain"
+    ></textarea>
+    <!-- 辅助文件 -->
+    <ng-container *ngIf="curData.supplementaryFile?.length">
+      <div class="fz-20 mt-14 detail-title">{{ 'marketing.pendingList.model.auxiliaryDocuments' | lang }}</div>
+      <div class="d-flex helper">
+        <upload
+          *ngFor="let helper of curData.supplementaryFile; let i = index"
+          [(ngModel)]="helper.url"
+          [showLimitText]="false"
+          [disabled]="!isPending"
+          [showClear]="isPending"
+          class="mr-12"
+          type="Proxy"
+        ></upload>
+      </div>
+    </ng-container>
+
+    <!-- state 0待审核 1通过 2拒绝 -->
+    <div class="d-flex justify-content-center pt-12" *ngIf="isPending">
+      <div class="d-flex align-items-start pt-5">
+        <label class="checkbox checkbox-lg fz-16">
+          <input type="checkbox" [value]="true" [(ngModel)]="sendData.isDailySettlement" />
+          <span class="mr-4"></span>
+          <!-- 佣金日结 -->
+          {{ 'marketing.pendingList.model.commissDailySettlement' | lang }}
+        </label>
+
+        <label class="checkbox checkbox-lg fz-16 ml-16">
+          <input type="checkbox" (change)="onSafe()" [value]="true" [(ngModel)]="sendData.isSafe" />
+          <span></span>
+        </label>
+      </div>
+
+      <div class="ml-7">
+        <div class="d-flex flex-ac">
+          <input
+            type="text"
+            class="form-control"
+            (blur)="onCommissionBlur()"
+            [style.width.px]="200"
+            [(ngModel)]="sendData.protectCommission"
+            (input)="sendData.isSafe = true"
+            input-percentage
+          />
+          <span class="fz-16 ml-4">%</span>
+        </div>
+        <div class="pt-3">
+          <span class="color-333">{{ 'marketing.pendingList.model.proxyProtection' | lang }}</span>
+          <span class="color-333 ml-4"
+            >{{ commission.discountMax || 0 }}%{{ 'marketing.pendingList.model.discountRebateCap' | lang }}</span
+          >
+          <!-- 个月保护期 -->
+          <span class="color-333 ml-4"
+            >{{ commission.cycleMax || 0 }}{{ 'marketing.pendingList.model.monthProtectionPeriod' | lang }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- state 0待审核 1通过 2拒绝 -->
+  <div class="modal-footer btn-wrap" *ngIf="isPending">
+    <button type="button" class="c-btn btn btn-light" (click)="onPass(false)">{{ 'common.reject' | lang }}</button>
+    <button type="button" class="c-btn btn btn-primary" (click)="onPass(true)">
+      {{ 'common.by' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 图片浮层预览 -->
+<ng-template #imgPreview>
+  <img [src]="curInfo.fansNumberProveUrl | safeUrl" alt="" style="max-width: 100%" />
+</ng-template>

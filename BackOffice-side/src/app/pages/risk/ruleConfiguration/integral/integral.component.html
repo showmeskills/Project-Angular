@@ -1,0 +1,652 @@
+<!-- 供应商及赛事名称 接口未实现先隐藏-->
+<form-row *ngIf="false" [label]="'risk.cConfig.supplieEventName' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac flex-wrap">
+      <div class="d-flex flex-ac mr-12">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.lossPerBet' | lang }}</div>
+        <form-wrap [style.width.px]="'100'">
+          <input class="form-control pl-0 fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: 'add' }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </div>
+    <!-- 2 -->
+    <div class="d-flex flex-ac flex-wrap mt-5">
+      <div class="d-flex flex-ac mr-12">
+        <div class="fz-14">{{ 'risk.cConfig.unregisteredSupplier' | lang }}</div>
+        <div class="mr-5 ml-10 fz-14">{{ 'risk.cConfig.project' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '170' : '240'">
+          <input
+            class="form-control pl-0 fz-14"
+            autocomplete="off"
+            type="text"
+            [placeholder]="'risk.cConfig.teamName' | lang"
+          />
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac mr-12">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.lossPerBet' | lang }}</div>
+        <form-wrap [style.width.px]="'100'">
+          <input class="form-control pl-0 fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: 'add' }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </div>
+    <!-- 3 -->
+    <div class="d-flex flex-ac flex-wrap mt-5">
+      <div class="d-flex flex-ac mr-12">
+        <div class="fz-14">{{ 'risk.cConfig.lowRiskSupplier' | lang }}</div>
+        <div class="mr-5 ml-10 fz-14">{{ 'risk.cConfig.project' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '170' : '240'">
+          <input
+            class="form-control pl-0 fz-14"
+            autocomplete="off"
+            type="text"
+            [placeholder]="'risk.cConfig.teamName' | lang"
+          />
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac mr-12">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.lossPerBet' | lang }}</div>
+        <form-wrap [style.width.px]="'100'">
+          <input class="form-control pl-0 fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: 'add' }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </div>
+    <!-- 4 -->
+    <div class="d-flex flex-ac flex-wrap mt-5">
+      <div class="d-flex flex-ac mr-12">
+        <div class="fz-14">{{ 'risk.cConfig.highRiskSuppliers' | lang }}</div>
+        <div class="mr-5 ml-10 fz-14">{{ 'risk.cConfig.project' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '170' : '240'">
+          <input
+            class="form-control pl-0 fz-14"
+            autocomplete="off"
+            type="text"
+            [placeholder]="'risk.cConfig.teamName' | lang"
+          />
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac mr-12">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.lossPerBet' | lang }}</div>
+        <form-wrap [style.width.px]="'100'">
+          <input class="form-control pl-0 fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: 'add' }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </div>
+  </ng-template>
+</form-row>
+<!-- c2c存款 接口未实现先隐藏 -->
+<form-row *ngIf="false" [label]="'risk.cConfig.supplieEventName' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac flex-wrap">
+      <div class="d-flex flex-ac mr-12">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.successC2c' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '70' : '100'">
+          <input class="form-control pl-0 fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+        </form-wrap>
+      </div>
+
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: 'add' }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+
+      <div class="d-flex flex-ac ml-24">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.singleLimit' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '100' : '130'">
+          <input class="form-control pl-0 fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </div>
+    <!-- 2 -->
+    <div class="d-flex flex-ac flex-wrap mt-5">
+      <div class="d-flex flex-ac mr-12">
+        <div class="fz-14 mr-12">{{ 'risk.cConfig.c2cTip1' | lang }}</div>
+        <form-wrap [style.width.px]="'100'">
+          <span prefix class="color-aaa fz-14">{{ 'risk.cConfig.di' | lang }}</span>
+          <input class="form-control pl-0 fz-14 text-center" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: 'add' }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </div>
+    <!-- 3 -->
+    <div class="d-flex flex-ac flex-wrap mt-5">
+      <div class="d-flex flex-ac mr-12">
+        <div class="fz-14 mr-12">{{ 'risk.cConfig.c2cTip2' | lang }}</div>
+        <form-wrap [style.width.px]="'100'">
+          <span prefix class="color-aaa fz-14">{{ 'risk.cConfig.di' | lang }}</span>
+          <input class="form-control pl-0 fz-14 text-center" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+        </form-wrap>
+      </div>
+      <div class="d-flex flex-ac">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: 'add' }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.deductionPoint' | lang }}</div>
+      </div>
+    </div>
+  </ng-template>
+</form-row>
+<!-- 被取消单据  接口未实现先隐藏-->
+<form-row *ngIf="false" [label]="'risk.cConfig.canceledDocuments' | lang" label-width="290">
+  <ng-template>
+    <div class="d-flex flex-ac flex-wrap">
+      <div class="mr-5 fz-14">{{ 'risk.cConfig.eachReceiptDeduct' | lang }}</div>
+      <form-wrap [style.width.px]="lang.isLocal ? '70' : '100'">
+        <input class="form-control pl-0 fz-14" autocomplete="off" type="text" />
+        <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.times' | lang }}</span>
+      </form-wrap>
+      <div class="color-aaa fz-14 ml-8">{{ 'risk.cConfig.sportsAndEsports' | lang }}</div>
+    </div>
+  </ng-template>
+</form-row>
+<ng-container *ngFor="let item of data">
+  <!-- 活动设定的红利 -->
+  <form-row *ngIf="item?.action === 'ReciveBonus'" [label]="'risk.cConfig.bonusesEvent' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.deductionBonus' | lang }}</div>
+          <form-wrap [style.width.px]="'110'">
+            <span class="color-aaa fz-14">X</span>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+  <!-- 完成首次存款 -->
+  <form-row *ngIf="item?.action === 'FirstDeposit'" [label]="'risk.cConfig.firstDeposit' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- C2C bank transfer 存款 -->
+  <form-row *ngIf="item?.action === 'C2CDepositSuccess'" [label]="'risk.cConfig.c2cDep' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.sucDeposit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '70' : '100'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+          </form-wrap>
+        </div>
+
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+
+        <div class="d-flex flex-ac ml-24">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.singleLimit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '100' : '130'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 申请C2C存款后 -->
+  <form-row *ngIf="item?.action === 'C2CDepositFail'" [label]="'risk.cConfig.afterC2c' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap mt-5">
+        <div class="d-flex flex-ac mr-12">
+          <div class="fz-14 mr-12">{{ 'risk.cConfig.c2cTip2' | lang }}</div>
+          <form-wrap [style.width.px]="'100'">
+            <span prefix class="color-aaa fz-14">{{ 'risk.cConfig.di' | lang }}</span>
+            <input
+              class="form-control pl-0 fz-14 text-center"
+              autocomplete="off"
+              type="text"
+              [(ngModel)]="item.value"
+            />
+            <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+            <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+          <div *ngIf="item.continueDouble" class="ml-5 fz-14">{{ 'risk.cConfig.deductionPoint' | lang }}</div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 法币提款 -->
+  <form-row *ngIf="item?.action === 'CurrencyWithdraw'" [label]="'risk.cConfig.fiatWd' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.fiatWd' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '70' : '100'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+          </form-wrap>
+        </div>
+
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+
+        <div class="d-flex flex-ac ml-24">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.singleLimit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '100' : '130'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 完成绑定手机号码： -->
+  <form-row *ngIf="item?.action === 'BindMobile'" [label]="'risk.cConfig.enterPhone' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 修改绑定手机号码 -->
+  <form-row *ngIf="item?.action === 'ModifyMobile'" [label]="'risk.cConfig.changePhone' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 通过中级身份认证 -->
+  <form-row *ngIf="item?.action === 'IntermediateKyc'" [label]="'risk.cConfig.passZhong' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 通过高级身份认证 -->
+  <form-row *ngIf="item?.action === 'AdvancedKyc'" [label]="'risk.cConfig.passGao' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 通过人脸识别 -->
+  <form-row *ngIf="item?.action === 'FaceRecognition'" [label]="'risk.cConfig.passFace' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 上传指定视频并通过验证 -->
+  <form-row *ngIf="item?.action === 'VideoVerification'" [label]="'risk.cConfig.upVedioVeri' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+        <div class="color-aaa fz-14 ml-8">{{ 'risk.cConfig.fullAudits' | lang }}</div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 上传SOW并通过验证 -->
+  <form-row *ngIf="item?.action === 'SOWVerification'" [label]="'risk.cConfig.upSow' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+        <!-- 即通过财富来源证明 -->
+        <div class="color-aaa fz-14 ml-8">{{ 'risk.cConfig.prodSourceWealth' | lang }}</div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 每成功划转 -->
+  <form-row *ngIf="item?.action === 'TransferSuccess'" [label]="'risk.cConfig.transSuc' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.successfulTransfer' | lang }}</div>
+        <form-wrap class="mr-10" [style.width.px]="lang.isLocal ? '70' : '90'">
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+        </form-wrap>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+        <!-- <div class="mr-5 fz-14">{{ 'risk.cConfig.transferinOut' | lang }}</div>
+        <form-wrap class="mx-10" [style.width.px]="lang.isLocal ? '70' : '90'">
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+        </form-wrap>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap> -->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 每成功存款 -->
+  <form-row *ngIf="item?.action === 'DepositSuccess'" [label]="'risk.cConfig.succDep' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.succDe' | lang }}</div>
+          <form-wrap [style.width.px]="100">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+            <span suffix class="color-aaa fz-14">USDT</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac mr-24">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+            <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.singleLimit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '100' : '130'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 每成功提款 -->
+  <form-row *ngIf="item?.action === 'WithdrawSuccess'" [label]="'risk.cConfig.successTui' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.successTu' | lang }}</div>
+          <form-wrap [style.width.px]="100">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+            <span suffix class="color-aaa fz-14">USDT</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac mr-24">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+            <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.singleLimit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '100' : '130'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 每有效流水 -->
+  <form-row *ngIf="item?.action === 'TransactSuccess'" [label]="'risk.cConfig.rollover' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.rollove' | lang }}</div>
+          <form-wrap [style.width.px]="100">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+            <span suffix class="color-aaa fz-14">USDT</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac mr-24">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+            <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.singleLimit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '100' : '130'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 每输赢 ['Win', 'Loss']-->
+  <form-row *ngIf="['Win', 'Loss'].includes(item?.action)" [label]="'risk.cConfig.winLose' | lang" label-width="290">
+    <ng-template>
+      <!-- 每赢 -->
+      <div *ngIf="item?.action === 'Win'" class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.win' | lang }}</div>
+          <form-wrap [style.width.px]="100">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+            <span suffix class="color-aaa fz-14">USDT</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac mr-24">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+            <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.sinLimit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '90' : '120'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+      </div>
+      <!-- 每输 -->
+      <div *ngIf="item?.action === 'Loss'" class="d-flex flex-ac flex-wrap mt-4">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.lose' | lang }}</div>
+          <form-wrap [style.width.px]="100">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.value" />
+            <span suffix class="color-aaa fz-14">USDT</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac mr-24">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+            <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.sinLimit' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '90' : '120'">
+            <input class="form-control pl-0 fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 每一张危险球单据 -->
+  <form-row *ngIf="item?.action === 'DangerousBallWager'" [label]="'risk.cConfig.everyBet' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+        <div class="color-aaa fz-14 ml-8">（GoSports）</div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 每一张危险球被取消单据 -->
+  <form-row *ngIf="item?.action === 'DangerousBallCancel'" [label]="'risk.cConfig.everyBe' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.cConfig.kou' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '140' : '170'">
+          <ng-container *ngTemplateOutlet="addCutTpl; context: { $implicit: item.action }"></ng-container>
+          <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+        <div class="color-aaa fz-14 ml-8">（GoSports）</div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 自动扣减 -->
+  <form-row *ngIf="item?.action === 'ScoreStrategy'" [label]="'risk.cConfig.kouDay' | lang" label-width="290">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="d-flex flex-ac mr-12">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.cre' | lang }}</div>
+          <form-wrap [style.width.px]="lang.isLocal ? '110' : '140'">
+            <span class="color-aaa fz-16">＞</span>
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.scoreLimit" />
+            <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+          </form-wrap>
+        </div>
+        <div class="d-flex flex-ac">
+          <div class="mr-5 fz-14">{{ 'risk.cConfig.kouDay' | lang }}</div>
+          <form-wrap [style.width.px]="80">
+            <input class="form-control fz-14" autocomplete="off" type="text" [(ngModel)]="item.score" />
+            <span suffix class="color-aaa fz-14">%</span>
+          </form-wrap>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+</ng-container>
+
+<div class="btn-wrap pt-14 flex-center d-flex" *ngIf="data.length">
+  <button type="button" class="c-btn c-btn-primary" (click)="submit()">{{ 'common.submit' | lang }}</button>
+</div>
+
+<!-- 加减模板 -->
+<ng-template #addCutTpl let-action>
+  <div class="d-flex flex-ac mr-4">
+    <div class="add mr-2" (click)="addCut('add', action)">+</div>
+    <div class="cut" (click)="addCut('cut', action)">-</div>
+  </div>
+</ng-template>

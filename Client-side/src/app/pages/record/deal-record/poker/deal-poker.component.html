@@ -1,0 +1,188 @@
+<!-- 列表item单元 -->
+<ng-container *ngIf="show === 'item'">
+  <!-- web -->
+  <div *ngIf="!isH5; else h5DealItem" class="deal-item deal-other deal-poker">
+    <div class="title">
+      <div class="title-left">
+        <span>{{ dataItem.gameProvider }}</span>
+      </div>
+      <div class="title-right">
+        <div>
+          <span>{{ 'tran_hour' | translate }}:</span>
+          <em>{{ dataItem.betTime | mdate }}</em>
+        </div>
+        <div>
+          <span>{{ 'transaction_num' | translate }}:</span>
+          <em>{{ dataItem.wagerNumber }}</em>
+          <app-tool-tip copyMode="icon" [copyContent]="dataItem.wagerNumber" copyIcon="icon-copy-3"></app-tool-tip>
+        </div>
+        <div>
+          <span class="status {{ dealRecordService.getStatusShowInfo(dataItem.status)['className'] }}">
+            {{ dealRecordService.getStatusShowInfo(dataItem.status)['text'] }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="event-item mutual-opacity onact96" (click)="clickItem.emit(dataItem)">
+        <div class="info-left r-auto">
+          <div class="info-item w-100">
+            <label>{{ 'gname' | translate }}:</label>
+            <span>{{ dataItem.gameDetail || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'odds' | translate }}:</label>
+            <span>{{ dataItem.odds | elegantDisplay : '-' }}</span>
+          </div>
+        </div>
+        <div class="info-right">
+          <div class="info-item">
+            <span>{{ 'amount_transaction' | translate }}:</span>
+            <span>
+              <em>{{ dataItem.betAmount | currencyValue : dataItem.currency }}</em>
+              <img [src]="dataItem.currency | currencyIcon" />
+            </span>
+          </div>
+          <div class="info-item">
+            <span>{{ 'wol' | translate }}:</span>
+            <span>
+              <em [class.well]="dataItem.payoutAmount > 0" [class.bad]="dataItem.payoutAmount < 0">
+                {{ dataItem.payoutAmount | currencyValue : dataItem.currency : ['-', ''] : true }}
+              </em>
+              <img *ngIf="dataItem.payoutAmount !== null" [src]="dataItem.currency | currencyIcon" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- h5 -->
+  <ng-template #h5DealItem>
+    <div class="deal-item h5-deal-item deal-other deal-poker">
+      <div class="title">
+        <div class="title-left">
+          <span>{{ dataItem.gameProvider }}</span>
+        </div>
+        <div class="title-right">
+          <div>
+            <span class="status {{ dealRecordService.getStatusShowInfo(dataItem.status)['className'] }}">
+              {{ dealRecordService.getStatusShowInfo(dataItem.status)['text'] }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="info">
+        <div class="event-item onact96" (click)="clickItem.emit(dataItem)">
+          <div class="info-item">
+            <label>{{ 'gname' | translate }}:</label>
+            <span>{{ dataItem.gameDetail }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'odds' | translate }}:</label>
+            <span>{{ dataItem.odds | elegantDisplay : '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'tran_hour' | translate }}:</label>
+            <em>{{ dataItem.betTime | mdate }}</em>
+          </div>
+          <div class="info-item">
+            <label>{{ 'transaction_num' | translate }}:</label>
+            <span>
+              <em>{{ dataItem.wagerNumber }}</em>
+              <app-tool-tip copyMode="icon" [copyContent]="dataItem.wagerNumber" copyIcon="icon-copy-3"></app-tool-tip>
+            </span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'amount_transaction' | translate }}:</label>
+            <span>
+              <em>{{ dataItem.betAmount | currencyValue : dataItem.currency }}</em>
+              <img [src]="dataItem.currency | currencyIcon" />
+            </span>
+          </div>
+          <div class="info-item">
+            <label>{{ 'wol' | translate }}:</label>
+            <span>
+              <em [class.well]="dataItem.payoutAmount > 0" [class.bad]="dataItem.payoutAmount < 0">
+                {{ dataItem.payoutAmount | currencyValue : dataItem.currency : ['-', ''] : true }}
+              </em>
+              <img *ngIf="dataItem.payoutAmount !== null" [src]="dataItem.currency | currencyIcon" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>
+
+<!-- 详情 -->
+<ng-container *ngIf="show === 'detail'">
+  <div class="info-group">
+    <div class="info-item">
+      <label>{{ 'transaction_num' | translate }}:</label>
+      <span>{{ dealDetailData.wagerNumber }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'game_type' | translate }}:</label>
+      <span>{{ dealDetailData.gameCategory }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'venue' | translate }}:</label>
+      <span>{{ dealDetailData.gameProvider }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'gname' | translate }}:</label>
+      <span>{{ dealDetailData.gameName }}</span>
+    </div>
+
+    <div *ngIf="isH5" class="separate"></div>
+
+    <div class="info-item">
+      <label>{{ 'odds' | translate }}:</label>
+      <span>{{ dealDetailData.odds | elegantDisplay : '-' }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'tran_principal' | translate }}:</label>
+      <span>
+        <span>{{ dealDetailData.principal | currencyValue : dealDetailData.currency }}</span>
+        <img [src]="dealDetailData.currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'betting_credit' | translate }}:</label>
+      <span>
+        <span>{{ dealDetailData.bonus | currencyValue : dealDetailData.currency }}</span>
+        <img [src]="dealDetailData.currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'wol' | translate }}:</label>
+      <span>
+        <span [ngClass]="{ well: dealDetailData.payoutAmount > 0, bad: dealDetailData.payoutAmount < 0 }">
+          {{ dealDetailData.payoutAmount | currencyValue : dealDetailData.currency : ['-', ''] : true }}
+        </span>
+        <img *ngIf="dealDetailData.payoutAmount !== null" [src]="dealDetailData.currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'effective_flow' | translate }}:</label>
+      <span>
+        <span>{{ dealDetailData.activeFlow | currencyValue : dealDetailData.currency : '-' }}</span>
+        <img *ngIf="dealDetailData.activeFlow" [src]="dealDetailData.currency | currencyIcon" />
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'status' | translate }}:</label>
+      <span [class]="dealRecordService.getStatusShowInfo(dealDetailData.status)['className']">
+        {{ dealRecordService.getStatusShowInfo(dealDetailData.status)['text'] }}
+      </span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'tran_hour' | translate }}:</label>
+      <span>{{ dealDetailData.betTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+    </div>
+    <div class="info-item">
+      <label>{{ 'last_sett_time' | translate }}:</label>
+      <span>{{ (dealDetailData.settleTime | mdate : 'YYYY-MM-DD HH:mm:ss') || '-' }}</span>
+    </div>
+  </div>
+</ng-container>

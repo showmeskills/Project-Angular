@@ -1,0 +1,50 @@
+<div class="verify-container">
+  <!-- 标题栏 -->
+  <div class="header-container">
+    <div class="dailog-header">
+      {{ 'add_suppoet_doc' | translate }}
+    </div>
+    <div>
+      <!-- 关闭 -->
+      <span class="icon-close-simple onact96-not" (click)="close()"></span>
+    </div>
+  </div>
+  <!--使用后端数据-->
+  <div class="txt-bold">{{ headerInfor }}</div>
+  <div class="txt-small offset-top">{{ defaultRequirement }}</div>
+  <div class="txt-small offset-top" *ngFor="let item of subDefaultRequirements">
+    {{ item }}
+  </div>
+  <div class="upload-file-box mutual-opacity onact96" [class.disabled]="submitLoading">
+    <ng-container *ngIf="!upLoading">
+      <i class="icon-exit"></i> <span>{{ 'up_files' | translate }}</span>
+      <input type="file" (change)="selectFile($event)" />
+    </ng-container>
+    <i class="animation-icon-loading-dot" *ngIf="upLoading"><i></i><i></i><i></i></i>
+  </div>
+  <div class="file-name" *ngIf="fileNames.length > 0">
+    <ng-container *ngFor="let fileName of fileNames">
+      <p class="offset-top">{{ fileName }}</p>
+    </ng-container>
+  </div>
+  <div class="footer-container">
+    <div class="btn-group">
+      <customize-button
+        size="large"
+        type="primary"
+        width="100%"
+        (onClick)="handleSubmit()"
+        [disabled]="!canSubmit() || submitLoading"
+        [loading]="submitLoading"
+      >
+        {{ 'click_up' | translate }}
+      </customize-button>
+    </div>
+    <div class="notice-row">
+      <i class="safety-i"></i>
+      <div class="notice-text">
+        {{ 'secure_info' | translate }}
+      </div>
+    </div>
+  </div>
+</div>

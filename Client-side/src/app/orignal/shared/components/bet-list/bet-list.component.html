@@ -1,0 +1,50 @@
+<div class="game-body">
+  <div class="game-input" *ngFor="let item of betList; let i = index">
+    <!-- style="border-color: rgb(34, 129, 246); background-color: rgb(16, 36, 61);" -->
+    <div class="input" [class.active]="i + 1 == selector">
+      <div class="input__row">
+        <img class="currency-icon" [src]="currentCurrencyData?.icon" />
+        <input
+          class="ff"
+          [(ngModel)]="item.money"
+          (input)="oninput($event, item)"
+          (blur)="setMoneyRange(item)"
+          (click)="oCopy($event)"
+          (focus)="onFocus()"
+        />
+      </div>
+      <div class="input__row">
+        <div class="toggle" [class.red]="item.isAuto" style="justify-content: center">
+          <div class="toggle__label">
+            <span class="toggle__title">{{ 'auto' | translate }}</span>
+          </div>
+          <mat-slide-toggle [(ngModel)]="item.isAuto" [disabled]="item.loading" (change)="toggleChange($event, item)">
+          </mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="onact96-not" (click)="handleMoney(0, item)">/2</button>
+      <button type="button" class="double_btn onact96-not" (click)="handleMoney(1, item)">x2</button>
+      <button type="button" class="onact96-not" (click)="handleMoney(2, item)">Max</button>
+    </div>
+    <button class="btn" [class]="'btn-' + item.betcolor" [disabled]="item.loading" (click)="submit(item)">
+      <!-- loading只要为true，开始三个点动画 -->
+      <div class="spinner spinner_md" *ngIf="item.loading">
+        <span class="spinner__bounce"></span> <span data-v-44bea192="" class="spinner__bounce"></span>
+        <span class="spinner__bounce"></span>
+      </div>
+      <!-- 所有状态为false展示投注倍数 -->
+      <span *ngIf="!item.isAuto && !item.betAuto && !item.loading">{{ item.betTest }}</span>
+      <!-- 开启自动投注开关，还未点击投注 展示自动投注 auto_bet-->
+      <span *ngIf="item.isAuto && !item.betAuto && !item.loading">{{ 'auto_bet' | translate }}</span>
+      <!-- 开启自动投注开关，点击了投注 展示停止投注 -->
+      <span *ngIf="item.isAuto && item.betAuto && !item.loading">{{ 'stop' | translate }} <i class="circle"></i></span>
+    </button>
+
+    <!-- 未登录按钮 -->
+    <!-- <button class="btn" *ngIf="!isLogin" (click)="goToLogin()">
+      <span>{{'login' | translate}}</span>
+    </button> -->
+  </div>
+</div>

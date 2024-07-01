@@ -1,0 +1,247 @@
+<!--  筛选 -->
+<div class="card d-flex flex-row flex-wrap py-8 px-12 mt-8">
+  <!-- UID -->
+  <form-row [label]="'UID'" class="mr-8" required>
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [placeholder]="'finance.withdrawals.enterUid' | lang"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 币种 -->
+  <form-row [label]="'common.currency' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field class="w-100">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="data.currencyCode"
+          (selectionChange)="loadData(true)"
+          *search="let searchList$ of currencyService.list; key: 'code'"
+        >
+          <!-- 内容框 -->
+          <mat-select-trigger>
+            <div class="d-flex flex-ac">
+              <img *ngIf="data.currencyCode" [currencyIcon]="data.currencyCode" currencySize="18" class="mr-4" />
+              <span>{{ data.currencyCode || ('common.all' | lang) }}</span>
+            </div>
+          </mat-select-trigger>
+
+          <!-- 搜索框 -->
+          <input type="search" searchInput />
+
+          <!-- 下拉框 -->
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of searchList$ | async" [value]="item?.code">
+            <div class="d-flex flex-ac">
+              <img *ngIf="item.code" [currencyIcon]="item.code" currencySize="18" class="mr-4" />
+              <span>{{ item.code || ('common.all' | lang) }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 类型 -->
+  <form-row [label]="'common.type' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of categoryList" [value]="item.code">{{
+            lang.isLocal ? item.description : item.code
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 时间 -->
+  <form-row [label]="'common.time' | lang" class="mr-8" [contentWidth]="264">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<!-- 列表 -->
+<div class="card card-body mt-12">
+  <div class="d-flex flex-ac justify-content-between">
+    <!-- 查询结果 -->
+    <div class="fz-20">{{ 'risk.fundFlowAnalysis.searchResult' | lang }}</div>
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- UID -->
+          <th>
+            <span class="cell">{{ 'UID' }}</span>
+          </th>
+          <!-- 交易时间 -->
+          <th>
+            <span class="cell">{{ 'common.time' | lang }}</span>
+          </th>
+          <!-- 订单号 -->
+          <th>
+            <span class="cell">{{ 'risk.fundFlowAnalysis.txnNumber' | lang }}</span>
+          </th>
+          <!-- 类型 -->
+          <th>
+            <span class="cell">{{ 'common.type' | lang }}</span>
+          </th>
+          <!-- 从钱包到 -->
+          <th>
+            <span class="cell">{{ 'risk.fundFlowAnalysis.walletForm' | lang }}</span>
+          </th>
+          <!-- 变化前余额 -->
+          <th>
+            <span class="cell">{{ 'risk.fundFlowAnalysis.balanceBefore' | lang }}</span>
+          </th>
+          <!-- 变化后余额 -->
+          <th>
+            <span class="cell">{{ 'risk.fundFlowAnalysis.balanceAfter' | lang }}</span>
+          </th>
+          <!-- 到钱包 -->
+          <th>
+            <span class="cell">{{ 'risk.fundFlowAnalysis.walletTo' | lang }}</span>
+          </th>
+          <!-- 变化前余额 -->
+          <th>
+            <span class="cell">{{ 'risk.fundFlowAnalysis.balanceBefore' | lang }}</span>
+          </th>
+          <!-- 变化后余额 -->
+          <th>
+            <span class="cell">{{ 'risk.fundFlowAnalysis.balanceAfter' | lang }}</span>
+          </th>
+          <!-- 金额 -->
+          <th>
+            <span class="cell">{{ 'common.amount' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.uid || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.cteatedTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.orderNum || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.orderType || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.fromWallet || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.fromBeforeBalance | currencyValue: item.currency }}
+              <img class="ml-2" [currencyIcon]="item.currency" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.fromAfterBalance | currencyValue: item.currency }}
+              <img class="ml-2" [currencyIcon]="item.currency" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.toWallet || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.toBeforeBalance | currencyValue: item.currency }}
+              <img class="ml-2" [currencyIcon]="item.currency" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.toAfterBalance | currencyValue: item.currency }}
+              <img class="ml-2" [currencyIcon]="item.currency" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.amount | currencyValue: item.currency }}
+              <img class="ml-2" [currencyIcon]="item.currency" />
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

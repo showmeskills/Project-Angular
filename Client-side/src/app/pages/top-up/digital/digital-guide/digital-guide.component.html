@@ -1,0 +1,54 @@
+<div class="guide-container">
+  <span class="icon-guide"></span>
+  <!--内容-->
+  <div class="clounm">
+    <div class="contant-row">
+      <div class="clounm-root">
+        <div class="step-row">
+          <span class="circle">1</span>
+          <span class="thread"></span>
+        </div>
+        <div class="txt-group">
+          <p class="title">{{ 'copy_add' | translate }}</p>
+          <p class="txt w-142">{{ 'choose_add' | translate }}</p>
+        </div>
+      </div>
+      <div class="clounm-root">
+        <div class="step-row">
+          <span class="circle">2</span>
+          <span class="thread"></span>
+        </div>
+        <div class="txt-group">
+          <p class="title-h5">{{ 'get_add' | translate }}</p>
+          <p class="txt w-76">{{ 'ini_coin' | translate }}</p>
+        </div>
+      </div>
+      <div class="clounm-root">
+        <div class="step-row">
+          <span class="circle">3</span>
+          <span class="thread"></span>
+        </div>
+        <div class="txt-group">
+          <p class="title-h5">{{ 'net_comfirm' | translate }}</p>
+          <p class="txt w-52">{{ 'wait_net' | translate }}</p>
+        </div>
+      </div>
+      <div class="clounm-root">
+        <div class="step-row">
+          <span class="circle">4</span>
+          <span class="thread hide"></span>
+        </div>
+        <div class="txt-group">
+          <p class="title-h5">{{ 'succ_dep' | translate }}</p>
+          <p class="txt h-p">{{ 'confirm_block' | translate }}</p>
+        </div>
+      </div>
+    </div>
+    <span class="link-text"
+      >{{ 'use_fiat' | translate
+      }}<span class="orange-link onact96-not" (click)="toExChange()">{{ 'buy_coins' | translate }}</span></span
+    >
+  </div>
+  <!--关闭-->
+  <span class="icon-close onact96-not" (click)="handleCloseGuide()"></span>
+</div>

@@ -1,0 +1,90 @@
+<div class="page-container">
+  <app-feedback-top-title [title]="'sen_ea' | translate"></app-feedback-top-title>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-16">
+    <div class="container" [appLoading]="loadingList">
+      <div class="content-box">
+        <div class="record-container">
+          <div class="record-item" *ngFor="let item of record" [class.disabled]="item.loading">
+            <div class="title mutual-opacity onact96" (click)="clickRecord(item)">
+              <div class="left">
+                <h3>{{ item.title }}</h3>
+                <span>
+                  {{ item.createdTime | mdate : 'YYYY-MM-DD' }}
+                  <em
+                    >#{{
+                      optionList.feedbackTypeOptionList | filterByKeyValue : 'code' : item.feedbackType : 'description'
+                    }}</em
+                  >
+                </span>
+              </div>
+              <div class="right">
+                <i class="animation-icon-loading-dot" *ngIf="item.loading"><i></i><i></i><i></i></i>
+                <i class="icon-arrow-down" [class.expand]="item.expand"></i>
+              </div>
+            </div>
+            <div class="content" *ngIf="item.expand && item.detail">
+              <div class="row-item">
+                <div class="label">{{ 'type' | translate }}:</div>
+                <div>
+                  {{
+                    optionList.feedbackTypeOptionList
+                      | filterByKeyValue : 'code' : item.feedbackType : 'productOptionList'
+                      | filterByKeyValue : 'code' : item.detail.productType : 'description'
+                  }}
+                </div>
+              </div>
+              <div class="row-item" *ngIf="item.detail.languageCode">
+                <div class="label">{{ 'lang' | translate }}:</div>
+                <div>{{ allLangData | filterByKeyValue : 'code' : item.detail.languageCode : 'name' }}</div>
+              </div>
+              <div class="row-item">
+                <div class="label">{{ 'platform' | translate }}:</div>
+                <div>{{ item.detail.clientType.join(',') }}</div>
+              </div>
+              <div class="row-item" *ngIf="item.detail.device">
+                <div class="label">{{ 'devices' | translate }}:</div>
+                <div>{{ item.detail.device }}</div>
+              </div>
+              <div class="row-item" *ngIf="item.detail.version">
+                <div class="label">{{ 'app_version' | translate }}:</div>
+                <div>{{ item.detail.version }}</div>
+              </div>
+              <div class="row-item" *ngIf="item.detail.url">
+                <div class="label">{{ 'website' | translate }}:</div>
+                <div>{{ item.detail.url }}</div>
+              </div>
+              <div class="row-item detail">
+                <div class="label">{{ 'des' | translate }}:</div>
+                <div>{{ item.detail.detail }}</div>
+              </div>
+              <div class="row-item attachment" *ngIf="item.detail.urlList.length > 0">
+                <div class="label">{{ 'sen_du' | translate }}:</div>
+                <div class="attachment-list">
+                  <p
+                    *ngFor="let item of item.detail.urlList"
+                    class="mutual-opacity onact96-not"
+                    (click)="feedbackService.openPreview(item)"
+                  >
+                    {{ item | getFileName }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <app-empty *ngIf="record.length < 1 && !loadingList"></app-empty>
+
+        <app-paginator
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [disabled]="loadingList"
+          [loading]="loadingList"
+          [pageSize]="paginator.pageSize"
+          (onPageChange)="loadRecord()"
+        >
+        </app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

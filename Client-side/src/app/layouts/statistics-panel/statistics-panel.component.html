@@ -1,0 +1,91 @@
+<div
+  class="statistics animate__zoomIn_light animate__animated animate__fast"
+  *ngIf="show"
+  cdkDrag
+  cdkDragRootElement="app-statistics-panel"
+  cdkDragBoundary="body"
+  #dragCom="cdkDrag"
+  [cdkDragFreeDragPosition]="currentDragPosition"
+  (cdkDragEnded)="updatePosition()"
+  [intersectionObserver]="true"
+  (intersectChange)="intersectChange$.next($event)"
+>
+  <div class="tit" cdkDragHandle>
+    <i class="icon-chart"></i>
+    <span>实时统计</span>
+    <i
+      class="icon-close-simple increase mutual-opacity onact96-not"
+      (click)="layout.statisticsPanelState$.next(false)"
+    ></i>
+  </div>
+
+  <div class="con" [appLoading]="!ready">
+    <ng-container *ngIf="ready">
+      <!-- 操作区 TODO: 原有 gap="12px" 但废弃了，需要额外调整 -->
+      <app-customize-form-group [column]="true" marginBottom="12px">
+        <div class="menus">
+          <app-customize-select
+            [options]="menus"
+            [(value)]="selectMenu"
+            width="auto"
+            [fixedHeight]="true"
+            (onSelect)="menuChange()"
+          >
+          </app-customize-select>
+          <i class="icon-refresh2 mutual-opacity onact96-not" (click)="reset()"></i>
+        </div>
+        <app-customize-select
+          *ngIf="tzAct"
+          [options]="games"
+          [(value)]="selectGame"
+          [valueKey]="'id'"
+          width="100%"
+          (onSelect)="gameChange()"
+          [fixedHeight]="true"
+        >
+        </app-customize-select>
+      </app-customize-form-group>
+
+      <!-- 投注板块 -->
+
+      <div class="bet-cont" *ngIf="tzAct">
+        <div class="total-view">
+          <div class="box">
+            <p>
+              <label>输赢</label>
+              <span [class]="currentGameTotal.reward < 0 ? 'lose' : 'win'">
+                <em>{{ currentGameTotal.reward | currencyValue : currentCurrency }}</em>
+                <img class="currency-icon" [src]="currentCurrency | currencyIcon" />
+              </span>
+            </p>
+            <p>
+              <label>总交易金额</label>
+              <span>
+                <em>{{ currentGameTotal.amount | currencyValue : currentCurrency }}</em>
+                <img class="currency-icon" [src]="currentCurrency | currencyIcon" />
+              </span>
+            </p>
+          </div>
+          <div class="box">
+            <p>
+              <label>赢</label>
+              <em class="win">{{ currentGameTotal.win }}</em>
+            </p>
+            <p>
+              <label>输</label>
+              <em class="lost">{{ currentGameTotal.lose }}</em>
+            </p>
+          </div>
+        </div>
+
+        <div class="chart box">
+          <ng-container #chartContainer></ng-container>
+        </div>
+      </div>
+
+      <!-- 竞赛板块 -->
+
+      <div class="competition-cont box" *ngIf="jsAct"></div>
+    </ng-container>
+  </div>
+</div>

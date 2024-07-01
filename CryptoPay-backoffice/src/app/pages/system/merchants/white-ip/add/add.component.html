@@ -1,0 +1,87 @@
+<div class="bg-fff rounded-3">
+  <div class="p-12" [formGroup]="formGroup">
+    <h2 class="fz-20">{{ 'nav.merchantWhiteIPAdd' | lang }}</h2>
+
+    <!-- 商户 -->
+    <form-row name="merchantId" required [label]="'common.merchant' | lang" class="rounded-0" label-width="212">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select
+            class="form-control"
+            [placeholder]="'form.chooseTips' | lang : { label: 'common.merchant' | lang }"
+            [class.is-invalid]="invalid"
+            [formControl]="control"
+          >
+            <mat-option *ngFor="let item of subHeaderService.merchantListAll" [value]="item.value">
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- API白名单 -->
+    <form-row
+      name="ip"
+      [label]="('common.add' | lang) + ('system.ip.apiWhite' | lang)"
+      class="rounded-0"
+      label-width="212"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          [class.is-invalid]="
+            ((control.touched || control.dirty) && control.hasError('twoOr')) ||
+            control.controls.merchantWhiteList.invalid
+          "
+          [formControl]="control.controls.merchantWhiteList"
+          class="form-control"
+          type="text"
+          [placeholder]="'system.ip.apiWhiteTips' | lang"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 后台白名单 -->
+    <form-row
+      name="ip"
+      [label]="('common.add' | lang) + ('system.ip.backendWhite' | lang)"
+      class="rounded-0"
+      label-width="212"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          [class.is-invalid]="
+            ((control.touched || control.dirty) && control.hasError('twoOr')) || control.controls.adminWhiteList.invalid
+          "
+          [formControl]="control.controls.adminWhiteList"
+          class="form-control"
+          type="text"
+          [placeholder]="'system.ip.backendWhiteTips' | lang"
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 备注 -->
+    <form-row name="description" required [label]="'common.remarks' | lang" class="rounded-0" label-width="212">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <input
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+          class="form-control"
+          type="text"
+          [placeholder]="'form.enterTips' | lang : { label: 'common.remarks' | lang }"
+          input-trim
+        />
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="onBack()">
+      {{ 'common.cancel' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="onSubmit()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,96 @@
+<div class="page-container dividend">
+  <!-- 头部 -->
+  <div class="main-container unity-padding-web unity-padding-h5-16 dividend-header">
+    <div class="dividend-wrap container">
+      <p class="text">{{ 'lat_acti' | translate }}</p>
+      <img class="head-img" src="assets/images/vip/gift-card.svg" alt="" />
+    </div>
+  </div>
+  <ng-container *ngIf="isH5">
+    <ng-container *ngTemplateOutlet="btnTemplate"></ng-container>
+  </ng-container>
+  <div class="card-page main-container inner-page unity-padding-web unity-padding-h5-16" [appLoading]="loading">
+    <!-- list页面 -->
+    <div class="dividend-container container">
+      <div class="dividend-section" *ngIf="activitiesList.length > 0">
+        <ng-container>
+          <ng-container *ngIf="!isH5">
+            <ng-container
+              *ngTemplateOutlet="
+                btnTemplate;
+                context: {
+                  className: 'p-top'
+                }
+              "
+            ></ng-container>
+          </ng-container>
+          <div class="dividend-body" [appLoading]="loading">
+            <div class="activity-list">
+              <div class="item" *ngFor="let item of activitiesList" (click)="getRouterLink(item)">
+                <ng-container
+                  *ngTemplateOutlet="
+                    statusTemplate;
+                    context: {
+                      item: item,
+                      isShow: isH5
+                    }
+                  "
+                ></ng-container>
+                <app-lazy-image
+                  [lazy]="item.activityImgUrl"
+                  [thumbWidth]="500"
+                  [radius]="8"
+                  [ratio]="360 / 190"
+                ></app-lazy-image>
+                <p class="title">{{ item.title }}</p>
+                <div class="date">
+                  <p class="calendar"></p>
+                  <span class="over-date">{{ 'acti_end' | translate }}</span>
+                  <span class="day">{{ item.endTime | mdate : 'YYYY-MM-DD HH:mm' }}</span>
+                </div>
+                <ng-container
+                  *ngTemplateOutlet="
+                    statusTemplate;
+                    context: {
+                      item: item,
+                      isShow: !isH5
+                    }
+                  "
+                ></ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <app-empty class="mt-auto" *ngIf="activitiesList.length === 0 && !loading"></app-empty>
+    </div>
+  </div>
+</div>
+
+<ng-template #statusTemplate let-item="item" let-isShow="isShow">
+  <div class="flex-gap" *ngIf="isShow">
+    <p [class]="item.endTime - item.startTime > 0 ? 'process' : 'over'">
+      {{ item.endTime - item.startTime > 0 ? ('in_pro' | translate) : ('acti_ended' | translate) }}
+    </p>
+    <p *ngIf="item.isJoin && logined && item.isEnroll" class="applied">{{ 'applied' | translate }}</p>
+  </div>
+</ng-template>
+
+<ng-template #btnTemplate let-className="className">
+  <div class="top-nav" [class]="className" *ngIf="activitiesList.length > 0">
+    <ng-container *ngFor="let item of navList; let i = index">
+      <div class="nav-item">
+        <customize-button
+          class="onact96-btn"
+          size="medium"
+          minWidth="80px"
+          [type]="isH5 ? 'text' : isActiveIdx === i ? 'primary' : 'default'"
+          [radius]="isH5 ? '0px' : '20px'"
+          (onClick)="onSelectNatItem(i)"
+        >
+          <span class="btn-text" [class.btn-active]="isActiveIdx === i"> {{ item.labelName }}</span>
+        </customize-button>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

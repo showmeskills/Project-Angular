@@ -1,0 +1,25 @@
+.btn {
+  &-first.btn,
+  &-last.btn,
+  &-preview.btn,
+  &-next.btn {
+    &, &:focus {
+      color: #222 !important;
+      border-color: transparent !important;
+      background-color: transparent !important;
+    }
+
+    &.disabled {
+      opacity: 0.2;
+    }
+  }
+}
+
+.btn-item{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding:0 10px 0 10px ;
+  height: 34px;
+  min-width: 34px;
+}

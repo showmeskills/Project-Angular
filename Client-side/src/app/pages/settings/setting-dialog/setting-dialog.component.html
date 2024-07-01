@@ -1,0 +1,267 @@
+<div class="container">
+  <div class="setting-dialog">
+    <div class="setting-header" [appLoading]="loading">
+      <p class="title">{{ data.title }}</p>
+      <i class="icon-close-simple onact96-not" (click)="close()"></i>
+    </div>
+    <!-- 头像设置需要有单独title -->
+    <p class="info" *ngIf="data.settingidx === 0">
+      {{ isActiveAvatorBtnIdx === 0 ? ('sel_avatar' | translate) : ('custom_ava' | translate) }}
+    </p>
+    <!-- 其他title -->
+    <p class="info" *ngIf="data.settingidx !== 0">{{ data.settingDesc | translate }}</p>
+    <ng-container
+      *ngTemplateOutlet="
+        dialogThemeTemplate;
+        context: {
+          isMulptiBtns: data.isMulptiBtns
+        }
+      "
+    ></ng-container>
+  </div>
+</div>
+
+<!-- 弹窗主题 -->
+<ng-template #dialogThemeTemplate let-isMulptiBtns="isMulptiBtns">
+  <!-- 头像设置 -->
+  <div class="avator" *ngIf="data.settingidx === 0">
+    <div class="tabs-group">
+      <div class="tabs-wrap">
+        <ng-container *ngFor="let item of avatorBtns; let idx = index">
+          <customize-button
+            size="small"
+            [disabled]="avatarLoading"
+            [class]="'btn-' + idx"
+            [type]="idx === isActiveAvatorBtnIdx ? 'primary' : 'text'"
+            width="50%"
+            (onClick)="onChangeAvatorType(idx)"
+          >
+            {{ item | translate }}</customize-button
+          >
+        </ng-container>
+        <div class="tab-active" #tabActive></div>
+      </div>
+    </div>
+    <!-- 默认页面 -->
+    <ng-container *ngIf="isActiveAvatorBtnIdx === 0">
+      <ul class="avator-list">
+        <li class="onact96" *ngFor="let item of avatarList; let i = index" (click)="onSelectAvator(i)">
+          <img
+            class="avator-img mutual-opacity"
+            [class.active]="i == isSelectedAvatoridx"
+            [src]="item.processedUrl"
+            alt=""
+          />
+        </li>
+      </ul>
+    </ng-container>
+    <!-- 上传页面 -->
+    <ng-container *ngIf="isActiveAvatorBtnIdx === 1">
+      <ng-container *ngIf="!isHideDefault">
+        <div class="upload mutual-opacity">
+          <input
+            class="upload-btn"
+            type="file"
+            [disabled]="uploadAvatorProcess > 0 ? true : false"
+            [(ngModel)]="uploadAvator"
+            (change)="onUploadAvator($event)"
+          />
+          <img
+            class="upload-img mutual-opacity"
+            [class.active-img]="uploadAvatorProcess > 0"
+            src="assets/images/settings-center/avator-upload.svg"
+            alt=""
+          />
+        </div>
+      </ng-container>
+      <ng-container *ngIf="isHideDefault">
+        <!-- 裁剪上传头像 -->
+        <ng-container *ngTemplateOutlet="isH5 ? h5CropperTemplate : cropperTemplate"></ng-container>
+      </ng-container>
+      <div class="flex-layout">
+        <customize-button
+          class="reload-btn"
+          type="primary"
+          minWidth="100px"
+          size="small"
+          [loading]="avatarLoading"
+          *ngIf="isHideDefault"
+          (onClick)="clearImg()"
+          >{{ 'upload_again' | translate }}
+        </customize-button>
+      </div>
+      <ng-container *ngIf="!isHideDefault">
+        <div class="upload-info">{{ 'upload_info_tip00' | translate }}</div>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="setting-item" *ngIf="data.settingidx === 2">
+    <p class="setting-item-title">{{ data.title | translate }}</p>
+    <app-customize-select
+      [(value)]="selectedRate"
+      [options]="settingRateList"
+      [valueKey]="'name'"
+      [textKey]="'name'"
+      width="100%"
+    >
+    </app-customize-select>
+  </div>
+
+  <!-- 赔率格式 -->
+  <div class="setting-item" *ngIf="data.settingidx === 4">
+    <p class="setting-item-title">{{ data.title | translate }}</p>
+    <app-customize-select
+      [(value)]="selectOddsType"
+      [options]="oddsTypeList"
+      [valueKey]="'id'"
+      [textKey]="'name' || 'text'"
+      width="100%"
+    >
+    </app-customize-select>
+  </div>
+
+  <!-- 视图格式 -->
+  <div class="setting-item" *ngIf="data.settingidx === 5">
+    <p class="setting-item-title">{{ data.title | translate }}</p>
+    <app-customize-select
+      [(value)]="selectedBetMode"
+      [options]="betMode"
+      [valueKey]="'id'"
+      [textKey]="'name'"
+      width="100%"
+    >
+    </app-customize-select>
+  </div>
+
+  <!-- 语言设置 -->
+  <div class="setting-item" *ngIf="data.settingidx === 6 || data.settingidx === 3">
+    <p class="setting-item-title">{{ data.title | translate }}</p>
+    <app-customize-select
+      [(value)]="selectedLanguage"
+      [options]="allLangData"
+      [showFilter]="true"
+      [valueKey]="'name'"
+      [textKey]="'name'"
+      width="100%"
+    >
+    </app-customize-select>
+  </div>
+
+  <!-- 站内信设置 订单提醒设置-->
+  <div class="platform" *ngIf="data.settingidx === 1 || data.settingidx === 7">
+    <div class="platform-setting">
+      <div class="platform-setting-item" *ngFor="let item of data.settingItem">
+        <mat-slide-toggle class="switch-toggle-item" [checked]="item.active" [(ngModel)]="item.active">
+        </mat-slide-toggle>
+        <span class="platform-name">{{ (item.name | translate) || (item.text | translate) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 默认注码 -->
+  <div class="betting" *ngIf="data.settingidx === 9">
+    <div class="tabs-group">
+      <div class="tabs-wrap">
+        <ng-container *ngFor="let item of bettingBtns; let idx = index">
+          <customize-button
+            size="small"
+            [class]="'btn-' + idx"
+            [type]="idx === isActiveAvatorBtnIdx ? 'primary' : 'text'"
+            width="50%"
+            (onClick)="onChangeAvatorType(idx, false)"
+          >
+            {{ item | translate }}</customize-button
+          >
+        </ng-container>
+        <div class="tab-active" #tabActive></div>
+      </div>
+    </div>
+    <div class="betting-container">
+      <div class="top-text">
+        <p class="text">{{ 'curr' | translate }}</p>
+        <p class="text">{{ 'setting_betting' | translate }}</p>
+      </div>
+      <app-scrollbar>
+        <div class="currency-container">
+          <div class="list" *ngFor="let item of currencies">
+            <div class="currency">
+              <img class="currency-icon" [src]="item.icon" lazy="loading" alt="" />
+              <span class="currency-name">{{ item.currency }}</span>
+            </div>
+            <div class="amount">
+              <app-customize-input type="number" width="100%"></app-customize-input>
+            </div>
+          </div>
+        </div>
+      </app-scrollbar>
+    </div>
+  </div>
+
+  <!-- 隐身模式 -->
+  <div class="setting-item" *ngIf="data.settingidx === 11">
+    <p class="setting-item-title">{{ data.title | translate }}</p>
+    <app-customize-select
+      [label]="'select_mode' | translate"
+      [(value)]="selectedInvisibleMode"
+      width="100%"
+      [options]="invisibleOptions"
+      [valueKey]="'value'"
+      [textKey]="'key'"
+      [appLoading]="invisibleLoading"
+    >
+    </app-customize-select>
+  </div>
+
+  <customize-button class="save-btn" width="100%" size="large" type="primary" *ngIf="!isMulptiBtns" (onClick)="save()">
+    {{ 'save_btn' | translate }}</customize-button
+  >
+  <div class="btn-group" *ngIf="isMulptiBtns">
+    <customize-button width="100%" size="large" (onClick)="close()">{{ 'cancels' | translate }}</customize-button>
+    <customize-button
+      width="100%"
+      type="primary"
+      size="large"
+      [disabled]="!availableSubmit"
+      [loading]="avatarLoading"
+      (onClick)="confirm()"
+    >
+      {{ 'confirm_button' | translate }}</customize-button
+    >
+  </div>
+</ng-template>
+
+<!-- web 裁剪框 -->
+<ng-template #cropperTemplate>
+  <section class="area">
+    <image-cropper
+      [imageFile]="uploadAvatorFile"
+      (imageCropped)="imageCropped($event)"
+      [maintainAspectRatio]="true"
+      [resizeToWidth]="256"
+      [cropperMinWidth]="128"
+      [onlyScaleDown]="true"
+      [roundCropper]="true"
+      [alignImage]="'left'"
+      [output]="'base64'"
+      format="png"
+    ></image-cropper>
+  </section>
+</ng-template>
+<!-- h5 裁剪框 -->
+<ng-template #h5CropperTemplate>
+  <div class="h5-cropper-area">
+    <ng-container *ngTemplateOutlet="cropperTemplate"></ng-container>
+    <div class="h5-bottom">
+      <customize-button type="text" size="small" (onClick)="clearImg(); close()" [loading]="avatarLoading">
+        {{ 'cancels' | translate }}
+      </customize-button>
+      <customize-button class="opacity-half" type="text" size="small" (onClick)="clearImg()" [loading]="avatarLoading">
+        {{ 'reduct00' | translate }}
+      </customize-button>
+      <customize-button type="text" size="small" (onClick)="confirm()" [loading]="avatarLoading">
+        {{ 'finish' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>

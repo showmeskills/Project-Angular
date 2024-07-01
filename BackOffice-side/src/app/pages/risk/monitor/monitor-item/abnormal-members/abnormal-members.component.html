@@ -1,0 +1,153 @@
+<div class="monitor-item abnormal" *ngFor="let item of list" [appLoading]="loading">
+  <div style="flex: 0.5" class="d-flex">
+    <img class="mr-4" iconSrc="/assets/images/svg/monitor-abnormal.svg" />
+    <span class="vam title">{{ 'risk.unnormal' | lang }}</span>
+  </div>
+
+  <div class="jumpRoute" style="flex: 0.4" (click)="onDetail(item)">
+    {{ item.uid || '' }}
+  </div>
+
+  <!-- 余额 + 币种 -->
+  <div class="d-flex flex-ac flex-wrap" style="flex: 0.6">
+    {{ item.detail?.balance | currencyValue: 'USDT' }}
+    <img class="ml-2" [currencyIcon]="'USDT'" />
+  </div>
+
+  <!-- IP/归属地 + 审核原因 -->
+  <div style="flex: 2" class="pr-2">
+    <div class="d-flex mb-3">
+      <div>{{ 'risk.address' | lang }}：</div>
+      <div class="flex-1">{{ item.detail?.ipAddress || '-' }} ({{ item.detail?.ipLocation || '-' }})</div>
+    </div>
+    <div class="d-flex">
+      <div>{{ 'risk.auditReason' | lang }}：</div>
+      <div class="flex-1">{{ item.detail?.reason || '-' }}</div>
+    </div>
+  </div>
+
+  <!-- 最近玩的游戏 -->
+  <div>
+    <!-- 体育&电竞  1,2-->
+    <svg-icon
+      *ngIf="isGameIcon([1, 2], item.detail?.playedGameInfo)"
+      [ngbPopover]="showGameMaker([1, 2], item.detail?.playedGameInfo)"
+      triggers="mouseenter:mouseleave"
+      [svgStyle]="{ 'width.px': 25 }"
+      [src]="'./assets/images/svg/member/sportGame.svg'"
+    ></svg-icon>
+    <!--  彩票3-->
+    <svg-icon
+      *ngIf="isGameIcon([3], item.detail?.playedGameInfo)"
+      [ngbPopover]="showGameMaker([3], item.detail?.playedGameInfo)"
+      triggers="mouseenter:mouseleave"
+      [svgStyle]="{ 'width.px': 25 }"
+      [src]="'./assets/images/svg/member/lottery.svg'"
+    ></svg-icon>
+    <!--  真人4-->
+    <svg-icon
+      *ngIf="isGameIcon([4], item.detail?.playedGameInfo)"
+      [ngbPopover]="showGameMaker([4], item.detail?.playedGameInfo)"
+      triggers="mouseenter:mouseleave"
+      [svgStyle]="{ 'width.px': 25 }"
+      [src]="'./assets/images/svg/member/liveCasino.svg'"
+    ></svg-icon>
+    <!--  娱乐城5-->
+    <svg-icon
+      *ngIf="isGameIcon([5], item.detail?.playedGameInfo)"
+      [ngbPopover]="showGameMaker([5], item.detail?.playedGameInfo)"
+      triggers="mouseenter:mouseleave"
+      [svgStyle]="{ 'width.px': 25 }"
+      [src]="'./assets/images/svg/member/entertainment.svg'"
+    ></svg-icon>
+    <!--  棋牌6-->
+    <svg-icon
+      *ngIf="isGameIcon([6], item.detail?.playedGameInfo)"
+      [ngbPopover]="showGameMaker([6], item.detail?.playedGameInfo)"
+      triggers="mouseenter:mouseleave"
+      [svgStyle]="{ 'width.px': 25 }"
+      [src]="'./assets/images/svg/member/chess.svg'"
+    ></svg-icon>
+  </div>
+
+  <!-- NGR -->
+  <div class="d-flex flex-ac" style="flex: 0.9">
+    NGR：
+    {{ item.detail?.ngr | currencyValue: 'USDT' }}
+    <img class="ml-2" [currencyIcon]="'USDT'" />
+  </div>
+
+  <!-- 四码归属地 -->
+  <!-- <div>
+  <img class="ml-1" [currencyIcon]="'USDT'" />
+  <img class="ml-1" [currencyIcon]="'USDT'" />
+  <img class="ml-1" [currencyIcon]="'USDT'" />
+  <img class="ml-1" [currencyIcon]="'USDT'" />
+  <img class="ml-1" [currencyIcon]="'USDT'" />
+</div> -->
+
+  <!-- 活跃天数 -->
+  <div style="flex: 0.3">{{ item.detail?.activeDays || '-' }}D</div>
+
+  <!-- 信用积分 -->
+  <div style="flex: 0.4" *win="item.detail?.creditScore; let value; prev as prev">
+    {{ 'member.table.creditPoints' | lang }}:<br />
+    <div [winColor]="value" [winColorReverse]="true">{{ prev }}{{ value | toFormatMoney }}</div>
+  </div>
+
+  <!-- 触发时间 -->
+  <div style="flex: 0.5" class="text-center">
+    {{ item.createdTime | timeFormat }}
+  </div>
+
+  <div class="last cursor-pointer" [ngSwitch]="item.status">
+    <app-label *ngSwitchCase="StatusEnum.Pending" type="warning" (click)="onDetail(item)">{{
+      'risk.pending' | lang
+    }}</app-label>
+    <app-label *ngSwitchCase="StatusEnum.Finish" type="success" (click)="onDetail(item)">{{
+      'risk.pass' | lang
+    }}</app-label>
+    <app-label *ngSwitchCase="StatusEnum.Rejected" type="warning" (click)="onDetail(item)">{{
+      'risk.reject' | lang
+    }}</app-label>
+    <!-- 待补充资料 -->
+    <app-label *ngSwitchCase="StatusEnum.Processing" type="info" (click)="onDetail(item)">{{
+      'risk.addWait' | lang
+    }}</app-label>
+    <app-label *ngSwitchCase="StatusEnum.Cancel" type="danger">{{ 'common.cancel' | lang }}</app-label>
+  </div>
+</div>
+
+<!-- loading -->
+<div *ngIf="!list.length && loading" style="height: 380px" [appLoading]="loading"></div>
+
+<!-- 每个item都有自己的页码才能分开控制 Total总量 -->
+<ng-container *ngIf="!isAllType">
+  <!-- 空显示 -->
+  <empty class="bg-fff rounded" [show]="!list.length && !loading"></empty>
+
+  <div class="d-flex flex-between pt-6 flex-ac">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          style="background: #fff"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</ng-container>

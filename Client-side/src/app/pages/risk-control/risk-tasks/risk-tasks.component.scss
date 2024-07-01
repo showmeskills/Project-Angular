@@ -1,0 +1,163 @@
+.task-container {
+  position: absolute;
+  width: 360px;
+  height: fit-content;
+  right: 12px;
+  bottom: 68px;
+  background: var(--bg-color-10);
+  border-radius: 4px;
+  z-index: 998;
+  display: flex;
+  padding: 15px;
+  flex-direction: column;
+  @media (max-width: 767px) {
+    right: 20px;
+  }
+
+  @media (max-width: 412px) {
+    right: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    bottom: 60px;
+    &.min {
+      left: unset;
+      width: 230px;
+    }
+  }
+
+  .header {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    color: var(--text-color);
+    justify-content: space-between;
+    align-items: center;
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      //最小化icon
+      div {
+        height: 25px;
+        cursor: pointer;
+        user-select: none;
+        span {
+          width: 12px;
+          display: inline-block;
+          border-bottom: 1px solid var(--text-color-20);
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .icon-maximize {
+      color: var(--text-color-20);
+      cursor: pointer;
+      margin-right: 10px;
+      font-size: 12px;
+      user-select: none;
+    }
+    i {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+
+  .content {
+    margin-top: 30px;
+    padding: 0 10px;
+    background: var(--bg-color-10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .step {
+      display: flex;
+      position: relative;
+
+      .node {
+        position: absolute;
+        pointer-events: none;
+        top: 43%;
+        left: -30px;
+
+        &.step-node-0::after {
+          z-index: 0;
+          width: 0;
+        }
+
+        &.done {
+          background: #1e9239;
+          color: #fff;
+        }
+      }
+
+      label.icon-correct {
+        top: 35px;
+        position: absolute;
+        left: -26px;
+        font-size: 12px;
+      }
+      //链接部分
+      .node::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -4px;
+        width: 20px;
+        height: 20px;
+        background-color: var(--page-bg-color);
+        border-radius: 50%;
+      }
+      //checkbox自身部分
+      .node::after {
+        content: '';
+        position: absolute;
+        z-index: 10;
+        background-color: var(--page-bg-color);
+        top: -70px;
+        left: 4px;
+        width: 4px;
+        height: 75px;
+      }
+      .node:checked:before {
+        background-color: #1e9239;
+      }
+      .node:checked::after {
+        background-color: #1e9239;
+        color: #fff;
+      }
+
+      .task {
+        height: 65px;
+        width: 260px;
+        display: flex;
+        padding: 22px 15px;
+        margin: 10px 0;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 4px;
+        color: var(--text-color);
+        background-color: var(--page-bg-color);
+
+        .left-txt {
+          i {
+            margin-right: 8px;
+          }
+        }
+        &.done {
+          background: #1e9239;
+          color: #fff;
+        }
+      }
+    }
+  }
+  .icon-correct {
+    font-size: 16px;
+    line-height: 20px;
+    &::before {
+      color: #fff;
+    }
+  }
+}

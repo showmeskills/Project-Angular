@@ -1,0 +1,126 @@
+.theme-default {
+  /* 主队色/单色/日間 */
+  --orignal-primary-color: #60A3F2;
+  /* 客队色/单色/日間 */
+  --orignal-primary-color-1: #F96B8A;
+  /* 主色/单色/日間 */
+  --orignal-primary-color-2: #FB6943;
+  /* 主队色/渐层/日間 */
+  --orignal-primary-linear: #{linear-gradient(180deg, #6DAEFB 0%, #4C7EDF 100%)};
+  /* 客队色/渐层/日間 */
+  --orignal-primary-linear-1: #{linear-gradient(180deg, #FF7B98 0%, #ED456A 100%)};
+  /* 主色/渐层/日間 */
+  --orignal-primary-linear-2: #{linear-gradient(360deg, #F36742 0%, #FC8A3E 100%)};
+
+  /* 背景色/日间 */
+  --orignal-bg: #F4F7FD;
+  /* icon背景色/日间 */
+  --orignal-bg-icon: #FFFFFF;
+  /* 操作按钮背景色/日间 */
+  --orignal-operate-bg: #F1F1F1;
+  /* icon背景色/日间划入 */
+  --orignal-bg-icon-hover: #F1F1F1;
+  /* 内容色/日间 */
+  --orignal-mian: #FFFFFF;
+  /* 内容划入色/日间 */
+  --orignal-mian-hover: #F1F1F1;
+  /* 奖金文字色/日间 */
+  --orignal-win-test: #E68C06;
+
+  /* 一级文字色/日间 */
+  --orignal-test-1: #484848;
+  /* 二级文字色/日间 */
+  --orignal-test-2: #A6A6A6;
+  /* 三级文字色/日间 */
+  --orignal-test-3: #484848;
+  /* 分隔线色/日间 */
+  --orignal-border-color: #ECECEC;
+  /* 分隔线色1/日间 */
+  --orignal-border-color1: #ECECEC;
+  /* 弹窗背景色/日间 */
+  --orignal-dialog-bg:#{rgba(0, 0, 0, 0.6)};
+
+  /* 陰影/卡片/日間 */
+  --orignal-card-shadow: 0px 4px 15px #D4DEF2;
+
+  /* 背景/卡片圆环/日間 */
+  --orignal-card-border-bg:#494949;
+  /* 背景/卡片/日間 */
+  --orignal-card-bg: linear-gradient(180deg, #FDFDFD 0%, #EAEEF7 100%);
+  /* 背景/卡片/日間/right */
+  --orignal-card-bg-right: linear-gradient(270deg, rgba(169, 208, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+  /* 背景/卡片/日間/right exchange*/
+  --orignal-card-bg-right-exchange:linear-gradient(270deg, rgba(255, 169, 188, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+   /* 陰影/历史号码/日間 */
+   --orignal-history-shadow: linear-gradient(90deg, #F4F7FD 0%, rgba(244, 247, 253, 0) 100%);
+  /* 陰影/历史号码/日間 */
+  --orignal-history-shadow-1:  linear-gradient(90deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%);
+    /* 背景/按钮/日間 */
+  --orignal-btn: #f9f9f9;
+    /* 文字颜色/日間 */
+  --orignal-text: #0D131C;
+    /* 背景图标/日間 */
+    --orignal-bg-icon: ;
+  &.dark {
+    /* 主队色/单色/夜間 */
+    --orignal-primary-color: #2283F6;
+    /* 客队色/单色/夜間 */
+    --orignal-primary-color-1: #FA305C;
+    /* 主色/单色/夜間 */
+    --orignal-primary-color-2: #F04E23;
+    /* 主队色/渐层/夜間 */
+    --orignal-primary-linear: #{linear-gradient(180deg, #2283F6 0%, #1252CF 100%)};
+    /* 客队色/渐层/夜間 */
+    --orignal-primary-linear-1: #{linear-gradient(180deg, #FA305C 0%, #D90F3B 100%)};
+    /* 主色/渐层/夜間 */
+    --orignal-primary-linear-2: #{linear-gradient(0deg, #F04E23 0%, #FC8A3E 100%)};
+
+    /* 背景色/夜间 */
+    --orignal-bg: #0D131C;
+    /* icon背景色/夜间 */
+    --orignal-bg-icon: #161F2C;
+    /* 操作按钮背景色/夜间 */
+    --orignal-operate-bg: #383C45;
+    /* icon背景色/夜间划入 */
+    --orignal-bg-icon-hover: #383C45;
+    /* 内容色/夜间 */
+    --orignal-mian: #161F2C;
+    /* 内容划入色/夜间 */
+    --orignal-mian-hover: #383C45;
+    /* 奖金文字色/夜间 */
+    --orignal-win-test: #EFC046;
+    /* 一级文字色/夜间 */
+    --orignal-test-1: #FFFFFF;
+    /* 二级文字色/夜间 */
+    --orignal-test-2: #7C8499;
+    /* 三级文字色/夜间 */
+    --orignal-test-3: #FFFFFF;
+    /* 分隔线色/夜间 */
+    --orignal-border-color: #303539;
+    /* 分隔线色/夜间 */
+    --orignal-border-color1: #55657E;
+    /* 弹窗背景色/夜间 */
+    --orignal-dialog-bg:#{rgba(0, 0, 0, 0.8)};
+    /* 陰影/卡片/夜间 */
+    --orignal-card-shadow:0px 4px 15px #{rgba(0, 0, 0, 0.25)};
+    /* 背景/卡片圆环/夜间 */
+    --orignal-card-border-bg:#FFFFFF;
+    /* 背景/卡片/夜间 */
+    --orignal-card-bg: linear-gradient(180deg, #303337 0%, #151C28 100%);
+
+    /* 背景/卡片/夜间/right */
+    --orignal-card-bg-right: linear-gradient(270deg, rgba(34, 131, 246, 0.5) 0%, rgba(34, 131, 246, 0) 100%);
+    /* 背景/卡片/夜间/right exchange*/
+    --orignal-card-bg-right-exchange: linear-gradient(270deg, rgba(250, 48, 92, 0.5) 0%, rgba(250, 48, 92, 0) 100%);
+    /* 陰影/历史号码/夜间 */
+    --orignal-history-shadow: linear-gradient(90deg, #151A24 0%, rgba(21, 26, 36, 0) 100%);
+    /* 陰影/历史号码/夜间 */
+    --orignal-history-shadow-1:linear-gradient(90deg, #161F2C 0%, rgba(22, 31, 44, 0) 100%);
+    /* 背景/按钮/夜間 */
+    --orignal-btn: #1d2a37;
+    /* 文字颜色/夜間 */
+    --orignal-text: #CCD3E6;
+  }
+
+
+}

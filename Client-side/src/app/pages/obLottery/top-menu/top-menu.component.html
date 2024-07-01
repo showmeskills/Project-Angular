@@ -1,0 +1,78 @@
+<div class="list-container" (mousewheel)="onMousewheel($event)">
+  <a
+    [href]="domain + '/' + appService.languageCode + '/play/OBLottery-3'"
+    class="item mutual-opacity onact96"
+    (click)="gotoGame('ob'); $event.preventDefault()"
+  >
+    <div>
+      <div>
+        <img src="assets/images/lottery/db.svg" alt="" />
+        <div class="item-name">
+          <h3>{{ 'ob_lottery' | translate }}</h3>
+          <div class="to-go">{{ 'enter_game' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <a
+    [href]="domain + '/' + appService.languageCode + '/play/TCLottery-3'"
+    class="item mutual-opacity onact96"
+    (click)="gotoGame('tc'); $event.preventDefault()"
+  >
+    <div>
+      <div>
+        <img src="assets/images/lottery/tianc-lottery.svg" alt="" />
+        <div class="item-name">
+          <h3>{{ 'tc_lottery' | translate }}</h3>
+          <div class="to-go">{{ 'enter_game' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <a
+    [href]="domain + '/' + appService.languageCode + '/play/SGLottery-3'"
+    class="item mutual-opacity onact96"
+    (click)="gotoGame('sg'); $event.preventDefault()"
+  >
+    <div>
+      <div>
+        <img src="assets/images/lottery/sg-lottery.svg" alt="" />
+        <div class="item-name">
+          <h3>{{ 'sg_Lottery' | translate }}</h3>
+          <div class="to-go">{{ 'enter_game' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <a
+    class="item mutual-opacity onact96"
+    [href]="domain + '/' + appService.languageCode + '/play/VRLottery-3'"
+    (click)="gotoGame('vr'); $event.preventDefault()"
+  >
+    <div>
+      <div>
+        <img src="assets/images/lottery/vr-lottery.svg" alt="" />
+        <div class="item-name">
+          <h3>{{ 'vr_lottery' | translate }}</h3>
+          <div class="to-go">{{ 'enter_game' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- 2023-12-26 Fitch通知下架  -->
+  <!-- <div class="item mutual-opacity onact96" (click)="gotoGame('gpi')">
+    <div>
+      <div>
+        <img src="assets/images/lottery/gpi-lottery.svg" alt="" />
+        <div class="item-name">
+          <h3>{{ 'gpi_Lottery' | translate }}</h3>
+          <div class="to-go">{{ 'enter_game' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>

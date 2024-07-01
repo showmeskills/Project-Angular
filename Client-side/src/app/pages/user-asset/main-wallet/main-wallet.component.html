@@ -1,0 +1,229 @@
+<!-- 标题栏 -->
+<div class="main-wallet-container">
+  <div class="header-container">
+    <!-- 大标题 -->
+    <div class="title">{{ 'main' | translate }}</div>
+    <div class="btn-group">
+      <ng-container *ngFor="let item of btnGroup; let i = index">
+        <customize-button
+          [type]="item.isActive ? 'primary' : 'text'"
+          width="100%"
+          size="small"
+          [plain]="item.isActive ? false : true"
+          (onClick)="handleTopUp(i)"
+          >{{ item.name | translate }}
+        </customize-button>
+      </ng-container>
+    </div>
+  </div>
+  <div class="overview-top-container">
+    <div class="overview-top">
+      <div class="container-title">{{ 'wal_det' | translate }}</div>
+      <div class="top-column">
+        <div class="top-title">{{ 'es_val' | translate }}</div>
+        <div class="number">
+          {{ totalAsset | currencyValue : 'USDT' : undefined : undefined : 2 }}
+          <div class="small">USDT</div>
+          <div class="divide"></div>
+          <div class="equal" *ngIf="currentWalletCurrency !== 'USDT'">
+            ≈
+            {{ afterRate(totalAsset, currentWalletCurrency) | currencyValue : currentWalletCurrency }}
+            {{ currentWalletCurrency }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main-wallet-main-container">
+  <div class="overview-container">
+    <div class="top-info">
+      <div class="input-row">
+        <input type="text" placeholder="{{ 'search_coin' | translate }}" [(ngModel)]="searchedCurrency" />
+        <!--H5下显示-->
+        <div class="dots onact96-not" (click)="openSorting()"></div>
+      </div>
+      <div class="hideSmallAmount">
+        <mat-checkbox [disableRipple]="true" [(ngModel)]="ishideSmallAmount">
+          <span class="checkbox-text">
+            {{ 'hide_small_bal' | translate }}
+          </span>
+        </mat-checkbox>
+      </div>
+    </div>
+    <ng-container *ngIf="!walletDataLoading; else loading">
+      <ng-container *ngIf="(mainCurrencies | filterByText : searchedCurrency : ['currency']).length > 0; else isEmpty">
+        <table>
+          <thead>
+            <th>
+              <div class="th-row">
+                {{ 'curr' | translate }}
+                <div class="btn-box">
+                  <span class="up-arraw onact96-not" (click)="sortingUp('currency', 'letter')"></span>
+                  <span class="grey-down-arraw onact96-not" (click)="sortingDown('currency', 'letter')"></span>
+                </div>
+              </div>
+            </th>
+            <th>
+              <div class="th-row">
+                {{ 'ava' | translate }}
+                <div class="btn-box">
+                  <span class="up-arraw onact96-not" (click)="sortingUp('number', 'canUseAmount')"></span>
+                  <span class="grey-down-arraw onact96-not" (click)="sortingDown('number', 'canUseAmount')"></span>
+                </div>
+              </div>
+            </th>
+            <th>
+              <div class="th-row">
+                <!--提示-->
+                <app-tool-tip>
+                  <div tooltip>
+                    {{ 'lock_note' | translate }}
+                  </div>
+                  <span class="derection" origin>{{ 'in_order' | translate }}</span>
+                </app-tool-tip>
+                <div class="btn-box">
+                  <span class="up-arraw onact96-not" (click)="sortingUp('number', 'freezeAmount')"></span>
+                  <span class="grey-down-arraw onact96-not" (click)="sortingDown('number', 'freezeAmount')"></span>
+                </div>
+              </div>
+            </th>
+            <th>
+              <div class="th-row">
+                {{ 'all_line' | translate }}
+                <div class="btn-box">
+                  <span class="up-arraw onact96-not" (click)="sortingUp('number', 'totalAmount')"></span>
+                  <span class="grey-down-arraw onact96-not" (click)="sortingDown('number', 'totalAmount')"></span>
+                </div>
+              </div>
+            </th>
+            <th>
+              {{ 'action' | translate }}
+            </th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let item of mainCurrencies
+                  | filterByText : searchedCurrency : ['currency']
+                  | filterByFactor : ishideSmallAmount : hideMinAmountFactor
+              "
+            >
+              <td>
+                <div class="coin-container">
+                  <img class="coin" [src]="item.currency | currencyIcon" />
+                  <div class="name">
+                    <div class="short">{{ item.currency }}</div>
+                    <div class="full">{{ currencies | filterByKeyValue : 'currency' : item.currency : 'name' }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>{{ item.canUseAmount | currencyValue : item.currency }}</td>
+              <td [attr.data-label]="'ip_addr00' | translate">
+                {{ item.freezeAmount | currencyValue : item.currency }}
+              </td>
+              <td [attr.data-label]="'all' | translate">{{ item.total | currencyValue : item.currency }}</td>
+              <td>
+                <div class="link-group">
+                  <ng-container
+                    *ngTemplateOutlet="links; context: { item: item, class: 'link-btn primary' }"
+                  ></ng-container>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <ng-template #isEmpty>
+        <app-empty></app-empty>
+      </ng-template>
+    </ng-container>
+    <ng-template #loading>
+      <div class="loading-box" [appLoading]="walletDataLoading"></div>
+    </ng-template>
+    <!--H5-->
+    <div class="h5-container" *ngIf="!walletDataLoading">
+      <div class="header">{{ 'asset' | translate }}</div>
+      <ng-container
+        *ngFor="
+          let item of mainCurrencies
+            | filterByText : searchedCurrency : ['currency']
+            | filterByFactor : ishideSmallAmount : hideMinAmountFactor
+        "
+      >
+        <div class="expand-item onact96" [class.expanded]="item.isActive" (click)="item.isActive = !item.isActive">
+          <div class="row">
+            <div class="left">
+              <div class="coin-container">
+                <img class="coin" [src]="item.currency | currencyIcon" />
+                <div class="name">
+                  <div class="short">{{ item.currency }}</div>
+                  <div class="full">{{ currencies | filterByKeyValue : 'currency' : item.currency : 'name' }}</div>
+                </div>
+              </div>
+              <div class="all">{{ item.total | currencyValue : item.currency }}</div>
+            </div>
+            <div class="right">
+              <div [class.grey-down-arraw]="!item.isActive" [class.up-arraw]="item.isActive"></div>
+              <app-tool-tip>
+                <div origin class="dots onact96-not" (click)="$event.stopPropagation()"></div>
+                <div tooltip class="options-group">
+                  <ng-container *ngTemplateOutlet="links; context: { item: item, class: 'link-btn' }"></ng-container>
+                </div>
+              </app-tool-tip>
+            </div>
+          </div>
+          <div class="expended-infor">
+            <div class="row-item">
+              <!--提示-->
+              <div class="notice" [class.active]="item.showH5FrezzeNotice">{{ 'lock_note' | translate }}</div>
+              <span
+                class="txt derection onact96-not"
+                [class.active]="item.showH5FrezzeNotice"
+                (click)="$event.stopPropagation(); item.showH5FrezzeNotice = !item.showH5FrezzeNotice"
+                (clickOutside)="item.showH5FrezzeNotice = false"
+                >{{ 'in_order' | translate }}</span
+              >
+              <span>{{ item.freezeAmount | currencyValue : item.currency }}</span>
+            </div>
+            <div class="row-item">
+              <span class="txt">{{ 'ava' | translate }}</span>
+              <span>{{ item.canUseAmount | currencyValue : item.currency }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #links let-item="item" let-class="class">
+  <ng-container *ngIf="item.canUseAmount < 0 && item.freezeAmount <= 0; else normal">
+    <!-- 负值清零 -->
+    <div
+      class="{{ class }} mutual-opacity onact96-not"
+      (click)="$event.stopPropagation(); userAssetsService.clearNegativeAssets(item.currency)"
+    >
+      {{ 'c_n_assets' | translate }}
+    </div>
+  </ng-container>
+  <ng-template #normal>
+    <!-- 充值 -->
+    <div class="{{ class }} mutual-opacity onact96-not" (click)="$event.stopPropagation(); handleToUp(item)">
+      {{ 'deposit' | translate }}
+    </div>
+    <!-- 提现 -->
+    <div class="{{ class }} mutual-opacity onact96-not" (click)="$event.stopPropagation(); handleWithdraw(item)">
+      {{ 'withdraw' | translate }}
+    </div>
+    <!-- 购买（仅数字货币） -->
+    <div
+      class="{{ class }} mutual-opacity onact96-not"
+      *ngIf="isCanBuyCurrency(item.currency)"
+      (click)="$event.stopPropagation(); handleBuy(item)"
+    >
+      {{ 'buy' | translate }}
+    </div>
+    <!-- <div class="{{class}} mutual-opacity" (click)='$event.stopPropagation(); handleExchange(item)'>{{'encashment'|translate}}</div> -->
+  </ng-template>
+</ng-template>

@@ -1,0 +1,161 @@
+.list {
+  .checkbox {
+    transform: scale(1.2);
+  }
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.color-blue {
+  color: #009ef7;
+}
+
+.status {
+  min-width: 86px;
+  height: 34px;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 34px;
+  letter-spacing: normal;
+  text-align: center;
+}
+
+.status_normal {
+  color: #50cd89;
+  background-color: #e8fff3;
+}
+
+.status_lock {
+  color: #ffc700;
+  background-color: #fff8dd;
+}
+
+.status_stop {
+  color: #f1416c;
+  background-color: #fff5f8;
+}
+.status_noactive {
+  color: #7e8299;
+  background-color: #f5f8fa;
+}
+
+.table {
+  tr {
+    border-bottom: 1px dashed #ebedf3;
+
+    td {
+      border-top: 0 !important;
+    }
+  }
+}
+.text-container {
+  width: 80px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.riskLevel {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  background-color: #a1a5b7;
+
+  &.R1 {
+    background-color: #92f76f;
+  }
+
+  &.R2 {
+    background-color: #00cb51;
+  }
+
+  &.R3 {
+    background-color: #fec600;
+  }
+
+  &.R4 {
+    background-color: #ff7a00;
+  }
+
+  &.R5 {
+    background-color: #ff0000;
+  }
+}
+
+.list-div {
+  width: 100%;
+  overflow-x: auto;
+
+  .table-layout {
+    width: 100%;
+    thead {
+      background-color: #ffffff;
+    }
+    th {
+      min-width: 100px; /* 设置最小宽度，根据需要调整 */
+    }
+    td {
+      min-width: 100px; /* 设置最小宽度，根据需要调整 */
+    }
+
+    th:first-child,
+    td:first-child {
+      background-color: #ffffff;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      min-width: 50px;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      background-color: #ffffff;
+      position: sticky;
+      left: 50px;
+      z-index: 2;
+      min-width: 100px; /* 设置固定S宽度，根据需要调整 */
+    }
+    td:nth-child(2) {
+      text-decoration: underline;
+      color: #009ef7;
+      span {
+        cursor: pointer;
+      }
+    }
+    .w-80 {
+      min-width: 80px;
+    }
+    .w-50 {
+      min-width: 50px;
+    }
+  }
+}

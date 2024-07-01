@@ -1,0 +1,183 @@
+<div class="main">
+  <div class="color-111 mb-10 fz-18 fw-bolder">{{ 'member.model.groupMail' | lang }}</div>
+  <div class="w-100 d-flex flex-ac">
+    <label class="mb-0 label-title">{{ 'member.model.send' | lang }}</label>
+    <div class="d-flex">
+      <div class="fz-16">
+        {{ 'content.insite.allM' | lang }} {{ base.userIdList?.length }}
+        {{ 'content.insite.member' | lang }}
+      </div>
+    </div>
+  </div>
+  <!-- UID -->
+  <div class="mt-6 w-100 d-flex flex-ac">
+    <label class="label-title">UID <span class="text-danger">*</span>:</label>
+    <div class="d-flex flex-ac">
+      <input type="text" class="form-control" disabled />
+    </div>
+    <div class="d-flex ml-10">
+      <button class="c-btn c-btn-primary" disabled>{{ 'game.provider.add' | lang }}</button>
+    </div>
+  </div>
+
+  <!-- VIP等级 来源 用户状态 -->
+  <div class="mt-6 w-100 d-flex level">
+    <!-- VIP等级 -->
+    <div class="d-flex flex-ac">
+      <label class="mr-10">{{ 'common.selectAll' | lang }}</label>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" disabled [(ngModel)]="optionVal.vip">
+          <mat-option value="0">{{ 'common.notSelected' | lang }}</mat-option>
+          <mat-option value="1">{{ 'common.selected' | lang }}</mat-option>
+          <!-- <mat-option value="">
+                <div class="option-radio">
+                  <label class="checkbox">
+                    <input type="checkbox"  />
+                    <span></span>
+                    <b>VIP2</b>
+                  </label>
+                </div>
+              </mat-option> -->
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- 来源 -->
+    <div class="d-flex flex-ac">
+      <label class="mr-10 ml-10">{{ 'common.source' | lang }}</label>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" disabled [(ngModel)]="optionVal.source">
+          <mat-option value="0">{{ 'common.notSelected' | lang }}</mat-option>
+          <mat-option value="1">{{ 'common.selected' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- 用户状态 -->
+    <div class="d-flex flex-ac">
+      <label class="mr-10 ml-10">{{ 'content.insite.userStu' | lang }}</label>
+      <mat-form-field [style.width.px]="110">
+        <mat-select class="form-control" disabled [(ngModel)]="optionVal.status">
+          <mat-option value="0">{{ 'common.notSelected' | lang }}</mat-option>
+          <mat-option value="1">{{ 'common.selected' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- 类型 -->
+  <div class="mt-6 w-100 d-flex">
+    <label class="label-title">{{ 'content.insite.type' | lang }} <span class="text-danger">*</span>：</label>
+    <div class="flex-1">
+      <div class="d-flex flex-wrap h-100">
+        <label class="radio radio-lg radio-success mr-10">
+          <input type="radio" checked disabled value="" name="type" />
+          <span></span>
+          <b [ngSwitch]="base.noticeType">
+            <b *ngSwitchCase="'System'">{{ 'content.insite.sysInfo' | lang }}</b>
+            <b *ngSwitchCase="'Transaction'">{{ 'content.insite.transInfo' | lang }}</b>
+            <b *ngSwitchCase="'Activity'">{{ 'content.insite.acInfo' | lang }}</b>
+            <b *ngSwitchCase="'Information'">{{ 'content.insite.PlatAsk' | lang }}</b>
+          </b>
+        </label>
+      </div>
+    </div>
+  </div>
+  <!-- 站内信的标题和内容 -->
+  <form class="mt-6 form w-100" [formGroup]="formGroup" #form>
+    <!-- tab -->
+    <lang-tab [(value)]="selectLang" formArrayName="lang" #langTab (languageChange)="updateLanguageForm()">
+      <ng-template let-i="i" let-current="current">
+        <!-- 站内信标题 -->
+        <form-row
+          name="title"
+          [label]="('common.title' | lang) + '（' + current?.name + '）'"
+          label-width="220"
+          [invalidFeedback]="{
+            required: ('member.kyc.model.pleaseEnterTitle' | lang) + '（' + current?.name + '）'
+          }"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid">
+            <input
+              [class.is-invalid]="invalid"
+              class="form-control"
+              [formControl]="langArrayForm.controls[i]['controls']['title']"
+              type="text"
+              maxlength="20"
+              [placeholder]="'content.insite.less' | lang: { n: 20 }"
+            />
+          </ng-template>
+        </form-row>
+        <!-- 站内信内容 -->
+        <form-row
+          class="mt-4"
+          name="content"
+          [label]="('member.model.content' | lang) + '（' + current?.name + '）'"
+          label-width="220"
+          [invalidFeedback]="{ required: 'member.model.groupContent' | lang }"
+          [group]="langArrayForm.controls[i]"
+        >
+          <ng-template let-invalid="invalid">
+            <div class="form-control rounded border-1 h-auto" [class.is-invalid]="invalid">
+              <ueditor type="Article" [formControl]="langArrayForm.controls[i]['controls']['content']"></ueditor>
+            </div>
+          </ng-template>
+          <div afterContent class="fz-14 color-999">{{ 'member.model.textTips' | lang: { n: 20, m: 170 } }}</div>
+        </form-row>
+      </ng-template>
+    </lang-tab>
+  </form>
+
+  <!-- 动态 -->
+  <div class="mt-6 record" *ngIf="recordList && recordList.length">
+    <div class="color-111 mb-10 fz-18 fw-bolder">{{ 'content.insite.record' | lang }}</div>
+
+    <div class="mt-6 record-content custom-scroll-y">
+      <dl [class]="item.custom?.color || ''" *ngFor="let item of recordList">
+        <dd>
+          <span class="mr-5">{{ item.userName }}</span>
+          <span class="mr-5 color-999">
+            {{ 'content.insite.recordType' | lang: item.custom?.type || 'unknown' }}
+            <span *ngIf="item.params">({{ item.params }})</span>
+          </span>
+          <span class="word-break">{{ item.result }}</span>
+          <div class="color-999">{{ item.createdTime | timeFormat }}</div>
+        </dd>
+      </dl>
+    </div>
+  </div>
+  <!-- 按钮组 -->
+  <div class="modal-footer btn-wrap flex-center">
+    <button
+      class="c-btn c-btn-default"
+      (click)="router.navigate(['/content/messagestation-manage/messagestation-log'])"
+    >
+      {{ 'common.back' | lang }}
+    </button>
+    <button class="c-btn c-btn-primary" (click)="onSubmit(modalTpl, langTab)">{{ 'common.confirm' | lang }}</button>
+  </div>
+
+  <!-- 弹窗提示：是否确认保存站内信 -->
+  <ng-template #modalTpl let-c="close" let-d="dismiss">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title fw-bolder">{{ 'game.provider.notice' | lang }}</div>
+        <div class="c-btn-close" (click)="d()">
+          <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+        <p class="fz-16 mt-8">{{ 'content.insite.sureKeep' | lang }}</p>
+      </div>
+
+      <div class="modal-footer btn-wrap">
+        <button type="button" class="c-btn btn btn-light" (click)="d()" style="color: #373a49">
+          {{ 'common.cancel' | lang }}
+        </button>
+        <button type="button" class="c-btn btn btn-primary" (click)="c({ value: true })">
+          {{ 'common.confirm' | lang }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>

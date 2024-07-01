@@ -1,0 +1,205 @@
+<!-- 调账模态框 -->
+<div class="modal-header">
+  <div class="modal-title fw-bolder">{{ 'member.overview.adjustBalance' | lang }}</div>
+
+  <div class="c-btn-close" (click)="modal.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<div class="modal-body" *ngIf="formGroup">
+  <div class="pl-8 w-100">
+    <form class="form w-100" [formGroup]="formGroup" #form>
+      <!-- 账户 -->
+      <form-row
+        [label]="'member.overview.account' | lang"
+        required
+        name="username"
+        label-width="120"
+        [invalidFeedback]="{ required: 'member.overview.selectAccount' | lang }"
+      >
+        <ng-template let-invalid="invalid">
+          <mat-select class="form-control w-100" formControlName="username" [class.is-invalid]="invalid">
+            <!-- TODO [上午11:41] Ring (来宾) 写死这两个，其他的暂时不给操作 -->
+            <mat-option [value]="'main'">{{ 'member.overview.masterAccount' | lang }}</mat-option>
+
+            <!-- TODO https://gbd730.atlassian.net/wiki/spaces/Gaming/pages/1958051865 -> 目前只可以选择主账户 -->
+            <!-- <mat-option [value]="'WithdrawLimit'">提款流水要求</mat-option> -->
+
+            <!--            <mat-option [value]="4" [disabled]="true">首存红利钱包</mat-option>-->
+          </mat-select>
+        </ng-template>
+      </form-row>
+
+      <!-- 币种 -->
+      <form-row
+        [label]="'common.currency' | lang"
+        required
+        name="currency"
+        label-width="120"
+        [invalidFeedback]="{ required: 'common.selectCurrency' | lang }"
+      >
+        <ng-template let-invalid="invalid">
+          <div
+            class="form-field d-flex cursor-pointer flex-ac"
+            [class.is-invalid]="invalid"
+            (click)="onOpenCurrency(currencyTab$)"
+          >
+            <img *ngIf="currencyName" class="mr-2" [currencyIcon]="currencyName" currencySize="18" />
+            <span class="flex-fill">{{ currencyName }}</span>
+            <svg-icon class="form-icon-triangle" [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+          </div>
+        </ng-template>
+      </form-row>
+    </form>
+
+    <!-- 余额 -->
+    <form-row [label]="'common.balance' | lang" label-width="120" required>
+      <ng-template>
+        <form-wrap class="amount-limit" [showClear]="true" [invalid]="isAmountInvalid" (clear)="amount = 0">
+          <div prefix class="d-flex flex-ac mr-4">
+            <div class="add mr-4 active" [class.active]="isAmoutAdd" (click)="addCut('amount', 'add')">+</div>
+            <div class="cut" [class.active]="!isAmoutAdd" (click)="addCut('amount', 'cut')">-</div>
+          </div>
+          <input
+            autocomplete="off"
+            [input-float]="curCurrency.isDigital ? 8 : 2"
+            [negative]="true"
+            [(ngModel)]="amount"
+            (ngModelChange)="amountValueChange($event)"
+            type="text"
+          />
+        </form-wrap>
+      </ng-template>
+
+      <ng-template #invalidFeedbackCustom>
+        <div class="invalid-feedback" *ngIf="amountLimitData?.isNeedLimit && amount > amountLimitData?.availableAmount">
+          <!-- 已超出最大调账金额 -->
+          {{ 'member.overview.adjustmentMax' | lang }}
+        </div>
+      </ng-template>
+
+      <div afterContent class="fz-14 mt-2 color-999" *ngIf="amountLimitData?.isNeedLimit">
+        <!-- 可以调账的最大金额为 -->
+        {{ 'member.overview.adjustmentAmountMax' | lang }}
+        {{ amountLimitData?.availableAmount | currencyValue: currencyName }}
+        {{ currencyName }}
+      </div>
+    </form-row>
+
+    <!-- 提款流水要求 -->
+    <form-row
+      [label]="'member.overview.withdrawalLimit' | lang"
+      label-width="120"
+      [labelStyle]="lang.isLocal ? 'lineHeight:42px' : 'lineHeight:normal'"
+    >
+      <ng-template>
+        <form-wrap class="amount-limit" [showClear]="true" (clear)="limit = 0">
+          <div prefix class="d-flex flex-ac mr-4">
+            <div class="add mr-4 active" [class.active]="isLimitAdd" (click)="addCut('limit', 'add')">+</div>
+            <div class="cut" [class.active]="!isLimitAdd" (click)="addCut('limit', 'cut')">-</div>
+          </div>
+          <input
+            autocomplete="off"
+            [input-float]="curCurrency.isDigital ? 8 : 2"
+            [negative]="true"
+            [(ngModel)]="limit"
+            type="text"
+          />
+        </form-wrap>
+      </ng-template>
+    </form-row>
+
+    <!-- 类型 -->
+    <form-row [label]="'common.type' | lang" label-width="120">
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of typeList; index as i">
+            <input type="radio" name="adjustMentType" [value]="item.value" [(ngModel)]="type" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+          <div class="d-flex flex-ac my-4" *ngIf="type === 4">
+            <div class="color-aaa">{{ 'content.foot.product' | lang }}{{ 'common.type' | lang }}：</div>
+            <!-- 游戏厂商 -->
+            <mat-form-field [style.width.px]="140" class="mx-5">
+              <mat-select class="form-control" [(ngModel)]="baseId" (selectionChange)="onProviderChange($event)">
+                <mat-option *ngFor="let item of providerList" [value]="item.baseId">{{ item.abbreviation }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!-- 游戏厂商 - 支持的游戏 -->
+            <mat-form-field [style.width.px]="140" *ngIf="baseId">
+              <mat-select class="form-control" [(ngModel)]="gameCategory">
+                <mat-option *ngFor="let item of gameList" [value]="item.category">{{ item.categoryName }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <div [formGroup]="formGroup" *ngIf="formGroup">
+      <!-- 备注 -->
+      <form-row
+        [label]="'member.overview.remarks' | lang"
+        required
+        name="remark"
+        label-width="120"
+        [invalidFeedback]="{ required: 'member.overview.enterRemark' | lang }"
+      >
+        <ng-template let-invalid="invalid">
+          <textarea
+            [class.is-invalid]="invalid"
+            formControlName="remark"
+            maxlength="500"
+            class="form-control"
+            [placeholder]="'member.overview.maximum' | lang: { num: 500 }"
+            rows="8"
+          ></textarea>
+        </ng-template>
+
+        <div afterContent class="fz-14 mb-2 color-999">
+          {{ 'member.overview.remarks' | lang }}{{ 'member.overview.maximum' | lang: { num: 500 } }}
+        </div>
+      </form-row>
+
+      <form-row
+        [label]="'member.overview.annex' | lang"
+        name="image"
+        label-width="120"
+        required
+        [invalidFeedback]="{ required: 'member.overview.pleaseUpload' | lang }"
+      >
+        <ng-template let-invalid="invalid">
+          <upload
+            type="AdminOperateAudit"
+            class="w-100"
+            [style.height.px]="140"
+            desc="jpg, png, gif, bmp, pdf"
+            [limit]="1024 * 5"
+            [accept]="['jpg', 'png', 'gif', 'bmp', 'pdf']"
+            formControlName="image"
+            [class.is-invalid]="invalid"
+          ></upload>
+        </ng-template>
+      </form-row>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()" style="color: #373a49">
+    {{ 'common.cancel' | lang }}
+  </button>
+  <button type="button" class="c-btn btn btn-primary" (click)="onSubmit()">{{ 'common.confirm' | lang }}</button>
+</div>
+
+<ng-template #currencyTab$>
+  <div class="tab-currency">
+    <span (click)="onCurrencyTab(true)" class="tab-currency-item" [class.active]="isDigital">{{
+      'member.detail.balance.category.0' | lang
+    }}</span>
+    <span (click)="onCurrencyTab(false)" class="tab-currency-item" [class.active]="!isDigital">{{
+      'member.detail.balance.category.1' | lang
+    }}</span>
+  </div>
+</ng-template>

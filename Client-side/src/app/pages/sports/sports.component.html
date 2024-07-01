@@ -1,0 +1,114 @@
+<div class="page-container">
+  <div class="main-container">
+    <app-normal-carousel class="container" [isSpecilStyleBanner]="true" [buildFor]="'GamesPage'"></app-normal-carousel>
+  </div>
+
+  <!-- 体育iframe -->
+  @if (isHasIframe) {
+    <div class="main-container">
+      <div class="container unity-padding-h5-12">
+        <div class="display-container">
+          @if (loading) {
+            <div class="currency-container">
+              <p class="skeleton-loading name-loading"></p>
+              <p class="skeleton-loading currency-loading"></p>
+            </div>
+            <div class="skeleton-loading before-iframe-container"></div>
+          } @else {
+            @if (gameProvider) {
+              <div class="currency-container">
+                <p class="sport-name">{{ gameProvider.providerName }}</p>
+                <div class="currency-selector">
+                  @if (selectedPlayCoin) {
+                    <div class="setting animate__animated animate__fadeIn animate__slow">
+                      <div class="selected-currency">
+                        <label>{{ 'show_curr' | translate }}</label>
+                        <div
+                          class="coin-drop-down mutual-opacity onact96"
+                          cdkOverlayOrigin
+                          #origin="cdkOverlayOrigin"
+                          [class.disabled]="gameCurrency.length === 1"
+                          (click)="showCoinList = !showCoinList"
+                          (clickOutside)="showCoinList = false"
+                        >
+                          <div [style.margin-bottom.px]="3">
+                            <img [src]="selectedPlayCoin | usdChangeToUsdt | currencyIcon" />
+                            <span>{{ selectedPlayCoin | usdChangeToUsdt }}</span>
+                          </div>
+                          @if (gameCurrency.length > 1) {
+                            <i [class]="showCoinList ? 'icon-arrow-up-simple' : 'icon-arrow-down-simple'"></i>
+                          }
+                        </div>
+                        <ng-template
+                          cdkConnectedOverlay
+                          [cdkConnectedOverlayPositions]="positions"
+                          [cdkConnectedOverlayOpen]="showCoinList"
+                          [cdkConnectedOverlayOrigin]="origin"
+                        >
+                          <div class="select-coin-container">
+                            <div class="select-coin-list">
+                              @for (item of gameProvider.currencyRatio || []; track item) {
+                                <div class="mutual-opacity onact96" (click)="onSelectPlayCoin(item.currency)">
+                                  <img [src]="item.currency | usdChangeToUsdt | currencyIcon" />
+                                  <span>{{ item.currency | usdChangeToUsdt }}</span>
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        </ng-template>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- loading 结束后 是否 有url -->
+            @if (url) {
+              <div #fullscreenDiv class="iframe-container" [class.non-border]="isFullScreen">
+                <iframe #iframe [src]="url | safe" allow="fullscreen"></iframe>
+                <app-fullscreen
+                  [sportsFullscreenMode]="true"
+                  (switchCurrency)="switchCurrency()"
+                  [ref]="fullscreenDiv"
+                  (listenFullScreen)="fullScreen($event)"
+                ></app-fullscreen>
+              </div>
+            } @else {
+              <div class="overlay">
+                @if (!logined && !gameProvider?.isTry) {
+                  <customize-button type="primary" (onClick)="playGame()" [icon]="'icon-user-fill'">
+                    {{ 'login_button' | translate }}
+                  </customize-button>
+                } @else {
+                  <div class="error-tip">
+                    {{ errorText || ('gam_conn_err' | translate) }}
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="main-container">
+    <!-- 游戏类标签 -->
+    @for (item of renderGameList(); track item; let i = $index) {
+      <app-swiper-unit
+        class="container"
+        [style.order]="i"
+        (clickItem)="clickGameItem($event)"
+        (clickTitle)="clickLabelTitle(item)"
+        [data]="item?.gameLists"
+        [title]="item?.labelName"
+        [titleIcon]="item?.icon"
+        [titleHref]="item?.titleHref"
+      ></app-swiper-unit>
+    }
+
+    <!-- 每日竞赛 -->
+    <app-daily-races [freeze]="false" [style.order]="99" [gameCategories]="['SportsBook', 'Esports']"></app-daily-races>
+  </div>
+</div>

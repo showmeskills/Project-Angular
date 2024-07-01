@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="job ignore-unity-h5-padding">
+    <div class="job-left">
+      <p class="text-one">{{ jobTitle || '' }}</p>
+      <p class="text-two">{{ jobLocation || '' }}</p>
+      <div class="mt-top">
+        <customize-button minWidth="125px" size="medium" type="primary" (onClick)="jumpToPage('/about-us/jobs/hr')">
+          {{ 'appl_for' | translate }}
+        </customize-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="job-detail" [appLoading]="contentLoading">
+    <div class="content" [innerHTML]="localeContent | toHtmlElement"></div>
+  </div>
+
+  <div class="footer">
+    <customize-button
+      [minWidth]="isH5 ? '100%' : '125px'"
+      size="medium"
+      type="primary"
+      (onClick)="jumpToPage('/about-us/jobs/hr')"
+    >
+      {{ 'appl_for' | translate }}
+    </customize-button>
+  </div>
+</div>

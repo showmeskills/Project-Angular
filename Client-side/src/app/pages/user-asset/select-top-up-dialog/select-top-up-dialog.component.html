@@ -1,0 +1,22 @@
+<div class="top-up-dialog-container" [appLoading]="isLoading">
+  <div class="header-row">
+    <span>{{ 'deposit' | translate }}</span>
+    <span class="close-icon mutual-opacity onact96-not" (click)="close('icon'); piqService.allowRoute.set(true)"></span>
+  </div>
+  <div class="contant-clounm">
+    <span class="way">{{ 'choose_dep' | translate }}</span>
+    <!--ways-->
+    <div *ngFor="let item of depositGroups">
+      <div class="ticket mutual-opacity onact96" (click)="handleSelect(item)">
+        <span class="{{ item.icon }}"></span>
+        <div class="option-row">
+          <div class="clounm">
+            <span class="text">{{ item.name }}</span>
+            <span>{{ item.remark }}</span>
+          </div>
+          <span class="icon-arrow"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

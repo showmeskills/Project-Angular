@@ -1,0 +1,279 @@
+<div class="modal-header">
+  <div class="modal-title d-flex flex-ac">
+    {{ isNonStickyBonus ? (titleLang | lang) + ' - ' : '' }}
+    <!-- 排除游戏 -->
+    {{ 'member.activity.prizeCommon.excludeGames' | lang }}
+    <div class="text-danger">
+      （{{
+        (isNonStickyBonus ? 'member.activity.prizeCommon.realTime' : 'member.activity.prizeCommon.notRrealTime') | lang
+      }}）
+    </div>
+
+    <svg-icon
+      *ngIf="!isNonStickyBonus"
+      class="svg-icon svg-icon-l ml-2 w20 d-flex"
+      src="./assets/images/svg/coupon-vector.svg"
+      placement="right-top"
+      [ngbTooltip]="tipTpl"
+    ></svg-icon>
+  </div>
+
+  <div class="c-btn-close" (click)="modal.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<!-- 游戏搜索 -->
+<div class="d-flex flex-ac flex-center search" *ngIf="!readOnly">
+  <form-wrap [style.width.px]="557" class="mr-8">
+    <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+    <input
+      class="form-control"
+      autocomplete="off"
+      type="text"
+      (focus)="openGameSearch()"
+      (blur)="closeGameSearch()"
+      [(ngModel)]="gameName"
+      [disabled]="isLoading"
+      [placeholder]="'game.manage.keyword' | lang"
+      (ngModelChange)="serachChange()"
+      (keyup)="$event.keyCode === 13 && getGameList(true)"
+    />
+  </form-wrap>
+  <button class="c-btn btn btn-primary h40" [disabled]="isLoading" (mousedown)="gameSearch($event)">
+    {{ 'common.confirm' | lang }}
+  </button>
+
+  <!-- 搜索 - 内容框 -->
+  <div class="custom-scroll-y search-box" [appLoading]="gameLoading" *ngIf="isSearchFlag">
+    <div class="d-flex item" *ngFor="let item of gameList" (mousedown)="addSerchExcludedGame(item)">
+      <div class="item-images">
+        <img class="w-100 h-100" [src]="getGameImg(item)" />
+      </div>
+      <div class="item-content">
+        <div class="lh-22">{{ item?.name || '-' }}</div>
+        <div class="lh-22">{{ item.providerCatId || '-' }}</div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!gameLoading">
+      <!-- 空显示 -->
+      <empty *ngIf="!gameList.length"></empty>
+
+      <div
+        *ngIf="total && !isListEmptyFlag"
+        class="f-14 text-center cursor-pointer text-primary"
+        (mousedown)="getMoreList($event)"
+      >
+        {{ 'game.manage.load_more' | lang }}
+      </div>
+
+      <div *ngIf="isListEmptyFlag && gameList.length" class="f-14 text-center color-aaa">
+        {{ 'game.manage.no_more' | lang }}
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- 游戏标签选择 -->
+<div class="select-box px-10 mb-10" [class.mt-10]="readOnly">
+  <div class="color-aaa mb-4 fz-16">{{ 'member.activity.prizeCommon.filterExcludeTagGames' | lang }}：</div>
+  <div class="select-content" [appLoading]="isLoading">
+    <div class="select-content-item" *ngFor="let item of selectedLabelList; index as i">
+      <img class="lh-1" *ngIf="item?.icon" [src]="item.icon | host" width="18" height="18" />
+      <div class="px-5">{{ item?.name || '-' }}</div>
+      <svg-icon
+        *ngIf="!readOnly"
+        [src]="'./assets/images/svg/admin-del.svg'"
+        class="svg-icon svg-icon-2x cursor-pointer d-flex"
+        (click)="deteleLabel(item, i)"
+      ></svg-icon>
+    </div>
+    <div *ngIf="!readOnly" class="add" (click)="openSelectPopup('gameLabel', 'selectedLabelList', 'gameLabelList')">
+      <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+    </div>
+  </div>
+</div>
+
+<!-- 游戏厂商选择 -->
+<div class="select-box px-10 mb-10">
+  <!-- 筛选排除厂商游戏 -->
+  <div class="color-aaa mb-4 fz-16">{{ 'member.activity.prizeCommon.filterExcludeProGames' | lang }}：</div>
+  <div class="select-content" [appLoading]="isLoading">
+    <div class="select-content-item" *ngFor="let item of selectedProviderList; index as i">
+      <div class="px-5">{{ item?.providerName || '-' }}</div>
+      <svg-icon
+        *ngIf="!readOnly"
+        [src]="'./assets/images/svg/admin-del.svg'"
+        class="svg-icon svg-icon-2x cursor-pointer d-flex"
+        (click)="deteleProvider(item, i)"
+      ></svg-icon>
+    </div>
+    <div
+      *ngIf="!readOnly"
+      class="add"
+      (click)="openSelectPopup('gameProvider', 'selectedProviderList', 'gameProviderList')"
+    >
+      <svg-icon [src]="'./assets/images/svg/add.svg'"></svg-icon>
+    </div>
+  </div>
+</div>
+
+<!-- 已选排除游戏 -->
+<div class="select-box px-10 mb-10">
+  <div class="color-aaa mb-4 fz-16">{{ 'member.activity.prizeCommon.selectedExcludedGames' | lang }}：</div>
+  <div class="excluded-box">
+    <!-- 筛选游戏 -->
+    <form-row [label]="'member.activity.prizeCommon.searchGame' | lang" label-width="110">
+      <ng-template>
+        <div class="excluded-content custom-scroll-y">
+          <!-- 游戏列表 -->
+          <div class="d-flex flex-wrap" style="gap: 5px">
+            <div
+              class="excluded-content-item color-aaa d-flex flex-ac"
+              *ngFor="let item of selectedSerchGameList; index as i"
+            >
+              {{ item?.name || '-' }}
+              <svg-icon
+                *ngIf="!readOnly"
+                [src]="'./assets/images/svg/admin-del.svg'"
+                class="svg-icon svg-icon-2x cursor-pointer d-flex"
+                (click)="selectedSerchGameList.splice(i, 1)"
+              ></svg-icon>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 标签游戏 -->
+    <form-row [label]="labelTpl" label-width="110">
+      <ng-template>
+        <div class="excluded-content custom-scroll-y" [appLoading]="isLoading">
+          <div class="d-flex mb-3" *ngFor="let items of selectedLabelGameList">
+            <!-- 标签名 -->
+            <div class="mr-2" style="flex: 0 0 100px">
+              <div class="d-flex flex-ac pt-2">
+                <div style="word-break: break-all">{{ items.name || '-' }}</div>
+                <div>：</div>
+              </div>
+            </div>
+            <!-- 游戏列表 -->
+            <div
+              class="d-flex flex-wrap"
+              style="gap: 5px; height: fit-content"
+              *ngIf="items?.gameList.length; else noGameListTel"
+            >
+              <div
+                class="excluded-content-item label-game color-aaa"
+                [class.label-game]="!isNonStickyBonus"
+                [class.label-game-used]="!isNonStickyBonus && item.isUsed"
+                *ngFor="let item of items?.gameList"
+              >
+                {{ item?.name || ('game.noneName' | lang) }}
+              </div>
+            </div>
+            <ng-template #noGameListTel>
+              <div class="d-flex flex-ac">-</div>
+            </ng-template>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 厂商游戏 -->
+    <form-row [label]="'member.activity.prizeCommon.providerGames' | lang" label-width="110">
+      <ng-template>
+        <div class="excluded-content custom-scroll-y" [appLoading]="isLoading">
+          <div class="d-flex mb-3" *ngFor="let items of selectedProviderGameList">
+            <!-- 厂商名 -->
+            <div class="mr-2" style="flex: 0 0 100px">
+              <div class="d-flex flex-ac pt-2">
+                <div style="word-break: break-all">{{ items.providerName || '-' }}</div>
+                <div>：</div>
+              </div>
+            </div>
+            <!-- 游戏列表 -->
+            <div
+              class="d-flex flex-wrap"
+              style="gap: 5px; height: fit-content"
+              *ngIf="items?.gameList.length; else noGameListTel"
+            >
+              <div class="excluded-content-item color-aaa" *ngFor="let item of items?.gameList">
+                {{ item?.name || ('game.noneName' | lang) }}
+              </div>
+            </div>
+            <ng-template #noGameListTel>
+              <div class="d-flex flex-ac">-</div>
+            </ng-template>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+</div>
+
+<!-- 按钮组 -->
+<div class="modal-footer btn-wrap">
+  <!-- 关闭/取消 -->
+  <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">
+    {{ (readOnly ? 'common.close' : 'common.cancel') | lang }}
+  </button>
+
+  <!-- 确认 -->
+  <button type="button" class="c-btn btn btn-primary" (click)="confirm()" [disabled]="isLoading" *ngIf="!readOnly">
+    {{ 'common.confirm' | lang }}
+  </button>
+
+  <!-- 更新（查看模式 && 非实时） -->
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="confirm()"
+    [disabled]="isLoading"
+    *ngIf="readOnly && !isNonStickyBonus"
+  >
+    {{ 'payment.currency.update' | lang }}
+  </button>
+</div>
+
+<ng-template #tipTpl>
+  <div class="text-left">
+    <div class="fz-16">{{ 'member.activity.prizeCommon.noExcludeGames' | lang }}：</div>
+    <div class="mt-2 d-flex" *ngFor="let category of gameExcludeProviderList">
+      <div style="white-space: nowrap; flex: 0 0 80px" class="color-aaa">
+        {{ lang.isLocal ? category['description'] : category['code'] }}：
+      </div>
+      <div class="d-flex flex-ac flex-wrap">
+        <div style="white-space: nowrap" class="ml-2" *ngFor="let item of category.providers">
+          {{ lang.isLocal ? item.providerName : item.providerId }}
+        </div>
+        <div *ngIf="!category.providers.length">-</div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #labelTpl>
+  <div class="d-flex" style="align-items: flex-start">
+    {{ 'member.activity.prizeCommon.labelGames' | lang }}
+    <svg-icon
+      *ngIf="!isNonStickyBonus"
+      class="svg-icon svg-icon-l ml-2 cursor-pointer"
+      src="./assets/images/svg/coupon-vector.svg"
+      placement="right"
+      [ngbTooltip]="labelTipTpl"
+    ></svg-icon>
+  </div>
+</ng-template>
+
+<ng-template #labelTipTpl>
+  <div style="text-align: left">
+    <!-- 绿色背景是已生效游戏 -->
+    <div class="fz-14">▪ {{ 'member.activity.prizeCommon.excludedGameLabelTips1' | lang }}</div>
+    <!-- 黄色背景表示未生效游戏 -->
+    <div class="fz-14">▪ {{ 'member.activity.prizeCommon.excludedGameLabelTips2' | lang }}</div>
+    <!-- 需要保存才可以生效 -->
+    <div class="fz-14 text-danger">* {{ 'member.activity.prizeCommon.excludedGameLabelTips3' | lang }}</div>
+  </div>
+</ng-template>

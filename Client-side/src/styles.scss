@@ -1,0 +1,2006 @@
+@use 'sass:math';
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$platform-web-primary: mat.define-palette(mat.$indigo-palette);
+$platform-web-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$platform-web-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$platform-web-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $platform-web-primary,
+      accent: $platform-web-accent,
+      warn: $platform-web-warn,
+    ),
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-bases($platform-web-theme);
+@import 'assets/styles/theme-defaut.scss';
+@import 'assets/styles/reset.css';
+@import 'assets/styles/animate.css';
+@import 'assets/fonts/style.scss';
+@import 'assets/styles/rich-text.scss';
+@import 'assets/styles/countries.css';
+@import 'swiper/scss';
+@import 'swiper/scss/navigation';
+@import 'swiper/scss/pagination';
+@import 'swiper/scss/thumbs';
+
+:root {
+  --scrollbar-size: 6px;
+  --left-menu-width: 240px;
+  --left-menu-rail-width: 60px;
+  --topbar-height: 100px;
+  --header-height: 60px;
+}
+
+body {
+  font-family: 'dinpro', 'roboto', 'PingFangSC-Regular', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  min-width: 320px;
+  height: 100%;
+  // overflow: auto;
+  position: relative;
+  font-weight: normal;
+  // user-select: none;
+  overflow: auto;
+  background-color: var(--main-page-bg);
+  &.dark {
+    background-color: var(--container-bg-color);
+  }
+  * {
+    font-family: 'dinpro', 'roboto', 'PingFangSC-Regular', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    outline: none !important;
+  }
+}
+
+.hidden-y {
+  overflow-y: hidden !important;
+}
+
+body,
+app-root,
+.flex {
+  flex: 1 1 100%;
+  display: flex;
+  width: inherit;
+  height: inherit;
+  flex-direction: column;
+}
+
+app-verification,
+app-login,
+app-register,
+app-password {
+  flex: 1 1 0%;
+}
+
+app-h5-tool-bar,
+app-h5-nav-bottom,
+app-address-management,
+app-account-safety,
+app-overview,
+app-change-password,
+app-safety-home,
+app-device,
+app-activities,
+app-device-management,
+app-reset-name,
+app-main-wallet,
+app-wallet-history {
+  width: 100%;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+// 链接
+.link {
+  color: var(--link-color);
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// 提交按钮
+.submit-btn {
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  background-color: var(--primary-color);
+  border: none;
+  height: 48px;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+  will-change: opacity;
+
+  &.btn-sm {
+    height: 40px;
+  }
+
+  &:not([disabled]),
+  &:not(.disabled) {
+    @media (any-hover: hover) {
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    @media (any-hover: none) {
+      &:active {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  &[disabled],
+  &.disabled {
+    background-color: var(--input-border-color);
+    color: #b8c0c7;
+    font-weight: bold;
+    cursor: not-allowed;
+  }
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  padding: 0 !important;
+  // felix: 统一对mat弹窗进行全局夜间版颜色替换
+  background-color: var(--container-bg-color) !important;
+}
+
+.mat-mdc-dialog-container,
+.mat-mdc-dialog-container .mdc-dialog__container,
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  min-width: 100% !important;
+}
+
+//去掉input数字增减框
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+//CheckBox复选框
+.mat-mdc-checkbox {
+  .mdc-checkbox {
+    padding: 0 !important;
+    margin: auto !important;
+    margin-right: 8px !important;
+    flex: auto;
+    --mdc-checkbox-disabled-selected-icon-color: var(--primary-color);
+    --mdc-checkbox-disabled-unselected-icon-color: #b9b9b9;
+    --mdc-checkbox-selected-checkmark-color: #fff;
+    .mdc-checkbox__background,
+    .mat-mdc-checkbox-touch-target,
+    &.mdc-checkbox,
+    .mdc-checkbox__native-control {
+      width: 20px;
+      height: 20px;
+      // left: auto !important;
+      // top: auto !important;
+
+      @media (max-width: 767px) {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .mdc-checkbox__native-control[disabled]:not(:checked):not(:indeterminate):not([data-indeterminate='true'])
+      ~ .mdc-checkbox__background {
+      border-color: #b9b9b9 !important;
+      border-width: 1px;
+    }
+
+    .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate='true'])
+      ~ .mdc-checkbox__background {
+      border-color: #b9b9b9 !important;
+      border-width: 1px;
+    }
+
+    &:hover {
+      .mdc-checkbox__ripple {
+        opacity: 0 !important;
+      }
+    }
+    .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+    }
+
+    .mdc-checkbox__native-control:focus:checked ~ .mdc-checkbox__ripple,
+    .mdc-checkbox__native-control:focus ~ .mdc-checkbox__ripple {
+      opacity: 0 !important;
+    }
+  }
+  .mdc-form-field {
+    color: var(--text-color);
+
+    .mdc-label {
+      padding-left: 0;
+      @media (max-width: 767px) {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.mat-mdc-checkbox.mat-mdc-checkbox-disabled label {
+  color: var(--text-color);
+}
+
+.mat-mdc-dialog-container .mdc-dialog__container {
+  background-color: unset !important;
+}
+
+// dialog
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  // background-color: unset !important;
+  overflow: hidden;
+  box-shadow: none !important;
+}
+
+//H5 kyc验证流程弹出框
+// .cdk-overlay-container {
+//   &.kyc-dialog {
+//     @media (max-width: 767px) {
+//       .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+//         opacity: 0;
+//       }
+
+//       .cdk-overlay-backdrop {
+//         z-index: unset;
+//         pointer-events: none;
+//       }
+//     }
+//   }
+// }
+
+.cdk-overlay-container {
+  #cdk-overly-0 + .cdk-overlay-pane + .phone-number-dialog-container {
+    width: 90vw !important;
+  }
+
+  // 注释说明：影响太多，页面如果有问题单独再调整
+  // .cdk-overlay-pane {
+  //   @media (max-width: 400px) {
+  //     width: 100vw;
+  //   }
+
+  //   .container {
+  //     @media (max-width: 400px) {
+  //       width: 100%;
+  //     }
+  //   }
+  // }
+
+  // H5 kyc验证流程dialog
+  .cdk-overlay-pane {
+    &.kyc-dialog-container {
+      @media (max-width: 767px) {
+        //占满整个页面
+        position: absolute !important;
+        width: 100vw !important;
+        max-width: 100% !important;
+        bottom: 0;
+        height: 100%;
+        pointer-events: none;
+
+        .mat-mdc-dialog-container {
+          border-radius: 0;
+          box-shadow: none;
+          background-color: transparent;
+
+          .mdc-dialog__surface {
+            border-radius: 0;
+          }
+
+          .verify-container {
+            pointer-events: all;
+            background-color: var(--container-bg-color);
+          }
+        }
+      }
+    }
+  }
+
+  // H5 充值方式dialog
+  .cdk-overlay-pane {
+    &.single-page-dialog-container {
+      .mat-mdc-dialog-container {
+        border-radius: 10px;
+
+        .mdc-dialog__surface {
+          border-radius: 10px;
+        }
+      }
+
+      @media (max-width: 767px) {
+        //沾满整个页面
+        position: absolute !important;
+        width: 100vw !important;
+        max-width: 100% !important;
+        bottom: 0;
+        height: 100%;
+        .mat-mdc-dialog-container {
+          overflow: hidden;
+          border-radius: 0;
+          .mdc-dialog__surface {
+            border-radius: 0;
+          }
+        }
+      }
+    }
+  }
+
+  // H5 dialog
+  .cdk-overlay-pane {
+    &.dividend-dialog-container,
+    &.custom-dialog-container,
+    .single-page-dialog-container {
+      @media (max-width: 767px) {
+        position: absolute !important;
+        width: 100vw !important;
+        max-width: 100% !important;
+        bottom: 0;
+      }
+      .mat-mdc-dialog-container,
+      .mat-mdc-dialog-container .mdc-dialog__surface {
+        @media (max-width: 767px) {
+          overflow: hidden;
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+          border-top-left-radius: 16px;
+          border-top-right-radius: 16px;
+        }
+      }
+    }
+
+    &.dividend-dialog-container {
+      .mat-mdc-dialog-container,
+      .mat-mdc-dialog-container .mdc-dialog__surface {
+        @media (max-width: 767px) {
+          border-top-left-radius: 30px;
+          border-top-right-radius: 30px;
+        }
+      }
+    }
+
+    &.bankcard-container {
+      @media (max-width: 767px) {
+        position: absolute !important;
+        width: 100vw !important;
+        max-width: 100% !important;
+      }
+    }
+  }
+
+  //H5  dialog
+  .cdk-overlay-pane {
+    &.phone-number-dialog-container {
+      &.mobile-dialog {
+        @media (max-width: 767px) {
+          position: absolute !important;
+          width: 100vw !important;
+          max-width: 100% !important;
+          bottom: 0;
+        }
+        .mat-mdc-dialog-container,
+        .mat-mdc-dialog-container .mdc-dialog__surface {
+          @media (max-width: 767px) {
+            overflow: hidden;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+          }
+        }
+      }
+
+      &.sepcial-dialog {
+        max-width: 90vw !important;
+      }
+    }
+  }
+}
+
+// 手机区号选择组件
+app-phone-number-selecter {
+  .phone-number-modalbox.mat-mdc-dialog-container {
+    padding: 23px 24px 16px 24px !important;
+  }
+}
+
+//区号选择
+.phone-container {
+  flex-direction: row;
+  width: 100%;
+
+  .area-code {
+    margin-right: 16px;
+    border-radius: 4px;
+    border: solid 1px var(--input-border-color);
+    height: 48px;
+    width: 96px;
+    margin-top: 8px;
+    align-items: center;
+    padding: 6px;
+    font-size: 14px;
+
+    &:hover {
+      border-color: var(--primary-color);
+    }
+
+    &.disabled {
+      background-color: var(--default-border-color);
+      border: none;
+      cursor: not-allowed;
+    }
+
+    .country-image {
+      width: 22px;
+      height: 22px;
+      margin-right: 6px;
+      display: flex;
+
+      // 国旗位置大小
+      .country,
+      .country-input {
+        background-image: url(src/assets/images/countries.png);
+        background-repeat: no-repeat;
+        display: block;
+        transform: scale(calc(22 / 48));
+        -webkit-transform-origin-x: left;
+        .is-support-webp & {
+          background-image: url(src/assets/images/countries.webp);
+        }
+      }
+
+      .form-body .country-input {
+        margin-left: 15px;
+      }
+
+      .country-input-value {
+        left: -22px;
+        position: relative;
+      }
+
+      .country {
+        -webkit-transform-origin-y: top;
+      }
+    }
+
+    .offset-top {
+      position: absolute;
+    }
+
+    .code {
+      flex: 1;
+    }
+
+    .icon-arrow-down {
+      display: flex;
+      font-size: 12px;
+      margin-top: 2px;
+      transform: scale(math.div(9, 12));
+    }
+  }
+
+  .input-group {
+    flex: 1;
+  }
+}
+
+.small-padding-dialog-container {
+  position: absolute !important;
+  width: 100vw !important;
+  max-width: 96% !important;
+
+  .mat-mdc-dialog-container,
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 8px;
+  }
+}
+
+// 弹出框 padding
+.small-padding-dialog-container,
+.kyc-dialog-container,
+.single-page-dialog-container,
+.custom-dialog-container,
+.success-dialog-container,
+.phone-valid-dialog-container,
+.overflow-dialog-container .bank-cards-dialog-container {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+  }
+}
+
+//页面居中 (kyc各种notice弹出框)
+.cdk-overlay-container .cdk-overlay-pane {
+  &.center-dialog-container {
+    width: 326px;
+    max-width: none !important;
+  }
+}
+
+.center-dialog-container,
+.custom-dialog-container {
+  .mat-mdc-dialog-container,
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 10px;
+  }
+}
+
+.overflow-dialog-container,
+.single-page-dialog-container {
+  .mat-mdc-dialog-container {
+    overflow: visible;
+  }
+}
+
+.country-select-panel {
+  margin-top: 54px;
+
+  .fog-row {
+    display: flex;
+    align-items: center;
+
+    .country-image {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.dividend-dialog-container {
+  .mat-mdc-dialog-container {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  }
+}
+
+// 去掉 mat 相关组件涟漪
+.mat-mdc-slide-toggle .mat-ripple {
+  display: none !important;
+}
+
+.mat-mdc-slide-toggle {
+  --mdc-switch-unselected-focus-track-color: #00000061;
+  --mdc-switch-unselected-hover-track-color: #00000061;
+  --mdc-switch-unselected-pressed-track-color: #00000061;
+  --mdc-switch-unselected-track-color: #00000061;
+}
+
+// 验证码无效提示
+.otp-fail-msg {
+  position: absolute;
+  width: 344px;
+  background-color: #707070;
+  justify-content: center;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 17px;
+  height: 53px;
+  line-height: 1.12px;
+  display: flex;
+  align-items: center;
+  transition: opacity 1s ease-out;
+  opacity: 1;
+  left: calc(50% - 20rem);
+  border: 1px solid #707070;
+  top: -32% !important;
+}
+
+// 验证码弹框样式覆盖
+.botion_box {
+  .botion_status_bar {
+    background-color: var(--primary-color) !important;
+  }
+
+  .botion_feedback,
+  .botion_box_logo {
+    display: none !important;
+  }
+
+  .botion_track {
+    box-shadow: none !important;
+    background-color: transparent !important;
+  }
+
+  .botion_click .botion_big_mark,
+  .botion_click .botion_square_mark,
+  .botion_click .botion_circle_mark,
+  .botion_click .botion_big_mark,
+  .botion_click .botion_square_mark,
+  .botion_click .botion_circle_mark {
+    background-color: var(--primary-color) !important;
+  }
+
+  .botion_click .botion_submit {
+    background: var(--primary-color) !important;
+  }
+}
+
+.botion_slider {
+  padding: 0 !important;
+  height: 44px !important;
+  background-image: none !important;
+  background-color: #f3f4f6 !important;
+
+  .botion_btn {
+    background-image: none !important;
+    background-color: var(--primary-color) !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 0 !important;
+  }
+}
+
+// 添加/修改用户名 steeper宽
+app-reset-name {
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header-container {
+    width: 576px;
+  }
+
+  .mat-horizontal-stepper-content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+// 验证器
+app-reset-phone-number,
+app-reset-name,
+app-google-verification,
+app-phone-verification,
+app-phone-unbound {
+  .mat-horizontal-content-container {
+    align-items: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 767px) {
+      margin-top: 33px;
+      padding: 0;
+    }
+  }
+
+  .mat-step-header .mat-step-icon-selected,
+  .mat-step-header .mat-step-icon-state-done,
+  .mat-step-header .mat-step-icon-state-edit {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+
+  .mat-step-text-label {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .mat-step-header .mat-step-icon {
+    background-color: var(--default-border-color);
+    color: var(--text-color-20);
+  }
+
+  .mat-step-header .mat-step-label.mat-step-label-active {
+    color: var(--text-color);
+  }
+
+  //步骤条禁用
+  .mat-step-header {
+    pointer-events: none !important;
+  }
+
+  .mat-step-icon .mat-icon {
+    text-align: center;
+  }
+
+  .mat-step-header .mat-step-label,
+  .mat-step-header .mat-step-optional {
+    color: var(--text-color-20);
+  }
+
+  .mat-step-label.mat-step-label-active.mat-step-label-selected {
+    color: var(--text-color) !important;
+  }
+
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header .mat-step-label {
+    padding: 0;
+    line-height: 1.6;
+    @media (max-width: 767px) {
+      padding-left: 16px;
+      padding-top: 0;
+    }
+  }
+
+  .mat-horizontal-stepper-header::before,
+  .mat-horizontal-stepper-header::after,
+  .mat-stepper-horizontal-line {
+    border-top-color: var(--default-border-color);
+
+    @media (max-width: 767px) {
+      padding-left: 11px;
+      border-top-style: none;
+      border-right-style: solid;
+      border-right-color: var(--default-border-color);
+      border-right-width: 4px;
+    }
+  }
+
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header,
+  .mat-vertical-stepper-header {
+    padding: 47px 0 52px 0;
+
+    @media (max-width: 767px) {
+      padding: 0;
+      flex-direction: row;
+      padding-bottom: 4px;
+      padding-top: 4px;
+    }
+  }
+
+  .mat-step-header .cdk-program-focused,
+  .mat-step-header:hover:not([aria-disabled='true']) {
+    background-color: transparent !important;
+  }
+
+  // border 高度
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header::after,
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header::before {
+    top: 57px;
+  }
+
+  .mat-stepper-label-position-bottom .mat-stepper-horizontal-line {
+    top: 57px;
+
+    @media (max-width: 767px) {
+      top: 0;
+    }
+  }
+
+  .mat-stepper-horizontal-line {
+    border-top-width: 4px;
+  }
+
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header:not(:first-child)::before {
+    border-top-width: 4px;
+    width: 0px;
+  }
+
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header:not(:last-child)::after {
+    //border-top-width: 4px;
+    width: 0px;
+  }
+
+  // 当前步骤hover
+  .mat-step-header.cdk-keyboard-focused,
+  .mat-step-header.cdk-program-focused,
+  .mat-step-header:hover {
+    background-color: transparent;
+  }
+
+  mat-horizontal-stepper {
+    @for $i from 1 to 5 {
+      &.line-selected-#{$i} {
+        .mat-stepper-horizontal-line:nth-of-type(-n + #{$i}) {
+          border-top-color: var(--primary-color);
+
+          @media (max-width: 767px) {
+            border-right-color: var(--primary-color);
+          }
+        }
+      }
+    }
+  }
+
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header-container {
+    @media (max-width: 767px) {
+      height: 132px;
+      padding-left: 24px;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}
+
+//谷歌绑定
+app-google-verification {
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header-container {
+    width: 1044px;
+
+    @media (max-width: 767px) {
+      height: 36%;
+      flex-direction: column;
+      width: 100% !important;
+    }
+
+    @media (max-width: 1024px) {
+      width: 706px;
+    }
+  }
+}
+
+//手机绑定
+app-reset-phone-number,
+app-phone-verification {
+  .mat-stepper-label-position-bottom .mat-horizontal-stepper-header-container {
+    width: 542px;
+
+    @media (max-width: 767px) {
+      height: 132px;
+      padding-left: 24px;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}
+
+//下箭头
+.grey-down-arraw {
+  width: 24px;
+  height: 24px;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(src/assets/svg/grey-down-arraw.svg);
+}
+
+//上箭头
+.up-arraw {
+  width: 24px;
+  height: 24px;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(src/assets/svg/up-arraw.svg);
+}
+
+// 法币充值
+app-currency,
+app-currency-withdraw {
+  .mat-mdc-radio-button.mat-accent {
+    --mdc-radio-unselected-hover-icon-color: #b7bdc6;
+    --mdc-radio-unselected-icon-color: #b7bdc6;
+    --mdc-radio-unselected-pressed-icon-color: #b7bdc6;
+    --mdc-radio-selected-focus-icon-color: var(--primary-color);
+    --mdc-radio-selected-hover-icon-color: var(--primary-color);
+    --mdc-radio-selected-icon-color: var(--primary-color);
+    --mdc-radio-selected-pressed-icon-color: var(--primary-color);
+    --mat-radio-checked-ripple-color: var(--primary-color);
+
+    .mdc-radio {
+      --mdc-radio-state-layer-size: 15px;
+    }
+
+    .mdc-form-field {
+      align-items: flex-start;
+      color: #707a8a;
+
+      .mdc-radio {
+        .mdc-radio__background,
+        .mat-mdc-radio-touch-target,
+        &.mdc-radio,
+        .mdc-radio__native-control {
+          width: 15px;
+          height: 15px;
+          left: auto !important;
+          top: auto !important;
+        }
+      }
+
+      .mdc-label {
+        padding-left: 18px;
+        font-size: 16px;
+      }
+    }
+
+    .mat-radio-label {
+      align-items: flex-start;
+    }
+  }
+
+  .mdc-radio__inner-circle {
+    border-width: 7px;
+  }
+}
+
+app-add-address-dialog {
+  .mat-mdc-checkbox .mdc-form-field {
+    // color: #707a8a;
+    color: var(--text-color-20);
+    font-size: 14px;
+    white-space: break-spaces;
+  }
+}
+
+.mobile-filter {
+  display: none;
+  justify-content: flex-end;
+
+  .filter-icon {
+    width: 24px;
+    height: 24px;
+    display: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url(src/assets/svg/filter.svg);
+
+    @media (max-width: 767px) {
+      display: block;
+    }
+  }
+}
+
+.icon-cny,
+.icon-aud,
+.icon-usd,
+.icon-thb,
+.icon-vnd,
+.icon-jpy,
+.icon-eur,
+.icon-gbp,
+.icon-nzd,
+.icon-cad {
+  height: 20px;
+  width: 20px;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  margin-right: 8px;
+}
+
+.icon-aud {
+  background-image: url(src/assets/images/crypto/AUD.svg);
+}
+
+.icon-cny {
+  background-image: url(src/assets/images/crypto/CNY.svg);
+}
+
+.icon-usd {
+  background-image: url(src/assets/images/crypto/USD.svg);
+}
+
+.icon-thb {
+  background-image: url(src/assets/images/crypto/THB.svg);
+}
+
+.icon-vnd {
+  background-image: url(src/assets/images/crypto/VND.svg);
+}
+
+.icon-jpy {
+  background-image: url(src/assets/images/crypto/JPY.svg);
+}
+
+.icon-eur {
+  background-image: url(src/assets/images/crypto/EUR.svg);
+}
+
+.icon-gbp {
+  background-image: url(src/assets/images/crypto/GBP.svg);
+}
+
+.icon-nzd {
+  background-image: url(src/assets/images/crypto/NZD.svg);
+}
+
+.icon-cad {
+  background-image: url(src/assets/images/crypto/CAD.svg);
+}
+
+.dots {
+  width: 16px;
+  height: 16px;
+  display: none !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(src/assets/svg/dots.svg);
+
+  @media (max-width: 767px) {
+    display: block;
+  }
+}
+
+//加载框
+.app-local-loading {
+  flex-direction: column;
+  font-size: 14px;
+  color: #20252f;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+
+  .app-local-loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 112px;
+    height: 102px;
+    font-size: 14px;
+    color: #707a8a;
+    border-radius: 6px;
+
+    .animation-icon-loading-dot {
+      color: var(--primary-color-85);
+      font-size: 45px;
+      line-height: 0;
+      display: flex;
+    }
+  }
+}
+
+//复制成功提示信息
+.copy-success-msg {
+  position: absolute;
+  width: 180px;
+  background-color: #1d1d1da1;
+  justify-content: center;
+  color: #ffffff;
+  border-radius: 7px;
+  font-size: var(--fz16);
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  transition: opacity 1s ease-out;
+  opacity: 1;
+  left: 43%;
+}
+
+/* ------------------------------ 页面滚动条设置 START ----------------------------- */
+
+@media (min-width: 768px) {
+  // 767px 作为h5的分界线
+  // 滚动条整体宽度
+  ::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+  }
+
+  // 滚动条滑槽样式
+  ::-webkit-scrollbar-track {
+    border-radius: var(--scrollbar-size);
+    background-color: #f1f1f1;
+  }
+
+  // 滚动条样式
+  ::-webkit-scrollbar-thumb {
+    border-radius: var(--scrollbar-size);
+    background: #69696952;
+  }
+}
+
+/* ------------------------------ 页面滚动条设置 END ----------------------------- */
+
+/* --------------------------------- 全局弹窗设定 START --------------------------------- */
+.cdk-global-scrollblock {
+  overflow: visible;
+  body {
+    overflow: hidden;
+  }
+}
+
+.popup-container {
+  max-width: 100vw !important;
+  max-height: 100% !important;
+
+  .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+    > :first-child {
+      background-color: var(--page-bg-color);
+    }
+  }
+
+  &.mask-penetration {
+    pointer-events: none;
+  }
+
+  &.popup-container-full {
+    height: 100%;
+    width: 100%;
+  }
+
+  .mat-mdc-dialog-container,
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 0;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    overflow: visible;
+  }
+
+  .popup-common {
+    display: flex;
+    width: auto;
+    margin: auto;
+    border-radius: 4px;
+
+    @media (max-width: 767px) {
+      width: 90vw !important;
+      border-radius: 6px;
+    }
+  }
+
+  .popup-full {
+    width: 100vw;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &.select-popup {
+      &::before {
+        flex: 0 0 66px;
+      }
+
+      .popup-head {
+        height: 66px;
+        flex: 0 0 66px;
+      }
+
+      &.h5FilterPopup {
+        .popup-head {
+          .title {
+            font-size: 20px;
+            color: var(--text-color);
+            padding-left: 24px;
+          }
+
+          .popup-close-icon {
+            margin-right: 0;
+            padding-right: 31px;
+            padding-left: 31px;
+          }
+        }
+
+        .popup-body {
+          margin-top: 23px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .popup-btn-group {
+          display: flex;
+          justify-content: space-between;
+          padding-top: 6px;
+          position: relative;
+          margin-top: auto;
+
+          > * + * {
+            margin-left: 15px;
+          }
+
+          .popup-btn-margin-left {
+            margin-left: 15px;
+          }
+
+          .popup-btn {
+            flex: 1;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #1e2329;
+            background-color: #eaecef;
+            border-radius: 4px;
+
+            &.active {
+              color: #fff;
+              background-color: var(--primary-color-85);
+            }
+          }
+        }
+      }
+    }
+
+    &::before {
+      content: '';
+      flex: 0 0 56px;
+    }
+
+    .popup-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scroll: touch;
+      scrollbar-width: thin;
+      padding: 0 24px 24px;
+    }
+
+    .popup-head {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      flex: 0 0 56px;
+      display: flex;
+      align-items: center;
+    }
+
+    .popup-close-icon {
+      margin-left: auto;
+      margin-right: 15px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      padding: 20px;
+      background-position: center;
+      // background-image: url(src/assets/images/close_3.png);
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+}
+
+/* --------------------------------- 全局弹窗设定 END --------------------------------- */
+
+// 普通页面框架
+.page-container {
+  background-color: var(--main-page-bg);
+  position: relative;
+
+  .main-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &.inner-page {
+      color: var(--text-color);
+      background-color: var(--container-bg-color);
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+
+      @media (max-width: 767px) {
+        border-top-left-radius: 36px;
+        border-top-right-radius: 36px;
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+
+      &-row {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .content-box {
+        position: relative;
+      }
+    }
+  }
+}
+
+// ...动画图标
+.animation-icon-loading-dot {
+  font-size: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.freeze {
+    i {
+      animation-name: none;
+    }
+    &.active {
+      i {
+        animation-name: loading-dot;
+      }
+    }
+  }
+
+  i {
+    display: inline-block;
+    width: 0.3em;
+    height: 0.3em;
+    margin: 0 0.1em;
+    background-color: currentColor;
+    border-radius: 100%;
+    animation: loading-dot 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  }
+
+  i:nth-child(1) {
+    animation-delay: -0.22s;
+  }
+
+  i:nth-child(2) {
+    animation-delay: -0.12s;
+  }
+
+  i:nth-child(3) {
+    animation-delay: 0;
+  }
+
+  @keyframes loading-dot {
+    0% {
+      transform: scale(0.5);
+      opacity: 0.5;
+    }
+
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+  }
+}
+
+//普通透明度交互
+.mutual-opacity {
+  cursor: pointer;
+  transition: opacity 0.2s;
+  will-change: opacity;
+
+  @media (any-hover: hover) {
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  @media (any-hover: none) {
+    &:active {
+      opacity: 0.8;
+    }
+  }
+
+  .mutual-opacity {
+    opacity: 1 !important;
+  }
+
+  //覆盖缩放的动画
+  &button,
+  &[class^='onact96'],
+  &[class*=' onact96'] {
+    transition:
+      transform 0.2s,
+      opacity 0.2s !important;
+  }
+}
+
+//通用 tooltip样式 需要添加 matTooltipClass="generally-tooltip"
+.mat-mdc-tooltip-panel {
+  --mdc-plain-tooltip-container-shape: 4px;
+  --mdc-plain-tooltip-supporting-text-line-height: 16px;
+  --mdc-plain-tooltip-container-color: #616161;
+  --mdc-plain-tooltip-supporting-text-color: #fff;
+  --mdc-plain-tooltip-supporting-text-size: 12px;
+  --mdc-plain-tooltip-supporting-text-weight: 400;
+  --mdc-plain-tooltip-supporting-text-tracking: 0.0333333333em;
+  width: auto !important;
+
+  .mat-mdc-tooltip {
+    &.generally-tooltip {
+      --mdc-plain-tooltip-container-color: var(--tooltip-bg-color) !important;
+      --mdc-plain-tooltip-supporting-text-color: var(--page-bg-color) !important;
+      border-radius: 4px;
+      // background-color: #5e6673;
+      background-color: var(--tooltip-bg-color);
+      color: var(--page-bg-color);
+      word-break: break-all;
+      font-size: 14px;
+      padding: 10px;
+      line-height: 1.3;
+      position: relative;
+      overflow: visible;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border: 5px solid transparent;
+        position: absolute;
+      }
+    }
+
+    &.h5-game-3 {
+      right: -8%;
+      font-size: 12px;
+      max-width: 221px;
+      top: 9px;
+
+      &::before {
+        left: 83% !important;
+      }
+    }
+  }
+
+  &.mat-mdc-tooltip-panel-left .mat-mdc-tooltip.generally-tooltip::before {
+    top: 50%;
+    margin-top: -5px;
+    right: -10px;
+    left: unset;
+    border-left: 5px solid var(--tooltip-bg-color);
+  }
+
+  &.mat-mdc-tooltip-panel-right .mat-mdc-tooltip.generally-tooltip::before {
+    top: 50%;
+    margin-top: -5px;
+    left: -10px;
+    right: unset;
+    border-right: 5px solid var(--tooltip-bg-color);
+  }
+
+  &.mat-mdc-tooltip-panel-above .mat-mdc-tooltip.generally-tooltip::before {
+    left: 50%;
+    margin-left: -5px;
+    bottom: -10px;
+    border-top: 5px solid var(--tooltip-bg-color);
+    top: unset;
+  }
+
+  &.mat-mdc-tooltip-panel-below .mat-mdc-tooltip.generally-tooltip::before {
+    left: 50%;
+    margin-left: -5px;
+    top: -10px;
+    border-bottom: 5px solid var(--tooltip-bg-color);
+    bottom: unset;
+  }
+}
+
+//骨架loading 仿stake
+@-webkit-keyframes skeleton-loading-gradient {
+  0%,
+  to {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes skeleton-loading-gradient {
+  0%,
+  to {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.skeleton-loading {
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.08);
+  animation: skeleton-loading-gradient 1.5s linear infinite;
+}
+
+//方格 普通游戏
+.grid-8-3-gap-11-6 {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 11px;
+
+  @media (max-width: 1292px) {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 1133px) {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 973px) {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 767px) {
+    //stake 814
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px 6px;
+  }
+
+  @media (max-width: 537px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 6px;
+  }
+}
+
+// 方格 游戏厂商
+.grid-7-3-gap-28-25-24-12 {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 28px 25px;
+
+  @media (max-width: 1240px) {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 28px 25px;
+  }
+
+  @media (max-width: 1085px) {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 28px 25px;
+  }
+
+  @media (max-width: 930px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px 25px;
+  }
+
+  @media (max-width: 767px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px 12px;
+  }
+}
+
+//抽屉出现时候格子调整
+.left-side-expand {
+  .grid-8-3-gap-11-6 {
+    @media (max-width: 1484px) {
+      grid-template-columns: repeat(7, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1324px) {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1199.9px) {
+      grid-template-columns: repeat(7, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1133px) {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 973px) {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 767px) {
+      //stake 814
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px 6px;
+    }
+
+    @media (max-width: 537px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px 6px;
+    }
+  }
+
+  .grid-7-3-gap-28-25-24-12 {
+    @media (max-width: 1484px) {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 28px 25px;
+    }
+
+    @media (max-width: 1290px) {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 28px 25px;
+    }
+
+    @media (max-width: 1199.9px) {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 28px 25px;
+    }
+
+    @media (max-width: 1085px) {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 28px 25px;
+    }
+
+    @media (max-width: 930px) {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px 25px;
+    }
+
+    @media (max-width: 767px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px 12px;
+    }
+  }
+}
+
+.unity-padding-web {
+  @media (min-width: 768px) {
+    padding-left: 3vw;
+    padding-right: 3vw;
+
+    .ignore-unity-web-padding {
+      margin-left: -3vw;
+      margin-right: -3vw;
+    }
+  }
+}
+
+.unity-padding-h5-12 {
+  @media (max-width: 767px) {
+    padding-left: 12px;
+    padding-right: 12px;
+
+    .ignore-unity-h5-padding {
+      margin-left: -12px;
+      margin-right: -12px;
+    }
+  }
+}
+
+.unity-padding-h5-16 {
+  @media (max-width: 767px) {
+    padding-left: 16px;
+    padding-right: 16px;
+
+    .ignore-unity-h5-padding {
+      margin-left: -16px;
+      margin-right: -16px;
+    }
+  }
+}
+
+.unity-padding-h5-24 {
+  @media (max-width: 767px) {
+    padding-left: 24px;
+    padding-right: 24px;
+
+    .ignore-unity-h5-padding {
+      margin-left: -24px;
+      margin-right: -24px;
+    }
+  }
+}
+
+// 全局清除浮动通用:
+.clearfix {
+  zoom: 1;
+
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+.cdk-overlay-backdrop {
+  &.black-40 {
+    background-color: rgba(#000, 0.4);
+  }
+}
+
+/* ------------------------------- swiper全局设置 ------------------------------- */
+//去除IOS闪烁
+.swiper-slide {
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.swiper-wrapper {
+  transform-style: preserve-3d;
+}
+
+/* ------------------------------- swiper全局设置 ------------------------------- */
+/* ---------------------------- mat-radio-button ---------------------------- */
+.mat-mdc-radio-button {
+  //去除RadioButton的点击效果
+  .mdc-radio__background::before {
+    background-color: unset !important;
+  }
+
+  .mat-radio-ripple {
+    opacity: 0;
+  }
+
+  .mdc-radio {
+    --mdc-radio-state-layer-size: 20px;
+  }
+
+  .mdc-form-field > .mdc-label {
+    padding-left: 8px;
+  }
+}
+
+/* ---------------------------- mat-radio-button ---------------------------- */
+
+// 包裹一层组件
+#root_con_wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+
+  padding-top: env(safe-area-inset-top) !important;
+  padding-top: constant(safe-area-inset-top) !important;
+}
+.is-mobile #root_con_wrap {
+  position: static;
+  height: inherit;
+}
+.is-desktop #root_con_wrap {
+  position: fixed;
+  height: 100%;
+}
+
+.mat-mdc-progress-spinner circle,
+.mat-mdc-progress-spinner circle {
+  stroke: var(--primary-color);
+}
+
+// 隐藏第三方客服按钮
+[id^='livechat-float-button'],
+[class*=' livechat-float-button'] {
+  display: none;
+}
+
+/* ------------------------------- stake点击效果配置 ------------------------------- */
+// 所有button按钮不含元素
+
+button:active:not([disabled]):not([class^='mat-']):not([class*=' mat-']) {
+  transform: scale(0.96);
+
+  &::before,
+  &::after {
+    transform: scale(0.96);
+  }
+}
+
+// 所有button按钮含元素
+.onact96-btn {
+  transform: scale(1);
+
+  button {
+    > span {
+      display: inline-block;
+    }
+
+    &:active:not([disabled]) > * {
+      transform: scale(0.96);
+
+      &::before,
+      &::after {
+        transform: scale(0.96);
+      }
+    }
+  }
+}
+
+// 通用样式 有子元素
+.onact96:active:not(.disabled) > * {
+  transform: scale(0.96);
+
+  &::before,
+  &::after {
+    transform: scale(0.96);
+  }
+}
+
+// 通用样式 无子元素 缩放本体
+.onact96-not:active:not(.disabled) {
+  transform: scale(0.96);
+
+  &::before,
+  &::after {
+    transform: scale(0.96);
+  }
+}
+
+// inline元素（a标签）无法使用transform，先转换成inline-block
+.onact96-a {
+  display: inline-block;
+}
+
+.onact96-a:active {
+  transform: scale(0.96);
+
+  &::before,
+  &::after {
+    transform: scale(0.96);
+  }
+}
+
+// 动画过渡效果
+button,
+.onact96:not(.disabled) > *,
+.onact96-not:not(.disabled),
+.onact96-a,
+.onact96-btn button > span,
+.onact96-btn button:not([disabled]) > * {
+  transition: transform 0.2s;
+
+  &::before,
+  &::after {
+    transition: transform 0.2s;
+  }
+}
+
+.isNativeApp {
+  app-root {
+    padding-top: 0 !important;
+  }
+
+  app-app-download-tips {
+    display: none;
+  }
+
+  .layout-content {
+    padding-top: 0 !important;
+
+    app-header {
+      display: none;
+    }
+
+    app-header-level2-menu {
+      display: none;
+    }
+
+    app-bottom-menu {
+      display: none;
+    }
+
+    app-footer {
+      display: none;
+    }
+
+    app-orignal {
+      app-game-info {
+        .container {
+          opacity: 0;
+        }
+      }
+    }
+
+    app-application-check {
+      app-friend-header {
+        display: none !important;
+      }
+
+      .page-container {
+        margin-top: 0 !important;
+
+        .background-color {
+          background-color: transparent;
+        }
+
+        .shadow {
+          box-shadow: unset;
+        }
+      }
+    }
+
+    app-friend,
+    app-recommend-operation,
+    app-web-rank-pop-up {
+      .main-container-h5 {
+        margin-top: 0 !important;
+      }
+
+      app-friend-header {
+        display: none !important;
+      }
+
+      app-data-overview {
+        .sub-theme-container {
+          margin: 0 !important;
+          border-top-left-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+        }
+      }
+    }
+  }
+
+  .theme-detail-header-left {
+    display: none !important;
+  }
+
+  .theme-header-left {
+    display: none !important;
+  }
+}
+
+.euro-2024 {
+  --mat-stepper-container-color: transparent;
+  .page-container {
+    background-color: transparent;
+  }
+  .layout-content,
+  app-account-safety .form-container,
+  app-retrieve-account .retrieve-account-container {
+    background-color: transparent !important;
+  }
+  .left-menu-container.full {
+  }
+  .layout-background {
+    display: block !important;
+  }
+  .main-container.inner-page > * {
+    position: relative;
+  }
+  .main-container.inner-page,
+  app-deal-record > .page-container .main-container,
+  app-user-layout > .page-container,
+  [app-page-banner] .main-container {
+    background-color: transparent !important;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      background-color: var(--container-bg-color);
+      z-index: 0;
+      opacity: 0.8;
+      border-radius: inherit;
+    }
+  }
+  app-user-layout > .page-container::before,
+  [app-page-banner] .main-container::before {
+    opacity: 0.9;
+  }
+  app-notification-center,
+  app-vip-level-system,
+  app-kyc {
+    .page-container {
+      background-color: var(--main-page-bg);
+    }
+    .main-container.inner-page {
+      background-color: var(--container-bg-color) !important;
+      &:before {
+        content: none;
+      }
+    }
+  }
+  app-verify-code .input-group.group-phone {
+    background-color: var(--container-bg-color);
+  }
+}

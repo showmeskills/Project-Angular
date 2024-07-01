@@ -1,0 +1,434 @@
+div {
+  display: flex;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.advance-container {
+  overflow: hidden;
+  width: 488px;
+  flex-direction: column;
+  padding: 20px 23px 30px 23px;
+
+  &:host-context(.dark) & {
+    background-color: var(--container-bg-color);
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    padding: 40px 16px 23px 16px;
+  }
+
+  //标题栏
+  .header-container {
+    justify-content: space-between;
+
+    .icon-close-simple,
+    .icon-left-arrow {
+      font-size: 16px;
+      color: var(--text-color-20);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .icon-close-simple {
+      margin-left: 15px;
+    }
+
+    //标题
+    .dailog-header {
+      font-size: 24px;
+      color: var(--text-color);
+    }
+  }
+
+  .dailog-container {
+    color: #bbc1c9;
+    font-size: 14px;
+    font-weight: 300;
+    flex-direction: column;
+
+    .label {
+      align-items: center;
+      padding-top: 28px;
+
+      .offset-right {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-color-30);
+      }
+    }
+
+    //地区选择
+    .country-selecter-colunm {
+      position: relative;
+      flex-direction: column;
+      padding-top: 28px;
+      color: var(--text-color-30);
+
+      .form-header {
+        color: var(--text-color-20);
+        padding-bottom: 9px;
+        font-size: 14px;
+      }
+
+      app-country-selecter {
+        height: 48px;
+      }
+    }
+
+    //form
+
+    form {
+      .form-colunm {
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        padding-top: 28px;
+        color: #63676e;
+        font-size: 14px;
+        font-weight: 300;
+
+        .form-header {
+          padding-bottom: 9px;
+        }
+
+        //错误提示
+        .notice-container {
+          font-size: 12px;
+          padding-top: 6px;
+          color: #f64e60;
+        }
+      }
+
+      .form-row {
+        display: flex;
+        flex-direction: row;
+        padding-top: 28px;
+        color: var(--text-color-30);
+        font-size: 16px;
+        font-weight: 300;
+        justify-content: space-between;
+        width: 100%;
+        > * + * {
+          margin: 0 0 0 28px;
+        }
+
+        @media (max-width: 767px) {
+          flex-direction: column;
+          > * + * {
+            margin: 28px 0 0 0;
+          }
+        }
+
+        .colunm-root {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+
+          @media (max-width: 767px) {
+            width: 100%;
+          }
+
+          .form-header {
+            padding-bottom: 9px;
+            font-size: 14px;
+            color: var(--text-color-20);
+          }
+
+          // 每个input
+          .input-group {
+            width: 100%;
+            border-radius: 4px;
+            border: solid 1px var(--input-border-color);
+            height: 48px;
+            align-items: center;
+            display: flex;
+            position: relative;
+
+            &:hover,
+            &.focus {
+              border-color: var(--primary-color);
+            }
+
+            &.error {
+              border-color: var(--primary-color);
+            }
+
+            &.disabled {
+              background-color: var(--default-border-color);
+              border: none;
+            }
+
+            &.hidden {
+              display: none;
+            }
+
+            input {
+              outline: none;
+              border: none;
+              flex: 1;
+              padding: 15px;
+              font-size: 14px;
+              color: #333;
+              height: 100%;
+              border-radius: 4px;
+              caret-color: var(--primary-color);
+
+              &:host-context(.dark) & {
+                background-color: var(--container-bg-color);
+                color: var(--text-white-at-night);
+              }
+            }
+
+            //密码显示与隐藏的ICON
+            //清除ICON
+            .icon-clear {
+              font-size: 20px;
+              cursor: pointer;
+              position: absolute;
+              margin-top: 2px;
+              user-select: none;
+
+              &.offset-right {
+                right: 12px;
+              }
+
+              &:hover::before {
+                color: var(--text-color-20);
+              }
+            }
+          }
+
+          //错误提示
+          .notice-container {
+            font-size: 12px;
+            padding-top: 6px;
+            color: #f64e60;
+          }
+        }
+      }
+    }
+
+    //条件
+    .details-column {
+      flex-direction: column;
+
+      .txt,
+      .link {
+        padding-top: 10px;
+        font-size: 12px;
+      }
+
+      .link {
+        color: #ff580e;
+        text-decoration: underline;
+        position: relative;
+      }
+
+      .txt {
+        color: var(--text-color-20);
+      }
+
+      .notice-box {
+        display: flex;
+        flex-direction: column;
+        background-color: #5e6673;
+        position: absolute;
+        z-index: 40;
+        width: 200px;
+        height: 237px;
+        padding: 8px;
+        border-radius: 3px;
+        top: 30px;
+
+        .notice-title,
+        .txt {
+          color: white;
+          font-size: 12px;
+          line-height: 1.34;
+        }
+
+        .txt {
+          padding-top: 2px;
+        }
+
+        .notice-title {
+          padding-bottom: 10px;
+        }
+      }
+    }
+
+    //上传文档box
+    .document-box {
+      width: 100%;
+      flex-direction: column;
+      padding-top: 28px;
+
+      @media (max-width: 767px) {
+        height: 100%;
+        padding-bottom: 0;
+      }
+
+      .colunm {
+        flex-direction: column !important;
+      }
+
+      .uploader-containter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+
+        @media (max-width: 767px) {
+          flex-direction: column;
+        }
+
+        //人面像
+        .face-uploader {
+          width: 100% !important;
+          height: 149px;
+        }
+
+        // ic正反面
+        .front-uploader {
+          @media (max-width: 767px) {
+            margin-bottom: 28px;
+          }
+        }
+
+        .face-uploader,
+        .front-uploader,
+        .back-uploader {
+          width: 246.5px;
+          height: 120px;
+          border: 1px solid var(--input-border-color);
+          background-color: var(--bg-color-10);
+          border-radius: 4px;
+          align-items: center;
+          justify-content: center;
+          // border-style: dashed;
+          cursor: pointer;
+          position: relative;
+          user-select: none;
+
+          .animation-icon-loading-dot {
+            position: absolute;
+            & + .note {
+              display: none;
+            }
+          }
+
+          @media (max-width: 767px) {
+            width: 100%;
+            height: 100px;
+          }
+
+          .top {
+            z-index: 33;
+            // span {
+            //   color: #63676e;
+            // }
+          }
+
+          .note {
+            flex-direction: column;
+            width: 100%;
+            align-items: center;
+            position: absolute;
+            cursor: pointer;
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+
+            &.hide {
+              display: none;
+            }
+
+            .up-icon {
+              width: 20px;
+              height: 20px;
+              margin: 5px auto;
+              display: block;
+              background-size: contain;
+              background-repeat: no-repeat;
+              background-position: center center;
+              background-image: url(src/assets/images/kyc/top-up-i.svg);
+            }
+
+            span {
+              color: var(--text-color-20);
+              font-size: 14px;
+              padding-top: 8px;
+            }
+          }
+
+          .invisible {
+            display: none;
+          }
+
+          input {
+            // position: absolute;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            cursor: pointer;
+          }
+
+          object {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.3;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-container {
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 136px;
+
+    @media (max-width: 767px) {
+      padding-top: 48px;
+    }
+
+    .btn-group {
+      flex-direction: row;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .notice-row {
+      flex-direction: row;
+      width: 100%;
+      padding-top: 20px;
+      height: 32px;
+      align-items: center;
+
+      .safety-i {
+        background-size: 100%;
+        height: 16px;
+        margin-right: 10px;
+        padding-left: 14px;
+        background-repeat: no-repeat;
+        background-image: url(src/assets/images/kyc/safety.png);
+      }
+
+      .notice-text {
+        font-size: 12px;
+        color: var(--text-color-20);
+      }
+    }
+  }
+}

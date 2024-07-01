@@ -1,0 +1,171 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.title {
+  height: 200px;
+  background-image: url(src/assets/images/responsible-gambling/security-cuate.svg);
+  background-repeat: no-repeat;
+  background-position: right center;
+  display: flex;
+  align-items: center;
+  background-size: auto 80%;
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+    @include polyfills.flex-gap(20px, 'column nowrap');
+
+    h3 {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--text-color-20);
+      line-height: normal;
+    }
+  }
+
+  @media (max-width: 767px) {
+    height: 112px;
+
+    .text {
+      h3 {
+        font-size: 24px;
+      }
+
+      p {
+        display: none;
+      }
+    }
+  }
+}
+
+.page-area {
+  padding-top: 30px;
+  padding-bottom: 40px;
+}
+
+.menu {
+  margin-top: 20px;
+  margin-bottom: 30px;
+
+  ul {
+    display: flex;
+    align-items: center;
+    @include polyfills.flex-gap(25px, 'row nowrap');
+    overflow-x: auto;
+
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    li {
+      height: 40px;
+      padding: 0 23px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      background-color: rgba(#f5f5f5, 0.4);
+      color: var(--text-color);
+
+      &.active {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    margin: 0;
+
+    ul {
+      @include polyfills.flex-gap-unset('row nowrap');
+      @include polyfills.flex-gap(24px, 'row nowrap');
+
+      li {
+        padding: 0 2px;
+        font-size: 14px;
+        font-weight: normal;
+        background-color: transparent;
+        color: var(--text-color-20);
+        position: relative;
+
+        &.active {
+          background-color: transparent;
+          color: var(--text-color);
+
+          &::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 30%;
+            right: 30%;
+            height: 3px;
+            background-color: var(--primary-color);
+          }
+        }
+      }
+    }
+  }
+}
+
+:host {
+  ::ng-deep {
+    .con-tit {
+      // display: flex;
+      @include polyfills.flex-gap(10px, 'row nowrap');
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+
+      i {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+      }
+    }
+
+    .sub-nav {
+      display: flex;
+      @include polyfills.flex-gap(15px, 'row nowrap');
+      margin-bottom: 20px;
+    }
+
+    .content-box {
+      border-radius: 12px;
+      border: solid 1px var(--default-border-color);
+      padding: 20px;
+
+      .text-20 {
+        color: var(--text-color-20);
+        font-size: 14px;
+        line-height: normal;
+
+        + .text-20 {
+          padding-top: 15px;
+        }
+
+        &.small {
+          font-size: 12px;
+        }
+      }
+
+      + .content-box {
+        margin-top: 26px;
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+<div class="search-bar">
+  <app-customize-input
+    [size]="size"
+    [trim]="false"
+    [leftIcon]="'icon-search'"
+    [placeholder]="'search_articles' | translate"
+    [max]="30"
+    [(value)]="searchContent"
+    (keypress)="onKeyPressSearch($event.key)"
+    width="100%"
+    (keyup.enter)="toSeachCenter()"
+  >
+    <customize-button
+      size="small"
+      [minWidth]="minWidth"
+      (onClick)="toSeachCenter()"
+      type="primary"
+      *ngIf="!isH5"
+      right-content
+    >
+      {{ 'search' | translate }}</customize-button
+    >
+  </app-customize-input>
+</div>

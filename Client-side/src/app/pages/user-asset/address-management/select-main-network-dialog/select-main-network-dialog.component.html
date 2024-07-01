@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="header-row">
+    <span class="title">{{ 'sel_net' | translate }}</span>
+    <i class="icon-close mutual-opacity" (click)="dialogRef.close()"></i>
+  </div>
+  <div class="contants-clounm">
+    <app-scrollbar>
+      <div *ngIf="data.data.length !== 0 && data.address" class="notice-box">
+        <span class="icon-toast-success"></span>
+        <p class="notice">{{ 'auto_fil' | translate }}</p>
+      </div>
+      <ng-container *ngFor="let item of data.data">
+        <div
+          class="item-clounm onact96"
+          [class.disable]="!checkVaild(item) && data.address"
+          (click)="handleSelect(item)"
+        >
+          <div class="border-line">
+            <div class="row-1">
+              <span>{{ item.network }}</span>
+            </div>
+            <span class="text-lighter">{{ item.desc }}</span>
+          </div>
+        </div>
+      </ng-container>
+      <app-empty
+        *ngIf="data.data.length === 0"
+        [icon]="'assets/images/maintain_icon.svg'"
+        [text]="'in_maint' | translate"
+      >
+        <span>{{ 'in_maint_con' | translate }}</span>
+      </app-empty>
+    </app-scrollbar>
+  </div>
+</div>

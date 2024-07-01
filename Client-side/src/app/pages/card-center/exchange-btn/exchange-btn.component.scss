@@ -1,0 +1,133 @@
+:host {
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.exchange-btn {
+  ::ng-deep {
+    customize-button {
+      min-width: 160px;
+      @media (max-width: 767px) {
+        min-width: 100%;
+      }
+      .button-icon {
+        width: 18px !important;
+        height: 14px !important;
+      }
+    }
+  }
+  .btn-txt {
+    vertical-align: middle;
+    margin-left: 16px;
+    margin-bottom: 2px;
+
+    @media (max-width: 767px) {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+// 兑换卡卷 webPopup
+.web-exchange-popup {
+  width: 450px;
+  border-radius: 4px;
+
+  @media (max-width: 767px) {
+    width: 100vw;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .header {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--default-border-color);
+
+    .title {
+      color: var(--text-color);
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .icon-close-simple {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      &.active {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .info-box {
+    padding: 30px 24px;
+
+    .tips {
+      color: var(--text-color-20);
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    .info-box-histroy {
+      min-height: 245px;
+
+      @media (max-width: 767px) {
+        min-height: 550px;
+      }
+
+      .label {
+        color: var(--text-color);
+        font-size: 14px;
+        font-weight: bold;
+        margin: 20px 0 11px 0;
+      }
+
+      .content {
+        position: relative;
+        height: 200px;
+
+        @media (max-width: 767px) {
+          height: unset;
+        }
+
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 6px 10px;
+          border-radius: 5px;
+          border: solid 1px var(--default-border-color);
+          margin: 0 5px 11px 0;
+        }
+
+        .item-text {
+          color: var(--text-color);
+          font-size: 14px;
+        }
+
+        .word {
+          word-break: break-all;
+          width: 60%;
+          line-height: 1.48;
+        }
+
+        .m-top {
+          margin-top: 6px;
+        }
+      }
+    }
+
+    .info-box-foot {
+      width: 80%;
+      margin: 20px auto 0 auto;
+    }
+  }
+}

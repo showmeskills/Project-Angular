@@ -1,0 +1,48 @@
+:host {
+  .title {
+    white-space: nowrap;
+    font-size: 16px;
+    color: #969bad;
+  }
+
+  .field-input {
+    margin-left: 15px;
+  }
+}
+
+.list {
+  .title {
+    color: #181c32;
+    font-size: 20px;
+  }
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 4px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle {
+  margin-left: 5px;
+}

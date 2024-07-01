@@ -1,0 +1,370 @@
+<div class="card p-12">
+  <div class="fw-bolder fz-20">{{ 'payment.bankMap.bankMappingConfiguration' | lang }}</div>
+
+  <div class="mt-6" [formGroup]="formGroup">
+    <form-row
+      class="my-4"
+      [label]="'payment.bankMap.channel' | lang"
+      label-width="178"
+      contentWidth="200"
+      name="channelId"
+      [invalidFeedback]="{ required: 'payment.bankMap.selectChannel' | lang }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select [formControl]="control" [class.is-invalid]="invalid" class="form-control rounded-0">
+            <mat-option *ngFor="let item of channelList" [value]="item.code">{{ item.code }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row
+      class="my-4"
+      [label]="'common.currency' | lang"
+      label-width="178"
+      contentWidth="200"
+      name="currency"
+      [invalidFeedback]="{ required: 'common.selectCurrency' | lang }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select
+            [formControl]="control"
+            [class.is-invalid]="invalid"
+            class="form-control rounded-0"
+            (selectionChange)="onCurrency($event)"
+          >
+            <mat-option *ngFor="let item of currencyList" [value]="item.code">{{ item.code }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row
+      class="my-4"
+      [label]="'payment.paymentMethod.paymentMethod' | lang"
+      label-width="178"
+      contentWidth="200"
+      name="method"
+      [invalidFeedback]="{ required: 'payment.subChannel.selectPaymentMethod' | lang }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <mat-form-field class="w-100">
+          <mat-select [formControl]="control" [class.is-invalid]="invalid" class="form-control rounded-0">
+            <mat-option *ngFor="let item of paymentList" [value]="item.code">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <div class="tab mt-12" [hidden]="!formGroup.value.currency || !formGroup.value.currency || !formGroup.value.method">
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+    <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel">
+      <div
+        mat-tab-link
+        class="tab-hd-item"
+        [active]="curTab === i"
+        *ngFor="let item of tabList; let i = index"
+        (click)="curTab = i"
+      >
+        {{ item.name | lang }}
+      </div>
+    </div>
+
+    <div class="tab-bd">
+      <!-- 手动输入 -->
+      <ng-container *ngIf="curTabData.formKey === 'manual'" [formGroup]="manualFormGroup">
+        <form-row
+          class="my-4"
+          [label]="'payment.bank.bankName' | lang"
+          label-width="160"
+          contentWidth="370"
+          name="name"
+          [invalidFeedback]="{ required: 'payment.bankMap.selectBank' | lang }"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <mat-form-field class="w-100">
+              <mat-select
+                [formControl]="control"
+                [class.is-invalid]="invalid"
+                class="form-control rounded-0"
+                (selectionChange)="onManualBank()"
+                (openedChange)="onOpenSearch($event, 'manual', manualBankKW)"
+              >
+                <input
+                  [placeholder]="'common.searchPlaceholder' | lang"
+                  matInput
+                  type="search"
+                  (keyup)="onSearchBank('manual', $event.target?.['value'])"
+                  class="select-search"
+                  #manualBankKW
+                />
+                <mat-option
+                  *ngFor="let item of allowBankList | search : 'bankNameLocal' : searchBank['manual']"
+                  [value]="item.bankCode"
+                  >{{ item.bankNameLocal }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+
+        <form-row
+          class="my-4"
+          [label]="'payment.bank.bankCode' | lang"
+          label-width="160"
+          contentWidth="370"
+          name="code"
+          [invalidFeedback]="{ required: 'payment.bankMap.selectBankCode' | lang }"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <!--            <input [formControl]="control" [class.is-invalid]="invalid" class="form-control rounded-0 w-100"-->
+            <!--              type="text" readonly />-->
+            <div class="form-control rounded-0 w-100" disabled [class.is-invalid]="invalid">
+              {{ control.value }}
+            </div>
+          </ng-template>
+        </form-row>
+
+        <form-row
+          class="my-4"
+          [label]="'payment.bankMap.mapEncoding' | lang"
+          label-width="160"
+          contentWidth="370"
+          name="map"
+          [invalidFeedback]="{ required: 'payment.bankMap.enterMappingCode' | lang }"
+        >
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input
+              [formControl]="control"
+              [class.is-invalid]="invalid"
+              class="form-control rounded-0 w-100"
+              type="text"
+            />
+          </ng-template>
+        </form-row>
+      </ng-container>
+
+      <!-- 批量配置 -->
+      <ng-container *ngIf="curTabData.formKey === 'batch'" [formGroup]="batchFormGroup">
+        <div class="d-flex flex-wrap">
+          <form-row
+            name="excel"
+            [label]="'payment.bankMap.uploadForm' | lang"
+            label-width="160"
+            [style.margin-right.px]="100"
+            [invalidFeedback]="{ required: 'payment.bankMap.uploadExcel' | lang }"
+          >
+            <ng-template let-invalid="invalid" let-control="formControl">
+              <upload
+                mark="file"
+                class="mr-22"
+                desc=""
+                [formControl]="control"
+                [accept]="['xlsx']"
+                [showLimitText]="false"
+                [style.width.px]="152"
+                [style.height.px]="92"
+                [style.marginRight.px]="100"
+                [customRequestSteam]="uploadExcel$"
+                (change)="onUploadExcelChange($event)"
+                (clear)="onClearExcel()"
+                [class.is-invalid]="invalid"
+              ></upload>
+            </ng-template>
+          </form-row>
+
+          <form-row [label]="'payment.bankMap.downloadTemplate' | lang" label-width="160">
+            <ng-template>
+              <upload
+                class="mr-22"
+                desc=""
+                [disabledInput]="true"
+                [showLimitText]="false"
+                [style.width.px]="152"
+                [style.height.px]="92"
+                (click)="downloadExcel()"
+              >
+                <ng-template default>
+                  <svg-icon [src]="'./assets/images/svg/excel.svg'" class="svg-icon svg-icon-4x"></svg-icon>
+
+                  <div style="margin-left: 4px; line-height: 1.4">
+                    <div class="upload-empty-title">{{ 'payment.bankMap.clickDownload' | lang }}</div>
+                  </div>
+                </ng-template>
+              </upload>
+            </ng-template>
+          </form-row>
+        </div>
+
+        <div>
+          <div class="batch-item" *ngFor="let item of batchListForm['controls']; let i = index">
+            <div class="d-flex flex-bt">
+              <form-row
+                [label]="'common.status' | lang"
+                label-width="160"
+                name="isEnable"
+                [group]="item"
+                [invalidFeedback]="{ isTrue: 'payment.bankMap.bankDataValidFail' | lang }"
+              >
+                <ng-template let-control="formControl">
+                  <label class="switch switch-success cursor-pointer min-w-0 mb-0">
+                    <input type="checkbox" [formControl]="control" />
+                    <span></span>
+                    <cite class="fz-16 color-999 ml-4" style="font-style: normal">{{
+                      control.value ? ('payment.method.open' | lang) : ('payment.method.shutDown' | lang)
+                    }}</cite>
+                  </label>
+                </ng-template>
+              </form-row>
+
+              <svg-icon
+                [src]="'./assets/images/svg/admin-del.svg'"
+                class="svg-icon cursor-pointer svg-icon-2x5 lh-42"
+                (click)="onDelBatch(confirmDeleteBatch, item, i)"
+              ></svg-icon>
+            </div>
+
+            <div class="d-flex flex-wrap" style="margin: 0 -15px">
+              <form-row
+                class="batch-form"
+                [label]="'payment.bank.bankName' | lang"
+                label-width="160"
+                name="bankName"
+                [group]="item"
+                [invalidFeedback]="{
+                  required: allowBankList?.length
+                    ? ('payment.bankMap.selectBank' | lang)
+                    : ('payment.bankMap.noBankDataForCurrent' | lang)
+                }"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <mat-form-field class="w-100">
+                    <mat-select
+                      [formControl]="control"
+                      [class.is-invalid]="invalid"
+                      class="form-control rounded-0"
+                      (openedChange)="onOpenSearch($event, 'batch_' + i, matchBankKW)"
+                      (selectionChange)="onBatchBank($event, item)"
+                      [disableControl]="item.value.disabled"
+                      [attr.disabled]="item.value.disabled || undefined"
+                    >
+                      <input
+                        [placeholder]="'common.searchPlaceholder' | lang"
+                        matInput
+                        type="search"
+                        #matchBankKW
+                        (keyup)="onSearchBank('batch_' + i, $event.target?.['value'])"
+                        class="select-search"
+                      />
+                      <mat-option
+                        *ngFor="let item of allowBankList | search : 'bankNameLocal' : searchBank['batch_' + i]"
+                        [value]="item.bankCode"
+                        >{{ item.bankNameLocal }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </ng-template>
+              </form-row>
+
+              <form-row
+                class="batch-form"
+                [label]="'payment.bank.bankCode' | lang"
+                label-width="160"
+                name="bankCode"
+                [group]="item"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <input
+                    [formControl]="control"
+                    [class.is-invalid]="invalid"
+                    [attr.disabled]="'disabled'"
+                    readonly
+                    class="form-control rounded-0"
+                    type="text"
+                  />
+                </ng-template>
+              </form-row>
+
+              <form-row
+                class="batch-form"
+                [label]="'payment.bankMap.mapName' | lang"
+                label-width="160"
+                name="bankNameMapping"
+                [group]="item"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <input
+                    [formControl]="control"
+                    [class.is-invalid]="invalid"
+                    [attr.disabled]="'disabled'"
+                    readonly
+                    class="form-control rounded-0"
+                    type="text"
+                  />
+                </ng-template>
+              </form-row>
+
+              <form-row
+                class="batch-form"
+                [label]="'payment.bankMap.mapEncoding' | lang"
+                label-width="160"
+                name="bankCodeMapping"
+                [group]="item"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <input
+                    [formControl]="control"
+                    [class.is-invalid]="invalid"
+                    [attr.disabled]="'disabled'"
+                    readonly
+                    class="form-control rounded-0"
+                    type="text"
+                  />
+                </ng-template>
+              </form-row>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="btn-wrap d-flex flex-center mt-12">
+    <button class="c-btn c-btn-default" (click)="onBack()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<!-- 删除提示 -->
+<ng-template #confirmDeleteBatch let-d="dismiss" let-c="close" let-data>
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'payment.currency.prompt' | lang }}</div>
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8" *ngIf="data?.bankNameMapping; else otherTextTpl">
+        {{ 'payment.bankMap.deleteOrNot' | lang }}《<span class="text-danger">{{ data?.bankNameMapping }}</span
+        >》{{ 'payment.bankMap.mappingConfiguration' | lang }}
+      </p>
+
+      <ng-template #otherTextTpl>
+        <p class="fz-16 mt-8">{{ 'payment.bankMap.sureDeleteBankMapping' | lang }}</p>
+      </ng-template>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,13 @@
+<ng-container *ngIf="isH5 && !isApp">
+  <div class="tips" *ngIf="active">
+    <app-logo [onlineSizeH5]="['auto', '32']" [sitSizeH5]="['34', '32']"></app-logo>
+    <div class="info">
+      <span> {{ 'native_app' | translate : '{Brand Name}' }}</span>
+      <small>{{ 'native_intro' | translate }}</small>
+    </div>
+    <span class="download onact96" (click)="download()">
+      <i class="icon-download"></i>
+    </span>
+    <i class="close icon-close-simple inherit onact96-not" (click)="closedTips()"></i>
+  </div>
+</ng-container>

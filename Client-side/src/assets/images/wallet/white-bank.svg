@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="240" height="188" viewBox="0 0 240 188">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="矩形_494" data-name="矩形 494" width="240" height="188" fill="#fff"/>
+    </clipPath>
+  </defs>
+  <g id="promotion_block" clip-path="url(#clip-path)">
+    <rect id="矩形_491" data-name="矩形 491" width="240" height="188" fill="#f5f5f5"/>
+    <path id="路径_42" data-name="路径 42" d="M163.093-3.267A11.467,11.467,0,0,1,174.56-14.735,11.468,11.468,0,0,1,186.028-3.267,11.468,11.468,0,0,1,174.56,8.2,11.467,11.467,0,0,1,163.093-3.267Z" fill="#fff"/>
+    <rect id="矩形_492" data-name="矩形 492" width="28.332" height="132.804" transform="translate(254.166 157.002) rotate(180)" fill="#fff" opacity="0.5"/>
+    <path id="路径_43" data-name="路径 43" d="M225.834,157A14.166,14.166,0,1,1,240,171.168,14.166,14.166,0,0,1,225.834,157Z" fill="#fff"/>
+    <rect id="矩形_493" data-name="矩形 493" width="21.249" height="158.48" transform="translate(37.249 104.376) rotate(180)" fill="#fff" opacity="0.5"/>
+    <path id="路径_44" data-name="路径 44" d="M16,104.376A10.624,10.624,0,1,1,26.624,115,10.624,10.624,0,0,1,16,104.376Z" fill="#fff"/>
+    <path id="路径_45" data-name="路径 45" d="M36.961,158.047l2.75-2.75,2.75,2.75-2.75,2.75Z" fill="#fff"/>
+    <path id="路径_46" data-name="路径 46" d="M171.561,51.992l1.875-1.875,1.875,1.875-1.875,1.875Z" fill="#fff"/>
+  </g>
+</svg>

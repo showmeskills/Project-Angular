@@ -1,0 +1,93 @@
+div {
+  display: flex;
+}
+
+.download-page-clonum {
+  width: 370px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  .header {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.38;
+    margin-bottom: 25px;
+  }
+
+  .download-app-row {
+    padding-top: 61px;
+
+    @media (max-width: 767px) {
+      padding-top: 27px;
+    }
+
+    .app-colnum {
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      width: 176px;
+
+      .icon-apple,
+      .icon-googleplay {
+        color: var(--text-color);
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+
+      span {
+        color: var(--text-color-20);
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+
+      .text-bold {
+        color: var(--text-color);
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .text {
+        @media (max-width: 767px) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .footer {
+    align-items: center;
+    flex-direction: row;
+    cursor: pointer;
+    margin-top: 60px;
+
+    @media (max-width: 767px) {
+      margin-top: 62px;
+    }
+
+    .document-icon {
+      width: 16px;
+      height: 20px;
+      background-size: 16px 20px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/file.png);
+      margin-right: 12px;
+    }
+
+    span {
+      text-decoration: underline;
+      color: #474d57;
+      font-size: 14px;
+
+      &:host-context(.dark) & {
+        color: #fff;
+      }
+    }
+  }
+}

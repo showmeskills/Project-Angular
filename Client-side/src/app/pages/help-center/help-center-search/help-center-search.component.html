@@ -1,0 +1,127 @@
+<!-- 头部返回导航 -->
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <!-- 搜索头部 -->
+  <div class="search-header container">
+    <div class="search-header-left" (click)="goBack()">
+      <i class="icon-left-arrow"></i>
+      <p>{{ 'enter_question' | translate }}</p>
+    </div>
+    <div class="search-header-right">
+      <div class="search-bar">
+        <app-customize-input
+          [size]="'large'"
+          [trim]="false"
+          [leftIcon]="'icon-search'"
+          [placeholder]="'search_here' | translate"
+          [max]="30"
+          [(value)]="searchKeyWord"
+          (keypress)="onKeyPressSearch($event.key)"
+        >
+          <customize-button
+            *ngIf="!isH5"
+            type="primary"
+            size="small"
+            width="92px"
+            [loading]="isLoading"
+            [disabled]="isLoading || searchKeyWord.trim().length === 0"
+            (onClick)="search()"
+            right-content
+          >
+            {{ 'search' | translate }}
+          </customize-button>
+        </app-customize-input>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 搜索结果显示区域 -->
+<div class="main-container inner-page unity-padding-web unity-padding-h5-16 help-center-body search-body">
+  <div class="search-body-wrap container">
+    <div class="search-body-wrap-header">
+      <span class="text onact96-not" (click)="jumpTopage('help-center')">{{ 'help_center' | translate }}</span>
+      <i class="arrow"></i>
+      <span class="text">{{ 'search_results' | translate }}</span>
+    </div>
+    <!-- 搜索结果 -->
+    <div class="search-body-wrap-result">
+      <!-- 搜索结果头部 -->
+      <div class="search-body-wrap-result-header">
+        <!-- 分类nav bar -->
+        <div class="header-nav">
+          <div
+            *ngFor="let item of searchNavBarItem; let i = index"
+            class="nav-item onact96-not"
+            [class.active]="i == isActiveIndex"
+            (click)="onClickItem(i)"
+          >
+            {{ item.name | translate }}
+          </div>
+        </div>
+      </div>
+      <!-- 搜索结果内容 -->
+      <ng-container
+        *ngTemplateOutlet="
+          centerTemplate;
+          context: {
+            data: searchResultList
+          }
+        "
+      >
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- 搜索footer -->
+<div class="main-container unity-padding-web unity-padding-h5-16 search-footer" *ngIf="isShowFooter">
+  <div class="container">
+    <app-support-list></app-support-list>
+  </div>
+</div>
+
+<!-- center template -->
+<ng-template #centerTemplate let-data="data">
+  <div class="list-center-container">
+    <div class="list-center" [appLoading]="isLoading">
+      <ul *ngIf="data.length > 0">
+        <li class="list-item onact96" *ngFor="let item of data" (click)="onGoToDetailPage(item)">
+          <div class="top">
+            <p class="top-title" [innerHTML]="item.title | highlight : searchKeyWord"></p>
+            <p class="top-date">{{ item.releaseTime | mdate : 'YYYY-MM-DD hh:mm:ss' }}</p>
+          </div>
+          <div class="result-context" [innerHTML]="item.content | highlight : searchKeyWord"></div>
+          <div class="bottom">
+            <span class="text">{{ item.categoryCode }}</span>
+            <i class="arrow"></i>
+            <span class="text">{{ item.categoryTitle }}</span>
+          </div>
+        </li>
+      </ul>
+      <div [class]="isH5 ? 'left-side' : 'right-side'">
+        <app-paginator
+          *ngIf="!isH5 && data.length > 0"
+          [disabled]="isLoading"
+          [loading]="isLoading"
+          [(page)]="paginator.page"
+          [total]="paginator.total"
+          [pageSize]="paginator.pageSize"
+          (onPageChange)="getSearchList()"
+        >
+        </app-paginator>
+        <ng-container *ngIf="isH5 && data.length > 0">
+          <div [appLoading]="isLoading">
+            <p class="load-more onact96" (click)="onNextPage()" *ngIf="isShowH5Paginator">
+              {{ 'view_more' | translate }}
+              <i class="icon-arrow-down-simple"></i>
+            </p>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <!-- 没有搜索结果 -->
+    <ng-container *ngIf="data.length === 0 && !isLoading">
+      <app-empty icon="assets/images/help-center/search.svg" text="{{ 'sorry_info' | translate }}"></app-empty>
+    </ng-container>
+  </div>
+</ng-template>

@@ -1,0 +1,45 @@
+<app-support-theme-layout
+  [themeTitle]="themeTitle"
+  type="Announcement"
+  [themeList]="accouncementList"
+  [footTemplate]="themeFooter"
+>
+</app-support-theme-layout>
+
+<ng-template #themeFooter>
+  <!-- web最新公告 -->
+  <div class="web-announcement">
+    <p class="footer-title">{{ 'latest_ann' | translate }}</p>
+    <div class="wrap" [appLoading]="isLoading">
+      <div class="web-announcement-container">
+        <div class="group-left">
+          <ng-container
+            *ngTemplateOutlet="
+              templateList;
+              context: {
+                list: newArticleListBeforeFourItems
+              }
+            "
+          ></ng-container>
+        </div>
+        <div class="group-right">
+          <ng-container
+            *ngTemplateOutlet="
+              templateList;
+              context: {
+                list: newArticleListAfterFourItems
+              }
+            "
+          ></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #templateList let-list="list">
+  <div class="release-detail onact96" *ngFor="let item of list" (click)="onGotoDetailsPage(item)">
+    <span class="release-title">{{ item.title }}</span>
+    <span class="release-date">{{ item.releaseTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</span>
+  </div>
+</ng-template>

@@ -1,0 +1,28 @@
+form-row {
+  margin-right: 52px;
+}
+
+.line {
+  display: inline-block;
+  line-height: 20px;
+  vertical-align: middle;
+  width: 1px;
+  height: 20px;
+  background: #222;
+}
+
+.proxy-type {
+  color: #319ef7;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.team-select {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  &.is-invalid {
+    border-color: #f64e60;
+  }
+}

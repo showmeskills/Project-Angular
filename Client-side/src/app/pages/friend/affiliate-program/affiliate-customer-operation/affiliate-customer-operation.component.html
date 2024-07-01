@@ -1,0 +1,192 @@
+<div class="sub-theme-container">
+  <div class="sub-theme-header">
+    <div class="sub-theme-left">
+      <i class="header-icon"></i>
+      <span class="header-title">{{ 'user_act00' | translate }}</span>
+    </div>
+  </div>
+  <!-- 操作导航 -->
+  <div class="nav-list nav-m-top" *ngIf="!isComponent">
+    <ng-container *ngFor="let item of navList; let i = index">
+      <customize-button
+        class="onact96-btn"
+        [radius]="isH5 ? '0px' : '16px'"
+        [type]="isH5 ? 'text' : isActiveNavIndex == i ? 'primary' : 'default'"
+        size="medium"
+        minWidth="100px"
+        [disabled]="loading"
+        [loading]="isActiveNavIndex == i && loading"
+        (onClick)="selectNavItem(i)"
+      >
+        <span [class.active]="isActiveNavIndex == i">{{ item.name }}</span>
+      </customize-button>
+    </ng-container>
+  </div>
+  <p class="component-text" *ngIf="isComponent">{{ 'tra_apl00' | translate }}</p>
+  <!-- 划转申请 -->
+  <div class="trans-application" *ngIf="isActiveNavIndex == 0">
+    <!-- 表单 -->
+    <div class="field">
+      <div class="form-field">
+        <div class="input-field">
+          <div class="customer-id">
+            <label class="label-text" for="cid">{{ 'user' | translate }}ID：</label>
+            <div class="m-top-30">
+              <app-customize-input
+                size="medium"
+                [(value)]="userId"
+                type="number"
+                [max]="30"
+                [disabled]="userCheckLoading"
+                width="100%"
+              >
+              </app-customize-input>
+            </div>
+          </div>
+          <div class="phone-number m-top-30">
+            <label class="label-text" for="pnumber">{{ 'phone' | translate }}：</label>
+            <div class="phone-container">
+              <div class="area-code onact96" (click)="handleSelectPhone()">
+                <div class="country-image">
+                  <i class="country" class="{{ fogClassName }}"></i>
+                </div>
+                <p class="code">{{ areaCode }}</p>
+                <i class="icon-arrow-down"></i>
+              </div>
+              <div class="number-field m-top-30">
+                <app-customize-input
+                  #iPhone
+                  size="medium"
+                  type="number"
+                  [error]="phoneError"
+                  [disabled]="userCheckLoading"
+                  (onChange)="
+                    phone.length >= 2 && (phoneError = !phoneNumberService.checkVaild($event, areaCode.slice(1)))
+                  "
+                  [(value)]="phone"
+                  width="100%"
+                  [hasClear]="false"
+                >
+                </app-customize-input>
+                <div class="warning" *ngIf="iPhone.error && !iPhone.foc">{{ 'phone_for_err' | translate }}</div>
+              </div>
+            </div>
+          </div>
+          <app-customize-select
+            [valueKey]="'inviteCode'"
+            defaultText="-------"
+            [textKey]="'text'"
+            [(value)]="selectedInviteCode"
+            [options]="recommendLinkList"
+            [label]="('rec_link' | translate) + '：'"
+          >
+          </app-customize-select>
+        </div>
+        <div class="button-field">
+          <customize-button
+            class="btn-right"
+            type="primary"
+            size="medium"
+            [loading]="userCheckLoading || loading"
+            [disabled]="!canSubmit()"
+            [minWidth]="isH5 ? '' : '180px'"
+            [width]="isH5 ? '100%' : ''"
+            (onClick)="createUserApplyCheck()"
+          >
+            {{ 'check_a' | translate }}</customize-button
+          >
+          <customize-button
+            [loading]="userCheckLoading || loading"
+            size="medium"
+            [minWidth]="isH5 ? '' : '180px'"
+            [width]="isH5 ? '100%' : ''"
+            (onClick)="onReset()"
+          >
+            {{ 'reset' | translate }}
+          </customize-button>
+        </div>
+      </div>
+    </div>
+    <!-- 提示文字 -->
+    <p class="text" *ngIf="!isH5">* {{ 'sent_b' | translate }}</p>
+    <p class="text" *ngIf="!isH5">* {{ 'sent_c' | translate }}</p>
+    <p class="data-title">{{ 'record' | translate }}</p>
+    <!-- 数据显示 -->
+    <ng-container
+      *ngTemplateOutlet="
+        dataTemplate;
+        context: {
+          idx: isActiveNavIndex
+        }
+      "
+    >
+    </ng-container>
+  </div>
+</div>
+
+<!-- 数据template -->
+<ng-template #dataTemplate let-idx="idx">
+  <app-table-component
+    [tableHeader]="tableHeaderA"
+    [tableBodyTmp]="tableBodyTmpA"
+    [h5DataTemp]="h5DataTempA"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="userApplyList.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="true"
+    [infoTips]="'sent_d' | translate"
+    [isExportBtn]="false"
+  >
+  </app-table-component>
+
+  <ng-template #tableBodyTmpA>
+    <tr *ngFor="let item of userApplyList">
+      <td>{{ item.createTime | mdate : 'YYYY-MM-DD' }}</td>
+      <td>{{ item.userId }}</td>
+      <td>{{ item.regTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+      <td [class]="item.direct == 0 ? 'status-pending' : item.direct == 1 ? 'status-pass' : 'status-fail'">
+        {{
+          item.direct == 0
+            ? ('pending' | translate) + '...'
+            : item.direct == 1
+            ? ('passed' | translate)
+            : ('fail' | translate)
+        }}
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #h5DataTempA>
+    <div class="h5-agent-table-data" *ngFor="let item of userApplyList">
+      <div class="first-line">
+        <span class="text">{{ 'user' | translate }}ID：{{ item.userId }}</span>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'appli_time00' | translate }}</p>
+        <p class="group-text">{{ item.createTime | mdate : 'YYYY-MM-DD' }}</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'reg_time' | translate }}</p>
+        <p class="group-text">{{ item.regTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+      </div>
+      <div class="group">
+        <p class="group-text">{{ 'stat' | translate }}</p>
+        <p
+          class="group-text"
+          [class]="item.direct == 0 ? 'status-pending' : item.direct == 1 ? 'status-pass' : 'status-fail'"
+        >
+          {{
+            item.direct == 0
+              ? ('pending' | translate) + '...'
+              : item.direct == 1
+              ? ('passed' | translate)
+              : ('fail' | translate)
+          }}
+        </p>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

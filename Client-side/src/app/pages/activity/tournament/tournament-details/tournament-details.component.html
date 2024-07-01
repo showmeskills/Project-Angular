@@ -1,0 +1,88 @@
+<div class="page-container">
+  <div class="main-container unity-padding-web unity-padding-h5-16" [appLoading]="pageLoading">
+    <div class="container torunament-detail-container">
+      <div class="tournament-detail" *ngIf="renderTournamentDetail()">
+        <app-tournament-template
+          [tournamentBanner]="renderTournamentDetail()"
+          [rankList]="renderTopRankLists()"
+          [detailsShowBtn]="false"
+          (submitJoin)="onSubmitTournamentJoin(renderTournamentDetail())"
+          [joinLoading]="joinLoading"
+        ></app-tournament-template>
+      </div>
+      <div class="rewards-rank">
+        <div class="top-three">
+          <div class="reward-item" *ngFor="let item of renderTournamentDetail()?.numberVos; let index = index">
+            <img class="reward-badge" [src]="'assets/images/activity/tournament/' + index + '-detail-award.png'" />
+            <p class="reward-text">
+              {{ item.amount || 0 | transToDefaultCurrency: item?.currency || 'USDT' }}
+              <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+            </p>
+          </div>
+        </div>
+        <div class="others" *ngIf="renderOtherRanks()">
+          <div class="others-item" *ngFor="let item of renderOtherRanks()">
+            <div class="other-text">
+              <div class="rank-range" [class.range]="item.showRange">{{ item?.rankRange || '' }}</div>
+              <p class="ml-8">
+                {{ item.amount || 0 | transToDefaultCurrency: item?.currency || 'USDT' }}
+                <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="renderGameList()?.length">
+        <app-swiper-unit
+          (clickItem)="clickGameItem($event)"
+          [data]="renderGameList() || []"
+          [title]="'joined_games' | translate"
+        ></app-swiper-unit>
+      </ng-container>
+      <!-- <customize-button width="100px" (onClick)="mockPush()">点我</customize-button> -->
+      <div class="rank-list" *ngIf="renderAllRanks()?.length">
+        <div class="rank-sort">
+          <p class="title">{{ 'leader_board' | translate }}</p>
+          <app-customize-select
+            width="56px"
+            [textKey]="'key'"
+            [valueKey]="'value'"
+            [options]="dropDown"
+            (valueChange)="onValueChange($event)"
+            [(value)]="pageSize"
+            [disabled]="rankLoading"
+          >
+          </app-customize-select>
+        </div>
+        <table [appLoading]="rankLoading">
+          <thead>
+            <th *ngFor="let title of ['rank_a', 'gamer', 'bonus_t', 'score']">
+              {{ title | translate }}
+            </th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let rank of renderAllRanks(); let index = index"
+              [class.high-light]="rank?.uid === renderUserRanks()?.uid"
+            >
+              <td>{{ rank?.rankNumber || '' }}</td>
+              <td>{{ rank.userName || ('invisible' | translate) }}</td>
+              <td class="glod-color">
+                {{ rank?.amount || 0 | transToDefaultCurrency: rank?.currency || 'USDT' }}
+                <img class="currency-img" [src]="renderDefaultCurrency() || 'USDT' | currencyIcon" />
+              </td>
+              <td>{{ rank.rankScore || 0 | currencyValue: 'CNY' : undefined : undefined : 2 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="details-content" *ngIf="renderTournamentContent().length">
+        <p class="title">{{ 'terms' | translate }}</p>
+        <p class="sub-title">{{ renderTournamentDetail()?.activitySubName || '' }}</p>
+        <div class="content" [innerHTML]="renderTournamentContent()"></div>
+      </div>
+    </div>
+  </div>
+</div>

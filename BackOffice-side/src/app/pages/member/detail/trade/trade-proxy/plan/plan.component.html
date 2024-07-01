@@ -1,0 +1,152 @@
+<header class="px-12 pt-10 pb-8">
+  <div class="d-flex flex-ac flex-wrap">
+    <div class="nav-tab flex-1">
+      <div class="nav-tab-wrap">
+        <span class="nav-tab-item" [class.active]="curTab === 1" (click)="onCurTab(1)">{{
+          'game.proxy.firstDeposit' | lang
+        }}</span>
+      </div>
+      <div class="nav-tab-wrap">
+        <span class="nav-tab-item" [class.active]="curTab === 2" (click)="onCurTab(2)">{{
+          'game.proxy.latestRegistration' | lang
+        }}</span>
+      </div>
+    </div>
+
+    <div class="btn btn-light-primary fz-14 px-8">{{ 'game.manage.look_det' | lang }}</div>
+  </div>
+</header>
+
+<div class="pb-8">
+  <div class="px-8">
+    <table class="table w-100" *ngIf="curTab === 1">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'game.proxy.subUID' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'game.proxy.referralCode' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'game.proxy.registrationTime' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">
+              <span>
+                <span class="vam">{{ 'game.proxy.firstDepositTime' | lang }}</span>
+                <span class="triangle d-inline-block">
+                  <!--                  <div class="triangle-up"></div>-->
+                  <div class="triangle-down"></div>
+                </span>
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'game.proxy.firstDepositAmount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'game.proxy.transactionAmount' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'game.proxy.totalWinLos' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.uid }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.inviteCode }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.regTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.ftdTime | timeFormat }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.ftdAmount | currencyValue: 'USDT' }}
+              <img class="ml-2" currencyIcon="USDT" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.tradeAmount | currencyValue: 'USDT' }}
+              <img class="ml-2" currencyIcon="USDT" />
+            </span>
+          </td>
+          <td>
+            <span class="cell" [winColor]="value" *win="item.totalWinLoss; let value; prev as prev">
+              {{ prev }}{{ value | currencyValue: 'USDT' }}<img class="ml-2" currencyIcon="USDT" alt="" />
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table w-100" *ngIf="curTab === 2">
+      <thead>
+        <tr>
+          <th>
+            <span class="cell">{{ 'game.proxy.username' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'game.proxy.onlineChannel' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'game.proxy.registrationTime' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.uname }}</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.channel">
+              <ng-container *ngSwitchCase="1">{{ 'game.proxy.affiliateProgram' | lang }}</ng-container>
+              <ng-container *ngSwitchCase="2">{{ 'game.proxy.referFriend' | lang }}</ng-container>
+              <ng-container *ngSwitchCase="3">{{ 'game.proxy.straightOff' | lang }}</ng-container>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.createTime | timeFormat }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty [style.height.px]="280" [show]="!list.length && !isLoading"></empty>
+  </div>
+
+  <div class="d-flex flex-between flex-ac px-8 pb-2">
+    <div *ngIf="!isLoading">
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="isLoading"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

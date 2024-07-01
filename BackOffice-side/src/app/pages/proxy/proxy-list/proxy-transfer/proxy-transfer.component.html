@@ -1,0 +1,205 @@
+<div class="modal-header d-flex" mat-modal-title>
+  <!-- 代理转移 -->
+  <div class="modal-title fw-bolder fz-18 flex-1">{{ 'marketing.list.proxy transfer' | lang }}</div>
+
+  <div class="c-btn-close" (click)="modal.close()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<mat-modal-content>
+  <ng-container [selectChildren]="true">
+    <div class="d-flex transfer-header px-12 py-6">
+      <div class="flex-1 d-flex flex-ac">
+        <div class="fz-20 transfer-header-select d-flex text-nowrap">
+          <ng-template selectTpl let-data let-checkAll="checkAll">
+            <!-- 已选择 -->
+            <span class="vam">{{ data.count }} {{ 'marketing.list.chosen' | lang }} </span>
+            <span class="vam line mx-4"></span>
+            <!-- 选择所有 -->
+            <span class="vam cursor-pointer" *ngIf="!data.isAll" (click)="checkAll()">{{
+              'marketing.list.selectAll' | lang
+            }}</span>
+            <!-- 取消选择 -->
+            <span class="vam cursor-pointer" *ngIf="data.isAll" (click)="checkAll()">{{
+              'marketing.list.cancelSelection' | lang
+            }}</span>
+          </ng-template>
+          <!-- 请选择转移至的渠道经理 -->
+          <span class="vam transfer-header-txt">{{ 'marketing.list.model.selectManagerTransfer' | lang }}</span>
+        </div>
+        <!-- 渠道经理 -->
+        <form-row
+          class="ml-12 pr-8"
+          [label]="'marketing.list.channelManager' | lang"
+          [label-width]="100"
+          [control]="channelManager"
+        >
+          <ng-template let-invalid="invalid">
+            <mat-form-field [style.width.px]="200">
+              <mat-select
+                class="form-control"
+                [formControl]="channelManager"
+                [placeholder]="'marketing.list.model.selectChanneManager' | lang"
+                [class.is-invalid]="invalid"
+              >
+                <mat-option *ngFor="let item of managerList" [value]="item.userId">{{ item.userName }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </form-row>
+      </div>
+
+      <div class="btn-wrap ml-12 py-2 flex-auto">
+        <button class="c-btn c-btn-default" (click)="modal.close()">{{ 'common.cancel' | lang }}</button>
+        <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'common.confirm' | lang }}</button>
+      </div>
+    </div>
+
+    <div class="px-12 pb-12">
+      <div class="flex-fill mt-2 px-3">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>
+                <span class="cell">
+                  <label class="checkbox checkbox-lg"><input type="checkbox" selectGroup /><span></span></label>
+                </span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.agentID' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.channelManager' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.addFirstDeposit' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.activeOffline' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.contribution' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.depositAmount' | lang }}$</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.userBalance' | lang }}$</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.agencyAmount' | lang }}$</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.commissionProtection' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'marketing.list.model.commissionSettlement' | lang }}</span>
+              </th>
+              <th>
+                <span class="cell">{{ 'common.status' | lang }}</span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="color-222">
+            <tr *ngFor="let item of list; let i = index">
+              <th>
+                <span class="cell">
+                  <label class="checkbox checkbox-lg"
+                    ><input select type="checkbox" [(ngModel)]="item.checked" /><span></span>
+                  </label>
+                </span>
+              </th>
+              <td>
+                <span class="cell">{{ item.proxyId }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.channelManagerName }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.addFirstDeposit || '0' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.activePeople || '0' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.contribution || '0' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.deposit | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.balance | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.proxyAmount | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell">
+                  {{ item.protectCommission }}<br />
+                  {{ item.protectCommissionTime | timeFormat: 'YYYY-MM-DD' }}
+                </span>
+              </td>
+              <td>
+                <!--未开通,日结,月结  -->
+                <span class="cell">{{
+                  item.proxyState === 0
+                    ? ('marketing.list.model.nonactivated' | lang)
+                    : item.proxyState === 1
+                      ? ('marketing.list.dayEnd' | lang)
+                      : ('marketing.list.monthly' | lang)
+                }}</span>
+              </td>
+              <td>
+                <span class="cell">
+                  <span *ngIf="!+item.state">0</span>
+                  <span *ngIf="item.state < 0" class="label label-lg label-inline label-light-danger px-10 fw-bolder">{{
+                    toInt(item.state)
+                  }}</span>
+                  <span
+                    *ngIf="item.state > 0"
+                    class="label label-lg label-inline label-light-primary px-10 fw-bolder"
+                    >{{ item.state }}</span
+                  >
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 空显示 -->
+        <div class="container-empty" *ngIf="!list.length && (appService.isContentLoadingSubject | async) === false">
+          <div>
+            <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+            <div class="txt">{{ 'common.emptyText' | lang }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between flex-ac pt-4 px-3">
+        <!--      <div>-->
+        <!--        <mat-form-field [style.width.px]="68">-->
+        <!--          <mat-select-->
+        <!--            class="form-control"-->
+        <!--            [(ngModel)]="paginator.pageSize"-->
+        <!--            [style.height.px]="34"-->
+        <!--            [style.font-size.px]="14"-->
+        <!--            (selectionChange)="loadData(true)"-->
+        <!--          >-->
+        <!--            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>-->
+        <!--          </mat-select>-->
+        <!--        </mat-form-field>-->
+        <!--      </div>-->
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</mat-modal-content>

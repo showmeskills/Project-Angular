@@ -1,0 +1,236 @@
+[
+  {
+    "name": "grinning_face",
+    "unicode": "\\u{1F600}",
+    "emoji": "\uD83D\uDE00",
+    "htmlDisplay": "&#128512;",
+    "preview": "😀",
+    "zh-cn": "笑脸",
+    "en-us": "Grinning Face"
+  },
+  {
+    "name": "grinning_squinting_face",
+    "unicode": "\\u{1F606}",
+    "emoji": "\uD83D\uDE06",
+    "htmlDisplay": "&#128518;",
+    "preview": "😆",
+    "zh-cn": "笑眯眼",
+    "en-us": "Grinning Squinting Face"
+  },
+  {
+    "name": "rolling_on_the_floor_laughing",
+    "unicode": "\\u{1F923}",
+    "emoji": "\uD83E\uDD23",
+    "htmlDisplay": "&#129315;",
+    "preview": "🤣",
+    "zh-cn": "大笑",
+    "en-us": "Rolling on the Floor Laughing"
+  },
+  {
+    "name": "slightly_smiling_face",
+    "unicode": "\\u{1F642}",
+    "emoji": "\uD83D\uDE42",
+    "htmlDisplay": "&#128578;",
+    "preview": "🙂",
+    "zh-cn": "微笑",
+    "en-us": "Slightly Smiling Face"
+  },
+  {
+    "name": "loudly_crying_face",
+    "unicode": "\\u{1F62D}",
+    "emoji": "\uD83D\uDE2D",
+    "htmlDisplay": "&#128557;",
+    "preview": "😭",
+    "zh-cn": "大哭",
+    "en-us": "Loudly Crying Face"
+  },
+  {
+    "name": "winking_face",
+    "unicode": "\\u{1F609}",
+    "emoji": "\uD83D\uDE09",
+    "htmlDisplay": "&#128521;",
+    "preview": "😉",
+    "zh-cn": "眨眼",
+    "en-us": "Winking Face"
+  },
+  {
+    "name": "smiling_face_with_heart_eyes",
+    "unicode": "\\u{1F60D}",
+    "emoji": "\uD83D\uDE0D",
+    "htmlDisplay": "&#128525;",
+    "preview": "😍",
+    "zh-cn": "色迷迷",
+    "en-us": "Smiling Face with Heart-Eyes"
+  },
+  {
+    "name": "face_savoring_food",
+    "unicode": "\\u{1F60B}",
+    "emoji": "\uD83D\uDE0B",
+    "htmlDisplay": "&#128523;",
+    "preview": "😋",
+    "zh-cn": "美味",
+    "en-us": "Face Savoring Food"
+  },
+  {
+    "name": "hugging_face",
+    "unicode": "\\u{1F917}",
+    "emoji": "\uD83E\uDD17",
+    "htmlDisplay": "&#129303;",
+    "preview": "🤗",
+    "zh-cn": "拥抱",
+    "en-us": "Hugging Face"
+  },
+  {
+    "name": "thinking_face",
+    "unicode": "\\u{1F914}",
+    "emoji": "\uD83E\uDD14",
+    "htmlDisplay": "&#129300;",
+    "preview": "🤔",
+    "zh-cn": "思考",
+    "en-us": "Thinking Face"
+  },
+  {
+    "name": "zipper_mouth_face",
+    "unicode": "\\u{1F910}",
+    "emoji": "\uD83E\uDD10",
+    "htmlDisplay": "&#129296;",
+    "preview": "🤐",
+    "zh-cn": "拉链嘴",
+    "en-us": "Zipper-Mouth Face"
+  },
+  {
+    "name": "expressionless_face",
+    "unicode": "\\u{1F611}",
+    "emoji": "\uD83D\uDE11",
+    "htmlDisplay": "&#128529;",
+    "preview": "😑",
+    "zh-cn": "面无表情",
+    "en-us": "Expressionless Face"
+  },
+  {
+    "name": "face_with_rolling_eyes",
+    "unicode": "\\u{1F644}",
+    "emoji": "\uD83D\uDE44",
+    "htmlDisplay": "&#128580;",
+    "preview": "🙄",
+    "zh-cn": "翻白眼",
+    "en-us": "Face with Rolling Eyes"
+  },
+  {
+    "name": "grimacing_face",
+    "unicode": "\\u{1F62C}",
+    "emoji": "\uD83D\uDE2C",
+    "htmlDisplay": "&#128556;",
+    "preview": "😬",
+    "zh-cn": "鬼脸",
+    "en-us": "Grimacing Face"
+  },
+  {
+    "name": "sleeping_face",
+    "unicode": "\\u{1F634}",
+    "emoji": "\uD83D\uDE34",
+    "htmlDisplay": "&#128564;",
+    "preview": "😴",
+    "zh-cn": "睡脸",
+    "en-us": "Sleeping Face"
+  },
+  {
+    "name": "nauseated_face",
+    "unicode": "\\u{1F922}",
+    "emoji": "\uD83E\uDD22",
+    "htmlDisplay": "&#129314;",
+    "preview": "🤢",
+    "zh-cn": "恶心",
+    "en-us": "Nauseated Face"
+  },
+  {
+    "name": "sneezing_face",
+    "unicode": "\\u{1F927}",
+    "emoji": "\uD83E\uDD27",
+    "htmlDisplay": "&#129319;",
+    "preview": "🤧",
+    "zh-cn": "打喷嚏",
+    "en-us": "Sneezing Face"
+  },
+  {
+    "name": "dizzy_face",
+    "unicode": "\\u{1F635}",
+    "emoji": "\uD83D\uDE35",
+    "htmlDisplay": "&#128565;",
+    "preview": "😵",
+    "zh-cn": "眩晕",
+    "en-us": "Dizzy Face"
+  },
+  {
+    "name": "confounded_face",
+    "unicode": "\\u{1F616}",
+    "emoji": "\uD83D\uDE16",
+    "htmlDisplay": "&#128534;",
+    "preview": "😖",
+    "zh-cn": "困惑",
+    "en-us": "Confounded Face"
+  },
+  {
+    "name": "crying_face",
+    "unicode": "\\u{1F622}",
+    "emoji": "\uD83D\uDE22",
+    "htmlDisplay": "&#128546;",
+    "preview": "😢",
+    "zh-cn": "哭脸",
+    "en-us": "Crying Face"
+  },
+  {
+    "name": "laughing_crying",
+    "unicode": "\\u{1F602}",
+    "emoji": "\uD83D\uDE02",
+    "htmlDisplay": "&#128514;",
+    "preview": "😂",
+    "zh-cn": "笑哭",
+    "en-us": "Laughing Crying"
+  },
+  {
+    "name": "lying_face",
+    "unicode": "\\u{1F925}",
+    "emoji": "\uD83E\uDD25",
+    "htmlDisplay": "&#129317;",
+    "preview": "🤥",
+    "zh-cn": "说谎",
+    "en-us": "Lying Face"
+  },
+  {
+    "name": "frowning_face",
+    "unicode": "\\u{2639}\\u{FE0F}",
+    "emoji": "\u2639\uFE0F",
+    "htmlDisplay": "&#9785;&#65039;",
+    "preview": "☹️",
+    "zh-cn": "皱眉",
+    "en-us": "Frowning Face"
+  },
+  {
+    "name": "angry_face",
+    "unicode": "\\u{1F620}",
+    "emoji": "\uD83D\uDE20",
+    "htmlDisplay": "&#128544;",
+    "preview": "😠",
+    "zh-cn": "生气",
+    "en-us": "Angry Face"
+  },
+  {
+    "name": "smirking_face",
+    "unicode": "\\u{1F60F}",
+    "emoji": "\uD83D\uDE0F",
+    "htmlDisplay": "&#128527;",
+    "preview": "😏",
+    "zh-cn": "傻笑",
+    "en-us": "Smirking Face"
+  },
+  {
+    "name": "unamused_face",
+    "unicode": "\\u{1F612}",
+    "emoji": "\uD83D\uDE12",
+    "htmlDisplay": "&#128530;",
+    "preview": "😒",
+    "zh-cn": "不满",
+    "en-us": "Unamused Face"
+  }
+]

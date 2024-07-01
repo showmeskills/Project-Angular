@@ -1,0 +1,12 @@
+@use 'sass/tools';
+
+@include tools.tabs('tabs') {
+  height: 60px;
+  border-bottom: 0;
+}
+
+.card {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  //border-bottom: 1px solid #e5e5e5;
+}

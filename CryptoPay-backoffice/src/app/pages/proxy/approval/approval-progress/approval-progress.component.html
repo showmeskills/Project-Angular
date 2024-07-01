@@ -1,0 +1,16 @@
+<div class="modal-header">
+  <div class="modal-title h4 d-flex flex-ac">
+    <span class="fw-bolder mr-4">{{ 'budget.paymentProgress' | lang }}</span>
+    <approval-status [status]="data.status"></approval-status>
+  </div>
+
+  <div class="c-btn-close" mat-modal-close>
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+  </div>
+</div>
+
+<fiat-batch [data]="data" (reload)="reload.emit($event)"></fiat-batch>
+
+<div class="modal-footer btn-wrap">
+  <button class="c-btn c-btn-primary" mat-modal-close>{{ 'game.provider.confirm' | lang }}</button>
+</div>

@@ -1,0 +1,107 @@
+<div class="page-container">
+  <app-header-title-bar [title]="'enabled_email' | translate" [clickForRouterBack]="true"></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24">
+    <div class="container">
+      <div class="form-column">
+        <ng-container *ngIf="!enableEmailSuccess">
+          <p class="form-item text">{{ 'enabled_email' | translate }}</p>
+          <div class="form-item">
+            <app-customize-input
+              size="large"
+              [label]="'email' | translate"
+              [error]="emailErrorText"
+              [(value)]="email"
+              (onChange)="onChangeEmailValue()"
+              [disabled]="submitLoading"
+            >
+            </app-customize-input>
+          </div>
+          <div class="form-item">
+            <app-verify-code
+              [inputLabel]="'email_verification' | translate"
+              verifyType="EMAIL"
+              [email]="email || ''"
+              [otpType]="otpType"
+              [emailAuthStatus]="emailAuthStatus"
+              [enableEmailFromSafe]="true"
+              [isFromSafeEmailValid]="isFromSafeEmailValid"
+              (onChangeAuthStatus)="handleEmailAuthStatus($event)"
+              (verfityInputSuccess)="onEmailOtpCode($event)"
+            >
+            </app-verify-code>
+          </div>
+          <p class="form-item text">{{ 'security_veri' | translate }}</p>
+          <div class="form-item">
+            <!-- 没有绑定手机用户 -->
+            <ng-container *ngIf="!userAccountInfor?.isBindMobile">
+              <app-customize-input
+                #iPwd
+                size="large"
+                [error]="!!password && !$any(iPwd).isValid"
+                [(value)]="password"
+                [label]="'password_text' | translate"
+                type="password"
+                [autocomplete]="false"
+                [disabled]="submitLoading"
+              >
+                <i
+                  class="onact96-not"
+                  right-content
+                  [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+                  (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+                ></i>
+              </app-customize-input>
+              <div class="error-msg">
+                {{ 'enter_pwd' | translate }}
+              </div>
+            </ng-container>
+            <!-- 绑定手机用户 -->
+            <ng-container *ngIf="userAccountInfor?.isBindMobile">
+              <!--手机验证码 -->
+              <app-verify-code
+                [otpType]="otpType"
+                [verifyType]="'PHONE'"
+                [inputLabel]="'p_code' | translate"
+                [currentPhoneZone]="userAccountInfor?.areaCode || ''"
+                [tips]="
+                  ('enter_phone' | translate) +
+                  (userAccountInfor?.areaCode || '') +
+                  ' ' +
+                  (userAccountInfor?.mobile || '') +
+                  ('ver_code' | translate)
+                "
+                [phone]="userAccountInfor?.mobile || ''"
+                [authStatus]="authStatus"
+                (onChangeAuthStatus)="handlePhoneAuthStatus($event)"
+                (verfityInputSuccess)="onOtpCode($event)"
+              >
+              </app-verify-code>
+            </ng-container>
+          </div>
+          <customize-button
+            class="final-btn"
+            width="100%"
+            type="primary"
+            size="large"
+            [disabled]="!canSubmit"
+            [loading]="submitLoading"
+            (onClick)="handleSubmit()"
+          >
+            {{ 'submit' | translate }}
+          </customize-button>
+        </ng-container>
+
+        <ng-container *ngIf="enableEmailSuccess">
+          <app-success-verification
+            [header]="'auth_bound_email' | translate"
+            [successText]="'bounded_email_success' | translate"
+          >
+          </app-success-verification>
+          <customize-button class="final-btn" width="100%" type="primary" size="large" (onClick)="handleback()">
+            {{ 'return' | translate }}
+          </customize-button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

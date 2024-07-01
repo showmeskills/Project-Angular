@@ -1,0 +1,75 @@
+:host {
+  background: #fff;
+  border-radius: 6px;
+  padding: 30px 22px;
+  display: block;
+}
+
+.form-title {
+  line-height: 42px;
+  font-size: 15px !important;
+}
+
+.formalities {
+  border: 0;
+  padding: 0;
+  background: transparent;
+
+  &,
+  &:focus {
+    border: 0;
+    outline: 0;
+  }
+}
+
+.tag {
+  &-wrap {
+    margin-top: 17px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 1em;
+      background-color: rgba(50, 50, 50, 0.3);
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: 1em;
+      background-color: rgba(50, 50, 50, 0.1);
+    }
+  }
+
+  &-add {
+    width: 42px;
+    height: 42px;
+    line-height: 1;
+    border-radius: 6px;
+    background: #f5f8fa;
+    cursor: pointer;
+  }
+
+  &-item {
+    height: 42px;
+    line-height: 1;
+    display: flex;
+    flex-flow: row nowrap;
+    white-space: nowrap;
+    word-break: break-all;
+    padding-left: 10px;
+    align-items: center;
+    background: #f5f8fa;
+    border-radius: 6px;
+    margin: 0 10px 15px;
+    user-select: none;
+    cursor: move;
+  }
+
+  &-close {
+    padding: 0 8px;
+    line-height: 42px;
+  }
+}

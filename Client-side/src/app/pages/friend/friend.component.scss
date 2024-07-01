@@ -1,0 +1,383 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.theme-background {
+  background-image: url(src/assets/images/friend/theme/agent-bg.jpg);
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  @media (max-width: 767px) {
+    background-size: cover;
+  }
+
+  &:host-context(.dark) & {
+    background-image: url(src/assets/images/friend/theme/agent-dark-bg.png);
+  }
+}
+
+.top-nav-container {
+  background-color: var(--container-bg-color);
+}
+
+.min-height {
+  min-height: 800px;
+}
+
+.top-nav {
+  display: flex;
+  padding: 12px 0;
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ::ng-deep {
+    .customize-button {
+      margin-right: 50px;
+
+      @media (max-width: 767px) {
+        margin-right: 0;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    padding: 10px 0;
+  }
+
+  .font-color {
+    font-size: 14px;
+    color: var(--text-color-20);
+  }
+
+  .active-line {
+    position: relative;
+    width: 100%;
+    color: var(--text-color);
+
+    &:after {
+      content: '';
+      bottom: -5px;
+      position: absolute;
+      width: inherit;
+      height: 3px;
+      background-color: var(--primary-color);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  ::ng-deep {
+    .customize-button {
+      background-color: transparent !important;
+    }
+  }
+}
+
+// 局部样式
+:host {
+  ::ng-deep {
+    .home-first-line {
+      margin-top: 32px;
+      padding: 16px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 4px;
+      background-color: rgba(251, 105, 67, 0.03);
+
+      @media (max-width: 1020px) {
+        flex-wrap: wrap;
+        justify-content: center;
+
+        .m-top-10 {
+          margin-top: 10px;
+        }
+      }
+
+      @media (max-width: 767px) {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        padding: 16px 10px;
+
+        .m-top-10 {
+          margin-top: 0;
+        }
+      }
+
+      .text {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: var(--text-color);
+        white-space: nowrap;
+
+        .value {
+          font-size: 20px;
+          color: var(--text-color);
+          margin-left: 11px;
+        }
+      }
+    }
+
+    .home-line {
+      padding: 13px 16px;
+      border-radius: 4px;
+      background-color: var(--list-hover-bg-color);
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      @media (max-width: 1035px) {
+        flex-wrap: wrap;
+
+        .m-top-10 {
+          margin-top: 10px;
+        }
+
+        &.justify-center {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 767px) {
+        flex-wrap: nowrap;
+
+        .m-top-10 {
+          margin-top: 0;
+        }
+
+        &.justify-center {
+          justify-content: space-between;
+        }
+      }
+
+      .line-detail {
+        display: flex;
+        align-items: center;
+
+        .inviteUrl {
+          max-width: 200px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          height: 16px;
+
+          @media (max-width: 767px) {
+            max-width: 150px;
+          }
+        }
+      }
+    }
+
+    .inline-block-ml {
+      display: inline-block;
+      margin-left: 5px;
+      vertical-align: inherit;
+    }
+
+    .icon-warning {
+      font-size: 18px;
+
+      &:before {
+        color: #aeb3bc;
+      }
+    }
+
+    //灰色背景导航
+    .gray-bgc-nav {
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      @media (max-width: 767px) {
+        margin-top: 23px;
+      }
+
+      .nav-btn {
+        margin-right: 10px;
+      }
+
+      .active {
+        font-weight: 600;
+      }
+    }
+
+    //子主题样式
+    .sub-theme-container {
+      margin-top: 50px;
+
+      @media (max-width: 767px) {
+        margin-top: 0;
+        padding: 21px 18px;
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+        background-color: var(--container-bg-color);
+      }
+
+      .sub-theme-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .sub-theme-left {
+          display: flex;
+          align-items: center;
+
+          .header-icon {
+            width: 28px;
+            height: 28px;
+            background-repeat: no-repeat;
+            background-size: contain;
+
+            @media (max-width: 767px) {
+              width: 20px;
+              height: 20px;
+            }
+          }
+
+          .header-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-left: 2px;
+            margin-right: 10px;
+
+            @media (max-width: 767px) {
+              font-size: 20px;
+              margin-left: 8px;
+              margin-right: 6px;
+            }
+          }
+        }
+
+        .right-icon {
+          width: 42px;
+          height: 42px;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-image: url(src/assets/images/friend/web-commission-return-graph.svg);
+
+          @media (max-width: 767px) {
+            width: 27px;
+            height: 27px;
+          }
+        }
+      }
+    }
+  }
+}
+
+//全局提示样式
+::ng-deep {
+  .text-12 {
+    font-size: 12px;
+    color: var(--text-color);
+  }
+
+  .text-14 {
+    font-size: 14px;
+    color: var(--text-color);
+    white-space: nowrap;
+  }
+
+  .text-16 {
+    font-size: 16px;
+    color: var(--text-color);
+  }
+
+  .text-primary-16-14 {
+    font-size: 16px;
+    color: var(--primary-color);
+
+    @media (max-width: 767px) {
+      font-size: 14px;
+    }
+  }
+
+  .text-primary-16 {
+    font-size: 16px;
+    color: var(--primary-color);
+  }
+
+  .text-primary-14 {
+    font-size: 14px;
+    color: var(--primary-color);
+  }
+
+  .font-weight {
+    font-weight: 600;
+  }
+
+  .m-right-5 {
+    margin-right: 5px;
+  }
+
+  .m-left-5 {
+    margin-left: 5px;
+  }
+
+  .text-gray-14 {
+    font-size: 14px;
+    color: var(--text-color-20);
+  }
+
+  .img-size-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+  }
+
+  .cdk-tooltip-info-title {
+    font-size: 12px;
+    color: #b7bdc6;
+  }
+
+  .cdk-tooltip-info-list {
+    margin-top: 14px;
+
+    .cdk-tooltip-info-group {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      @include polyfills.flex-gap(12px, 'row nowrap');
+    }
+  }
+
+  //文字信息:粉色背景文字提示
+  .commission-services-txt {
+    width: 100%;
+    margin-top: 30px;
+    font-size: 12px;
+    color: #848e9c;
+    background-color: #fefaf9;
+    border-radius: 4px;
+    padding: 16px 0px;
+
+    &:host-context(.dark) & {
+      background-color: var(--default-border-color);
+      color: #fff;
+    }
+
+    @media (max-width: 767px) {
+      padding: 12px;
+      line-height: 1.5;
+    }
+
+    .text {
+      margin-left: 22px;
+
+      @media (max-width: 767px) {
+        margin-left: 0;
+      }
+    }
+  }
+}

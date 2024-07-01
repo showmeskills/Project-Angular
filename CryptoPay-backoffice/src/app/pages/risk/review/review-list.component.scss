@@ -1,0 +1,40 @@
+.monitor-item {
+  min-height: 66px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 10px 30px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 3px 7px 0 rgba(82, 63, 105, 0.05);
+  line-height: 1;
+  margin-bottom: 10px;
+
+  > *:not(.last) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 2px;
+    // padding: 0 20px;
+  }
+
+  .label-lg {
+    width: 72px;
+  }
+
+  &.abnormal {
+    background-color: #fcfeff;
+    .title {
+      color: #0075ff;
+    }
+  }
+
+  &.order {
+    background: #fcfbff;
+
+    .review-title {
+      color: #7d5cff;
+    }
+  }
+}

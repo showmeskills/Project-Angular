@@ -1,0 +1,38 @@
+:host {
+  width: 100%;
+  line-height: 1;
+  display: block;
+
+  &::ng-deep {
+    .label-wrap {
+      padding-top: 12px !important;
+      line-height: 16px !important;
+    }
+  }
+}
+
+.catch {
+  max-height: 642px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar-thumb {
+    background: #e9edf1;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &-title {
+    height: 52px;
+    font-size: 16px;
+    margin-top: 15px;
+    line-height: 52px;
+    margin-right: 34px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #dbdeed;
+    display: flex;
+    align-items: center;
+  }
+}

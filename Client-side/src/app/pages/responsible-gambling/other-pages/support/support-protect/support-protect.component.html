@@ -1,0 +1,20 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container protect-container">
+    <p class="text-14">{{ 'respon_qq' | translate }}</p>
+    <p class="text-16 m-top-20">{{ 'respon_qr' | translate }}</p>
+    <app-customize-text [text]="textOne"></app-customize-text>
+    <div class="flex-layout m-top-20">
+      <customize-button minWidth="155px" size="medium" type="text" [plain]="true" [active]="true">
+        {{ 'respon_qt' | translate }}
+      </customize-button>
+    </div>
+    <p class="text-14 m-top-30">{{ 'respon_qu' | translate }}</p>
+    <app-customize-text [text]="textTwo"></app-customize-text>
+  </div>
+</div>
+<app-other-pages-footer
+  imgSrc="assets/images/responsible-gambling/support/computer.svg"
+  [textOne]="textFooter"
+  [textTwo]="textFooterTwo"
+>
+</app-other-pages-footer>

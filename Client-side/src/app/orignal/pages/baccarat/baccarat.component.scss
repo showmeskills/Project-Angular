@@ -1,0 +1,505 @@
+:host {
+  width: 100%;
+  position: relative;
+  background-color: var(--orignal-bg);
+}
+
+.ff {
+  font-family: 'Arial';
+}
+
+.wrapper {
+  width: 878px;
+  margin: 10px auto 46px;
+  /* 背景色/日间 */
+  background: var(--orignal-bg);
+  border-radius: 6px;
+  flex-direction: column;
+  position: relative;
+
+  @media (max-width: 940px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+  }
+
+  &-top {
+    padding: 10px 16px;
+
+    @media (max-width: 767px) {
+      padding-bottom: 0;
+    }
+  }
+
+  .game-view {
+    display: flex;
+    flex-direction: column;
+    margin: 0 16px 16px;
+    .wfwdy {
+      background: var(--orignal-mian);
+      border-radius: 8px;
+      padding: 0 20px 20px;
+    }
+    .stvmnp2 {
+      position: relative;
+      display: flex;
+      justify-content: space-around;
+      overflow: hidden;
+      padding-top: 20px;
+      height: 239px;
+      margin-bottom: 12px;
+      @media (max-width: 767px) {
+        height: 158px;
+      }
+      .cards-group-wrap {
+        width: auto;
+        height: 100%;
+        position: relative;
+        .cards-group {
+          width: 180px;
+          height: 100%;
+          transition: width 0.3s;
+          position: relative;
+          @media (max-width: 767px) {
+            width: 113px;
+          }
+
+          .card-wrap {
+            width: 100px;
+            height: 140px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 2;
+            border: solid 3px transparent;
+            border-radius: 12px;
+            transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0s;
+            @media (max-width: 767px) {
+              width: 59px;
+              height: 82px;
+            }
+            &:nth-of-type(2) {
+              left: 20%;
+              top: 10%;
+            }
+            &:nth-of-type(3) {
+              left: 40%;
+              top: 20%;
+            }
+            &.win {
+              .card-front {
+                border: solid 3px #15db41;
+              }
+            }
+            .c1t29bx7 {
+              width: 100%;
+              height: 100%;
+              position: relative;
+              -webkit-transform: rotateY(-180deg);
+              -ms-transform: rotateY(-180deg);
+              transform: rotateY(-180deg);
+              -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
+              -webkit-transition: transform 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
+              transition: transform 0.5s cubic-bezier(0.36, 0.66, 0.04, 1);
+              -webkit-transform-style: preserve-3d;
+              -ms-transform-style: preserve-3d;
+              transform-style: preserve-3d;
+              &.active {
+                transform: rotateY(0);
+              }
+            }
+
+            .card-back {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background-image: url(src/assets/orignal/images/baccarat/poker_bg.png);
+              background-repeat: no-repeat;
+              background-size: 100% 100%;
+              border-radius: 12px;
+              -webkit-transform: rotateY(180deg);
+              -ms-transform: rotateY(180deg);
+              transform: rotateY(180deg);
+              box-shadow: 0 1px 3px #0003;
+              -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+              z-index: 1;
+            }
+            .card-front {
+              // position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              border-radius: 12px;
+              background-image: linear-gradient(38deg, #e6e7f0 8%, #fff 93%);
+              box-shadow: 0 0 5px #0000004d;
+              position: relative;
+              -webkit-transform: rotateY(0deg);
+              -ms-transform: rotateY(0deg);
+              transform: rotateY(0);
+              -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+              overflow: hidden;
+              z-index: 2;
+              .point {
+                position: absolute;
+                font-size: 33px;
+                left: 11%;
+                top: 3%;
+                width: 26%;
+                @media (max-width: 767px) {
+                  font-size: 20px;
+                }
+                &.card-back_hearts {
+                  color: #f04051;
+                }
+
+                &.card-back_diamonds {
+                  color: #f04051;
+                }
+
+                &.card-back_clubs {
+                  color: #1a2c38;
+                }
+
+                &.card-back_spades {
+                  color: #1a2c38;
+                }
+              }
+              .ssuit {
+                position: absolute;
+                font-size: 0;
+                left: 10%;
+                top: 30%;
+                width: 23%;
+              }
+              .suit {
+                width: 52%;
+                right: 5%;
+                bottom: 5%;
+                position: absolute;
+              }
+            }
+          }
+          .placehold {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 140px;
+            opacity: 0;
+            transition: all 0.5s;
+            @media (max-width: 767px) {
+              width: 113px;
+            }
+            &.is-visible {
+              opacity: 1;
+            }
+            > div {
+              position: absolute;
+              border-radius: 16px;
+              width: 100px;
+              height: 140px;
+              // background: var(--17qrx6p) no-repeat center;
+              // background-size: 100% 100%;
+              border: 1px dashed var(--orignal-border-color1);
+              background: var(--orignal-mian);
+              @media (max-width: 767px) {
+                width: 59px;
+                height: 82px;
+              }
+            }
+            .one {
+              left: 0;
+              top: 0;
+            }
+            .two {
+              left: 30%;
+              top: 15%;
+              @media (max-width: 767px) {
+                left: 25%;
+                top: 10%;
+              }
+            }
+            .three {
+              left: 60%;
+              top: 30%;
+              @media (max-width: 767px) {
+                left: 50%;
+                top: 20%;
+              }
+            }
+          }
+        }
+        .tip {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: absolute;
+          bottom: 0;
+          left: 20px;
+          z-index: 3;
+          min-width: 99px;
+          height: 29px;
+          border: 1px solid var(--orignal-border-color1);
+          border-radius: 18px;
+          color: var(--orignal-test-1);
+          font-size: 15px;
+          font-weight: 500;
+          padding-left: 10px;
+          @media (max-width: 767px) {
+            width: 74px;
+            height: 21px;
+            font-size: 12px;
+            padding-left: 4px;
+          }
+          .result {
+            width: 21px;
+            height: 21px;
+            text-align: center;
+            border-radius: 50%;
+            margin: 0 6px;
+            line-height: 21px;
+            background-color: var(--orignal-border-color1);
+            @media (max-width: 767px) {
+              width: 17px;
+              height: 17px;
+              line-height: 17px;
+              margin: 0 2px;
+            }
+          }
+          .win {
+            background-color: #15db41;
+          }
+        }
+      }
+      .dealer {
+        position: absolute;
+        right: 0;
+        top: 0;
+        @media (max-width: 767px) {
+          right: 46%;
+          img {
+            width: 58px;
+          }
+        }
+      }
+    }
+    .table-wrap {
+      .actionlist-wrap {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        @media (max-width: 767px) {
+          flex-wrap: wrap;
+          .baccarat-logo {
+            order: 1;
+            width: 100%;
+            flex: unset;
+            text-align: center;
+            margin-bottom: 8px;
+            img {
+              width: 100%;
+              padding: 0 16px;
+            }
+          }
+        }
+        .ui-button {
+          width: 160px;
+          height: 60px;
+          background: #f9fbff;
+          // user-select: none;
+          :host-context(.dark) & {
+            background: #1b283a;
+          }
+          border: none;
+          cursor: pointer;
+          border-top-left-radius: 27px;
+          user-select: none;
+          @media (max-width: 767px) {
+            order: 2;
+            flex: 0.9;
+            height: 30px;
+            margin-right: 3px;
+            &.clear {
+              margin-right: 0;
+              margin-left: 3px;
+              span {
+                font-size: 13px;
+              }
+            }
+          }
+          &:hover {
+            background-color: #e2efff;
+            &:host-context(.dark) & {
+              background-color: #24354e;
+            }
+          }
+          &.clear {
+            border-top-left-radius: 0;
+            border-top-right-radius: 27px;
+          }
+          .button-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--orignal-test-2);
+            span {
+              font-size: 15px;
+              font-weight: 500;
+            }
+            .orignal-icon-undo {
+              margin-right: 8px;
+              margin-top: 2px;
+            }
+            .orignal-icon-circle {
+              margin-left: 8px;
+              margin-top: 2px;
+            }
+          }
+        }
+      }
+      .s12kl4p5 {
+        height: 140px;
+        display: grid;
+        grid-template-areas:
+          'left left header header right right'
+          'left left footer-l footer-r right right';
+        grid-gap: 2px;
+        .type-area {
+          background-color: #f9fbff;
+          :host-context(.dark) & {
+            background-color: #24354e;
+          }
+          cursor: pointer;
+          user-select: none;
+          &:hover {
+            background-color: #e2efff;
+            &:host-context(.dark) & {
+              background-color: #1b283a;
+            }
+          }
+        }
+        .type-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          .type-left,
+          .type-right {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+          .baccarat_chip {
+            width: 31px;
+            height: 31px;
+            border-radius: 50%;
+            position: absolute;
+            img {
+              width: 100%;
+            }
+            @media (max-width: 767px) {
+              width: 24px;
+              height: 22px;
+            }
+          }
+          .t {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--orignal-test-1);
+            line-height: 21px;
+          }
+          .d {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--orignal-test-2);
+          }
+        }
+        .type-t {
+          grid-area: header;
+        }
+        .type-pp {
+          grid-area: footer-l;
+        }
+        .type-bp {
+          grid-area: footer-r;
+        }
+        .type-p {
+          grid-area: left;
+          border-bottom-left-radius: 50px;
+          clip-path: polygon(0 0, 100% 0%, 100% 100%, 15% 100%, 0 70%);
+        }
+        .type-b {
+          grid-area: right;
+          border-bottom-right-radius: 50px;
+          clip-path: polygon(0 0, 100% 0%, 100% 70%, 85% 100%, 0 100%);
+        }
+      }
+    }
+  }
+}
+
+.win-tip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 200px;
+  margin: auto;
+  width: 281px;
+  height: 148px;
+
+  border-radius: 30px;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: 3;
+
+  div:first-child {
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 53px;
+    text-align: center;
+    color: #65ff87;
+    text-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    z-index: 1;
+    margin-top: 10px;
+  }
+
+  div:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+
+    img {
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+    }
+
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 21px;
+    color: #ffffff;
+  }
+}

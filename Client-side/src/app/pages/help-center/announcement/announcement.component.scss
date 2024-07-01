@@ -1,0 +1,25 @@
+// web 公告区
+.web-announcement {
+  margin-top: 48px;
+
+  .web-announcement-container {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 40px;
+
+    @media (max-width: 767px) {
+      display: block;
+    }
+
+    .group-left,
+    .group-right {
+      max-width: 580px;
+      flex: 1;
+
+      @media (max-width: 767px) {
+        max-width: 100%;
+      }
+    }
+  }
+}

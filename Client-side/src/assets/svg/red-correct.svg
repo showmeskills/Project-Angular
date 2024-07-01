@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+    <defs>
+        <linearGradient id="linear-gradient" x1="1" y1=".5" x2="0" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#f5432c" stop-opacity=".051"/>
+        </linearGradient>
+        <style>
+            .cls-3{fill:#fff}
+        </style>
+    </defs>
+    <g id="Group_3438" data-name="Group 3438" transform="translate(-3945 -4062)">
+        <circle id="Ellipse_263" data-name="Ellipse 263" cx="40" cy="40" r="40" transform="translate(3945 4062)" style="opacity:.999;fill:url(#linear-gradient)"/>
+        <circle id="Ellipse_264" data-name="Ellipse 264" cx="29" cy="29" r="29" transform="translate(3956 4073)" style="fill:#f04e23"/>
+        <g id="Group_2814" data-name="Group 2814" transform="translate(3983.253 4084.745)">
+            <path id="Rectangle_1580" data-name="Rectangle 1580" class="cls-3" transform="translate(-1.253 -.745)" d="M0 0h6v24H0z"/>
+            <path id="Rectangle_1581" data-name="Rectangle 1581" class="cls-3" transform="translate(-1.253 29.255)" d="M0 0h6v6H0z"/>
+        </g>
+    </g>
+</svg>

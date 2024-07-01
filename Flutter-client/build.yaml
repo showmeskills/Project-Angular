@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          skip_verification_code: true
+          write_from_json_string_constructor: true

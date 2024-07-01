@@ -1,0 +1,68 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.main-container {
+  background-color: #f8f8f8;
+  padding-left: 3vw;
+  padding-right: 3vw;
+
+  :host-context(.dark) & {
+    background-color: #2f4553;
+  }
+
+  @media (max-width: 767px) {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+.content-box {
+  height: 115px;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  @media (max-width: 767px) {
+    height: 80px;
+  }
+
+  .title {
+    font-size: 26px;
+    color: #1e2329;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    line-height: 0.9;
+    @include polyfills.flex-gap(8px, 'row nowrap');
+
+    :host-context(.dark) & {
+      color: #fff;
+    }
+
+    i {
+      color: #76808f;
+      display: flex;
+      justify-content: center;
+      font-size: 60%;
+    }
+
+    @media (max-width: 767px) {
+      transition: 0.2s;
+
+      &:active {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  img {
+    position: absolute;
+    pointer-events: none;
+    height: 100%;
+    right: 0;
+    object-fit: cover;
+
+    @media (max-width: 767px) {
+      right: -12px;
+    }
+  }
+}

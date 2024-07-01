@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="box award-s">
+    <img class="big" src="assets/images/activity/betfreejackpot/award-s.png" />
+    <p>{{ 'finish' | translate }} {{ betFreeData.infoBase.optionAmount }} {{ 'win_cor_sco_jop' | translate }}</p>
+    <div>
+      <em>{{ 'jackpot_title_num' | translate }}</em>
+      <span>{{ 'jackpot_title_cuy' | translate }}</span>
+    </div>
+  </div>
+  <div class="tip">
+    {{ 'if_pre_jop_00' | translate }}{{ betFreeData.infoBase.optionAmount }} {{ 'if_pre_jop_01' | translate }} <br />
+    ({{ 'if_pre_jop_02' | translate }} + {{ betFreeData.infoBase.correctScorePoints }}{{ 'fra_jop' | translate }} ;
+    {{ 'if_pre_jop_03' | translate }} + {{ betFreeData.infoBase.winLossPoints }} {{ 'fra_jop' | translate }} ;
+    {{ 'if_pre_jop_04' | translate }} + {{ betFreeData.infoBase.overUnderPoints }} {{ 'fra_jop' | translate }})
+  </div>
+  <div class="boxs">
+    <ng-container *ngFor="let item of infoList; let i = index">
+      <div class="box award-{{ i + 1 }}">
+        <img src="assets/images/activity/betfreejackpot/award-{{ i + 1 }}.png" />
+        <p>
+          {{
+            'por_jop_00'
+              | translate : item.rankingMin + (item.rankingMin === item.rankingMax ? '' : '-' + item.rankingMax)
+          }}
+        </p>
+        <div>
+          <em>{{ item?.bonus | number }}</em>
+          <span>{{ 'us_dol_jop_01' | translate }} USDT</span>
+        </div>
+      </div>
+    </ng-container>
+    <div class="box placeholder"></div>
+  </div>
+</div>

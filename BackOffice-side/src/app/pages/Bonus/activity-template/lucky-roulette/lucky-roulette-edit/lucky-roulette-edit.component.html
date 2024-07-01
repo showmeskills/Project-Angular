@@ -1,0 +1,701 @@
+<!-- 厂商 -->
+<ng-template #providerTpl>
+  <form-row
+    class="pt-0"
+    label-width="120px"
+    [label]="lang.isLocal ? category.description : category.code"
+    *ngFor="let category of providerList"
+  >
+    <ng-template>
+      <div class="d-flex flex-wrap pt-2 lh-20" selectChildren>
+        <label class="checkbox checkbox-lg mr-12 my-2 fz-16" *ngIf="!isReadonly">
+          <input type="checkbox" selectGroup />
+          <span class="mr-4"></span>{{ 'common.all' | lang }}
+        </label>
+        <label
+          class="checkbox checkbox-lg mr-12 my-2 fz-16"
+          *ngFor="let item of category.providers"
+          [attrDisabled]="isReadonly"
+        >
+          <input type="checkbox" [(ngModel)]="item.checked" />
+          <span class="mr-4"></span>{{ lang.isLocal ? item.providerName : item.providerId }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+</ng-template>
+
+<main [formGroup]="formGroup">
+  <!-- 活动资格 - 参赛时间 -->
+  <!--  <form-row class="mt-6" name="time" [label]="'luckRoulette.partTime' | lang" label-width="140">-->
+  <!--    <ng-template let-control="formControl" let-invalid="invalid">-->
+  <!--      <input-->
+  <!--        class="text-center form-control"-->
+  <!--        type="text"-->
+  <!--        *ngIf="!isReadonly; else showTpl"-->
+  <!--        [placeholder]="'luckRoulette.activityTimeTip' | lang"-->
+  <!--        selectMode="range"-->
+  <!--        rangeSeparator="-"-->
+  <!--        [owlDateTime]="tradePicker"-->
+  <!--        [owlDateTimeTrigger]="tradePicker"-->
+  <!--        [style.width.px]="290"-->
+  <!--        [formControl]="control"-->
+  <!--        [class.is-invalid]="invalid"-->
+  <!--      />-->
+  <!--      <ng-template #showTpl>-->
+  <!--        {{ control.value?.[0] | timeFormat }} ~-->
+  <!--        {{ control.value?.[1] | timeFormat }}-->
+  <!--      </ng-template>-->
+
+  <!--      <owl-date-time pickerType="both" class="fz-20" #tradePicker></owl-date-time>-->
+  <!--    </ng-template>-->
+  <!--  </form-row>-->
+
+  <!-- 获取条件 -->
+  <div class="fz-20 mt-12 mb-6">{{ 'luckRoulette.getCondition.getCondition' | lang }}</div>
+  <div class="w-100 d-flex py-2 lh-42">
+    <label class="mr-28 label-title">{{ 'luckRoulette.getCondition.getCondition' | lang }}:</label>
+    <div class="d-flex flex-ac flex-wrap">
+      <ng-container *ngFor="let item of condition">
+        <label class="radio radio-lg radio-success mr-8 fz-16" *ngIf="!isReadonly">
+          <input
+            type="radio"
+            [value]="item.value"
+            (change)="onConditionChange()"
+            name="condition"
+            formControlName="condition"
+          />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+        <ng-container *ngIf="isReadonly && item.value === formGroup.getRawValue().condition">
+          <span class="fz-16 color-aaa">{{ item.lang | lang }}</span>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <ng-container *ngIf="formGroup.getRawValue().condition" [ngSwitch]="formGroup.getRawValue().condition">
+    <!-- 存款 -->
+    <ng-container *ngSwitchCase="TurntableCondition.deposit">
+      <form-row name="everyTimeDeposit" [label]="'luckRoulette.depStu' | lang" label-width="140">
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <div class="d-flex flex-ac flex-wrap">
+            <!-- 每存 -->
+            <span suffix class="color-aaa mr-5">{{ 'luckRoulette.everyDep' | lang }} </span>
+            <label *ngIf="!isReadonly; else showTpl" form-wrap [style.width.px]="120" [invalid]="invalid">
+              <input class="pr-2" type="text" input-float form-full [formControl]="control" />
+              <span suffix class="color-aaa pt-1">USDT</span>
+            </label>
+
+            <ng-template #showTpl>
+              <span class="color-aaa">{{ control.value || 0 }} USDT</span>
+            </ng-template>
+          </div>
+        </ng-template>
+      </form-row>
+    </ng-container>
+
+    <!-- 交易 -->
+    <ng-container *ngSwitchCase="TurntableCondition.validTransaction">
+      <form-row [label]="'luckRoulette.transStu' | lang" label-width="140">
+        <ng-template>
+          <!-- 厂商 -->
+          <ng-container *ngTemplateOutlet="providerTpl"></ng-container>
+
+          <!-- 交易时间 -->
+          <form-row [label]="'luckRoulette.transTime' | lang" label-width="120">
+            <ng-template>
+              <div class="d-flex flex-wrap">
+                <label class="radio radio-lg radio-success mr-16 fz-16" *ngIf="!isReadonly; else showTransAllTimeTpl">
+                  <input
+                    value="all"
+                    type="radio"
+                    (change)="transactionTimeTypeChange()"
+                    [formControl]="formGroup.controls.transactionTimeType"
+                  />
+                  <span class="mr-4"></span>{{ 'luckRoulette.allTime' | lang }}
+                </label>
+                <ng-template #showTransAllTimeTpl>
+                  <span class="color-999 fz-16" *ngIf="formGroup.getRawValue().transactionTimeType === 'all'">
+                    {{ 'luckRoulette.allTime' | lang }}
+                  </span>
+                </ng-template>
+
+                <label
+                  class="radio radio-lg radio-success mr-16 fz-16 d-flex"
+                  *ngIf="!isReadonly; else showTransCustomTimeTpl"
+                >
+                  <input
+                    value="customRange"
+                    type="radio"
+                    (change)="transactionTimeTypeChange()"
+                    [formControl]="formGroup.controls.transactionTimeType"
+                  />
+                  <span class="mr-4"></span>
+                  <form-row class="lh-1n py-0" [control]="formGroup.controls.transactionTime" [showLabel]="false">
+                    <ng-template let-invalid="invalid" let-control="formControl">
+                      <input
+                        class="text-center form-control w-100"
+                        type="text"
+                        [placeholder]="'luckRoulette.selTranTime' | lang"
+                        selectMode="date-range"
+                        formatLabel="yyyy-MM-dd"
+                        rangeSeparator="-"
+                        [owlDateTime]="tradePicker"
+                        [owlDateTimeTrigger]="tradePicker"
+                        [class.is-invalid]="invalid"
+                        [formControl]="control"
+                      />
+
+                      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+                    </ng-template>
+                  </form-row>
+                </label>
+                <ng-template #showTransCustomTimeTpl>
+                  <span
+                    class="color-999 fz-16"
+                    *ngIf="
+                      formGroup.getRawValue().transactionTimeType === 'customRange' &&
+                      formGroup.getRawValue().transactionTime?.[0]
+                    "
+                  >
+                    {{ formGroup.getRawValue().transactionTime?.[0] | timeFormat }} ~
+                    {{ formGroup.getRawValue().transactionTime?.[1] | timeFormat }}
+                  </span>
+                </ng-template>
+              </div>
+            </ng-template>
+          </form-row>
+
+          <!-- 存款状态 -->
+          <form-row [label]="'luckRoulette.transStu' | lang" label-width="120">
+            <ng-template>
+              <div class="d-flex flex-wrap">
+                <label class="radio radio-lg mr-12 fz-16 flex-wrap pb-2" *ngIf="!isReadonly; else showDepositEveryTpl">
+                  <input
+                    name="depositStatus"
+                    type="radio"
+                    value="transactionEvery"
+                    [formControl]="formGroup.controls.depositType"
+                    (change)="transactionDepositChange()"
+                  />
+                  <span class="mr-5"></span>{{ 'luckRoulette.everyTrans' | lang }}
+
+                  <!-- 每交易 -->
+                  <div>
+                    <form-row
+                      class="mx-5 py-0 pt-0"
+                      [showLabel]="false"
+                      [control]="formGroup.controls.everyTimeTransaction"
+                    >
+                      <ng-template let-invalid="invalid" let-control="formControl">
+                        <div class="d-flex">
+                          <input
+                            class="form-control mx-4"
+                            [style.width.px]="80"
+                            type="text"
+                            [class.is-invalid]="invalid"
+                            [formControl]="control"
+                          />
+                          {{ 'common.pen' | lang }}
+                        </div>
+                      </ng-template>
+                    </form-row>
+                  </div>
+
+                  <!-- 单笔最低 -->
+                  {{ 'luckRoulette.lowerTransSingle' | lang }}
+                  <form-row class="mx-5 py-0 pt-0" [showLabel]="false" [control]="formGroup.controls.transactionMin">
+                    <ng-template let-invalid="invalid" let-control="formControl">
+                      <label form-wrap [style.width.px]="120" [invalid]="invalid">
+                        <input class="pl-0" type="text" [formControl]="control" form-full input-float />
+                        <span suffix class="color-aaa pt-1">USDT</span>
+                      </label>
+                    </ng-template>
+                  </form-row>
+                </label>
+
+                <ng-template #showDepositEveryTpl>
+                  <span class="color-aaa fz-16" *ngIf="formGroup.getRawValue().depositType === 'transactionEvery'">
+                    <span class="mr-4">
+                      {{ 'luckRoulette.everyTrans' | lang }}
+                      {{ formGroup.getRawValue().everyTimeTransaction }}
+                      {{ 'common.pen' | lang }}
+                    </span>
+                    <span>
+                      <span>{{ 'luckRoulette.lowerTransSingle' | lang }}</span>
+                      {{ formGroup.getRawValue().transactionMin }} USDT
+                    </span>
+                  </span>
+                </ng-template>
+
+                <!-- 每有效交易 -->
+                <label class="radio radio-lg mr-12 fz-16 pb-2" *ngIf="!isReadonly; else showDepositTransTpl">
+                  <input
+                    name="depositStatus"
+                    type="radio"
+                    value="transactionEveryAmount"
+                    [formControl]="formGroup.controls.depositType"
+                    (change)="transactionDepositChange()"
+                  />
+                  <span class="mr-5"></span>{{ 'luckRoulette.evetyValidTrans' | lang }}
+
+                  <form-row
+                    class="mx-5 pt-0 py-0"
+                    [showLabel]="false"
+                    [control]="formGroup.controls.everyTimeTransactionAmount"
+                  >
+                    <ng-template let-invalid="invalid" let-control="formControl">
+                      <label form-wrap [style.width.px]="120" [invalid]="invalid">
+                        <input class="pl-0" type="text" [formControl]="control" form-full input-float />
+                        <span suffix class="color-aaa pt-1">USDT</span>
+                      </label>
+                    </ng-template>
+                  </form-row>
+                </label>
+                <ng-template #showDepositTransTpl>
+                  <span
+                    class="color-aaa fz-16"
+                    *ngIf="formGroup.getRawValue().depositType === 'transactionEveryAmount'"
+                  >
+                    {{ 'luckRoulette.evetyValidTrans' | lang }}
+                    {{ formGroup.getRawValue().everyTimeTransactionAmount }}
+                    USDT
+                  </span>
+                </ng-template>
+              </div>
+            </ng-template>
+          </form-row>
+        </ng-template>
+      </form-row>
+    </ng-container>
+
+    <!-- 时间 -->
+    <ng-container *ngSwitchCase="TurntableCondition.time">
+      <form-row name="interval" [label]="'luckRoulette.timeStu' | lang" label-width="140">
+        <ng-template>
+          <div class="d-flex flex-ac flex-wrap">
+            <span suffix class="color-aaa mr-5">{{ 'luckRoulette.every' | lang }} </span>
+            <form-row class="py-0" name="interval" [showLabel]="false">
+              <ng-template let-invalid="invalid" let-control="formControl">
+                <form-wrap *ngIf="!isReadonly; else showTimeTpl" [style.width.px]="120" [invalid]="invalid">
+                  <input class="pl-0" type="text" input-number [formControl]="control" />
+                  <span suffix class="color-aaa">{{ 'luckRoulette.hours' | lang }}</span>
+                </form-wrap>
+
+                <ng-template #showTimeTpl>
+                  <span class="color-aaa fz-16"
+                    >{{ control.value | toFormatMoney }}{{ 'luckRoulette.hours' | lang }}</span
+                  >
+                </ng-template>
+              </ng-template>
+            </form-row>
+          </div>
+        </ng-template>
+      </form-row>
+    </ng-container>
+  </ng-container>
+
+  <!-- 抽奖次数 -->
+  <form-row
+    name="drawTimes"
+    [label]="'luckRoulette.drawTimes' | lang"
+    label-width="140"
+    [invalidFeedback]="{ required: 'luckRoulette.drawsTip' | lang, min: 'luckRoulette.drawsTip' | lang }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <label form-wrap [style.width.px]="96" [invalid]="invalid" *ngIf="!isReadonly; else showTpl">
+        <input class="px-0" form-full type="text" input-number [formControl]="control" />
+        <span suffix class="color-aaa pt-1">{{ 'luckRoulette.times' | lang }}</span>
+      </label>
+      <ng-template #showTpl>
+        <span class="color-aaa fz-16">{{ control.value | toFormatMoney }}{{ 'luckRoulette.times' | lang }}</span>
+      </ng-template>
+    </ng-template>
+  </form-row>
+
+  <!-- 商户5：转盘设置 -->
+  <div class="mt-12" *ngIf="formGroup.getRawValue().enableOverlayT2">
+    <div class="d-flex flex-ac">
+      <div class="fz-20 lh-42 flex-1">
+        <span class="vam mr-2">{{ 'luckRoulette.spinSetting' | lang }}</span>
+      </div>
+    </div>
+
+    <!-- 商户5模板 - VIP等级提示语 - 前台展示 -->
+    <div class="mt-6">
+      <lang-tab
+        class="w-100 mb-4"
+        formArrayName="t2Tips"
+        [value]="selectLang"
+        (languageChange)="updateLanguageForm($event, formGroup)"
+        [edit]="!isReadonly"
+      >
+        <ng-template let-currentLang="current" let-control="formControl">
+          <div class="pb-8" [formGroup]="control">
+            <!-- 等级提示语 -->
+            <form-row
+              name="levelTips"
+              [label]="'luckRoulette.levelTips' | lang"
+              [invalidFeedback]="{
+                required:
+                  ('form.enterTips' | lang: { label: 'luckRoulette.levelTips' | lang }) + '（' + currentLang.name + '）'
+              }"
+            >
+              <ng-template let-invalid="invalid" let-control="formControl">
+                <input
+                  *ngIf="!isReadonly"
+                  type="text"
+                  class="form-control"
+                  autocomplete="off"
+                  input-trim
+                  [formControl]="control"
+                  [class.is-invalid]="invalid"
+                />
+                <div *ngIf="isReadonly" class="lh-28 py-3 text-break">{{ control.value }}</div>
+              </ng-template>
+            </form-row>
+          </div>
+        </ng-template>
+      </lang-tab>
+    </div>
+
+    <!-- 商户5模板 - 转盘格子类型 -->
+    <form-row name="t2Level" [label]="'luckRoulette.luckType' | lang" label-width="130px">
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <div class="d-flex flex-wrap">
+          <label
+            *ngFor="let item of luckType"
+            class="radio radio-lg radio-success mr-8 fz-16"
+            [attrDisabled]="isReadonly"
+          >
+            <input
+              type="radio"
+              [value]="item.value"
+              (change)="onConditionChange()"
+              name="luckType"
+              [formControl]="control"
+            />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 国家IP限制: 不要放formGroup里，要排序就把前面的拧出FormGroup在外面排顺序 -->
+    <form-row [label]="'luckRoulette.countryAccess' | lang" label-width="130px">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap" style="gap: 8px">
+          <label
+            class="radio radio-lg fz-16 mr-8"
+            *ngIf="!isReadonly || !countrySelectList.length"
+            [attrDisabled]="isReadonly"
+          >
+            <input
+              type="radio"
+              [value]="0"
+              [checked]="countrySelectList.length === 0"
+              (change)="countrySelectList = []"
+            />
+            <span class="mr-4"></span>{{ 'luckRoulette.unlimit' | lang }}
+          </label>
+
+          <div
+            class="d-flex flex-ac px-5 h42"
+            style="background: #f5f8fa; border-radius: 6px"
+            *ngFor="let item of countrySelectList; index as i"
+          >
+            <i [iconCountry]="item.countryEnName"></i>
+            <div class="px-2">{{ lang.isLocal ? item.countryName : item.countryEnName }}</div>
+            <svg-icon
+              *ngIf="!isReadonly"
+              [src]="'./assets/images/svg/bar-close.svg'"
+              class="svg-icon svg-icon-2x5 cursor-pointer d-flex"
+              (click)="countrySelectList.splice(i, 1)"
+            >
+            </svg-icon>
+          </div>
+
+          <span
+            *ngIf="!isReadonly"
+            class="btn btn-light-primary fz-16 d-flex flex-ac py-2 h42"
+            (click)="openAddPopupCountry()"
+          >
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+            <!-- 添加 -->
+            {{ 'member.activity.sencliCommon.add' | lang }}
+          </span>
+        </div>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <!-- 转盘设置 -->
+  <div class="mt-12 mb-6">
+    <div class="d-flex flex-ac">
+      <div class="fz-20 lh-42 flex-1">
+        <span class="vam mr-2">{{ 'luckRoulette.spinSetting' | lang }}</span>
+
+        <!-- 商户5模板 开关 -->
+        <!--        <label class="switch switch-success mb-0 vam fz-14 cursor-pointer" [attrDisabled]="isReadonly">-->
+        <!--          <input-->
+        <!--            type="checkbox"-->
+        <!--            (change)="onTemplate2()"-->
+        <!--            [formControl]="formGroup.controls.enableOverlayT2"-->
+        <!--          />-->
+        <!--          <span class="mr-2"></span> {{ 'luckRoulette.template2' | lang }}-->
+        <!--        </label>-->
+      </div>
+
+      <!-- 转盘预览效果 -->
+      <button
+        *ngIf="!formGroup.getRawValue().enableOverlayT2"
+        type="button"
+        class="btn btn-light-primary py-3 ml-4"
+        (click)="checkExample()"
+      >
+        <span>{{ 'luckRoulette.frontDisplay' | lang }}</span>
+      </button>
+      <button type="button" class="btn btn-light-primary py-3 ml-4" (click)="onRecord()" *ngIf="editId">
+        <span>{{ 'luckRoulette.winnerList' | lang }}</span>
+      </button>
+    </div>
+
+    <table class="table mt-4 mb-0">
+      <thead theadAffix>
+        <tr style="background: #f5f8fa">
+          <th>
+            <span class="cell">{{ 'luckRoulette.spinPosition' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'luckRoulette.prizeName' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'luckRoulette.config' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'luckRoulette.prizeCode' | lang }}</span>
+          </th>
+          <th [style.width.px]="118">
+            <span class="cell">{{ 'conten.icon' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'luckRoulette.prizeType' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'luckRoulette.preTotal' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell flex-column">
+              <span>{{ 'luckRoulette.probability' | lang }}</span>
+              <span *ngIf="!isReadonly" class="mt-2">
+                <span [class.text-danger]="currentProbability.toNumber() > 100"
+                  >{{ currentProbability.toNumber() }}%</span
+                >/100%
+              </span>
+            </span>
+          </th>
+          <th>
+            <span class="cell">{{ 'member.coupon.issued' | lang }}</span>
+          </th>
+          <th>
+            <span class="cell">{{ 'luckRoulette.winners' | lang }}</span>
+          </th>
+          <!--          <th>-->
+          <!--            <span class="cell">{{ 'luckRoulette.winodds' | lang }}</span>-->
+          <!--          </th>-->
+        </tr>
+      </thead>
+      <tbody *ngFor="let luck of luckRoulette.controls; index as i" [formGroup]="formGroup">
+        <tr>
+          <td>
+            <span class="cell">{{ i + 1 }}</span>
+          </td>
+          <!-- 奖品名称 -->
+          <td>
+            <span class="cell">{{ prizeList[i]?.prizeName || '-' }}</span>
+          </td>
+          <!-- 奖品配置 -->
+          <td>
+            <span class="cell">{{ prizeList[i] | prizeConfig }}</span>
+          </td>
+          <!-- 奖品代码 -->
+          <td>
+            <span class="cell">
+              <form-row
+                *ngIf="!isReadonly; else showPrizeCodeTpl"
+                class="prize-inp w-100"
+                [control]="luck.controls.prizeCode"
+                [showLabel]="false"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <div class="prize-inp bg-f3 px-4 d-flex flex-ac position-relative">
+                    <input
+                      class="fz-14 color-999 pl-0"
+                      form-full
+                      type="text"
+                      [formControl]="control"
+                      [matAutocomplete]="auto"
+                    />
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onPrizeCode($event, luck, i)">
+                      <ng-container *ngFor="let prize of prizeCodeInput$[i] | async">
+                        <mat-option
+                          [value]="prize"
+                          *ngIf="luck.getRawValue().prizeId ? luck.getRawValue().prizeId !== prize.id : true"
+                        >
+                          {{ prize.prizeCode }}
+                        </mat-option>
+                      </ng-container>
+                    </mat-autocomplete>
+                    <span class="prize-edit">
+                      <span class="prize-edit-wrap" (click)="onSelectPrize(luck, i)"></span>
+                    </span>
+                  </div>
+                </ng-template>
+              </form-row>
+              <ng-template #showPrizeCodeTpl>{{ luck.getRawValue().prizeCode }}</ng-template>
+            </span>
+          </td>
+          <!-- 奖品图标 -->
+          <td>
+            <span class="cell">
+              <form-row class="prize-inp" [showLabel]="false" [control]="luck.controls.icon">
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <upload
+                    *ngIf="isReadonly ? luck.getRawValue().icon : luck.getRawValue().prizeId"
+                    class="roulette-icon-upload p-0"
+                    type="Bonus"
+                    desc=""
+                    [showLimitText]="false"
+                    [formControl]="control"
+                    [disabledInput]="isReadonly"
+                    [class.is-invalid]="invalid"
+                    [class.border-0]="!invalid"
+                  >
+                    <ng-template default>
+                      <svg-icon class="svg-icon vam" [src]="'./assets/images/svg/upload.svg'"></svg-icon>
+                      <span class="text-primary vam fz-12 ml-2">{{ 'components.clickUpload' | lang }}</span>
+                    </ng-template>
+                  </upload>
+                </ng-template>
+              </form-row>
+            </span>
+          </td>
+          <!-- 奖品类型 -->
+          <td>
+            <span class="cell">
+              {{ prizeService.getPrizeName(prizeTypeList, prizeList[i]?.prizeType) }}
+            </span>
+          </td>
+          <!-- 预计数量 -->
+          <td>
+            <span class="cell">
+              <input
+                [value]="prizeList[i]?.prizeCount || ''"
+                (input)="(prizeList[i] && (prizeList[i].prizeCount = +$event.target?.['value'])) || 0"
+                class="form-control rounded-0 prize-inp"
+                type="text"
+                [style.width.px]="100"
+                input-number
+                *ngIf="!isReadonly; else showCountTpl"
+              />
+              <ng-template #showCountTpl>{{ prizeList[i]?.prizeCount | toFormatMoney }}</ng-template>
+            </span>
+          </td>
+          <!-- 概率 -->
+          <td>
+            <span class="cell">
+              <form-row
+                *ngIf="!isReadonly; else showWeightTpl"
+                class="prize-inp"
+                [control]="luck.controls.weight"
+                [showLabel]="false"
+              >
+                <ng-template let-invalid="invalid" let-control="formControl">
+                  <label
+                    form-wrap
+                    class="prize-inp position-relative"
+                    labelClass="py-0"
+                    [invalid]="
+                      (currentProbabilityTouched && luckRoulette.hasError('probability')) ||
+                      luckRoulette.hasError('probabilityGT')
+                    "
+                  >
+                    <input
+                      form-full
+                      type="text"
+                      class="px-0 text-right"
+                      [style.width.px]="70"
+                      input-float
+                      [formControl]="control"
+                      (focus)="luck['probabilityTooltip'] = true"
+                      (blur)="luck['probabilityTooltip'] = false"
+                    />
+                    <span [style.margin-top.px]="1">%</span>
+
+                    <!-- custom tooltip -->
+                    <div class="probability-tooltip" [hidden]="!luck['probabilityTooltip']">
+                      {{ currentProbability.toString() + '%' }} /
+                      {{
+                        (100 | bigNumber)
+                          .minus(currentProbability.comparedTo(100) === 1 ? 100 : currentProbability)
+                          .toString() + '%'
+                      }}
+                    </div>
+                  </label>
+                </ng-template>
+              </form-row>
+              <ng-template #showWeightTpl>{{ luck.getRawValue().weight || 0 }}%</ng-template>
+            </span>
+          </td>
+          <!-- 已发放 -->
+          <td>
+            <span class="cell">{{ prizeList[i]?.issuedCount | toFormatMoney }}</span>
+          </td>
+          <!-- 中奖人数 -->
+          <td>
+            <span class="cell">{{ prizeList[i]?.hitCount | toFormatMoney }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div class="pt-10 flex-center btn-wrap" *ngIf="!isReadonly; else showFooterBtnTpl">
+  <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'luckRoulette.lastStep' | lang }}</button>
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ 'luckRoulette.submit' | lang }}
+  </button>
+</div>
+
+<ng-template #showFooterBtnTpl>
+  <div class="pt-10 btn-wrap flex-center">
+    <button type="button" class="c-btn btn btn-light" (click)="jump('qualifications')">
+      {{ 'luckRoulette.lastStep' | lang }}
+    </button>
+    <button
+      type="button"
+      class="c-btn btn btn-primary"
+      (click)="router.navigate(['/bonus/activity-manage/Turntable' || ''])"
+    >
+      {{ 'common.back' | lang }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #warningTpl let-msg let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'member.activity.sencli6.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ msg | lang }}</p>
+    </div>
+    <modal-footer (confirm)="c(true)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

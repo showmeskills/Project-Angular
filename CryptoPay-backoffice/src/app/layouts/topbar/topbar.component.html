@@ -1,0 +1,28 @@
+<!--begin::Topbar-->
+<ng-container *ngIf="extraSearchDisplay">
+  <ng-container *ngIf="extrasSearchLayout === 'dropdown'">
+    <div class="d-flex flex-center">
+      <button mat-button [matMenuTriggerFor]="tool">
+        <span class="fw-bolder vam color-aaa">Hi, </span>
+        <span class="vam">{{ localStorageService.userInfo?.userName }}</span>
+      </button>
+
+      <mat-menu #tool="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="language">
+          {{ 'language.language' | lang }}（{{ lang.currentLang }}）
+        </button>
+        <button mat-menu-item (click)="resetPassword()">{{ 'common.changePassword.title' | lang }}</button>
+        <button mat-menu-item (click)="logOut()">{{ 'common.logout' | lang }}</button>
+      </mat-menu>
+
+      <mat-menu #language="matMenu">
+        <!-- <button mat-menu-item *ngFor="let item of lang.supportLang" (click)="lang.use(item)">
+          {{ 'language' | lang: item }}
+        </button> -->
+        <button mat-menu-item *ngFor="let item of lang.supportLang" (click)="lang.toggle(item)">
+          {{ 'language' | lang : item }}
+        </button>
+      </mat-menu>
+    </div>
+  </ng-container>
+</ng-container>

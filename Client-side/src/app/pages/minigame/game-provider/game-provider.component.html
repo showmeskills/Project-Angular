@@ -1,0 +1,154 @@
+<div
+  class="page-container"
+  app-page-banner
+  [title]="
+    (providerList | filterByKeyValue : 'providerCatId' : providerId : 'providerName') || ('game_prov' | translate)
+  "
+  [type]="'provider'"
+></div>
+
+<div class="page-container main-content">
+  <div class="main-container">
+    <div class="container" app-search-game *ngIf="!isH5"></div>
+
+    <div class="container games-main">
+      <div class="content-box">
+        <div class="games-title" *ngIf="providerId !== 'index'">
+          <div class="filter">
+            <span *ngIf="!isH5">
+              <span><i class="icon-filter-2"></i></span>
+              <em>{{ 'sel_basis' | translate }}</em></span
+            >
+            <app-customize-select
+              [(value)]="selectLabelCodes"
+              [width]="'auto'"
+              [fixedHeight]="true"
+              [multipleChoice]="true"
+              [disabled]="loadingCurrentLabels"
+              [optionsTemplate]="multipleChoiceTemplate"
+              [inputTemplate]="inputTemplate"
+              [options]="currentLabels"
+              [valueKey]="'code'"
+              [textKey]="'name'"
+              [optionsContainerClass]="'game-filter-options left'"
+              (onSelect)="getGameByProvider(true)"
+            >
+            </app-customize-select>
+          </div>
+
+          <!-- <div class="to-index mutual-opacity onact96-not" (click)="toAllProviders()">{{'viw_all_pro'|translate}}</div> -->
+
+          <div class="filter">
+            <span *ngIf="!isH5"
+              ><i class="icon-filter-2"></i><em>{{ 'sort_by' | translate }}</em></span
+            >
+            <app-customize-select
+              [(value)]="gameSortValue"
+              [width]="'auto'"
+              [fixedHeight]="true"
+              [disabled]="loadingGameSort"
+              [options]="gameSortList"
+              [valueKey]="'code'"
+              [textKey]="'description'"
+              [optionsContainerClass]="'game-filter-options right'"
+              [itemTemplate]="sortItemTemplate"
+              (onSelect)="getGameByProvider(true)"
+            ></app-customize-select>
+          </div>
+        </div>
+        <div
+          class="games-list"
+          [class.loading]="!ready"
+          [appLoading]="!ready && (initSearchLoading || loadingCurrentLabels)"
+        >
+          <ng-container *ngIf="ready">
+            <ng-container *ngIf="providerId === 'index'">
+              <div class="provider-list grid-7-3-gap-28-25-24-12">
+                <app-game-unit
+                  *ngFor="let item of providerList"
+                  [ratio]="1 / 0.4"
+                  [item]="item"
+                  [hasHover]="false"
+                  [hasMask]="false"
+                  [isProvider]="true"
+                  (clickItem)="clickProviderItem($event)"
+                ></app-game-unit>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="providerId !== 'index'">
+              <div class="grid-8-3-gap-11-6">
+                <app-game-unit
+                  *ngFor="let item of games"
+                  [item]="item"
+                  [loading]="initSearchLoading"
+                  (clickItem)="clickGameItem($event)"
+                ></app-game-unit>
+              </div>
+              <app-game-paginator
+                (loadNext)="getGameByProvider(false)"
+                [(page)]="paginator.page"
+                [loading]="searchLoading"
+                [pageSize]="paginator.pageSize"
+                [total]="paginator.total"
+              >
+              </app-game-paginator>
+            </ng-container>
+          </ng-container>
+          <app-empty
+            *ngIf="
+              games.length < 1 &&
+              !initSearchLoading &&
+              !searchLoading &&
+              !loadingCurrentLabels &&
+              providerId !== 'index'
+            "
+            [text]="'no_data' | translate"
+          >
+          </app-empty>
+        </div>
+      </div>
+    </div>
+
+    <!-- 所有供应商 -->
+    <app-swiper-provider-list *ngIf="providerId !== 'index'" class="container"></app-swiper-provider-list>
+  </div>
+</div>
+
+<ng-template #inputTemplate let-options="options" let-value="value">
+  <div class="input-text">
+    <span>{{ 'type' | translate }}</span
+    ><span class="count active" *ngIf="value.length > 0">{{ value.length }}</span>
+  </div>
+</ng-template>
+
+<ng-template
+  #multipleChoiceTemplate
+  let-options="options"
+  let-valueKey="valueKey"
+  let-textKey="textKey"
+  let-clickItem="clickItem"
+>
+  <div class="multipleChoice-options">
+    <ul>
+      <li class="general onact96" *ngFor="let item of options" (click)="clickItem(item)">
+        <mat-checkbox [disableRipple]="true" [ngModel]="selectLabelCodes.includes(item[valueKey])"></mat-checkbox>
+        <span class="count-text">{{ item[textKey] }}</span>
+        <span
+          class="count"
+          *ngIf="item['gameCount'] !== undefined"
+          [class.active]="selectLabelCodes.includes(item[valueKey])"
+          >{{ item['gameCount'] }}</span
+        >
+      </li>
+    </ul>
+    <div class="clear-choice mutual-opacity onact96-not" (click)="clearChoice()">{{ 'all_clear' | translate }}</div>
+  </div>
+</ng-template>
+
+<ng-template #sortItemTemplate let-item="item" let-valueKey="valueKey" let-textKey="textKey" let-clickItem="clickItem">
+  <li class="general onact96" [class.active]="item[valueKey] === gameSortValue" (click)="clickItem(item)">
+    <i [class]="sortIconMap[item[valueKey]]"></i>
+    {{ item[textKey] }}
+  </li>
+</ng-template>

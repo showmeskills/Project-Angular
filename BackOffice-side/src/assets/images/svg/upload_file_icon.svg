@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <g data-name="Group 480">
+        <path data-name="Rectangle 2338" style="fill:none" d="M0 0h20v20H0z"/>
+        <g data-name="Group 474">
+            <g data-name="Group 466" transform="translate(-5509.5 -7912.926)">
+                <g data-name="Subtraction 46" style="fill:#0094f0">
+                    <path d="M13 14.1H2c-1.158 0-2.1-.942-2.1-2.1V5c0-1.158.942-2.1 2.1-2.1h1.6v1.6H2a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5h-1.6V2.9H13c1.158 0 2.1.942 2.1 2.1v7c0 1.158-.942 2.1-2.1 2.1z" style="stroke:none" transform="translate(5512 7917)"/>
+                    <path d="M13 14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2h-1.5v1.4H13c.33 0 .6.27.6.6v7c0 .33-.27.6-.6.6H2a.6.6 0 0 1-.6-.6V5a.6.6 0 0 1 .6-.6h1.5V3H2C.897 3 0 3.897 0 5v7c0 1.103.897 2 2 2h11m0 .2H2c-1.213 0-2.2-.987-2.2-2.2V5c0-1.213.987-2.2 2.2-2.2h1.7v1.8H2a.4.4 0 0 0-.4.4v7c0 .22.18.4.4.4h11a.4.4 0 0 0 .4-.4V5a.4.4 0 0 0-.4-.4h-1.7V2.8H13c1.213 0 2.2.987 2.2 2.2v7c0 1.213-.987 2.2-2.2 2.2z" style="fill:#0094f0;stroke:none" transform="translate(5512 7917)"/>
+                </g>
+                <rect data-name="Rectangle 2326" width="11.4" height="1.4" rx=".7" transform="rotate(90 -1197.9 6718.1)" style="opacity:.5;fill:#009ef7"/>
+                <path data-name="Union 23" d="M.7 5a.7.7 0 1 1 0-1.4h2.9V.7A.7.7 0 1 1 5 .7v3.6a.7.7 0 0 1-.7.7z" transform="rotate(-135 4400.333 2817.592)" style="fill:#009ef7"/>
+            </g>
+        </g>
+    </g>
+</svg>

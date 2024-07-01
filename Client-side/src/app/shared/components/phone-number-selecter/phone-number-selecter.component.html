@@ -1,0 +1,57 @@
+<div class="phoneDialog-container">
+  <div class="header-container">
+    <div class="header-row">
+      <div>{{ 'sea_area_code00' | translate }}</div>
+      <i class="onact96-not" (click)="close()" class="icon-close-simple"></i>
+    </div>
+    <!--  搜索栏  -->
+    <div class="input-row">
+      <div class="input-group" [class.focus]="$any(iSearch).isFocus">
+        <i class="icon-search"></i>
+        <input
+          #iSearch
+          type="text"
+          [placeholder]="'sea00' | translate"
+          [disabled]="allCountryData.length === 0"
+          [(ngModel)]="searchCountry"
+          (focus)="onFocus(iSearch)"
+          (blur)="onBlur(iSearch)"
+          (ngModelChange)="onSearchInput()"
+        />
+        <i
+          class="icon-clear onact96-not"
+          *ngIf="!!iSearch.value && $any(iSearch).isFocus"
+          (click)="handleClean(iSearch)"
+        ></i>
+      </div>
+    </div>
+  </div>
+  <!--  选项  -->
+  <div class="cuntry-colum">
+    <app-scrollbar>
+      <ng-container *ngIf="countries.length; else tplEmpty">
+        <div
+          class="option-row onact96-not"
+          [ngClass]="{ 'selected-item': currentKey === key }"
+          *ngFor="let key of countries"
+          (click)="handleSelected(key)"
+        >
+          <div class="fog-row">
+            <div class="country-image">
+              <i class="country" class="{{ className(key.code) }}"></i>
+            </div>
+            <p>{{ key.name }}</p>
+          </div>
+          <div>{{ key.areaCode }}</div>
+        </div>
+      </ng-container>
+      <!--  空页面  -->
+      <ng-template #tplEmpty>
+        <div class="empty-row">
+          <img src="assets/svg/data-empty.svg" />
+          <div class="text">{{ 'no_sea_resu00' | translate }}</div>
+        </div>
+      </ng-template>
+    </app-scrollbar>
+  </div>
+</div>

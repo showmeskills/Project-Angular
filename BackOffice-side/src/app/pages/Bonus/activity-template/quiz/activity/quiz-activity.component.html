@@ -1,0 +1,450 @@
+<div class="card card-body" [class.is-readonly]="isReadonly">
+  <div class="fz-20 mb-10">{{ 'member.activity.sencli6.guessingActivity' | lang }}</div>
+
+  <div class="pl-8 pr-8">
+    <!-- 活动标题 -->
+    <ng-container [formGroup]="formGroup">
+      <form-row
+        class="mb-8"
+        required
+        label-width="200"
+        [label]="'member.activity.sencli6.eventTitle' | lang"
+        name="activeTitle"
+        [invalidFeedback]="{ required: 'member.activity.sencli6.enterEventTitle' | lang }"
+      >
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input
+            *ngIf="!isReadonly; else showTpl"
+            [class.is-invalid]="invalid"
+            [formControl]="control"
+            class="form-control"
+            type="text"
+          />
+          <ng-template #showTpl>{{ control.value }}</ng-template>
+        </ng-template>
+      </form-row>
+
+      <!-- 活动代码 -->
+      <form-row
+        class="mb-8"
+        [label]="'member.activity.sencli6.activityCode' | lang"
+        required
+        label-width="200"
+        name="code"
+        [invalidFeedback]="{ required: 'member.activity.sencli6.evenCode' | lang }"
+      >
+        <ng-template let-invalid="invalid" let-control="formControl">
+          <input
+            *ngIf="!isReadonly; else showTpl"
+            [class.is-invalid]="invalid"
+            [formControl]="control"
+            class="form-control"
+            [style.width]="'50%'"
+            autocomplete="off"
+            type="text"
+            maxlength="20"
+          />
+          <ng-template #showTpl>{{ control.value }}</ng-template>
+        </ng-template>
+      </form-row>
+    </ng-container>
+
+    <!-- 参赛时间 -->
+    <form-row class="mb-8" required [label]="'member.activity.sencli6.competitionTime' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex">
+          <input
+            readonly
+            [style.width.px]="280"
+            class="form-control text-center"
+            type="text"
+            [placeholder]="'member.overview.pleaseChooseTime' | lang"
+            selectMode="date-range"
+            [owlDateTime]="picker"
+            [owlDateTimeTrigger]="picker"
+            rangeSeparator="-"
+            [(ngModel)]="time"
+            *ngIf="!isReadonly; else showTpl"
+          />
+          <owl-date-time pickerType="both" class="fz-20" #picker></owl-date-time>
+          <ng-template #showTpl>
+            {{ time[0] ? (time[0] | timeFormat) : '' }}
+            <ng-container *ngIf="time[0] && time[1]"> - </ng-container>
+            {{ time[1] ? (time[1] | timeFormat) : '' }}
+          </ng-template>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛时间 -->
+    <form-row class="mb-8" required [label]="'member.activity.sencli6.settlPeriod' | lang" label-width="200">
+      <ng-template>
+        <input
+          class="form-control text-center"
+          type="text"
+          [placeholder]="'member.activity.sencli6.billingPeriod' | lang"
+          [style.width.px]="160"
+          [owlDateTime]="timeEnd"
+          [owlDateTimeTrigger]="timeEnd"
+          [(ngModel)]="settleTime"
+          readonly
+          *ngIf="!isReadonly; else showTpl"
+        />
+        <owl-date-time [disabled]="isReadonly" class="fz-20" #timeEnd></owl-date-time>
+
+        <ng-template #showTpl>
+          {{ settleTime ? (settleTime | timeFormat) : '' }}
+        </ng-template>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛内容 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.contestContent' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac flex-wrap">
+          <label class="checkbox checkbox-lg color-aaa fz-16" [style.width.px]="140">
+            <input disabled type="checkbox" [(ngModel)]="contestContent.correct_Score" />
+            <span class="mr-4"></span>
+            {{ 'member.activity.sencli6.correctScore' | lang }}
+          </label>
+          <label class="checkbox checkbox-lg color-aaa fz-16" [style.width.px]="140">
+            <input disabled type="checkbox" [(ngModel)]="contestContent.win_Loss" />
+            <span class="mr-4"></span>
+            {{ 'member.activity.sencli6.winAlone' | lang }}
+          </label>
+          <!-- 进球大小盘 -->
+          <label class="checkbox checkbox-lg color-aaa fz-16" [style.width.px]="140">
+            <input disabled type="checkbox" [(ngModel)]="contestContent.over_Under" />
+            <span class="mr-4"></span>
+            {{ 'member.activity.sencli6.goalOver' | lang }}
+          </label>
+          <form-wrap [style.width.px]="80" class="ml-4 mr-12">
+            <input
+              class="form-control spinText"
+              autocomplete="off"
+              type="text"
+              placeholder=""
+              disabled
+              [(ngModel)]="contestContent.text"
+            />
+          </form-wrap>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 积分规则 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.pointsRules' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <div class="d-flex flex-ac" *ngFor="let item of cycleList">
+            <span class="color-aaa">{{ item.lang | lang }}</span>
+            <form-wrap [style.width.px]="110" class="ml-4 mr-12">
+              <input
+                class="form-control spinText"
+                autocomplete="off"
+                type="text"
+                placeholder="分"
+                input-number
+                [max]="1000"
+                [(ngModel)]="item.value"
+                disabled
+              />
+            </form-wrap>
+          </div>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 奖励类型 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.rewardType' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16">
+            <input type="radio" name="cycle" value="1" [(ngModel)]="cycle" />
+            <span class="mr-4"></span>{{ 'member.activity.sencli6.cashCoupon' | lang }}
+          </label>
+          <label class="radio radio-lg radio-success mr-8 fz-16">
+            <input type="radio" name="cycle" value="2" [(ngModel)]="cycle" disabled />
+            <span class="mr-4"></span>{{ 'member.activity.sencli6.credit' | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞赛奖金 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.contestBonus' | lang" label-width="200">
+      <ng-template>
+        <!-- 波胆大奖 -->
+        <div class="d-flex flex-ac flex-wrap mb-4">
+          <span class="color-aaa">{{ 'member.activity.sencli6.scoreboard' | lang }}</span>
+          <div class="d-flex flex-ac px-5 mx-4 rounded-3" [style]="isReadonly ? {} : { background: '#f5f8fa' }">
+            <img [currencyIcon]="baseCurrency" currencySize="18" class="mr-2" />
+            <div class="px-2">{{ baseCurrency }}</div>
+          </div>
+
+          <form-wrap [style.width.px]="100" class="ml-4 mr-12" *ngIf="!isReadonly; else showTpl">
+            <input class="form-control" autocomplete="off" type="text" [(ngModel)]="bold.bonus" input-number />
+          </form-wrap>
+          <ng-template #showTpl>{{ bold.bonus | currencyValue: baseCurrency }}</ng-template>
+        </div>
+
+        <!-- 积分名次 -->
+        <div class="d-flex flex-ac flex-wrap mb-4" *ngFor="let item of rankContentList; let i = index">
+          <span class="color-aaa">{{ 'member.activity.sencli6.pointsRanking' | lang }}</span>
+          <form-wrap [style.width.px]="80" class="ml-4 mr-4" *ngIf="!isReadonly; else showSTpl">
+            <input
+              class="form-control"
+              autocomplete="off"
+              type="text"
+              [(ngModel)]="item.ranking_Min"
+              input-number
+              (ngModelChange)="rankValueChange($event, i, true)"
+            />
+          </form-wrap>
+          <ng-template #showSTpl>
+            <span class="mx-4">{{ item.ranking_Min }}</span>
+          </ng-template>
+          -
+          <form-wrap [style.width.px]="80" class="ml-4 mr-12" *ngIf="!isReadonly; else showETpl">
+            <input
+              class="form-control"
+              autocomplete="off"
+              type="text"
+              [(ngModel)]="item.ranking_Max"
+              input-number
+              (ngModelChange)="rankValueChange($event, i)"
+            />
+          </form-wrap>
+          <ng-template #showETpl>
+            <span class="mx-4">{{ item.ranking_Max }}</span>
+          </ng-template>
+
+          <div class="d-flex flex-ac px-5 mx-8 rounded-3" [style]="isReadonly ? {} : { background: '#f5f8fa' }">
+            <img [currencyIcon]="baseCurrency" currencySize="18" class="mr-2" />
+            <div class="px-2">{{ baseCurrency }}</div>
+          </div>
+
+          <form-wrap [style.width.px]="80" *ngIf="!isReadonly; else showUTpl">
+            <input class="form-control" autocomplete="off" type="text" [(ngModel)]="item.bonus" input-number />
+          </form-wrap>
+          <ng-template #showUTpl>{{ item.bonus | currencyValue: baseCurrency }}</ng-template>
+          <svg-icon
+            *ngIf="!isReadonly && rankContentList.length > 1"
+            class="vam btn-icon ml-10 cursor-pointer"
+            (click)="deleteRank(i)"
+            [src]="'./assets/images/svg/close-normal.svg'"
+          ></svg-icon>
+        </div>
+
+        <span
+          *ngIf="rankContentListLength && !isReadonly"
+          class="btn btn-light-primary fz-16 d-flex flex-ac h42"
+          [style.width.px]="112"
+          (click)="addRank()"
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          {{ 'member.activity.sencli9.addRanking' | lang }}
+        </span>
+      </ng-template>
+    </form-row>
+
+    <!-- 竞猜场次 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.guessingSessions' | lang" label-width="200">
+      <ng-template>
+        <div class="lh-1n">
+          <div class="d-flex flex-ac flex-wrap mt-4" *ngFor="let item of screenList; let index = index">
+            <!-- 主队 -->
+            <div class="mr-10 mb-4" [style.width.px]="430">
+              <!-- 多语系 -->
+              <lang-tab
+                [(value)]="item.home.languageCode"
+                (languageChange)="updateLanguageLeft($event, item)"
+                [edit]="!isReadonly"
+              >
+                <ng-template let-i="i" let-current="current">
+                  <!-- 名称 -->
+                  <form-row class="mb-8" [label]="'member.activity.sencli6.homeTeam' | lang">
+                    <ng-template>
+                      <form-wrap *ngIf="!isReadonly; else showTpl">
+                        <input
+                          class="form-control"
+                          autocomplete="off"
+                          type="text"
+                          [(ngModel)]="item.home.data[i].name"
+                        />
+                      </form-wrap>
+                      <ng-template #showTpl>
+                        <div class="text-truncate mx-4" [style.width.px]="140">{{ item.home.data[i].name }}</div>
+                      </ng-template>
+                    </ng-template>
+                  </form-row>
+                </ng-template>
+              </lang-tab>
+
+              <!-- 队徽 -->
+              <form-row class="px-8 py-4" [label]="'member.activity.sencli6.teamLogo' | lang">
+                <ng-template>
+                  <upload
+                    [style.width.px]="120"
+                    [style.height.px]="42"
+                    desc="100x100"
+                    [padding]="'10px'"
+                    [(ngModel)]="item.home.icon"
+                    [disabled]="isReadonly"
+                  >
+                    <ng-template default>
+                      <img [src]="'./assets/images/svg/upload.svg'" style="width: 18px; height: 22px" />
+                      <span class="ml-6" [style.color]="'#009EF7'">{{
+                        'member.activity.sencli6.clickToUpload' | lang
+                      }}</span>
+                    </ng-template>
+                  </upload>
+                </ng-template>
+              </form-row>
+            </div>
+
+            <!-- 客队 -->
+            <div [style.width.px]="430">
+              <!-- 多语系 -->
+              <lang-tab
+                [(value)]="item.away.languageCode"
+                (languageChange)="updateLanguageRight($event, item)"
+                [edit]="!isReadonly"
+              >
+                <ng-template let-i="i" let-current="current">
+                  <!-- 名称 -->
+                  <form-row class="mb-8" [label]="'member.activity.sencli6.visitingTeam' | lang">
+                    <ng-template>
+                      <form-wrap *ngIf="!isReadonly; else showTpl">
+                        <input
+                          class="form-control"
+                          autocomplete="off"
+                          type="text"
+                          [(ngModel)]="item.away.data[i].name"
+                        />
+                      </form-wrap>
+                      <ng-template #showTpl>
+                        <div class="text-truncate mx-4" [style.width.px]="140">{{ item.away.data[i].name }}</div>
+                      </ng-template>
+                    </ng-template>
+                  </form-row>
+                </ng-template>
+              </lang-tab>
+
+              <!-- 队徽 -->
+              <form-row class="px-8 py-4" [label]="'member.activity.sencli6.teamLogo' | lang">
+                <ng-template>
+                  <upload
+                    [style.width.px]="120"
+                    [style.height.px]="42"
+                    desc="100x100"
+                    [padding]="'10px'"
+                    [(ngModel)]="item.away.icon"
+                    [disabled]="isReadonly"
+                  >
+                    <ng-template default>
+                      <img [src]="'./assets/images/svg/upload.svg'" style="width: 18px; height: 22px" />
+                      <span class="ml-6" [style.color]="'#009EF7'">{{
+                        'member.activity.sencli6.clickToUpload' | lang
+                      }}</span>
+                    </ng-template>
+                  </upload>
+                </ng-template>
+              </form-row>
+            </div>
+
+            <!-- 多语系结束 -->
+            <svg-icon
+              *ngIf="!isReadonly && screenList.length > 1"
+              class="vam btn-icon ml-6 mt-14 cursor-pointer"
+              (click)="deleteScreenList(index)"
+              [src]="'./assets/images/svg/close-normal.svg'"
+            ></svg-icon>
+          </div>
+        </div>
+
+        <!-- 新增按钮 -->
+        <span
+          *ngIf="!isReadonly"
+          class="btn btn-light-primary fz-16 d-flex flex-ac h42 mt-4"
+          [style.width.px]="112"
+          (click)="addList()"
+        >
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+          {{ 'member.activity.sencli6.newSession' | lang }}
+        </span>
+      </ng-template>
+    </form-row>
+
+    <!-- 素材图上传 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.materialMap' | lang" label-width="200">
+      <ng-template>
+        <div class="d-flex flex-ac">
+          <upload
+            style="flex: 0 0 120px"
+            [style.height.px]="42"
+            desc="100x100"
+            [padding]="'10px'"
+            [(ngModel)]="uploadImg"
+            [disabled]="isReadonly"
+          >
+            <ng-template default>
+              <img [src]="'./assets/images/svg/upload.svg'" style="width: 18px; height: 22px" />
+              <span class="ml-6" [style.color]="'#009EF7'">{{ 'member.activity.sencli6.clickToUpload' | lang }}</span>
+            </ng-template>
+          </upload>
+          <span class="ml-12 color-aaa">{{ 'member.activity.sencli6.imageSize' | lang: { size: '420*350' } }}</span>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 限制最大比分之和 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.maxScore' | lang" label-width="200">
+      <ng-template>
+        <input
+          class="form-control"
+          [disabled]="isReadonly"
+          autocomplete="off"
+          type="text"
+          [style.width.px]="120"
+          [(ngModel)]="maxTotalScore"
+          input-number
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 限制最大比分之和 -->
+    <form-row class="mb-8" [label]="'member.activity.sencli6.maxTotalScore' | lang" label-width="200">
+      <ng-template>
+        <input
+          class="form-control"
+          [disabled]="isReadonly"
+          autocomplete="off"
+          type="text"
+          [style.width.px]="120"
+          [(ngModel)]="maxScore"
+          input-number
+        />
+      </ng-template>
+    </form-row>
+
+    <!-- 是否风控 -->
+    <form-row class="mb-8" [label]="'member.activity.prizeCommon.isRisk' | lang" label-width="200">
+      <ng-template>
+        <label class="switch switch-success" [style.height.px]="42">
+          <input type="checkbox" [disabled]="isReadonly" [(ngModel)]="isRisk" />
+          <span></span>
+          <div class="ml-2">{{ isRisk ? ('game.open' | lang) : ('game.off' | lang) }}</div>
+        </label>
+      </ng-template>
+    </form-row>
+  </div>
+
+  <!--提交 -->
+  <div class="btn-wrap pt-10 flex-center d-flex">
+    <button type="button" class="c-btn c-btn-default" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button *ngIf="!isReadonly" type="button" class="c-btn c-btn-primary" (click)="onSubmit()">
+      {{ 'common.submit' | lang }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,200 @@
+<div class="d-flex w-100">
+  <currency-item
+    class="currency-total"
+    name="USDT"
+    [title]="'walle.allAset' | lang"
+    [src]="'./assets/images/wallet/total.png'"
+    [value]="balanceTotal.totalByUSDT"
+  ></currency-item>
+
+  <div class="currency-list">
+    <div class="prev" (click)="onOpera(true)">
+      <svg-icon [src]="'./assets/images/svg/left-bold-rounded.svg'"></svg-icon>
+    </div>
+
+    <div class="d-flex flex-1 min-w-0">
+      <currency-item *ngFor="let item of balanceThree" [name]="item.currency" [value]="item['balance']"></currency-item>
+    </div>
+
+    <div class="next" (click)="onOpera()">
+      <svg-icon [src]="'./assets/images/svg/right-bold-rounded.svg'"></svg-icon>
+    </div>
+  </div>
+</div>
+
+<div class="bg-fff rounded px-10 py-8 mt-8 d-flex flex-wrap">
+  <form-row [label]="'walle.net' | lang" contentWidth="200">
+    <ng-template>
+      <mat-form-field [style.width.px]="180">
+        <mat-select
+          class="form-control rounded-0"
+          [(ngModel)]="filterData.network"
+          (selectionChange)="onFilter('network')"
+        >
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of networkList" [value]="item.network">{{ item.network }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'walle.coin' | lang" contentWidth="200" *ngIf="filterData.network">
+    <ng-template>
+      <mat-form-field [style.width.px]="180">
+        <mat-select class="form-control rounded-0" [(ngModel)]="filterData.coin" (selectionChange)="onFilter('coin')">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of currencyList" [value]="item.token">{{ item.token }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'walle.address' | lang" contentWidth="464" *ngIf="filterData.coin">
+    <ng-template>
+      <input
+        class="form-control rounded-0"
+        type="text"
+        [style.width.px]="444"
+        [(ngModel)]="filterData.address"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'payment.merchantFunding.userID' | lang" contentWidth="200">
+    <ng-template>
+      <input
+        class="form-control rounded-0"
+        type="text"
+        [style.width.px]="180"
+        [(ngModel)]="filterData.keyWord"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="bg-fff rounded px-10 py-8 mt-8">
+  <div class="d-flex flex-ac py-4">
+    <div class="fz-20 flex-1">{{ 'walle.balanceSub' | lang }}</div>
+    <div class="d-flex">
+      <label class="checkbox checkbox-lg mr-12 fz-16">
+        <input
+          name="gameProvider"
+          type="checkbox"
+          [(ngModel)]="filterData.isHiddenSmallBalance"
+          (change)="loadData(true)"
+        />
+        <span class="mr-2"></span>{{ 'walle.hideSmallBlance' | lang }}
+      </label>
+
+      <button type="button" class="btn btn-light-primary px-4 fz-14 py-2">
+        <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'walle.collectionConfig' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.userID' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.wName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.type' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.currency' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.net' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.balance' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'walle.createTime' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of list">
+        <tr>
+          <td>
+            <span class="cell">{{ item.userId }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="mr-6">{{ item.address }}</span>
+              <svg-icon
+                class="cursor-pointer"
+                (click)="onCopy(item.address)"
+                [src]="'./assets/images/svg/copy-solid.svg'"
+              ></svg-icon>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span [ngSwitch]="item.status">
+                <span class="text-yellow" *ngSwitchCase="'NotActive'">{{ 'walle.noUse' | lang }}</span>
+                <span class="text-success" *ngSwitchCase="'Normal'">{{ 'walle.normal' | lang }}</span>
+                <span class="text-danger" *ngSwitchCase="'Disable'">{{ 'walle.unable' | lang }}</span>
+                <span class="text-danger" *ngSwitchCase="'Deleted'">{{ 'walle.delete' | lang }}</span>
+              </span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              {{ item.coin }}
+              <img class="ml-2" [currencyIcon]="item.coin" />
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.network }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.balance | currencyValue : item.coin }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.createdTime | timeFormat }}</span>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <empty *ngIf="!list.length"></empty>
+
+  <div class="d-flex flex-between pt-10 table-footer">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

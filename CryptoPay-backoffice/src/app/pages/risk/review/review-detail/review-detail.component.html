@@ -1,0 +1,358 @@
+<div class="d-flex justify-content-end detail-header">
+  <div class="btn-group flex-wrap">
+    <button type="button" class="btn fz-16 py-4 btn-primary">
+      {{ 'risk.mDetail.moreTimeAp' | lang : { i: base.submitTimes ? base.submitTimes : 1 } }}
+    </button>
+  </div>
+</div>
+<div class="modal-content mt-8">
+  <!-- 虚拟币 -->
+  <div class="pl-14 pr-12 py-10" *ngIf="isDigital">
+    <div class="fz-20 detail-title d-flex flex-ac">{{ 'risk.mDetail.apDetail' | lang }}</div>
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.apId' | lang }}</span
+        ><span class="list-body">{{ base.appealId }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.tradeId' | lang }}</span
+        ><span class="list-body"> - </span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.applyCoin' | lang }}</span
+        ><span class="list-body">{{ base.orderAmount }}&nbsp;&nbsp;{{ base.currency }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.transNet' | lang }}</span
+        ><span class="list-body">{{ base.network }}</span>
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.acDeposit' | lang }}</span
+        ><span class="list-body">{{ base.realAmount ? base.realAmount : '-' }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.recAdress' | lang }}</span
+        ><span class="list-body">{{ base.toAddress ? base.toAddress : '-' }}</span>
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="list-item flex-1">
+        <span class="list-title">{{ 'risk.mDetail.trHash' | lang }}</span
+        ><span class="list-body">{{ base.txHash }}</span>
+      </div>
+    </div>
+
+    <div class="fz-20 detail-title mt-14">{{ 'risk.mDetail.sysDetail' | lang }}</div>
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.sName' | lang }}</span
+        ><span class="list-body">{{ base.tenantName }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">UID：</span><span class="list-body">{{ base.uid }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.dAddress' | lang }}</span
+        ><span class="list-body">{{ base.fromAddress ? base.fromAddress : '-' }}</span>
+      </div>
+    </div>
+
+    <div class="fz-20 detail-title mt-8">{{ 'risk.mDetail.proResult' | lang }}</div>
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.apTime' | lang }}</span
+        ><span class="list-body">{{ base.createdTime | timeFormat }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.apStatus' | lang }}</span>
+        <span class="list-body" [ngSwitch]="base.status">
+          <app-label *ngSwitchCase="'Pending'" type="success">{{ 'risk.mDetail.waitProcess' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Finish'" type="success">{{ 'risk.mDetail.processOver' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Supplement'" type="info">{{ 'risk.mDetail.waitAdd' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Rejected'" type="warning">{{ 'risk.mDetail.rejectApp' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Cancel'" type="danger">{{ 'common.cancel' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Processing'" type="warning">{{ 'risk.processing' | lang }}</app-label>
+        </span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDtail.fTime' | lang }}</span
+        ><span class="list-body" *ngIf="base.finishTime">{{ base.finishTime | timeFormat }}</span>
+      </div>
+    </div>
+  </div>
+  <!-- 法币 -->
+  <div class="pl-14 pr-12 py-10" *ngIf="!isDigital">
+    <div class="fz-20 detail-title d-flex flex-ac">
+      {{ 'risk.mDetail.apDetail' | lang }}
+    </div>
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.sName' | lang }}</span
+        ><span class="list-body">{{ base.tenantName }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.apId' | lang }}</span
+        ><span class="list-body">{{ base.appealId }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.orderNumber' | lang }}</span
+        ><span class="list-body">{{ base.orderNumber }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">UID：</span><span class="list-body">{{ base.uid }}</span>
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.sChannel' | lang }}</span
+        ><span class="list-body">{{ base.paymentChannel }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.payment' | lang }}</span
+        ><span class="list-body">{{ base.paymentMethod }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.apTime' | lang }}</span
+        ><span class="list-body">{{ base.createdTime | timeFormat }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.fTime' | lang }}</span
+        ><span class="list-body" *ngIf="base.finishTime">{{ base.finishTime | timeFormat }}</span>
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.appAmount' | lang }}</span
+        ><span class="list-body"
+          >{{ base.orderAmount | toFormatMoney }}<img class="ml-2" [currencyIcon]="base.currency"
+        /></span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.acDeposit' | lang }}</span
+        ><span class="list-body">{{ base.realAmount | toFormatMoney }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.name' | lang }}</span
+        ><span class="list-body">{{ base.depositUserName }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.dLanguage' | lang }}</span
+        ><span class="list-body">{{ base.defaultLanguage }}</span>
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.clickChange' | lang }}</span>
+      </div>
+    </div>
+    <div class="d-flex img-list">
+      <div class="list-item-img list-item-video video-box-div" *ngIf="base.video">
+        <video class="video-body">
+          <source [src]="base.video" type="video/mp4" />
+        </video>
+        <div class="video-show" (click)="onDetail(detailTpl, base.video, true)"></div>
+      </div>
+      <div
+        class="list-item-img video-box-div"
+        (click)="onDetail(detailTpl, imgUrl, false)"
+        *ngFor="let imgUrl of base.images"
+      >
+        <img [src]="imgUrl" class="video-body" alt="" />
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="list-item list-item-w100">
+        <span class="list-title">{{ 'risk.mDetail.addInfo' | lang }}</span
+        ><span class="list-body">{{ base.desc }}</span>
+      </div>
+    </div>
+
+    <!-- <div class="fz-20 detail-title mt-14">{{ 'risk.mDetail.sysDetail' | lang }}</div> -->
+
+    <div class="fz-20 detail-title mt-8">{{ 'risk.mDetail.proResult' | lang }}</div>
+    <div class="list-item-form d-flex">
+      <div class="list-title">{{ 'common.remarks' | lang }}<span class="text-danger">*</span>：</div>
+      <div class="list-body">
+        <label class="radio radio-lg">
+          <input type="radio" [value]="1" name="releaseType" [(ngModel)]="formConfig.result" [disabled]="!isSubmit" />
+          <span></span>
+          <b>{{ 'risk.mDetail.waitUp' | lang }}</b>
+        </label>
+        <div class="label-tip-text" *ngIf="formConfig.result === 1">
+          {{ 'risk.mDetail.Ydeposit' | lang }}{{ base.realAmount | toFormatMoney }} {{ base.currency
+          }}{{ 'risk.mDetail.Ydeposits' | lang }}
+        </div>
+      </div>
+    </div>
+    <div class="list-item-form d-flex">
+      <div class="list-title"></div>
+      <div class="list-body">
+        <label class="radio radio-lg">
+          <input type="radio" [value]="2" name="releaseType" [(ngModel)]="formConfig.result" [disabled]="!isSubmit" />
+          <span></span>
+          <b>{{ 'risk.mDetail.finishDeposit' | lang }}</b>
+        </label>
+        <div class="input-text-uc">
+          <span>{{ 'risk.mDetail.depositId' | lang }}</span>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formConfig.newOrderNumber"
+            [disabled]="formConfig.result !== 2"
+            input-trim
+          />
+        </div>
+        <div class="label-tip-text" *ngIf="formConfig.result === 2">
+          {{ 'risk.mDetail.Ydeposit' | lang }}{{ base.realAmount | toFormatMoney }} {{ base.currency
+          }}{{ 'risk.mDetail.Ydeposits' | lang }}
+        </div>
+      </div>
+    </div>
+
+    <div class="list-item-form d-flex">
+      <div class="list-title"></div>
+      <div class="list-body">
+        <label class="radio radio-lg">
+          <input type="radio" [value]="3" name="releaseType" [(ngModel)]="formConfig.result" [disabled]="!isSubmit" />
+          <span></span>
+          <b>{{ 'risk.mDetail.reApply' | lang }}</b>
+        </label>
+        <div class="label-tip-text" *ngIf="formConfig.result === 3">
+          {{ 'risk.mDetail.reApplys' | lang }}
+        </div>
+      </div>
+    </div>
+
+    <div class="list-item-form d-flex">
+      <div class="list-title"></div>
+      <div class="list-body">
+        <label class="radio radio-lg">
+          <input type="radio" [value]="4" name="releaseType" [(ngModel)]="formConfig.result" [disabled]="!isSubmit" />
+          <span></span>
+          <b>{{ 'risk.mDetail.reApplyUnfind' | lang }}</b>
+        </label>
+        <div class="label-tip-text" *ngIf="formConfig.result === 4">
+          {{ 'risk.mDetail.reApplyUnfinds' | lang }}
+        </div>
+      </div>
+    </div>
+
+    <div class="list-item-form d-flex">
+      <div class="list-title"></div>
+      <div class="list-body">
+        <label class="radio radio-lg">
+          <input type="radio" [value]="5" name="releaseType" [(ngModel)]="formConfig.result" [disabled]="!isSubmit" />
+          <span></span>
+          <b>{{ 'risk.mDetail.wOrderNot' | lang }}</b>
+        </label>
+        <div class="label-tip-text" *ngIf="formConfig.result === 5">
+          {{ 'risk.mDetail.wOrderNots' | lang }}
+        </div>
+      </div>
+    </div>
+
+    <div class="list-item-form d-flex">
+      <div class="list-title"></div>
+      <div class="list-body">
+        <label class="radio radio-lg">
+          <input type="radio" [value]="6" name="releaseType" [(ngModel)]="formConfig.result" [disabled]="!isSubmit" />
+          <span></span>
+          <b>{{ 'risk.mDetail.wOrderUnfind' | lang }}</b>
+        </label>
+        <div class="label-tip-text" *ngIf="formConfig.result === 6">
+          {{ 'risk.mDetail.wOrderUnfinds' | lang }}
+        </div>
+      </div>
+    </div>
+
+    <div class="list-item-form d-flex">
+      <div class="list-title"></div>
+      <div class="list-body">
+        <label class="radio radio-lg">
+          <input type="radio" [value]="7" name="releaseType" [(ngModel)]="formConfig.result" [disabled]="!isSubmit" />
+          <span></span>
+          <b>{{ 'risk.mDetail.wOrdersup' | lang }}</b>
+        </label>
+
+        <div class="label-tip-input" *ngIf="formConfig.result === 7">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formConfig.HandleResultTxt"
+            [disabled]="!isSubmit"
+            [placeholder]="'risk.mDetail.wOrdersups' | lang"
+            input-trim
+          />
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="list-item-form d-flex"
+      *ngIf="(formConfig.result > 2 && formConfig.result !== 7) || formConfig.result === 0"
+    >
+      <div class="list-title">{{ 'risk.mDetail.precaution' | lang }}</div>
+      <div class="list-body">
+        <textarea
+          type="text"
+          class="form-control"
+          autocomplete="off"
+          [disabled]="!isSubmit"
+          [(ngModel)]="formConfig.remark"
+        ></textarea>
+      </div>
+    </div>
+    <div class="d-flex">
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.app' | lang }}</span
+        ><span class="list-body">{{ base.approver }}</span>
+      </div>
+      <div class="list-item">
+        <span class="list-title">{{ 'risk.mDetail.apStatus' | lang }}</span>
+        <span class="list-body" [ngSwitch]="base.status">
+          <app-label *ngSwitchCase="'Pending'" type="success">{{ 'risk.mDetail.waitProcess' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Finish'" type="success">{{ 'risk.mDetail.processOver' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Supplement'" type="info">{{ 'risk.mDetail.waitAdd' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Rejected'" type="warning">{{ 'risk.mDetail.rejectApp' | lang }}</app-label>
+          <app-label *ngSwitchCase="'TimeOut'" type="warning">{{ 'risk.mDetail.expired' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Cancel'" type="danger">{{ 'common.cancel' | lang }}</app-label>
+          <app-label *ngSwitchCase="'Processing'" type="warning">{{ 'risk.processing' | lang }}</app-label>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer btn-wrap">
+    <button type="button" class="c-btn btn btn-light" (click)="router.navigate(['/risk/review'])">
+      {{ 'common.back' | lang }}
+    </button>
+    <button type="button" class="c-btn btn btn-primary" (click)="onSubmit()" *ngIf="!isDigital && isSubmit">
+      {{ 'game.provider.confirm' | lang }}
+    </button>
+  </div>
+</div>
+<!-- 详情-->
+<ng-template #detailTpl let-d="dismiss" let-c="close">
+  <div class="modal-header">
+    <div class="modal-title">{{ 'common.details' | lang }}</div>
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="item-img-detail video-box-div">
+      <img *ngIf="formConfig.bigImg" [src]="formConfig.bigImg" class="video-body" alt="" />
+      <video *ngIf="formConfig.bigVideo" class="video-body" controls autoplay>
+        <source [src]="formConfig.bigVideo" type="video/mp4" />
+        {{ 'risk.mDetail.unsupport' | lang }}
+      </video>
+    </div>
+  </div>
+</ng-template>

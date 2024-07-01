@@ -1,0 +1,5 @@
+@use 'sass/tools';
+
+@include tools.tabs('tabs') {
+  height: 60px;
+}

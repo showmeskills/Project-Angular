@@ -1,0 +1,214 @@
+<!-- 原版登录 -->
+<ng-container *ngIf="!useThirdAuth">
+  <div class="container" *ngIf="!isNeed2fa; else verify">
+    <div class="container-left">
+      <div class="column-1">
+        <!-- 登录账户 -->
+        <div class="page-header">{{ 'login_account' | translate }}</div>
+        <div class="header-desc">{{ 'login_username_or_c' | translate }}</div>
+      </div>
+      <!-- 登录方式：用户名 手机 -->
+      <div class="column-2" #mainContainer appLifeObserve (lifeChange)="$event && checkSize(mainContainer, typeTabs)">
+        <div class="tabs" #typeTabs>
+          <div
+            class="tab"
+            [class.active]="selectedTabIndex === index"
+            *ngFor="let item of ['username_text', 'phone_tab', 'email']; let index = index"
+            (click)="onChangeTab(index)"
+          >
+            {{ item | translate }}
+          </div>
+        </div>
+        <div class="form-group">
+          <!--  用户名  -->
+          <app-customize-input
+            *ngIf="selectedTabIndex === 0"
+            size="large"
+            [max]="18"
+            [(value)]="userName"
+            (onChange)="this.showErrorText = ''"
+            [label]="'username_text' | translate"
+            [disabled]="submitLoading"
+          >
+          </app-customize-input>
+          <!--  手机  -->
+          <ng-container *ngIf="selectedTabIndex === 1">
+            <ng-container *ngTemplateOutlet="phoneTmp"></ng-container>
+          </ng-container>
+          <!-- 登录邮箱 -->
+          <app-customize-input
+            *ngIf="selectedTabIndex === 2"
+            size="large"
+            [label]="'email' | translate"
+            [error]="emailErrorText"
+            [(value)]="emailValue"
+            (onChange)="onChangeEmailValue()"
+          >
+          </app-customize-input>
+          <!-- 登录邮箱 -->
+          <!--  密码  -->
+          <ng-container *ngTemplateOutlet="passwordTmp"></ng-container>
+          <!-- 登录按钮 -->
+          <customize-button
+            size="large"
+            type="primary"
+            (onClick)="handleSubmit()"
+            [loading]="submitLoading"
+            [disabled]="!canSubmit"
+          >
+            {{ 'login_button' | translate }}
+          </customize-button>
+        </div>
+        <!-- 其他登录方式 -->
+        <!-- <div class="form-other-login">
+        <div class="login-top">
+          <div class="line"></div>
+          <span>{{'or' | translate}}</span>
+          <div class="line"></div>
+        </div>
+        <div class="login-bottom">
+          <i *ngFor="let item of otherLogins" (click)="otherLogin(item.name)">
+            <img [src]="item.pic">
+          </i>
+        </div>
+      </div> -->
+        <!-- 其他登录方式 -->
+        <!-- 记住该设备 -->
+        <div class="form-footer">
+          <div class="footer-1">
+            <mat-checkbox [disableRipple]="true" [(ngModel)]="isAutoLogin" [disabled]="submitLoading">
+              {{ 'next_auto_login_button' | translate }}
+            </mat-checkbox>
+            <p class="p-1 mutual-opacity" (click)="handleForgetPassWord()">
+              {{ 'forgot_password' | translate }}
+            </p>
+          </div>
+          <div class="footer-2">
+            <span class="link onact96-not" (click)="jumpToRegister()">{{ 'register_now_button' | translate }}</span>
+          </div>
+          <app-third-auth></app-third-auth>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #verify>
+    <!-- 原本有这个 [showErrorText]="showErrorText" 作用不明，导致bug https://gbd730.atlassian.net/browse/WU2021-6862 ，暂去掉 by hallen 2022-09-29 -->
+    <app-general2faverify-dialog
+      title="{{ 'security_veri' | translate }}"
+      [isUsedComponent]="true"
+      [otpTypeFromComponent]="'Login'"
+      [verifyType]="verifyType"
+      [user2fa]="user2fa"
+      (complete)="loginBy2Fa($event)"
+      [isLoading]="submitLoading"
+    ></app-general2faverify-dialog>
+  </ng-template>
+</ng-container>
+
+<!-- 第三方认证后 操作 老用户绑定/新用户注册 -->
+<ng-container *ngIf="useThirdAuth">
+  <div class="container" *ngIf="!mobileSubmit; else verify">
+    <div class="container-left">
+      <div class="column-1">
+        <div class="main-title">
+          {{ 'bound_phone' | translate }}
+        </div>
+      </div>
+      <div class="column-2">
+        <div class="form-group">
+          <!--  手机  -->
+          <ng-container *ngTemplateOutlet="phoneTmp"></ng-container>
+          <!--  密码  -->
+          <ng-container *ngTemplateOutlet="passwordTmp"></ng-container>
+          <customize-button
+            size="large"
+            type="primary"
+            (onClick)="onBindPhone()"
+            [loading]="submitLoading"
+            [disabled]="!ableBind"
+          >
+            {{ 'bind' | translate }}
+          </customize-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #verify>
+    <app-general2faverify-dialog
+      title="{{ 'security_veri' | translate }}"
+      [verifyType]="verifyType"
+      [isUsedComponent]="true"
+      [otpTypeFromComponent]="'Login'"
+      [user2fa]="user2fa"
+      (complete)="loginBy2Fa($event)"
+      [isLoading]="submitLoading"
+    ></app-general2faverify-dialog>
+  </ng-template>
+</ng-container>
+
+<ng-template #phoneTmp>
+  <div class="phone-box">
+    <label> {{ 'phone_text' | translate }} </label>
+    <div class="phone-select">
+      <div class="select-row">
+        <button
+          class="select-btn"
+          (click)="openAreaCodeDialog()"
+          [ngClass]="{ 'btn-disable': submitLoading }"
+          [disabled]="submitLoading"
+        >
+          <div class="fog-row">
+            <div class="country-image">
+              <i class="country" class="{{ fogClassName }}"></i>
+            </div>
+            <p>{{ areaCode }}</p>
+          </div>
+          <i class="drop-dowm"></i>
+        </button>
+      </div>
+      <app-customize-input
+        #iPhone
+        size="large"
+        type="number"
+        [error]="phoneError"
+        (onChange)="
+          phone.length >= 2 &&
+            (phoneError = !phoneNumberService.checkVaild($event, areaCode.slice(1))) &&
+            (this.showErrorText = '')
+        "
+        [(value)]="phone"
+        [disabled]="submitLoading"
+      >
+      </app-customize-input>
+    </div>
+    <!-- 手机号错误信息 -->
+    <div class="error-msg" *ngIf="!!phone && phoneError">
+      {{ 'phone_error_msg' | translate }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #passwordTmp>
+  <app-customize-input
+    [error]="!!showErrorText && showErrorText"
+    #iPwd
+    (keyup.enter)="checkToSubmit()"
+    size="large"
+    [(value)]="userPassWord"
+    [label]="'password_text' | translate"
+    type="password"
+    [autocomplete]="false"
+    [disabled]="submitLoading"
+  >
+    <i
+      class="onact96-not"
+      right-content
+      [class]="iPwd.type === 'password' ? 'icon-pwd-hidden' : 'icon-pwd-show'"
+      (click)="iPwd.type = iPwd.type === 'password' ? 'text' : 'password'"
+    ></i>
+  </app-customize-input>
+</ng-template>
+
+<ng-template #footerTemplate>
+  <div class="popup-footer mutual-opacity" (click)="onThirdPass()">{{ 'tutorial_skip' | translate }}</div>
+</ng-template>

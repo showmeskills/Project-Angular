@@ -1,0 +1,324 @@
+<div class="container">
+  <!--未提交页面 UI-->
+  <ng-container *ngIf="!withdrawService.getOrdered; else orderedPage">
+    <!--指引-->
+    <ng-container *ngIf="isFirstViewPage">
+      <ng-container *ngIf="isGuide">
+        <app-withdraw-guide (doClose)="closeGuide($event)"></app-withdraw-guide>
+      </ng-container>
+    </ng-container>
+    <!--账户冻结-->
+    <ng-container *ngIf="coinLimitData?.freezeAmount">
+      <div class="abnormal-card">
+        <span class="icon-importan"></span>
+        <div class="txt-colunm">
+          <p class="title">{{ 'lock_part' | translate }}</p>
+          <div class="important">
+            <span class="icon-lock"></span>
+            {{ 'lock_total' | translate }} ≈
+            {{ coinLimitData?.freezeAmount ? (coinLimitData.freezeAmount | tostring) : 0 }}
+            {{ selectedCurrency?.currency }}
+          </div>
+          <p class="link-txt onact96-not" [routerLink]="getLink()">{{ 'wiew_frozen_assets' | translate }}</p>
+        </div>
+      </div>
+    </ng-container>
+    <div class="row-container">
+      <!--表单-->
+      <div class="contants">
+        <!--币种-->
+        <div class="input-select wrap">
+          <label class="header">{{ 'sel_coin' | translate }}</label>
+          <div class="input-column">
+            <span>{{ 'curr' | translate }}</span>
+            <div class="select onact96" (click)="handleSelectCurrency()">
+              <!--已选择-->
+              <ng-container *ngIf="selectedCurrency; else default">
+                <div class="selected-row">
+                  <img [src]="selectedCurrency.currency | currencyIcon" loading="lazy" />
+                  <span>{{ selectedCurrency.currency }}</span>
+                  <span class="value">{{ selectedCurrency.name }}</span>
+                </div>
+              </ng-container>
+              <!--初始：未选时-->
+              <ng-template #default>
+                <span class="placeholder-txt-color">{{ 'sel_coin' | translate }}</span>
+              </ng-template>
+              <i class="drop-dowm" [class.clicked]="isOpen"></i>
+            </div>
+          </div>
+        </div>
+        <!--提币地址   tabs-->
+        <div class="input-select" [appLoading]="loadingAddress">
+          <label class="header">{{ 'wd_curr_add' | translate }}</label>
+          <div class="clounm">
+            <div class="tabs">
+              <div>
+                <div
+                  class="tab mutual-opacity onact96-not"
+                  [class.active]="selectedTabIndex === 0"
+                  (click)="onChangeTab(0)"
+                >
+                  {{ 'use_new_add' | translate }}
+                </div>
+                <div
+                  class="tab mutual-opacity onact96-not"
+                  [class.active]="selectedTabIndex === 1"
+                  (click)="onChangeTab(1)"
+                >
+                  {{ 'add_book' | translate }}
+                </div>
+              </div>
+              <span class="address-link onact96-not" [routerLink]="openAddressPage()" *ngIf="selectedTabIndex === 1">{{
+                'address_management' | translate
+              }}</span>
+            </div>
+            <!--使用新地址-->
+            <ng-container *ngIf="selectedTabIndex === 0">
+              <!--转账网络-->
+              <div class="input-column">
+                <span>{{ 'trans_network' | translate }}</span>
+                <div class="select onact96" [class.disabled]="!selectedCurrency" (click)="handleTransNetWork()">
+                  <!--已选择-->
+                  <ng-container *ngIf="selectedNetwork; else defaultNetwork">
+                    <div class="selected-row">
+                      <span>{{ selectedNetwork.network }}</span>
+                      <span class="value">{{ selectedNetwork.desc }}</span>
+                    </div>
+                  </ng-container>
+                  <!--初始：未选时-->
+                  <ng-template #defaultNetwork>
+                    <span class="placeholder-txt-color">{{ 'select_net' | translate }}</span>
+                  </ng-template>
+                  <i class="drop-dowm" [class.clicked]="isOpen"></i>
+                </div>
+              </div>
+              <div class="input-column">
+                <!-- 输入框 -->
+                <app-customize-input
+                  #iAddress
+                  size="large"
+                  [error]="!addressValid.isValid ? addressValid.text : false"
+                  [label]="'wd_curr_add' | translate"
+                  placeholder="{{ 'enter_wd_curr_ad' | translate }}"
+                  [(value)]="address"
+                  [scanQr]="true"
+                  (onChange)="onNetWorkInput(iAddress)"
+                  [disabled]="disabledAddress"
+                >
+                </app-customize-input>
+              </div>
+              <!--初始：未选时-->
+              <ng-container *ngIf="selectedNetwork == null">
+                <div class="details">
+                  <div class="row-root">
+                    <div class="txt-root p-r">
+                      <p class="txt-with">{{ 'amount' | translate }}:</p>
+                      <span
+                        >{{ coinLimitData?.availQuota ? coinLimitData?.availQuota : 0 }}
+                        {{ selectedCurrency?.currency }}</span
+                      >
+                    </div>
+                    <div class="txt-root" style="display: none">
+                      <p class="txt-with">{{ 'min_coin_wd' | translate }}</p>
+                      <span>
+                        {{ coinLimitData?.withdrawQuota ? coinLimitData?.withdrawQuota : 0 }}
+                        {{ selectedCurrency?.currency }}</span
+                      >
+                    </div>
+                  </div>
+                  <!-- <div class="row-root n-p" >
+                    <div class="txt-root">
+                      <p class="txt-with">提币手续费</p>
+                      <span>0.0000039 ~ 0.00053 {{selectedCurrency?.currency}}</span>
+                    </div>
+                  </div> -->
+                </div>
+              </ng-container>
+            </ng-container>
+            <!--地址簿-->
+            <ng-container *ngIf="selectedTabIndex === 1">
+              <div class="input-column">
+                <span>{{ 'add_book' | translate }}</span>
+                <!-- 输入框 -->
+                <div class="select onact96" [class.disabled]="!selectedCurrency" (click)="handleSelectAddress()">
+                  <!--已选择-->
+                  <ng-container *ngIf="selectedAddress != null; else default">
+                    <div class="selected-row">
+                      <span class="txt">{{ selectedAddress?.address }}</span>
+                      <span class="value">{{ selectedAddress?.network }}</span>
+                    </div>
+                  </ng-container>
+                  <!--初始：未选时-->
+                  <ng-template #default>
+                    <span class="placeholder-txt-color">{{ 'select_add_book' | translate }}</span>
+                  </ng-template>
+                  <i class="drop-dowm" [class.clicked]="isOpen"></i>
+                </div>
+              </div>
+              <!--初始：未选时-->
+              <ng-container *ngIf="selectedAddress == null">
+                <div class="details">
+                  <div class="row-root">
+                    <div class="txt-root">
+                      <p class="txt-with">{{ 'ava_balance' | translate }}</p>
+                      <span
+                        >{{ coinLimitData?.availQuota ? coinLimitData?.availQuota : 0 }}
+                        {{ selectedCurrency?.currency }}
+                      </span>
+                    </div>
+                    <div class="txt-root" style="display: none">
+                      <p class="txt-with">{{ 'min_coin_wd' | translate }}</p>
+                      <span>
+                        {{ coinLimitData?.withdrawQuota ? coinLimitData?.withdrawQuota : 0 }}
+                        {{ selectedCurrency?.currency }}
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="row-root">
+                    <div class="txt-root">
+                      <p class="txt-with">提币手续费</p>
+                      <span>0.0000039 ~ 0.00053 {{selectedCurrency?.currency}}</span>
+                    </div>
+                  </div> -->
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <!--提款金额-->
+        <div class="input-select" *ngIf="selectedNetwork != null || selectedAddress != null">
+          <label class="header">{{ 'wd_amount' | translate }}</label>
+          <div class="clounm">
+            <div class="input-column">
+              <div class="space-row">
+                <span>{{ 'number' | translate }}</span>
+                <ng-container *ngIf="!isH5" [ngTemplateOutlet]="availAmount"></ng-container>
+              </div>
+              <!-- 输入框 -->
+              <app-customize-input
+                #iAmount
+                size="large"
+                type="number"
+                [error]="!amountValid.isValid ? errText : false"
+                placeholder="{{ 'min_wd' | translate }} {{ selectedNetwork?.minAmount }}"
+                [(value)]="amount"
+                (onChange)="onAmountInput(amountValid)"
+              >
+                <div class="quick-row" right-content>
+                  <span class="select-all mutual-opacity onact96-not" (click)="handleSelectAll()">{{
+                    'all' | translate
+                  }}</span>
+                  <span class="laber"></span>
+                  <span class="txt">{{ selectedCurrency?.currency }}</span>
+                </div>
+              </app-customize-input>
+
+              <ng-container *ngIf="isH5" [ngTemplateOutlet]="availAmount"></ng-container>
+            </div>
+          </div>
+        </div>
+        <!--到账数量-->
+        <div class="input-select offset-top" *ngIf="amount && amount.toString().length > 0">
+          <label class="header">{{ 'arr_num' | translate }}</label>
+          <div class="submit-container">
+            <div class="amount-clounm" *ngIf="selectedCurrency">
+              <!--可用余额大于0-->
+              <ng-container *ngIf="coinLimitData?.availQuota > 0; else showDefault">
+                <!--usdt显示小数后两位-->
+                <ng-container *ngIf="selectedCurrency.currency == 'USDT'; else otherCurrencyAmount">
+                  {{ realAmount | currencyValue : selectedCurrency.currency : undefined : undefined : 2 }}
+                </ng-container>
+                <!--非usdt显示小数后8位-->
+                <ng-template #otherCurrencyAmount>
+                  {{ realAmount | currencyValue : selectedCurrency.currency : undefined : undefined : 8 }}
+                </ng-template>
+              </ng-container>
+              <!--可用余额:0-->
+              <ng-template #showDefault>
+                {{ realAmount }}
+              </ng-template>
+              {{ selectedCurrency.currency }}
+              <span class="fee"
+                >{{ selectedNetwork?.withdrawFee ? selectedNetwork?.withdrawFee : selectedAddressInfo?.withdrawFee }}
+                {{ selectedCurrency.currency }} {{ 'includes_fee' | translate }}</span
+              >
+            </div>
+            <customize-button
+              class="m-top"
+              type="primary"
+              size="large"
+              [width]="isH5 ? '100%' : '50%'"
+              [disabled]="!isCanNext"
+              (onClick)="isCanNext && submit()"
+              >{{ 'withdraw' | translate }}</customize-button
+            >
+          </div>
+        </div>
+      </div>
+      <!--温馨提示-->
+      <div class="tips-root">
+        <app-crypto-withdraw-tips Tag="DigitalCurrencyWithdrawal"></app-crypto-withdraw-tips>
+      </div>
+      <!--提款记录-->
+      <div class="withdraw-history">
+        <app-crypto-withdraw-history [historyList]="cryptoWithdrawHistory" [loading]="isLoading">
+        </app-crypto-withdraw-history>
+      </div>
+    </div>
+  </ng-container>
+  <!--提交成功 UI-->
+  <ng-template #orderedPage>
+    <app-success-page [submitData]="withdrawService.submitRecipet"></app-success-page>
+  </ng-template>
+</div>
+
+<ng-template #availAmount>
+  <div class="avail-amount">
+    <span
+      >{{ coinLimitData.availQuota | currencyValue : selectedCurrency!.currency }}
+      {{ selectedCurrency!.currency }}</span
+    >
+    <em>{{ 'ava_withdraw' | translate }}</em>
+    <app-tool-tip [overlayMaxWidth]="'320px'">
+      <i origin class="icon-warning mutual-opacity"></i>
+      <div tooltip class="limit-pop">
+        <div>
+          {{ 'ava_balance' | translate }}：
+          <span
+            >{{ coinLimitData.balance | currencyValue : selectedCurrency!.currency }}
+            {{ selectedCurrency!.currency }}</span
+          >
+        </div>
+        <div>
+          {{ 'wd_limit' | translate }}：
+          <span
+            >{{ coinLimitData.withdrawQuota | currencyValue : selectedCurrency!.currency }}
+            {{ selectedCurrency!.currency }}</span
+          >
+        </div>
+        <!-- <div>
+          {{'lock_amount'|translate}}：
+          <span>{{ coinLimitData.freezeAmount | currencyValue:selectedCurrency!.currency }}
+            {{ selectedCurrency!.currency }}</span>
+        </div> -->
+        <div>
+          {{ 'daily_limit' | translate }}：
+          <ng-container *ngIf="coinLimitData.todayQuota !== -1; else default">
+            <span>{{ coinLimitData.todayQuota | currencyValue : 'USDT' }} USDT</span>
+          </ng-container>
+          <ng-template #default>
+            <span> {{ 'no_limit' | translate }} </span>
+          </ng-template>
+        </div>
+        <div>
+          {{ 'w_able_amount' | translate }}：
+          <span
+            >{{ coinLimitData.availQuota | currencyValue : selectedCurrency!.currency }}
+            {{ selectedCurrency!.currency }}</span
+          >
+        </div>
+      </div>
+    </app-tool-tip>
+  </div>
+</ng-template>

@@ -1,0 +1,221 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.page-container {
+  z-index: 1;
+  &.main-content {
+    padding-bottom: 120px;
+
+    @media (max-width: 767px) {
+      padding-bottom: 48px;
+    }
+  }
+
+  .main-container {
+    padding-left: 3vw;
+    padding-right: 3vw;
+
+    @media (max-width: 767px) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+.games-main {
+  position: relative;
+  z-index: 4;
+
+  .content-box {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .games-title {
+    margin-top: 19px;
+    display: flex;
+    justify-content: space-between;
+
+    @media (max-width: 767px) {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .filter {
+      display: flex;
+      @include polyfills.flex-gap(14px, 'row nowrap');
+
+      :host-context(.dark) & {
+        color: #fff;
+      }
+
+      > span {
+        font-size: 14px;
+        display: flex;
+        @include polyfills.flex-gap(7px, 'row nowrap');
+        margin-left: 7px;
+        margin-right: 7px;
+        align-items: center;
+
+        em {
+          font-weight: bold;
+        }
+      }
+    }
+
+    ::ng-deep {
+      .game-filter-options {
+        margin-top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        filter: drop-shadow(0 -1px 6px rgba(0, 0, 0, 0.05));
+        border-radius: 6px;
+        padding: 5px 0;
+
+        &:host-context(.dark) & {
+          &::after {
+            border-bottom-color: #071d2a;
+            color: #fff;
+          }
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          border: 5px solid transparent;
+          left: 50%;
+          margin-left: -5px;
+          top: -10px;
+          border-bottom: 5px solid #fff;
+        }
+
+        li:not(.active) > i {
+          color: #717a8a;
+        }
+
+        li.active {
+          color: var(--secondary-color) !important;
+        }
+
+        @media (max-width: 767px) {
+          &.left {
+            left: 0;
+            transform: translateX(0);
+
+            &::after {
+              left: 35%;
+            }
+          }
+
+          &.right {
+            left: auto;
+            right: 0;
+            transform: translateX(0);
+
+            &::after {
+              left: auto;
+              right: 30%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .games-list {
+    padding-top: 10px;
+
+    &.loading {
+      min-height: 250px;
+    }
+
+    @media (max-width: 767px) {
+      padding-top: 19px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+  }
+}
+
+.input-text {
+  padding-left: 13px;
+  padding-right: 30px;
+  white-space: nowrap;
+  display: flex;
+  @include polyfills.flex-gap(7px, 'row nowrap');
+  align-items: center;
+}
+
+.count {
+  padding: 1px 10px;
+  border-radius: 12px;
+  background-color: var(--primary-color-80);
+  font-size: 14px;
+  margin-left: auto;
+  color: var(--text-white-at-night);
+  height: 1.4em;
+  display: flex;
+  align-items: center;
+}
+
+.count-text {
+  margin: 0 10px;
+}
+
+.multipleChoice-options {
+  ul {
+    li {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+      height: 30px !important;
+      line-height: normal !important;
+      overflow: hidden;
+
+      ::ng-deep mat-checkbox {
+        pointer-events: none;
+        display: flex;
+
+        .mdc-checkbox__background,
+        .mat-mdc-checkbox-touch-target,
+        .mdc-checkbox,
+        .mdc-checkbox__native-control {
+          width: 18px !important;
+          height: 18px !important;
+        }
+
+        .mdc-checkbox__background {
+          border-radius: 4px;
+        }
+
+        .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+          background-color: #3eb6e9 !important;
+          border-color: #3eb6e9 !important;
+        }
+
+        .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate='true'])
+          ~ .mdc-checkbox__background {
+          border-color: #707a8a !important;
+          border-width: 1px;
+        }
+      }
+    }
+  }
+
+  .clear-choice {
+    height: 34px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #1e2329;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #eaecef;
+    margin-top: 5px;
+
+    &:host-context(.dark) & {
+      border-top-color: #2f4553;
+      color: #fff;
+    }
+  }
+}

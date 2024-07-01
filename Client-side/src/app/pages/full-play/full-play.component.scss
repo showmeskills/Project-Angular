@@ -1,0 +1,264 @@
+:host {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+iframe,
+.iframe-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.iframe-container {
+  background: url(src/assets/images/game_loading.gif) center center no-repeat #000000;
+}
+
+.play-icon {
+  width: 1.2em;
+  height: 1em;
+
+  &::before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    border: 0.5em solid transparent;
+    border-left: 0.7em solid currentColor;
+  }
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 14px;
+  color: #fff;
+
+  > * + * {
+    margin-top: 15px;
+  }
+
+  .setting {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    > * + * {
+      margin-top: 10px;
+    }
+
+    .selected-currency {
+      display: flex;
+      align-items: center;
+
+      > * + * {
+        margin-left: 10px;
+      }
+
+      label {
+        opacity: 0.8;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .already-in {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+
+    i {
+      color: #1dcc14;
+      margin-right: 10px;
+    }
+  }
+}
+
+.coin-drop-down {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  font-size: 14px;
+
+  > * + * {
+    margin-left: 12px;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+
+    > * + * {
+      margin-left: 6px;
+    }
+
+    span {
+      font-weight: bold;
+    }
+
+    img {
+      width: 14px;
+      height: 14px;
+      object-fit: contain;
+    }
+  }
+
+  > i {
+    font-size: 90%;
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.select-coin-container {
+  position: relative;
+  filter: drop-shadow(0 -1px 6px rgba(0, 0, 0, 0.05));
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    left: 50%;
+    margin-left: -5px;
+  }
+
+  .select-coin-list {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 40vh;
+    overflow-y: auto;
+
+    > div {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 17px 0 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      flex-shrink: 0;
+      user-select: none;
+
+      > * + * {
+        margin-left: 5px;
+      }
+
+      img {
+        width: 14px;
+        height: 14px;
+        object-fit: contain;
+      }
+
+      @media (any-hover: hover) {
+        &:hover {
+          color: var(--secondary-color);
+        }
+      }
+
+      @media (any-hover: none) {
+        &:active {
+          color: var(--secondary-color);
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .select-coin-show-in-down {
+    .select-coin-container {
+      margin-top: 15px;
+
+      &::after {
+        top: -10px;
+        border-bottom: 5px solid #fff;
+      }
+    }
+  }
+
+  .select-coin-show-in-up {
+    .select-coin-container {
+      margin-bottom: 15px;
+
+      &::after {
+        bottom: -10px;
+        border-top: 5px solid #fff;
+      }
+    }
+  }
+}
+
+.currency-tip {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  line-height: 1.3;
+
+  > * + * {
+    margin-left: 5px;
+  }
+
+  &.light {
+    color: #fff;
+  }
+}
+
+.currency-tip-icon {
+  font-size: 14px;
+
+  &::before {
+    color: inherit;
+  }
+}
+
+.currency-tip-text {
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.error-tip {
+  color: var(--txt-err-color);
+  padding: 10px 0;
+}
+
+.maintenance-info {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  > * + * {
+    margin-left: 20px;
+  }
+}

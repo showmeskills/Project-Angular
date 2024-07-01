@@ -1,0 +1,78 @@
+<div class="page-container home">
+  <div class="main-container">
+    <!-- 轮播图 -->
+    <app-normal-carousel class="container" [buildFor]="'GamesPage'"></app-normal-carousel>
+
+    <!-- 搜索 -->
+    <div class="container" app-search-game *ngIf="!isH5()" [labelCodes]="labelCodes"></div>
+
+    <!-- 菜单 -->
+    <div class="container tabs-container">
+      <div class="content-box">
+        <div class="tabs" *ngIf="tabs.length > 1; else tabsSkeleton">
+          <!-- 固定显示"大厅"在第一个 -->
+          <a [href]="domain + '/' + appService.languageCode + '/casino/home/index'" (click)="$event.preventDefault()">
+            <div
+              class="tab onact96"
+              [routerLink]="'/' + appService.languageCode + '/casino/home/index'"
+              [routerLinkActive]="'active'"
+            >
+              <img src="assets/images/game/dt.svg" />{{ 'lobby' | translate }}
+            </div>
+          </a>
+          <!-- 其它tab -->
+          <a
+            *ngFor="let item of tabs"
+            [href]="domain + '/' + appService.languageCode + '/casino/home/' + item.labelCode"
+            (click)="$event.preventDefault()"
+          >
+            <div
+              class="tab onact96"
+              [routerLink]="'/' + appService.languageCode + '/casino/home/' + item.labelCode"
+              [routerLinkActive]="'active'"
+            >
+              <img *ngIf="item.icon" [src]="item.icon" />{{ item.labelName }}
+            </div>
+          </a>
+        </div>
+        <ng-template #tabsSkeleton>
+          <div *ngIf="loadingGameList" class="tabs skeleton-loading"></div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="main-container" [@toggle]="tabToggleAnimateTick()">
+    <ng-container [ngSwitch]="showFor()">
+      <ng-container *ngSwitchCase="'index'">
+        <!-- 游戏类标签 -->
+        <ng-container *ngFor="let item of renderLabelBars(); trackBy: trackByFn; let i = index">
+          <app-swiper-unit
+            class="container"
+            [style.order]="i"
+            (clickItem)="clickGameItem($event)"
+            (clickTitle)="clickLabelTitle(item)"
+            [data]="item?.gameLists"
+            [title]="item?.labelName"
+            [titleIcon]="item?.icon"
+            [row]="item?.multiLine || 1"
+            [titleHref]="item?.titleHref"
+          ></app-swiper-unit>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <!-- 点菜单tab切换显示 -->
+        <app-home-sub *ngIf="tabs.length > 1" class="container" [showFor]="showFor()" [tabs]="tabs"></app-home-sub>
+      </ng-container>
+    </ng-container>
+
+    <!-- 供应商 -->
+    <app-swiper-provider-list
+      class="container"
+      [style.order]="1"
+      [supplier]="['SlotGame', 'LiveCasino']"
+    ></app-swiper-provider-list>
+
+    <!-- 每日竞赛 -->
+    <app-daily-races [style.order]="99" [gameCategories]="['LiveCasino', 'SlotGame']"></app-daily-races>
+  </div>
+</div>

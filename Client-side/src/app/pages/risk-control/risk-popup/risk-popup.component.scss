@@ -1,0 +1,37 @@
+.standard-popup {
+  width: 484px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 12px;
+  align-items: center;
+  font-size: 14px;
+  border-radius: 10px;
+  background-color: var(--page-bg-color);
+  > * + * {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.header-img {
+  width: 110px;
+  height: 110px;
+}
+
+.header-title {
+  font-size: 20px;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.primary-color {
+  color: var(--primary-color);
+}
+
+.gray-color {
+  color: var(--text-color-20);
+}

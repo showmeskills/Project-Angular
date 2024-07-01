@@ -1,0 +1,13 @@
+<div class="page-container">
+  <div class="main-container">
+    <div class="container page-head">
+      <div class="content-box">
+        <div class="head-text mutual-opacity onact96" (click)="headTextClick($event)">
+          <i class="icon icon-back" *ngIf="showIcon"></i>
+          <span>{{ title }}</span>
+        </div>
+      </div>
+      <ng-content select="[headRight]"></ng-content>
+    </div>
+  </div>
+</div>

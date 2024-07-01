@@ -1,0 +1,104 @@
+<div class="card rounded">
+  <div class="card-header py-8 d-flex flex-wrap">
+    <form-row [label]="'original.bet.originalGame' | lang" class="mr-16">
+      <ng-template>
+        <mat-form-field [style.width.px]="170">
+          <mat-select class="form-control" value="0">
+            <mat-select-trigger>
+              {{ dataGame.gameValText | lang }}
+            </mat-select-trigger>
+            <mat-option value="0" (click)="gameAll()">{{ 'common.all' | lang }}</mat-option>
+            <mat-option value="1" *ngFor="let item of dataGame.gameList">
+              <div class="option-radio">
+                <label class="checkbox">
+                  <input type="checkbox" [(ngModel)]="item.checked" (change)="gameNext()" />
+                  <span></span>
+                  {{ item.val }}
+                </label>
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'original.bet.operatingTime' | lang" label-min-width="106" class="mr-16">
+      <ng-template>
+        <div class="d-flex">
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeFrom"
+            [placeholder]="'common.startTime' | lang"
+            [style.width.px]="140"
+            [owlDateTime]="timeStart"
+            [owlDateTimeTrigger]="timeStart"
+            [(ngModel)]="searchData.time"
+            formatLabel="yyyy-MM-dd"
+            selectMode="rangeFrom"
+          />
+          <owl-date-time class="fz-20" pickerType="calendar" #timeStart></owl-date-time>
+
+          <div class="date-line lh-42"></div>
+
+          <input
+            class="form-control text-center"
+            type="text"
+            selectMode="rangeTo"
+            [placeholder]="'common.endTime' | lang"
+            [style.width.px]="140"
+            [owlDateTime]="timeEnd"
+            [owlDateTimeTrigger]="timeEnd"
+            [(ngModel)]="searchData.time"
+            formatLabel="yyyy-MM-dd"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time class="fz-20" pickerType="calendar" #timeEnd></owl-date-time>
+        </div>
+      </ng-template>
+    </form-row>
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+<div class="card-box mt-4">
+  <div class="card mt-4 list" *ngFor="let item of list">
+    <div class="card-body">
+      <div class="fz-20 new-cc-tab">
+        <div class="card-tab-title">{{ item.lotteryName }}</div>
+        <!-- <div class="card-tab-cell">
+          <span class="tab-cc-title">已开期数</span><span>{{ item.issueCount }}</span>
+        </div> -->
+        <div class="card-tab-cell">
+          <span class="tab-cc-title">{{ 'original.analysis.tradeAmount' | lang }}</span
+          ><span>{{ item.totleAmount }}</span>
+        </div>
+        <div class="card-tab-cell">
+          <span class="tab-cc-title">{{ 'original.analysis.payout' | lang }}</span
+          ><span>{{ item.totleReturnAmount }}</span>
+        </div>
+        <div class="card-tab-cell">
+          <span class="tab-cc-title">{{ 'original.analysis.people' | lang }}</span
+          ><span>{{ item.userCount }}</span>
+        </div>
+        <div class="card-tab-cell">
+          <span class="tab-cc-title">{{ 'original.analysis.quantity' | lang }}</span
+          ><span>{{ item.betCount }}</span>
+        </div>
+        <div class="card-tab-cell tab-cell-right">
+          <span class="tab-cc-title">{{ 'original.analysis.winLoss' | lang }}</span
+          ><span>{{ item.systemProfitAndLoss }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 空显示 -->
+  <div class="container-empty card list" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</div>

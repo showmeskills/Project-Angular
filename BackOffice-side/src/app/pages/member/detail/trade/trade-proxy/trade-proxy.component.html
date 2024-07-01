@@ -1,0 +1,43 @@
+<header class="d-flex justify-content-end proxy-header mt-8">
+  <div class="btn-group">
+    <button
+      type="button"
+      class="btn"
+      [class.btn-white]="curTab !== 0"
+      [class.btn-primary]="curTab === 0"
+      (click)="curTab = 0"
+    >
+      {{ 'game.proxy.originalMateria' | lang }}
+    </button>
+    <button
+      type="button"
+      class="btn"
+      [class.btn-white]="curTab !== 1"
+      [class.btn-primary]="curTab === 1"
+      (click)="curTab = 1"
+    >
+      {{ 'marketing.commissionList.prepaidCommission' | lang }}
+    </button>
+  </div>
+</header>
+
+<ng-container *ngIf="curTab === 0">
+  <div class="d-flex flex-wrap align-items-start" style="column-gap: 15px">
+    <info class="mt-8" style="min-width: 430px"></info>
+    <plan class="mt-8 text-nowrap"></plan>
+  </div>
+
+  <user-manager class="mt-8"></user-manager>
+
+  <div class="d-flex mt-8">
+    <offline style="flex: 0 0 calc(50% - 8px)"></offline>
+    <commission class="ml-6"></commission>
+  </div>
+
+  <latest class="mt-8"></latest>
+  <transfer class="mt-8"></transfer>
+</ng-container>
+
+<ng-container *ngIf="curTab === 1">
+  <prepaid></prepaid>
+</ng-container>

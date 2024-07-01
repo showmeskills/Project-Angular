@@ -1,0 +1,203 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+@use 'sass:math';
+
+.main-container {
+  flex-direction: column;
+  width: 100%;
+
+  .container {
+    width: 100%;
+    justify-content: center;
+
+    div {
+      display: flex;
+    }
+
+    @media (max-width: 1024px) {
+      margin-left: 0;
+      align-self: center;
+    }
+
+    @media (max-width: 767px) {
+      width: 100%;
+      padding-top: 33px;
+    }
+
+    .form-clonum {
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 450px;
+      flex: 1;
+      margin: auto;
+
+      @media (max-width: 767px) {
+        max-width: none;
+      }
+
+      .header {
+        color: var(--text-color);
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.38;
+        margin-bottom: 50px;
+      }
+
+      .page-center {
+        align-items: center;
+      }
+
+      //Form表单
+      .form-group {
+        flex-direction: column;
+        width: 100%;
+
+        &.margin-top-20 {
+          margin-top: 25px;
+        }
+
+        label {
+          font-size: 14px;
+          color: var(--text-color);
+          line-height: 14px;
+        }
+
+        .input-group {
+          border-radius: 4px;
+          border: solid 1px var(--input-border-color);
+          margin-top: 7px;
+          height: 48px;
+          align-items: center;
+          width: 100%;
+          position: relative;
+
+          &:hover,
+          &.focus {
+            border-color: var(--primary-color);
+          }
+
+          &.error {
+            border-color: var(--txt-err-color);
+          }
+
+          &.hidden {
+            display: none;
+          }
+
+          input {
+            outline: none;
+            border: none;
+            flex: 1;
+            padding: 15px;
+            font-size: 14px;
+            color: #333;
+            height: 100%;
+            border-radius: 4px;
+
+            &:host-context(.dark) & {
+              background-color: var(--bg-color-10);
+              color: #fff;
+            }
+
+            &:disabled {
+              background-color: transparent;
+            }
+          }
+
+          input::-ms-reveal {
+            display: none;
+          }
+
+          .offset-left {
+            left: -10px !important;
+          }
+
+          //密码显示与隐藏的ICON
+          //清除ICON
+          .icon-clear {
+            font-size: 22px;
+            cursor: pointer;
+            position: relative;
+            left: -44px;
+            user-select: none;
+            &:hover::before {
+              color: var(--text-color-20);
+            }
+          }
+
+          .icon-pwd-show,
+          .icon-pwd-hidden {
+            font-size: 22px;
+            position: absolute;
+            left: 90%;
+            cursor: pointer;
+            top: 26%;
+            user-select: none;
+            &:hover::before {
+              color: var(--text-color-20);
+            }
+          }
+        }
+
+        //输入框错误信息
+        .error-msg {
+          color: var(--text-color-20);
+          font-size: 14px;
+          line-height: 14px;
+          margin-top: 4px;
+          margin-bottom: 25px;
+        }
+
+        //返回 btn
+        .back-btn {
+          margin-top: 40px;
+        }
+
+        //下一步 btn
+        .next-btn {
+          margin-top: 48px;
+        }
+
+        //按钮组
+        .btn-group {
+          //下一步 btn
+          flex-direction: row;
+          margin-top: 40px;
+          width: 100%;
+          justify-content: space-between;
+          @include polyfills.flex-gap(30px, 'row nowrap');
+
+          @media (max-width: 767px) {
+            margin-top: 32px;
+          }
+        }
+      }
+    }
+  }
+}
+
+:host {
+  ::ng-deep {
+    :host-context(.dark) & {
+      .mat-stepper-horizontal,
+      .mat-stepper-vertical {
+        background-color: #0f212e;
+      }
+    }
+
+    mat-horizontal-stepper {
+      width: 100%;
+    }
+
+    .mat-horizontal-stepper-header-container {
+      margin: auto;
+      height: 210px !important;
+      width: 650px !important;
+    }
+
+    .mat-horizontal-stepper-content {
+      width: 100%;
+    }
+  }
+}

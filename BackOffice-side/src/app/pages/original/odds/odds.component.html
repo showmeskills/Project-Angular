@@ -1,0 +1,56 @@
+<div class="category-menu" *ngIf="gameList && gameList.length">
+  <ul class="category-menu-ul">
+    <li [class.active]="item === active" *ngFor="let item of gameList" (click)="active = item; getCurrentMethods()">
+      <div class="text-box">{{ item }}</div>
+    </li>
+  </ul>
+</div>
+
+<div class="content" [class.edit]="isEdit">
+  <ng-container *ngIf="data?.lotteryName; else empty">
+    <div class="title">
+      <div class="name">{{ active }}</div>
+      <div class="edit" (click)="isEdit = !isEdit">
+        <img src="assets/images/svg/edit.svg" alt="" />
+        <span>{{ 'original.odds.adjustment' | lang }}</span>
+      </div>
+    </div>
+    <div class="method-menu">
+      <div class="top-wrapper">
+        <div class="des">
+          <div class="item">
+            <div class="name">{{ 'original.odds.maxAmount' | lang }}：</div>
+            <input
+              type="number"
+              autocomplete="off"
+              [min]="0"
+              [readonly]="!isEdit"
+              [(ngModel)]="data.lotteryMaxAmount"
+              (blur)="changeLimit()"
+            />
+          </div>
+          <div class="item">
+            <div class="name">{{ 'original.odds.maxText' | lang }}：</div>
+            <input
+              type="number"
+              autocomplete="off"
+              [min]="0"
+              [readonly]="!isEdit"
+              [(ngModel)]="data.lotteryMaxQuota"
+              (blur)="changeLimit()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<ng-template #empty>
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+</ng-template>

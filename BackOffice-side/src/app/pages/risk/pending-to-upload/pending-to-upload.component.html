@@ -1,0 +1,173 @@
+<!--  筛选 -->
+<div class="card mt-8 d-flex flex-row flex-wrap py-8 px-12">
+  <!-- 类型 -->
+  <form-row [label]="'common.type' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="curTypeValue" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of typeList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 风控审核 - 文件类型 -->
+  <ng-container *ngIf="curTypeValue === PendingedCategoryObjEnum.Risk">
+    <form-row [label]="'risk.docType' | lang" class="mr-8">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.curFormTypeValue" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of service.formTypeList" [value]="item.code">{{
+              item.description
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+  </ng-container>
+
+  <!-- UID -->
+  <form-row [label]="'UID'" class="mr-8" [contentWidth]="180">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 时间 -->
+  <form-row [label]="'common.time' | lang" class="mr-8" [contentWidth]="250">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'common.dateTips' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<!-- 列表 -->
+<div class="mt-8" [ngSwitch]="curTypeValue">
+  <!-- 风控审核 -->
+  <ng-container *ngSwitchCase="PendingedCategoryObjEnum.Risk">
+    <div class="monitor-item" *ngFor="let item of list" [appLoading]="isLoading">
+      <div>
+        <img class="mr-4" iconSrc="/assets/images/svg/monitor-operate-new.svg" />
+        <span class="vam text-success">{{ 'risk.riskReview' | lang }}</span>
+      </div>
+
+      <div>{{ item.uid }}</div>
+
+      <div [ngSwitch]="item.type">
+        <!-- 发送文件请求 - 身份证件 -->
+        <span *ngSwitchCase="RiskFormTypeObjEnum.ID">{{
+          ('risk.docRequest.backendDocRequest' | lang) + ' - ' + ('risk.docRequest.id' | lang)
+        }}</span>
+        <!-- 发送文件请求 - 地址证明 -->
+        <span *ngSwitchCase="RiskFormTypeObjEnum.POA">{{
+          ('risk.docRequest.backendDocRequest' | lang) + ' - ' + ('risk.docRequest.poa' | lang)
+        }}</span>
+        <!-- 发送文件请求 - 财富来源 -->
+        <span *ngSwitchCase="RiskFormTypeObjEnum.WealthSourceDocument">{{
+          ('risk.docRequest.backendDocRequest' | lang) + ' - ' + ('risk.docRequest.sourceOfWealth' | lang)
+        }}</span>
+        <!-- 发送文件请求 - 支付方式 -->
+        <span *ngSwitchCase="RiskFormTypeObjEnum.PaymentMethod">{{
+          ('risk.docRequest.backendDocRequest' | lang) + ' - ' + ('risk.docRequest.payMentMethod' | lang)
+        }}</span>
+        <!-- 发送文件请求 - 自定义 -->
+        <span *ngSwitchCase="RiskFormTypeObjEnum.Customize">{{
+          ('risk.docRequest.backendDocRequest' | lang) + ' - ' + ('risk.docRequest.customize' | lang)
+        }}</span>
+        <!-- 风险评估问卷：EDD -->
+        <span *ngSwitchCase="RiskFormTypeObjEnum.EDD">{{ 'member.kyc.edd' | lang }}</span>
+      </div>
+
+      <div>{{ item.createdTime | timeFormat }}</div>
+
+      <div class="cursor-pointer last">
+        <app-label type="warning" (click)="openPendingedPopup(item, PendingedCategoryObjEnum.Risk)">{{
+          'risk.toBeUploaded' | lang
+        }}</app-label>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- KYC审核 -->
+  <ng-container *ngSwitchCase="PendingedCategoryObjEnum.Kyc">
+    <div class="monitor-item audit" *ngFor="let item of list" [appLoading]="isLoading">
+      <div>
+        <img class="mr-4" iconSrc="/assets/images/svg/monitor-operate-new.svg" />
+        <span class="vam title">{{ 'risk.kycAudit' | lang }}</span>
+      </div>
+
+      <div>{{ item?.uid }}</div>
+
+      <div>{{ getCountryName(item?.countryCode) }}</div>
+
+      <div [ngSwitch]="item?.type">
+        <span *ngSwitchCase="RiskFormTypeObjEnum.KycIntermediate">{{ 'member.kyc.middle' | lang }}</span>
+        <span *ngSwitchCase="RiskFormTypeObjEnum.KycAdvanced">{{ 'member.kyc.adv' | lang }}</span>
+        <span *ngSwitchDefault>-</span>
+      </div>
+
+      <div>{{ item?.createdTime | timeFormat }}</div>
+
+      <div class="cursor-pointer last">
+        <app-label type="warning" (click)="openPendingedPopup(item, PendingedCategoryObjEnum.Kyc)">{{
+          'risk.toBeUploaded' | lang
+        }}</app-label>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- loading -->
+  <div *ngIf="!list.length && isLoading" style="height: 380px" [appLoading]="isLoading"></div>
+
+  <!-- 空显示 -->
+  <empty class="bg-fff rounded" [show]="!list.length && !isLoading"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-6 flex-ac">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          style="background: #fff"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

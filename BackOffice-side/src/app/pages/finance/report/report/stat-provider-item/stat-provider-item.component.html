@@ -1,0 +1,13 @@
+<div class="fz-14 fw-bolder">{{ item.gameProviderName }}</div>
+<div class="d-flex mt-4">
+  <span class="flex-1 opacity-45">{{ 'game.provider.day_trade' | lang }}</span>
+  <span>{{ item.todayTransactionAmount | currencyValue: 'USDT' }}</span>
+</div>
+<div class="d-flex mt-4">
+  <span class="flex-1 opacity-45">{{ 'game.provider.day_win' | lang }}</span>
+  <span>{{ item.todayPayoutAmount | currencyValue: 'USDT' }}</span>
+</div>
+<div class="d-flex mt-4">
+  <span class="flex-1 opacity-45">{{ 'game.provider.day_activeCount' | lang }} </span>
+  <span>{{ item.todayActiveCount }}</span>
+</div>

@@ -1,0 +1,179 @@
+<div [class.disabled]="isReadonly">
+  <!-- 活动重复周期 -->
+  <!-- <form-row class="mb-8" [label]="'member.activity.sencli2.activityRecurrence' | lang" label-width="200">
+    <ng-template>
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of limitList">
+          <input type="radio" name="limit" [value]="item.value" [(ngModel)]="curLimit" />
+          <span class="mr-4"></span>{{ item.nameLang | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row> -->
+
+  <!-- 活动劵码 -->
+  <form-row
+    [control]="formGroup.controls.voucherCode"
+    [label]="'member.activity.sencli12.voucherCode' | lang"
+    label-width="200"
+    [invalidFeedback]="{
+      required: 'member.activity.sencli12.voucherCodeTips' | lang,
+      minlength: 'member.activity.sencli12.voucherCodeTips' | lang,
+      maxlength: 'member.activity.sencli12.voucherCodeTips' | lang,
+      pattern: 'member.activity.sencli12.voucherCodeTips' | lang
+    }"
+  >
+    <ng-template let-invalid="invalid" let-control="formControl">
+      <input
+        class="form-control"
+        type="text"
+        [style.width.px]="168"
+        [class.is-invalid]="invalid"
+        [formControl]="control"
+        input-trim
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 奖励次数 -->
+  <form-row class="my-10" [label]="'member.activity.sencli2.numberRewards' | lang" label-width="200">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <form-wrap [style.width.px]="130">
+          <div
+            class="d-flex flex-ac h26 pr-4"
+            style="border-right: 1px solid #e6edf1"
+            (click)="onPrizeTimesEdit('cut')"
+          >
+            <svg-icon [src]="'./assets/images/svg/sub.svg'" class="svg-icon svg-icon-xl text-primary"></svg-icon>
+          </div>
+          <input
+            class="form-control text-center color-222"
+            autocomplete="off"
+            type="text"
+            [(ngModel)]="times"
+            [disabled]="true"
+          />
+          <div class="d-flex flex-ac h26 pl-4" style="border-left: 1px solid #e6edf1" (click)="onPrizeTimesEdit('add')">
+            <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl text-primary"></svg-icon>
+          </div>
+        </form-wrap>
+        <div class="ml-10 color-aaa">（{{ 'member.activity.sencliCommon.mostTimes' | lang: { n: 5 } }}）</div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 设定 -->
+  <form-row
+    class="mb-5"
+    [label]="'member.activity.sencli2.rankList' | lang: i"
+    label-width="200"
+    *ngFor="let items of setUpList; let i = index"
+  >
+    <ng-template>
+      <div class="mb-4" *ngFor="let item of items.minPrizes; let j = index">
+        <div class="d-flex flex-wrap align-items-start">
+          <div class="lh-20 d-flex pt-4">
+            <div class="fz-16 color-aaa mr-8">{{ 'member.activity.sencli2.scope' | lang }}{{ j + 1 }}:</div>
+            <div class="fz-16 mr-4">{{ 'member.activity.sencli2.amount' | lang }}</div>
+            <div class="fz-18 mr-4">≥</div>
+            <div class="d-flex flex-ac">
+              <img class="mr-2" [currencyIcon]="'USDT'" />
+              USDT
+            </div>
+          </div>
+
+          <!-- 存款金额 -->
+          <input
+            class="form-control fz-14 mx-8"
+            [style.width.px]="100"
+            autocomplete="off"
+            type="text"
+            input-float
+            [(ngModel)]="item.minDepositUsdt"
+          />
+
+          <div class="flex-1 d-flex flex-wrap align-items-start">
+            <!-- 奖品 -->
+            <div class="d-flex flex-wrap lh-22 pt-4" *ngIf="item.prizeId">
+              <!-- 奖品名称 -->
+              {{ item?.prizeName }}
+              <!-- 奖品配置 -->
+              （{{ item | prizeConfig }}）
+              <!-- 奖品状态: 待审核/已下架 -->
+              <div class="text-danger" *ngIf="item?.status !== 2">（{{ getPrizeSatus(item.status) | lang }}）</div>
+
+              <!-- 奖品金额类型为比例：上限金额 + 币种 -->
+              <ng-container *ngIf="item?.amountType === 2">
+                （{{ 'member.activity.prizeCommon.capAmount' | lang }}：{{ item?.rateLimit
+                }}<img [currencyIcon]="item?.currency" currencySize="20" class="mx-2" /> {{ item?.currency }}）
+              </ng-container>
+
+              <!-- 奖品类型 -->
+              （{{ prizeService.getPrizeName(prizeTypeList, item?.prizeType) }}）
+              <!-- 奖品卷码 -->
+              （{{ item?.prizeCode || '-' }}）
+            </div>
+
+            <button type="button" class="mt-1 btn btn-light-primary py-3 mr-5" (click)="onAddUpdatePrize(i, j)">
+              <svg-icon
+                class="vam svg-icon lh-18"
+                [src]="item.prizeId ? './assets/images/svg/pen.svg' : './assets/images/svg/add.svg'"
+              ></svg-icon>
+              <span class="vam">{{
+                (item.prizeId ? 'auManage.role.chnage' : 'member.activity.sencli2.addPrize') | lang
+              }}</span>
+            </button>
+          </div>
+
+          <!-- 删除 -->
+          <svg-icon
+            *ngIf="j > 0"
+            class="pt-2 vam svg-icon svg-icon-3x lh-18 cursor-pointer"
+            [src]="'./assets/images/svg/bonus-delete.svg'"
+            (click)="onEditlimit('delete', i, j)"
+          ></svg-icon>
+        </div>
+      </div>
+      <!-- 新增 -->
+      <button
+        *ngIf="items.minPrizes.length < 3"
+        type="button"
+        class="btn btn-light-primary py-3"
+        (click)="onEditlimit('add', i)"
+      >
+        <svg-icon class="vam svg-icon lh-18" [src]="'./assets/images/svg/add.svg'"></svg-icon>
+        <span class="vam">{{ 'common.add' | lang }}</span>
+      </button>
+    </ng-template>
+  </form-row>
+</div>
+
+<div class="text-danger">*{{ 'member.activity.sencli2.limit' | lang }}。</div>
+
+<div class="pt-10 flex-center btn-wrap" *ngIf="!isReadonly; else showFooterBtnTpl">
+  <button type="button" class="c-btn btn btn-light" (click)="onBack()">{{ 'luckRoulette.lastStep' | lang }}</button>
+  <button
+    type="button"
+    class="c-btn btn btn-primary"
+    (click)="onSubmit()"
+    [class.disabled]="appService.loading$ | async"
+  >
+    {{ 'luckRoulette.submit' | lang }}
+  </button>
+</div>
+
+<ng-template #showFooterBtnTpl>
+  <div class="pt-10 btn-wrap flex-center">
+    <button type="button" class="c-btn btn btn-light" (click)="jump('qualifications')">
+      {{ 'luckRoulette.lastStep' | lang }}
+    </button>
+    <button
+      type="button"
+      class="c-btn btn btn-primary"
+      (click)="router.navigate(['/bonus/activity-manage/Deposit' || ''])"
+    >
+      {{ 'common.back' | lang }}
+    </button>
+  </div>
+</ng-template>

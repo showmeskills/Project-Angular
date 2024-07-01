@@ -1,0 +1,29 @@
+<div class="modal-header">
+  <div class="modal-title">{{ 'member.list' | lang: (isInvite ? 'setVip' : 'removeSVIP') }}</div>
+
+  <div class="c-btn-close" (click)="modal.dismiss()">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<list-table *ngIf="list?.length" [list]="list"></list-table>
+
+<div class="modal-footer">
+  <div>
+    <div class="mb-8 fz-16">
+      <span class="text-primary">{{ checkedList.length }}</span>
+      <!-- 名用户已选中，是否确认升级为SVIP? -->
+      {{ 'member.detail' | lang: (isInvite ? 'selectedSetSvip' : 'selectedSetSvipRemove') }}
+      <span class="cancel text-danger" (click)="onCancel()">{{ 'member.detail.cancelSelection' | lang }}</span>
+    </div>
+
+    <div class="btn-wrap justify-content-center">
+      <button type="button" class="c-btn btn btn-light" (click)="modal.dismiss()">
+        {{ 'common.back' | lang }}
+      </button>
+      <button type="button" class="c-btn btn btn-primary" [class.disabled]="!checkedList.length" (click)="onSubmit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>

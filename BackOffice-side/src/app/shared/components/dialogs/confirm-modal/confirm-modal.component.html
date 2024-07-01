@@ -1,0 +1,31 @@
+<modal-title
+  [title]="titleLang !== undefined ? (titleLang | lang) : title ?? ('common.prompt' | lang)"
+  (close)="modal.dismiss()"
+></modal-title>
+
+<div class="modal-body text-center">
+  <ng-container>
+    <svg-icon
+      *ngIf="type === 'danger'"
+      [src]="'./assets/images/svg/warning.svg'"
+      class="svg-icon svg-icon-7x mt-8"
+    ></svg-icon>
+    <svg-icon
+      *ngIf="type === 'success'"
+      [src]="'./assets/images/svg/success.svg'"
+      class="svg-icon svg-icon-7x mt-8"
+    ></svg-icon>
+    <p class="fz-16 mt-8">
+      <ng-container *ngIf="msg">{{ msg }}</ng-container>
+      <ng-container *ngIf="msgLang">{{ msgLang | lang: msgArgs }}</ng-container>
+    </p>
+  </ng-container>
+  <ng-content></ng-content>
+</div>
+
+<modal-footer
+  (confirm)="onConfirm()"
+  [dismissShow]="dismissShow"
+  [confirmShow]="confirmShow"
+  (dismiss)="onClose()"
+></modal-footer>

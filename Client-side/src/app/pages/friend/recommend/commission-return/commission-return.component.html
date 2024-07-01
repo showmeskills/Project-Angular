@@ -1,0 +1,142 @@
+<div class="sub-theme-container">
+  <div class="sub-theme-header">
+    <div class="sub-theme-left">
+      <i class="header-icon"></i>
+      <span class="header-title">{{ 'aff_re_t' | translate }}</span>
+      <app-tool-tip [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }">
+        <i origin class="icon-warning mutual-opacity"></i>
+        <div tooltip class="tooltip-info">
+          <div class="tooltip-info-text">{{ 'sent_g' | translate }}</div>
+        </div>
+      </app-tool-tip>
+    </div>
+    <i class="right-icon mutual-opacity onact96-not" (click)="openLineChartDialog()"></i>
+  </div>
+  <!-- 佣金返还导航 -->
+  <div class="gray-bgc-nav">
+    <ng-container *ngIf="!mainLoading">
+      <ng-container *ngFor="let item of commissionReturnNavItem; let i = index">
+        <div>
+          <customize-button
+            class="nav-btn"
+            [disabled]="loading"
+            minWidth="100px"
+            [loading]="isActiveComReturnIndex == i && loading"
+            [type]="isActiveComReturnIndex == i ? 'default' : 'text'"
+            size="medium"
+            (click)="onSelectComReturnItem(i)"
+          >
+            <span [class.active]="isActiveComReturnIndex == i">
+              {{ item.value | translate }}{{ i == 0 ? '' : ('retu' | translate) }}
+            </span>
+          </customize-button>
+        </div>
+      </ng-container>
+    </ng-container>
+    <i class="animation-icon-loading-dot" *ngIf="mainLoading"><i></i><i></i><i></i></i>
+  </div>
+  <!-- 佣金返还文字 -->
+  <div class="commission-services-txt">
+    <span class="text">
+      <ng-container *ngIf="!mainLoading">
+        {{ 'sent_th' | translate }}
+      </ng-container>
+      <i class="animation-icon-loading-dot" *ngIf="mainLoading"><i></i><i></i><i></i></i>
+    </span>
+  </div>
+  <app-table-component
+    [tableHeader]="tableHead"
+    [tableBodyTmp]="tableBodyTmp"
+    [h5DataTemp]="h5DataTemp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="commissionReturnList.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="true"
+  >
+  </app-table-component>
+</div>
+<!-- toolTip 模块 -->
+<ng-template #toolTipTemplate let-item="item">
+  <app-tool-tip [tooltipsConfig]="{ offset: isH5 ? '-120px 0px 0px 0px' : '0px 0px 0px 0px' }" class="inline-block-ml">
+    <i origin class="icon-warning mutual-opacity"></i>
+    <div tooltip class="tooltip-info">
+      <p class="cdk-tooltip-info-title">{{ 'detail' | translate }}</p>
+      <div class="cdk-tooltip-info-list">
+        <div *ngFor="let game of item.currencyAmount" class="cdk-tooltip-info-group">
+          <p class="tooltip-info-text">{{ game.key | translate }}</p>
+          <div>
+            <p class="tooltip-info-text" *ngFor="let value of game.value">
+              {{ value.amount | currencyValue : value.currency }} {{ value.currency }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-tool-tip>
+</ng-template>
+
+<!-- 表格模版 -->
+<ng-template #tableBodyTmp>
+  <tr *ngFor="let item of commissionReturnList">
+    <td>{{ item.betDate }}</td>
+    <td>{{ item.relationId }}</td>
+    <td>
+      <span class="text">{{ item.activeFlow | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+    </td>
+    <td>{{ item.commissionRate * 1000 }}‰</td>
+    <td>
+      <span class="text">{{ item.usdtCurrency | currencyValue : 'USDT' }}</span>
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+      <ng-container
+        *ngTemplateOutlet="
+          toolTipTemplate;
+          context: {
+            item: item
+          }
+        "
+      ></ng-container>
+    </td>
+  </tr>
+</ng-template>
+<!-- h5数据 -->
+<ng-template #h5DataTemp>
+  <div class="h5-agent-table-data" *ngFor="let item of commissionReturnList">
+    <div class="first-line">
+      <span class="text">{{ 'friend' | translate }}ID：{{ item.relationId }}</span>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'dates' | translate }}</p>
+      <p class="group-text">{{ item.betDate }}</p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'tran_flow00' | translate }}</p>
+      <p class="group-text">
+        {{ item.activeFlow | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'return_ratio' | translate }}</p>
+      <p class="group-text">{{ item.commissionRate * 1000 }}‰</p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'ref_amo00' | translate }}</p>
+      <div class="group-text">
+        {{ item.usdtCurrency | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" />
+        <ng-container
+          *ngTemplateOutlet="
+            toolTipTemplate;
+            context: {
+              item: item
+            }
+          "
+        ></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,314 @@
+<header class="px-12 pt-10 pb-8">
+  <div class="d-flex flex-ac">
+    <div class="nav-tab">
+      <div class="nav-tab-wrap" [style.height.px]="langService.isLocal ? 32 : 30">
+        <span
+          class="nav-tab-item"
+          [style.font-size.px]="langService.isLocal ? 20 : 16"
+          [class.active]="curType === 0"
+          (click)="onType(0)"
+          >{{ 'dashboard.plan.affiliate' | lang }}</span
+        >
+      </div>
+      <div class="nav-tab-wrap" [style.height.px]="langService.isLocal ? 32 : 30">
+        <!-- 推荐好友设定 -->
+        <span
+          class="nav-tab-item"
+          [style.font-size.px]="langService.isLocal ? 20 : 16"
+          [class.active]="curType === 1"
+          (click)="onType(1)"
+          >{{ 'dashboard.plan.refer' | lang }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- 联盟计划设定 -->
+  <div class="d-flex mt-2" *ngIf="curType === 0">
+    <div class="flex-1">
+      <span class="mt-4 plan-btn" [class.active]="curTab === 0" (click)="onTab(0)">{{
+        'dashboard.plan.commissionTask' | lang
+      }}</span>
+      <!-- 佣金配置 -->
+      <span class="mt-4 plan-btn" [class.active]="curTab === 1" (click)="onTab(1)">{{
+        'dashboard.plan.commissionConfiguration' | lang
+      }}</span>
+      <!-- 分享页 -->
+      <span class="mt-4 plan-btn" (click)="openShare(share, 1)">{{ 'dashboard.plan.sharePage' | lang }}</span>
+    </div>
+
+    <div class="d-flex text-primary align-items-end">
+      <span class="cursor-pointer" (click)="onEdit()">
+        <svg-icon [src]="'./assets/images/svg/pen.svg'"></svg-icon>
+        <span>{{ isEdit ? ('common.cancel' | lang) : ('common.modify' | lang) }}</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 推荐好友设定 -->
+  <div class="d-flex mt-2" *ngIf="curType === 1">
+    <div class="flex-1">
+      <!-- 规则配置 -->
+      <span class="mt-4 plan-btn" [class.active]="curTab === 0" (click)="onTab(0)">{{
+        'dashboard.plan.ruleConfiguration' | lang
+      }}</span>
+      <!-- 分享图 -->
+      <span class="mt-4 plan-btn" (click)="openShare(share, 2)">{{ 'dashboard.plan.sharePicture' | lang }}</span>
+      <!-- 顶级推荐人设定 -->
+      <span class="mt-4 plan-btn" [class.active]="curTab === 2" (click)="onTab(2)">{{
+        'dashboard.plan.topReferrerSettings' | lang
+      }}</span>
+    </div>
+
+    <div class="d-flex text-primary align-items-end">
+      <span class="cursor-pointer" (click)="onEdit()">
+        <svg-icon [src]="'./assets/images/svg/pen.svg'"></svg-icon>
+        <span>{{ isEdit ? ('common.cancel' | lang) : ('common.modify' | lang) }}</span>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- 联盟计划设定 -->
+<div *ngIf="curType === 0">
+  <div *ngIf="curTab === 0; else commissionTpl">
+    <table class="table w-100">
+      <thead>
+        <tr>
+          <!--返佣类型  -->
+          <th>
+            <span class="cell">{{ 'dashboard.plan.rebateType' | lang }}</span>
+          </th>
+          <!--增长条件 -->
+          <th>
+            <span class="cell">{{ 'dashboard.plan.growthConditions' | lang }}</span>
+          </th>
+          <!--增长比列  -->
+          <th>
+            <span class="cell">{{ 'dashboard.plan.growthRate' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of commissionTask; let i = index">
+          <td>
+            <span class="cell">{{ item.typeName }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="flex-1 d-flex flex-center">
+                <input
+                  *ngIf="isEdit; else conditionTpl"
+                  input-percentage
+                  class="form-control mr-2 text-right"
+                  type="text"
+                  [style.height.px]="36"
+                  [style.width.px]="70"
+                  [(ngModel)]="item.conditionEdit"
+                />
+                <ng-template #conditionTpl>
+                  {{ item.condition | numberSign }}
+                </ng-template>
+                <span class="ml-2"> %</span>
+              </span>
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="flex-1 d-flex flex-center">
+                <input
+                  *ngIf="isEdit; else proportionTpl"
+                  input-percentage
+                  class="form-control mr-2 text-right"
+                  type="text"
+                  [style.height.px]="36"
+                  [style.width.px]="70"
+                  [(ngModel)]="item.proportionEdit"
+                />
+                <ng-template #proportionTpl>
+                  {{ item.proportion | numberSign }}
+                </ng-template>
+                <span class="ml-2"> %</span>
+              </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="btn-wrap flex-center my-12" *ngIf="isEdit">
+      <button class="c-btn c-btn-default" (click)="isEdit = false">{{ 'common.cancel' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onCommissionTaskSubmit()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+
+  <ng-template #commissionTpl>
+    <div class="plan-setting fz-14">
+      <div class="d-flex lh-36 py-3">
+        <div style="flex: 0 0 165px">{{ 'dashboard.plan.basicCommission' | lang }}：</div>
+        <div class="flex-1 d-flex justify-content-end">
+          <input
+            *ngIf="isEdit; else proportionTpl"
+            input-percentage
+            class="form-control w-100 mr-2 text-right"
+            type="text"
+            [style.height.px]="36"
+            [(ngModel)]="commissionConfigForm.baseProportion"
+          />
+          <ng-template #proportionTpl>{{ commissionConfig.baseProportion }}</ng-template>
+          <span class="suffix ml-2"> %</span>
+        </div>
+      </div>
+      <div class="d-flex lh-36 py-3">
+        <!-- 代理保护优惠佣金上限 -->
+        <div style="flex: 0 0 165px">{{ 'dashboard.plan.affiliateProtection' | lang }}：</div>
+        <div class="flex-1 d-flex justify-content-end">
+          <input
+            *ngIf="isEdit; else safeCommissionTpl"
+            input-percentage
+            class="form-control w-100 mr-2 text-right"
+            type="text"
+            [style.height.px]="36"
+            [(ngModel)]="commissionConfigForm.discountMax"
+          />
+          <ng-template #safeCommissionTpl>{{ commissionConfig.discountMax }}</ng-template>
+          <span class="suffix ml-2"> %</span>
+        </div>
+      </div>
+      <div class="d-flex lh-36 py-3">
+        <div style="flex: 0 0 165px">{{ 'dashboard.plan.proxyProtection' | lang }}：</div>
+        <div class="flex-1 d-flex justify-content-end">
+          <input
+            *ngIf="isEdit; else safeWeekTpl"
+            input-number
+            class="form-control w-100 mr-2 text-right"
+            type="text"
+            [style.height.px]="36"
+            [(ngModel)]="commissionConfigForm.cycleMax"
+          />
+          <ng-template #safeWeekTpl>{{ commissionConfig.cycleMax }}</ng-template>
+          <span class="suffix ml-2"> {{ 'dashboard.plan.month' | lang }}</span>
+        </div>
+      </div>
+
+      <div class="d-flex flex-center my-12" *ngIf="isEdit">
+        <div class="btn-wrap">
+          <button class="c-btn c-btn-default" (click)="isEdit = false">{{ 'common.cancel' | lang }}</button>
+          <button class="c-btn c-btn-primary" (click)="onCommissionSubmit()">{{ 'common.confirm' | lang }}</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<!-- 联盟计划设定 -->
+<div *ngIf="curType === 1">
+  <div *ngIf="curTab === 2">
+    <table class="table w-100">
+      <thead>
+        <tr>
+          <!-- 排名 -->
+          <th>
+            <span class="cell">{{ 'dashboard.plan.ranking' | lang }}</span>
+          </th>
+          <!-- 每日奖励金额 -->
+          <th>
+            <span class="cell">{{ 'dashboard.plan.dailyReward' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of recommendList; index as i">
+          <td>
+            <!-- 第 {{ item.name }} 名 -->
+            <span class="cell"> {{ 'dashboard.plan.no' | lang: { name: item?.name } }} </span>
+          </td>
+          <td>
+            <span class="cell">
+              <span class="flex-1 d-flex flex-center">
+                <form-row [showLabel]="false" [control]="rewardForm.controls[i]">
+                  <ng-template let-invalid="invalid" let-control="formControl">
+                    <input
+                      *ngIf="isEdit; else rewardTpl"
+                      input-float
+                      class="form-control mr-2 text-right"
+                      type="text"
+                      max-length="12"
+                      [placeholder]="'dashboard.plan.enterAmount' | lang"
+                      [style.height.px]="36"
+                      [style.width.px]="140"
+                      [formControl]="control"
+                      [class.is-invalid]="invalid"
+                    />
+                  </ng-template>
+                </form-row>
+                <ng-template #rewardTpl>
+                  {{ +item.reward ? (item.reward | numberSign) : '-' }}
+                </ng-template>
+                <span class="ml-2" *ngIf="(+item.reward && !isEdit) || isEdit"> USDT</span>
+              </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="btn-wrap flex-center my-12" *ngIf="isEdit">
+      <button class="c-btn c-btn-default" (click)="isEdit = false">{{ 'common.cancel' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="onRecommendRewardSubmit()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #share let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <!-- 分享图配置 -->
+    <div class="modal-title fw-bolder">{{ 'dashboard.plan.shareGraph' | lang }}</div>
+
+    <!--begin::Close-->
+    <div class="c-btn-close" (click)="d()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+    <!--end::Close-->
+  </div>
+
+  <div class="modal-body px-22 py-12">
+    <lang-tab
+      [(value)]="selectLang"
+      (languageChange)="updateLanguageForm($event)"
+      (selectionChange)="onLangChange($event)"
+      class="w-100"
+    >
+      <ng-template let-i="i" let-current="current">
+        <div class="d-flex flex-wrap flex-1">
+          <mat-tab-group
+            class="w-100 tab-group"
+            [(selectedIndex)]="curPlat"
+            (selectedIndexChange)="getShare(affiliateType, current.code, curPlatValue)"
+          >
+            <mat-tab [label]="name | lang" *ngFor="let name of plat">
+              <div class="tab-content-wrap">
+                <div class="w-100 tab-content" *ngFor="let item of proportionList; let i = index">
+                  <upload
+                    type="Proxy"
+                    [showLimitText]="false"
+                    [style.height.px]="183"
+                    [(ngModel)]="shareList[i]"
+                    (valueChange)="onUploadChange($event, i, item, current.code)"
+                  ></upload>
+                  <div class="text-center mt-5">{{ item }}</div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </ng-template>
+    </lang-tab>
+  </div>
+
+  <div class="btn-wrap d-flex flex-center pb-18">
+    <button type="button" class="c-btn btn btn-primary" (click)="d()">{{ 'common.back' | lang }}</button>
+  </div>
+</ng-template>

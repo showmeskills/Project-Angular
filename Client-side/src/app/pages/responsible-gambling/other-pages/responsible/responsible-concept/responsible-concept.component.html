@@ -1,0 +1,58 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container concept-container">
+    <p class="text-20">{{ 'respon_qa' | translate }}</p>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <app-customize-text [text]="textOne" (onClick)="commingSoon()"> </app-customize-text>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <p class="text-16">
+        {{ 'respon_qc' | translate }}
+      </p>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <app-customize-text [text]="textTwo" (onClick)="commingSoon()"> </app-customize-text>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <p class="text-16">
+        {{ 'respon_qe' | translate }}
+      </p>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <p class="text-16">
+        {{ 'respon_qf' | translate }}
+      </p>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <p class="text-16">
+        {{ 'respon_qg' | translate }}
+      </p>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <app-customize-text [text]="textThree" (onClick)="commingSoon()"> </app-customize-text>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <app-customize-text [text]="textFour" (onClick)="commingSoon()"> </app-customize-text>
+    </div>
+    <div class="content-text">
+      <i class="icon-correct"></i>
+      <app-customize-text [text]="textFive" (onClick)="commingSoon()"> </app-customize-text>
+    </div>
+
+    <p class="text-20 m-top-70">{{ 'respon_qk' | translate }}</p>
+    <p class="text-16 m-top-20">{{ 'respon_ql' | translate }}</p>
+
+    <div class="flex-layout m-top-20">
+      <customize-button type="text" [plain]="true" [active]="true" (onClick)="commingSoon()">
+        {{ 'question' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</div>

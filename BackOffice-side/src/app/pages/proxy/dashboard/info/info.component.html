@@ -1,0 +1,122 @@
+<div class="d-flex">
+  <div class="base-plane-item">
+    <div class="title">{{ 'dashboard.info.activeAgent' | lang }}</div>
+    <div class="count">{{ infoData.activeProxy || 0 }}</div>
+    <div class="graph">
+      <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [xaxis]="chartOptions.xAxis"
+        [yaxis]="chartOptions.yAxis"
+        [grid]="chartOptions.grid"
+        [dataLabels]="chartOptions.dataLabels"
+        [stroke]="chartOptions.stroke"
+        [fill]="chartOptions.fill"
+        [tooltip]="chartOptions.tooltip"
+      ></apx-chart>
+    </div>
+    <!-- 累计交易额 -->
+    <div class="last">
+      {{ 'dashboard.info.transactionAmount' | lang }}：{{ infoData.trade | currencyValue: 'USDT' }}
+    </div>
+  </div>
+  <div class="line"></div>
+  <div class="base-plane-item">
+    <!-- 贡献度 -->
+    <div class="title">{{ 'dashboard.info.contribution' | lang }}</div>
+    <div class="count">
+      {{ infoData.contribution | toFormatNumberDecimal | toFormatMoney }}
+    </div>
+    <div class="graph">
+      <apx-chart
+        [series]="barChartOptions.series"
+        [chart]="barChartOptions.chart"
+        [xaxis]="barChartOptions.xAxis"
+        [yaxis]="barChartOptions.yAxis"
+        [grid]="barChartOptions.grid"
+        [dataLabels]="barChartOptions.dataLabels"
+        [stroke]="barChartOptions.stroke"
+        [fill]="barChartOptions.fill"
+        [tooltip]="barChartOptions.tooltip"
+      ></apx-chart>
+    </div>
+    <div class="last">{{ 'dashboard.info.generalAgent' | lang }}：{{ infoData.totalProxy | toFormatMoney }}</div>
+  </div>
+</div>
+
+<div class="d-flex mt-16">
+  <div class="base-plane-item">
+    <div class="title">{{ 'dashboard.info.downlineAmount' | lang }}</div>
+    <div class="count">¥{{ amountData.balance || 0 | currencyValue: 'USDT' }} USDT</div>
+    <div class="graph">
+      <pp-progress
+        color="rgba(243, 109, 56, 0.85)"
+        [rounded]="0"
+        [percentage]="50"
+        [showText]="false"
+        [strokeWidth]="5"
+        class="w-100"
+        status="success"
+      ></pp-progress>
+    </div>
+    <div class="last">
+      {{ 'dashboard.info.pendingSettlement' | lang }}：¥{{ amountData.freezeAmount | currencyValue: 'USDT' }} USDT
+    </div>
+  </div>
+  <div class="line"></div>
+  <div class="base-plane-item">
+    <div class="title">{{ 'dashboard.info.agencyAmount' | lang }}</div>
+    <div class="count">¥{{ infoData.proxyAmount || 0 | currencyValue: 'USDT' }} USDT</div>
+    <div class="graph">
+      <pp-progress
+        color="rgba(19, 194, 194, 0.85)"
+        [rounded]="0"
+        [percentage]="50"
+        [showText]="false"
+        [strokeWidth]="5"
+        class="w-100"
+        status="success"
+      ></pp-progress>
+    </div>
+    <div class="last">
+      {{ 'dashboard.info.negativeAmount' | lang }}：¥{{ infoData.proxyAmountAbs | currencyValue: 'USDT' }} USDT
+    </div>
+  </div>
+</div>
+
+<div class="d-flex mt-16">
+  <div class="base-plane-item">
+    <div class="title">{{ 'dashboard.info.amountPrepaid' | lang }}</div>
+    <div class="count">¥NaN</div>
+    <div class="graph">
+      <apx-chart
+        [series]="barChartOptions.series"
+        [chart]="barChartOptions.chart"
+        [xaxis]="barChartOptions.xAxis"
+        [yaxis]="barChartOptions.yAxis"
+        [grid]="barChartOptions.grid"
+        [dataLabels]="barChartOptions.dataLabels"
+        [stroke]="barChartOptions.stroke"
+        [tooltip]="barChartOptions.tooltip"
+        [fill]="{ colors: ['#c744f7'] }"
+      ></apx-chart>
+    </div>
+    <div class="last">{{ 'dashboard.info.remainingAmount' | lang }}：¥NaN</div>
+  </div>
+  <div class="line"></div>
+  <div class="base-plane-item">
+    <div class="title">{{ 'dashboard.info.pendingReview' | lang }}</div>
+    <div class="count">{{ infoData.pendingProxySize || 0 | toFormatMoney }}</div>
+    <div class="graph">
+      <pp-progress
+        color="rgba(19, 194, 194, 0.85)"
+        [rounded]="0"
+        [percentage]="50"
+        [showText]="false"
+        [strokeWidth]="5"
+        class="w-100"
+        status="success"
+      ></pp-progress>
+    </div>
+  </div>
+</div>

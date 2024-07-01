@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.im-tips {
+  background-color: #fff;
+  border-radius: 21px;
+  line-height: 1;
+  padding: 10px;
+  color: var(--color-999);
+
+  &-msg {
+    margin-left: 6px;
+  }
+}

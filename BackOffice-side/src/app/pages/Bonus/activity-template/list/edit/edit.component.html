@@ -1,0 +1,122 @@
+<div class="card px-12 py-8 d-flex flex-row">
+  <ul class="box">
+    <ng-container *ngIf="rankList.length; else noRank">
+      <!-- 总冠军 -->
+      <li>{{ 'member.activity.sencli9.champion' | lang }}</li>
+      <li *ngFor="let item of rankList">
+        <!-- <img class="mr-2" iconSrc="/assets/images/bonus/10.svg" /> -->
+        <span class="mr-4">{{ item.uid }}</span>
+        <img [currencyIcon]="'USDT'" currencySize="18" class="mr-2" />
+        <span class="ml-4">{{ item.totalMoneyUsdt }}</span>
+      </li>
+    </ng-container>
+    <!-- 暂无奖金领取排名！ -->
+    <ng-template #noRank>{{ 'member.activity.sencli9.noChampionRank' | lang }}</ng-template>
+  </ul>
+</div>
+<div class="card px-12 py-10 mt-8">
+  <table class="table mb-0">
+    <thead theadAffix>
+      <tr>
+        <!-- 日期 -->
+        <th>
+          <span class="cell">{{ 'common.date' | lang }}</span>
+        </th>
+        <!-- 周期 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli9.cycle' | lang }}</span>
+        </th>
+        <!-- 总有效流水 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli9.totalFlow' | lang }}</span>
+        </th>
+        <!-- 交易量冠军 -->
+        <th>
+          <span class="cell volume">{{ 'member.activity.sencli9.volumeChampion' | lang }}</span>
+        </th>
+        <!-- 名单 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli9.list' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">
+            {{ item.issueStartTime || '-' }}
+            <ng-container *ngIf="item.issueEndTime">
+              -
+              {{ item.issueEndTime }}
+            </ng-container>
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            {{ getIssuePeriod(item.issuePeriod) | lang }}
+          </span>
+        </td>
+        <td>
+          <span class="cell">
+            <img [currencyIcon]="'USDT'" currencySize="18" class="mr-4" />
+            {{ item.volume | currencyValue: 'USDT' }}
+          </span>
+        </td>
+        <td>
+          <div class="cell volume">
+            <!-- <img class="mr-2" iconSrc="/assets/images/bonus/10.svg" /> -->
+            <span class="mr-4">{{ item.championUid || '-' }}</span>
+            <img [currencyIcon]="'USDT'" currencySize="18" class="mr-4" />
+            <span>{{ item.championBonusUsdtMoney | currencyValue: 'USDT' }}</span>
+          </div>
+        </td>
+        <td>
+          <span class="cell">
+            <app-label
+              type="primary"
+              class="cursor-pointer"
+              (click)="
+                router.navigate(['/bonus/activity-manage/activity-list/edit/rank-list'], {
+                  queryParams: { id: item.id, tenantId: this.tenantId, editId: this.id }
+                })
+              "
+              >{{ 'member.activity.sencli9.viewList' | lang }}</app-label
+            >
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-30">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control rounded-0"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="getList(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="getList()"
+        [isLoading]="appService.isContentLoadingSubject | async"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

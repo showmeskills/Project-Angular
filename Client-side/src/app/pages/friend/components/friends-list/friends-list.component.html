@@ -1,0 +1,88 @@
+<div class="list-container">
+  <div class="list-container-close">
+    <span class="text-16 font-weight">{{ data.title }}</span>
+    <i class="icon-close-simple mutual-opacity onact96-not" (click)="close()"></i>
+  </div>
+  <div class="list-container-content" [appLoading]="loading">
+    <ng-container
+      *ngTemplateOutlet="
+        listTemplate;
+        context: {
+          isShowTable: data.id === 0,
+          dataLeng: data.id === 0 ? friendList.length : allList.data.length
+        }
+      "
+    ></ng-container>
+  </div>
+</div>
+
+<ng-template #listTemplate let-isShowTable="isShowTable" let-dataLeng="dataLeng">
+  <ng-container *ngIf="isShowTable">
+    <ng-container *ngIf="friendList.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'friends_id' | translate }}</th>
+            <th>{{ 'date' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of friendList">
+            <td>{{ item.userId }}</td>
+            <td>{{ item.time | mdate : 'YYYY-MM-DD HH:mm:ss' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <app-paginator
+        [disabled]="loading"
+        [loading]="loading"
+        [(page)]="paginator.page"
+        [total]="paginator.total"
+        [pageSize]="paginator.pageSize"
+        (onPageChange)="getRelation()"
+      >
+      </app-paginator>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="!isShowTable">
+    <div class="all-container-content">
+      <ng-container *ngIf="allList.data.length > 0">
+        <div class="all-container-content">
+          <div class="all-list-header">
+            <p class="text-14" *ngFor="let item of allList.header">
+              {{ item }}
+            </p>
+          </div>
+          <div class="all-list-item" *ngFor="let item of allList.data">
+            <div class="left">
+              <span class="text-14">{{ item.inviteCode }}</span>
+              <span
+                class="default onact96-not text-14"
+                (click)="setDefaultInviteCode(item.inviteCode)"
+                [class.active]="item.isDefault"
+              >
+                {{ item.isDefault ? ('default_text' | translate) : ('default_tab' | translate) }}</span
+              >
+            </div>
+            <div class="right">
+              <span class="text-14">{{ 'friends_mi' | translate }} {{ item.commissionRate * 1000 }}‰</span>
+              <span class="text-14 m-left-5">{{ 'friend' | translate }} {{ item.friendCommission * 1000 }}‰</span>
+            </div>
+          </div>
+        </div>
+        <div class="all-container-btns">
+          <p class="text-14 amount-text">{{ 'friends_l_n' | translate }} {{ 10 - allList.data.length }}</p>
+          <customize-button width="100%" type="primary" size="medium" (onClick)="onAddNewInviteCode()"
+            >+ {{ 'friends_add' | translate }}</customize-button
+          >
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+  <app-empty
+    *ngIf="dataLeng === 0 && !loading"
+    class="clearfix"
+    [icon]="'assets/images/friend/empty.png'"
+    [text]="'no_data' | translate"
+  ></app-empty>
+</ng-template>

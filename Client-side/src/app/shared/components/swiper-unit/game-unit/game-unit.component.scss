@@ -1,0 +1,216 @@
+:host {
+  display: block;
+}
+.item-box {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  font-size: 14px;
+  position: relative;
+  width: 100%;
+  height: 0;
+
+  .item-con {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    // background-color: var(--game-unit-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  app-lazy-image {
+    z-index: 0;
+  }
+
+  &::before {
+    pointer-events: none;
+    content: '';
+    background-color: #000;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: 0.2s;
+    transition-delay: 0.05s; //防止闪烁
+    z-index: 1;
+  }
+
+  :host-context(.img-carousel-item-half-right) & {
+    &::before {
+      opacity: 0.5;
+    }
+  }
+
+  .disabled-click-box,
+  .loading,
+  .maintenance {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .loading {
+    background-color: rgba(#ccc, 0.6);
+  }
+
+  .maintenance {
+    background-color: rgba(#000, 0.8);
+    color: #fff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+  }
+
+  &.inactivated {
+    pointer-events: none !important;
+
+    &::before {
+      opacity: 0 !important;
+    }
+
+    .disabled-click-box {
+      pointer-events: all;
+    }
+  }
+
+  // 有hove移动
+  &.has-hover-move {
+    @media (any-hover: hover) and (min-width: 768px) {
+      position: relative;
+      transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s;
+      transform: translateY(0);
+      box-shadow: 0 0 0 0 transparent;
+
+      &:hover {
+        transform: translateY(-0.5em);
+        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+      }
+    }
+
+    @media (max-width: 767px) {
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      opacity: 1;
+
+      &:active {
+        opacity: 0.9;
+      }
+    }
+
+    &:active {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  //有hover遮罩
+  &.has-mask {
+    position: relative;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+    opacity: 1;
+
+    .mask-box {
+      transform: translate3d(0, 0, 0); //修正一些未知原因微小的抖动
+      position: absolute;
+      pointer-events: none;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      padding: 14px 10px 10px;
+      background-color: var(--game-unit-mask-bg);
+      display: flex;
+      flex-direction: column;
+      color: var(--game-unit-mask-color);
+
+      .triangle {
+        font-size: 24px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -0.5em;
+        margin-top: -0.5em;
+        background-color: var(--game-unit-mask-color);
+        width: 1em;
+        height: 1em;
+        border-top-right-radius: 20%;
+        transform: rotate(30deg) skewX(-30deg) scale(1, 0.866);
+
+        &::after,
+        &::before {
+          content: '';
+          width: 1em;
+          height: 1em;
+          border-top-right-radius: 20%;
+          position: absolute;
+          background-color: inherit;
+        }
+
+        &::before {
+          transform: rotate(-135deg) skewX(-45deg) scale(1.414, 0.707) translate(0, -50%);
+        }
+
+        &::after {
+          transform: rotate(135deg) skewY(-45deg) scale(0.707, 1.414) translate(50%);
+        }
+      }
+
+      .item-title {
+        font-size: 16px;
+        font-weight: bold;
+        word-break: break-word;
+      }
+
+      .item-desc {
+        margin-top: auto;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .item-info {
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+        margin-top: 4px;
+
+        > * + * {
+          margin-top: 4px;
+        }
+      }
+    }
+
+    @media (max-width: 767px) {
+      .mask-box {
+        display: none; // h5模式隐藏遮罩
+      }
+
+      @media (any-hover: hover) {
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+
+      &:active {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  // &.onact96 {
+  //   &:active {
+  //     background-color: transparent;
+  //     box-shadow: 0 0 0 0 transparent;
+  //   }
+  // }
+}

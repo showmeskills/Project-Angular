@@ -1,0 +1,190 @@
+:host {
+  .tab-wrapper {
+    width: 100%;
+    height: 60px;
+
+    //matTab组件样式覆盖
+    &::ng-deep {
+      .mat-mdc-tab-link,
+      .mat-mdc-tab-links {
+        height: 100%;
+      }
+
+      .mat-mdc-tab-link {
+        opacity: 1;
+        height: auto;
+        padding: 0 4px 0 4px;
+
+        .mdc-tab__text-label {
+          position: relative;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          overflow: visible;
+          cursor: pointer;
+        }
+      }
+
+      .mat-ink-bar {
+        display: flex;
+        background-color: transparent;
+
+        &::before {
+          content: '';
+          width: 4px;
+          height: 2px;
+          border-radius: 5px;
+          position: relative;
+          flex: 1;
+          margin: 0 4px;
+          background-color: #009ef7;
+        }
+      }
+    }
+
+    .item {
+      position: relative;
+      flex-direction: column;
+      min-width: 58px;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      margin-right: 20px;
+      overflow: visible;
+      cursor: pointer;
+
+      //选中
+      &.active {
+        color: #009ef7 !important;
+        .tab-name {
+          color: #009ef7 !important;
+        }
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          color: #009ef7;
+          .tab-name {
+            color: #009ef7 !important;
+          }
+        }
+      }
+
+      &:first-child {
+        margin-left: 5px;
+        transition: none;
+      }
+
+      &:last-child {
+        margin-right: 5px;
+      }
+
+      .tab-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #969bad;
+      }
+    }
+  }
+}
+
+// 未匹配 - 字体高亮且点击
+.not-matched {
+  color: #c5182c;
+  cursor: pointer;
+}
+
+// 赛事列表
+.competition-list {
+  .table {
+    height: 100%;
+    // 设置tbody下tr 的间隔色
+    tbody {
+      .item:nth-child(2n-1) {
+        background: rgba($color: #f1faff, $alpha: 0.4);
+      }
+    }
+  }
+  .source {
+    width: 35px;
+    height: 18px;
+    border-radius: 6px;
+    position: relative;
+
+    &.blue {
+      border: 1px solid #009ef7;
+      color: #009ef7;
+    }
+
+    &.green {
+      border: 1px solid #42cd89;
+      color: #42cd89;
+    }
+
+    &.orange {
+      border: 1px solid #fe9d40;
+      color: #fe9d40;
+    }
+
+    &.red {
+      border: 1px solid #f1416d;
+      color: #f1416d;
+    }
+
+    .tips {
+      position: absolute;
+      right: -5px;
+      bottom: 9px;
+    }
+  }
+}
+
+// 赛事列表 - 详情
+.competition-detail {
+  height: 194px;
+  border-top: 1px dashed #e4e6ef;
+
+  .boder-b {
+    border-bottom: 1px dashed #e4e6ef;
+  }
+  .boder-r {
+    border-right: 1px dashed #e4e6ef;
+  }
+}
+
+.triangle {
+  margin-left: 5px;
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #a1a5b7;
+  margin-top: 4px;
+
+  &.active {
+    border-bottom: 4px solid #3699ff;
+  }
+  &:active {
+    border-top: 4px solid #3699ff;
+  }
+}
+
+.triangle-down {
+  margin-top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #a1a5b7;
+
+  &.active {
+    border-top: 4px solid #3699ff;
+  }
+  &:active {
+    border-top: 4px solid #3699ff;
+  }
+}

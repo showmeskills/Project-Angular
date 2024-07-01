@@ -1,0 +1,26 @@
+<div
+  [@toastAnimation]="showBox"
+  class="customize-toast-container {{ customClass }}"
+  [class.mutual-opacity]="onClick"
+  [class.has-close]="showClose"
+  [style]="{ top: offset + 'px', zIndex: zIndex }"
+  (click)="onToastClick()"
+  appLifeObserve
+  (lifeContentInit)="viewInit($event)"
+>
+  <i *ngIf="type" class="toast-type-icon icon-toast-{{ type }}"></i>
+  <div class="toast-content">
+    <h2 class="toast-title" *ngIf="title">{{ title }}</h2>
+    <div class="toast-text">
+      <p>{{ message }}</p>
+    </div>
+  </div>
+  <i *ngIf="showClose" class="toast-close icon-close-simple onact96-not" (click)="close()"></i>
+  <div
+    class="bar"
+    [style.transition-duration]="duration + 'ms'"
+    [class.active]="showBox"
+    [class.success]="type === 'success'"
+    [class.fail]="type === 'fail'"
+  ></div>
+</div>

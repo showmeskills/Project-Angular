@@ -1,0 +1,89 @@
+<ng-template #tourists>
+  @if (containerStyle) {
+    <div
+      class="tourists-tips"
+      [style.position]="containerStyle.position"
+      [style.zIndex]="containerStyle.zIndex"
+      [style.bottom]="containerStyle.bottom"
+      [style.right]="containerStyle.right"
+      [style.width]="containerStyle.width"
+      [style.height]="containerStyle.height"
+      [style.maxWidth]="containerStyle.maxWidth"
+      [style.maxHeight]="containerStyle.maxHeight"
+      [style.transitionDelay]="tipVisible() ? transitionDelay : '0s'"
+      [style.opacity]="containerStyle.opacity"
+    >
+      <div class="tourists-container" [style.padding]="outPadding + 'px'">
+        <div
+          class="tourists-box animate__animated animate__fadeIn animate__fast"
+          [style.height]="'calc(100% - ' + headerHeight + 'px)'"
+        >
+          <div class="tourists-main">
+            @switch (step) {
+              @case (1) {
+                <div class="tourists-step step1">
+                  <div class="text"><i class="icon-toast-fail"></i>{{ 'cs_tou_tip_desc' | translate }}</div>
+                  <customize-button size="large" type="primary" width="100%" (onClick)="tologin()">
+                    {{ 'login_button' | translate }} ({{ 'recommend' | translate }})
+                  </customize-button>
+                  <customize-button size="large" width="100%" (onClick)="next()" [awayTheme]="true">
+                    {{ 'cs_tou_tip_next' | translate }}
+                  </customize-button>
+                </div>
+              }
+              @case (2) {
+                <div class="tourists-step step2">
+                  <div class="tit">{{ 'contract_us' | translate }}</div>
+                  <div class="text">{{ 'cs_tou_tip_desc2' | translate }}</div>
+                  <app-customize-input
+                    [(value)]="contact"
+                    placeholder="{{ 'enter_phone' | translate }}/{{ 'email' | translate }}"
+                    size="large"
+                    class="away-theme"
+                    (onChange)="contactChange()"
+                    [error]="!!contact ? errorText : ''"
+                    [format]="format"
+                  >
+                  </app-customize-input>
+                  <customize-button
+                    size="large"
+                    type="primary"
+                    width="100%"
+                    (onClick)="submit()"
+                    [disabled]="!!errorText || !contact"
+                  >
+                    {{ 'cs_tou_tip_ok' | translate }}
+                  </customize-button>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</ng-template>
+
+@if (customerServiceService.liveChatConfig; as config) {
+  @if (config.license && config.group) {
+    <livechat-widget
+      [visibility]="config.visibility"
+      [license]="config.license"
+      [group]="config.group"
+      [customerName]="config.customerName"
+      [customerEmail]="config.customerEmail"
+      [sessionVariables]="config.sessionVariables"
+      [chatBetweenGroups]="false"
+      (onReady)="onReady($event)"
+      (onAvailabilityChanged)="onAvailabilityChanged($event)"
+      (onVisibilityChanged)="onVisibilityChanged($event)"
+      (onCustomerStatusChanged)="onCustomerStatusChanged($event)"
+      (onNewEvent)="onNewEvent($event)"
+      (onFormSubmitted)="onFormSubmitted($event)"
+      (onRatingSubmitted)="onRatingSubmitted($event)"
+      (onGreetingDisplayed)="onGreetingDisplayed($event)"
+      (onGreetingHidden)="onGreetingHidden($event)"
+      (onRichMessageButtonClicked)="onRichMessageButtonClicked($event)"
+    ></livechat-widget>
+  }
+}

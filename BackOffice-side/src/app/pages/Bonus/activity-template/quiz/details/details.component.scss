@@ -1,0 +1,22 @@
+.box {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0;
+  padding-left: 0px;
+  li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+  }
+}
+.imgBox {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f09f23;
+  border-radius: 9px;
+}

@@ -1,0 +1,11 @@
+.filter-card {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
+}
+
+.text-primary.link-dump {
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,29 @@
+<app-standard-popup
+  type="warn"
+  [content]="'clear_title' | translate"
+  [autoCloseAfterCallback]="false"
+  [buttons]="[
+    { text: 'cancels' | translate, primary: false },
+    { text: 'clear_zero' | translate, primary: true, wait: true }
+  ]"
+  [callback]="[cancels, clearBonus]"
+>
+  <div class="total-bonus">
+    <span>{{ 'current_credit_bal' | translate }}:</span>
+    <i class="animation-icon-loading-dot" *ngIf="loadingTotal"><i></i><i></i><i></i></i>
+    <em *ngIf="!loadingTotal">{{ totalBonus | currencyValue : 'USDT' : undefined : undefined : 2 }} USDT</em>
+  </div>
+  <div class="total-bonus">
+    <span>{{ 'none_lock_bonus' | translate }}:</span>
+    <i class="animation-icon-loading-dot" *ngIf="loadingTotal"><i></i><i></i><i></i></i>
+    <em *ngIf="!loadingTotal">{{ totalNonStickyBonus | currencyValue : 'USDT' : undefined : undefined : 2 }} USDT</em>
+  </div>
+  <div class="description">
+    <p>{{ 'clear_credit_desc1' | translate }}</p>
+    <span>{{ 'clear_credit_desc2' | translate }}</span>
+    <p>{{ 'clear_credit_desc5' | translate }}</p>
+    <span>{{ 'clear_credit_desc6' | translate }}</span>
+    <p>{{ 'clear_credit_desc7' | translate }}</p>
+    <span>{{ 'clear_credit_desc8' | translate }}</span>
+  </div>
+</app-standard-popup>

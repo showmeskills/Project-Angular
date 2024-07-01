@@ -1,0 +1,77 @@
+div {
+  display: flex;
+}
+
+.scan-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  @media (max-width: 767px) {
+    text-align: center;
+    line-height: 1.43;
+  }
+
+  .header {
+    color: var(--text-color-20);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.38;
+    margin-bottom: 25px;
+  }
+
+  .icon-container {
+    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 5%);
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 34px;
+
+    .code {
+      width: 122px;
+      height: 122px;
+      border: 1px solid #f6f6f6;
+    }
+  }
+
+  span {
+    color: var(--text-color-20);
+    font-size: var(--fz16);
+    font-weight: bold;
+    cursor: default;
+    display: flex;
+    align-items: center;
+  }
+
+  .key {
+    word-break: break-all;
+    text-align: center;
+  }
+
+  .copy {
+    height: 14px;
+    width: 14px;
+    background-repeat: no-repeat;
+    margin-left: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    background-image: url(src/assets/images/wallet/copy-gray.svg);
+
+    &:hover,
+    &.select {
+      background-image: url(src/assets/images/wallet/copy-gray-hover.svg);
+    }
+  }
+
+  .footer {
+    color: var(--text-color-20);
+    font-size: 14px;
+    padding-top: 10px;
+    font-weight: normal;
+
+    @media (max-width: 347px) {
+      width: 313px;
+    }
+  }
+}

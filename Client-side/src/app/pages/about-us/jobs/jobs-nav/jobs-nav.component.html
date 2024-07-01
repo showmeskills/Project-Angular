@@ -1,0 +1,13 @@
+<div class="container nav-container">
+  <div class="nav-wrap">
+    <a
+      class="nav-item"
+      *ngFor="let item of navList; let idx = index"
+      (click)="jumpToPage(item)"
+      [class.active-nav]="idx == isActiveNavIdx"
+    >
+      {{ item.label }}
+      <i class="icon-arrow-right-simple" *ngIf="idx != navList.length - 1"></i>
+    </a>
+  </div>
+</div>

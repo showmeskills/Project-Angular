@@ -1,0 +1,45 @@
+<div class="page-container home">
+  <div class="main-container">
+    <!-- 轮播图 -->
+    <app-normal-carousel class="container" [buildFor]="'LotteryPage'"></app-normal-carousel>
+
+    <!-- 厂商列表 -->
+    <lottery-top-menu class="container"></lottery-top-menu>
+
+    <!-- 菜单 -->
+    <div class="container cate-menu">
+      <ng-container *ngIf="!loadingLabels; else labelSkeleton">
+        <lottery-lobby-category-menu [menus]="labels" [currentIndex]="showFor()" (onClick)="selectClassicMenu($event)">
+        </lottery-lobby-category-menu>
+      </ng-container>
+      <ng-template #labelSkeleton>
+        <div class="skeleton-loading"></div>
+      </ng-template>
+    </div>
+  </div>
+  <div class="main-container" [@toggle]="tabToggleAnimateTick()">
+    <ng-container [ngSwitch]="showFor()">
+      <ng-container *ngSwitchCase="'index'">
+        <!-- 游戏类标签 -->
+        <ng-container *ngFor="let item of renderGameList(); trackBy: trackByFn; let i = index">
+          <app-swiper-unit
+            class="container"
+            [style.order]="i"
+            (clickItem)="clickGameItem($event)"
+            (clickTitle)="clickLabelTitle(item)"
+            [data]="item?.gameLists"
+            [title]="item?.labelName"
+            [titleIcon]="item?.icon"
+            [titleHref]="item?.titleHref"
+          ></app-swiper-unit>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <!-- 点菜单tab切换显示 -->
+        <app-home-sub class="container" [showFor]="showFor()" [tabs]="tabs"></app-home-sub>
+      </ng-container>
+    </ng-container>
+
+    <app-daily-races [style.order]="98" [gameCategories]="['Lottery']"></app-daily-races>
+  </div>
+</div>

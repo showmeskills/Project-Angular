@@ -1,0 +1,16 @@
+.table {
+  table-layout: fixed;
+
+  td {
+    line-height: 1;
+  }
+
+  .cell {
+    min-height: 34px;
+    line-height: 20px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}

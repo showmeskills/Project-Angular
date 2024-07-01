@@ -1,0 +1,114 @@
+<div class="card px-12 py-10 mt-8">
+  <table class="table mb-0">
+    <thead class="sticky-wrapper">
+      <tr>
+        <!-- 名次 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli9.ranking' | lang }}</span>
+        </th>
+        <th><span class="cell">UID</span></th>
+        <!-- 正确比分 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli6.correctScore' | lang }}</span>
+        </th>
+        <!-- 独赢 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli6.winAlone' | lang }}</span>
+        </th>
+        <!-- 大小球 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli6.sizeBall' | lang }}</span>
+        </th>
+        <!-- 总积分 -->
+        <th>
+          <span class="cell">{{ 'member.activity.sencli6.totalPoints' | lang }}</span>
+        </th>
+        <!-- 金额 -->
+        <th>
+          <span class="cell">{{ 'common.amount' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>
+          <div class="cell cell_box" [ngSwitch]="+item.rankNo">
+            <img iconSrc="/assets/images/bonus/one.svg" *ngSwitchCase="1" />
+            <img iconSrc="/assets/images/bonus/two.svg" *ngSwitchCase="2" />
+            <img iconSrc="/assets/images/bonus/three.svg" *ngSwitchCase="3" />
+            <div class="bg" *ngSwitchDefault>
+              {{ item.rankNo }}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="cell">
+            <span class="mr-4">{{ item.uid || '-' }}</span>
+          </div>
+        </td>
+        <!-- 正确比分 -->
+        <td>
+          <div class="cell">
+            <span class="mr-4">{{ item.correctScorePoints || '-' }}</span>
+          </div>
+        </td>
+        <!-- 独赢 -->
+        <td>
+          <div class="cell">
+            <span class="mr-4">{{ item.winLossPoints || '-' }}</span>
+          </div>
+        </td>
+        <!-- 大小球 -->
+        <td>
+          <div class="cell">
+            <span class="mr-4">{{ item.overUnderPoints || '-' }}</span>
+          </div>
+        </td>
+        <!-- 总积分 -->
+        <td>
+          <div class="cell">
+            <span class="mr-4">{{ item.totalPoints || 0 | toFormatMoney }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="cell">
+            <img [currencyIcon]="'USDT'" currencySize="18" class="mr-4" />
+            <span>{{ item.bonus || 0 | currencyValue: 'USDT' }}</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-30">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control rounded-0"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="appService.isContentLoadingSubject | async"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

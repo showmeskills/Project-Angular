@@ -1,0 +1,235 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 活动名称 -->
+    <form-row [label]="'luckRoulette.eventName' | lang" class="mr-16" [contentWidth]="280">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.activityName"
+          (keyup)="$event.key === 'Enter' && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+    <!-- 活动时间 -->
+    <form-row [label]="'member.activity.sencliCommon.activityTime' | lang" class="mr-16" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.activity.sencliCommon.selectAcitivityTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+    <!-- 重置和确认-->
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac justify-content-between">
+    <!-- 活动列表 -->
+    <div class="fz-20">{{ 'luckRoulette.eventList' | lang }}</div>
+    <!-- 新增活动 -->
+    <div class="fz-20">
+      <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4" (click)="onAdd()">
+        <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'member.activity.sencliCommon.addEvent' | lang }}</span>
+      </button>
+      <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4" (click)="onExport()">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <!-- 导出 -->
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex-fill mt-2">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 活动名称 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencliCommon.eventName' | lang }}</span>
+          </th>
+          <!-- 活动时间 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencliCommon.activityTime' | lang }}</span>
+          </th>
+          <!-- 抽奖次数 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.drawTimes' | lang }}</span>
+          </th>
+          <!-- 中奖人数 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.winners' | lang }}</span>
+          </th>
+          <!-- 活动状态 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.actStatus' | lang }}</span>
+          </th>
+          <!-- 操作 -->
+          <th>
+            <span class="cell">{{ 'luckRoulette.actAction' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>
+            <span class="cell">{{ item.activityName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell">
+              <ng-container *ngIf="item.startTime || item.endTime; else emptyTpl">
+                {{ +item.startTime | timeFormat }} ~ {{ +item.endTime | timeFormat }}
+              </ng-container>
+
+              <ng-template #emptyTpl>-</ng-template>
+            </span>
+          </td>
+          <td>
+            <span class="cell">{{ item.drawTimes | toFormatMoney }}</span>
+          </td>
+          <td>
+            <span class="cell">{{ item.hitCount | toFormatMoney }}</span>
+          </td>
+          <td>
+            <!-- 审核中 -->
+
+            <ng-container *ngIf="item.inAudit; else statusTpl">
+              <app-label type="info" *ngIf="item.status !== 1">
+                {{ 'member.activity.sencliCommon.startingReview' | lang }}
+              </app-label>
+              <app-label type="warning" *ngIf="item.status === 1">
+                {{ 'member.activity.sencliCommon.stopReviewing' | lang }}
+              </app-label>
+            </ng-container>
+            <ng-template #statusTpl>
+              <!-- 待开始 0 -->
+              <app-label *ngIf="item.status === ActivityStatusEnum.waitingStart" type="default">
+                {{ 'member.activity.sencli6.toBeStarted' | lang }}
+              </app-label>
+              <!-- 进行中 1 -->
+              <app-label *ngIf="item.status === ActivityStatusEnum.inProgress" type="primary">
+                {{ 'member.activity.sencli6.processing' | lang }}
+              </app-label>
+              <!-- 停止 2 -->
+              <app-label *ngIf="item.status === ActivityStatusEnum.stopped" type="danger">
+                {{ 'member.activity.sencliCommon.stop' | lang }}
+              </app-label>
+            </ng-template>
+          </td>
+          <td>
+            <span class="cell">
+              <!-- 编辑 -->
+              <div
+                class="px-3 primary operation-btn"
+                *ngIf="[statusEnum.waitingStart, statusEnum.stopped].includes(item.status)"
+                (click)="onAdd(item)"
+              >
+                {{ 'luckRoulette.edit' | lang }}
+              </div>
+
+              <!-- 开启 -->
+              <div
+                class="px-3 primary operation-btn"
+                *ngIf="!item.inAudit && [statusEnum.waitingStart, statusEnum.stopped].includes(item.status)"
+                (click)="onOpenWarningPopup(warningTpl, item, 'luckRoulette.ifStart')"
+              >
+                {{ 'luckRoulette.open' | lang }}
+              </div>
+
+              <!-- 停止 -->
+              <div
+                class="px-3 primary operation-btn"
+                *ngIf="!item.inAudit && [statusEnum.inProgress].includes(item.status)"
+                (click)="onOpenWarningPopup(warningTpl, item, 'luckRoulette.ifEnd')"
+              >
+                {{ 'member.activity.sencliCommon.stop' | lang }}
+              </div>
+
+              <!-- 抽奖记录 -->
+              <div
+                class="px-3 primary operation-btn"
+                (click)="
+                  router.navigate(['/bonus/activity-manage/Turntable/draw-records', item.id], {
+                    queryParams: { tenantId: subHeaderService.merchantCurrentId }
+                  })
+                "
+              >
+                {{ 'luckRoulette.drawsRecords' | lang }}
+              </div>
+
+              <!-- 查看 -->
+              <div
+                class="px-3 primary operation-btn"
+                *ngIf="[statusEnum.waitingStart, statusEnum.inProgress, statusEnum.stopped].includes(item.status)"
+                (click)="onView(item)"
+              >
+                {{ 'member.activity.sencliCommon.view' | lang }}
+              </div>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="76">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-data let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'member.activity.sencli6.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ data.msg | lang }}</p>
+    </div>
+    <modal-footer (confirm)="c(true); onStatus(data.item)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

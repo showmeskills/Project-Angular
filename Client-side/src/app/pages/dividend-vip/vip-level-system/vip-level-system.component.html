@@ -1,0 +1,374 @@
+<div class="page-container page-center-container" [appLoading]="loading">
+  <ng-container *ngIf="vipSettingInfo.length > 0">
+    <!-- 头部 -->
+    <div class="main-container">
+      <div class="container header-container">
+        <!-- h5 的时候显示 -->
+        <div class="left" *ngIf="isH5">
+          <p (click)="location.back()" class="left-icon onact96-not"></p>
+        </div>
+        <div class="mid">
+          <!-- 用户头像登录 -->
+          <div class="mid-avator">
+            <img
+              class="avator-img"
+              loading="lazy"
+              [src]="logined ? userInfo?.avater : 'assets/images/vip/vip-avator.png'"
+            />
+          </div>
+          <!-- 用户类型 -->
+          <div
+            class="mid-title onact96-not"
+            [class.pointer]="!logined"
+            [class.mb]="!logined"
+            (click)="!logined && jumpToPage('login')"
+          >
+            {{ logined ? ('customize_vip' + loginedVipLevel | translate) : ('not_login' | translate) }}
+          </div>
+          <!-- 用户资产显示 -->
+          <div class="mid-benefit" [class.mb]="isSuperVip" *ngIf="logined && userVipInfo">
+            <span class="title">{{ 'acc_bon' | translate }}</span>
+            <span class="amount">{{
+              userVipInfo.totalBonus || 0 | currencyValue : 'USDT' : undefined : undefined : 2
+            }}</span>
+            <img class="currency-icon" [src]="'USDT' | currencyIcon" loading="lazy" alt="" />
+            <span class="details onact96" (click)="jumpToPage('wallet/history/promotion')">
+              <span class="title">{{ 'vie_detail' | translate }}</span>
+              <i class="icon-drop-down"></i>
+            </span>
+          </div>
+        </div>
+        <!-- h5 的时候显示 -->
+        <div class="right onact96" *ngIf="isH5" (click)="jumpToPage('promotions/vip-introduction')">
+          <p class="right-title">{{ 'rules' | translate }}</p>
+          <p class="icon"></p>
+        </div>
+      </div>
+    </div>
+    <!-- vip bar 等级显示 -->
+    <div class="main-container unity-padding-web unity-padding-h5-16" *ngIf="vipDotList.length">
+      <div class="container mid-bar-container">
+        <div class="mid-level-bar" [class.mt-60]="logined">
+          <!-- 当前vip 高亮点 -->
+          <div
+            *ngFor="let item of vipDotList; let i = index"
+            [class.active]="(isSuperVip ? 10 === i : loginedVipLevel === i) && logined"
+            class="dot"
+          >
+            <p class="dot-name">{{ item }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 头部3d轮播 -->
+    <div class="main-container unity-padding-web">
+      <div class="container flex-layout">
+        <div class="header-swiper">
+          <!-- 3d轮播 -->
+          <swiper #vipSwiperComponent [config]="vipSwiperOption">
+            <ng-template swiperSlide *ngFor="let item of swiperData; let i = index" let-data>
+              <img #cardImg [src]="item.url" class="vip-img" alt="" lazy="loading" />
+              <!-- 登录状态 -->
+              <div class="cs-swiper" *ngIf="logined">
+                <div [class]="'swiper-wrapper-li-conatiner-' + i" class="swiper-wrapper-li-wrap">
+                  <!-- 非super vip -->
+                  <ng-container *ngIf="!isSuperVip">
+                    <div
+                      class="top top-radius"
+                      [class]="
+                        loginedVipLevel - 1 === i
+                          ? 'top-curr-' + i
+                          : loginedVipLevel - 1 > i
+                          ? 'top-on-' + i
+                          : 'top-unlock'
+                      "
+                    >
+                      <p class="status" *ngIf="i !== 9">
+                        {{
+                          isSuperVip
+                            ? ('un_lock' | translate)
+                            : loginedVipLevel - 1 === i
+                            ? ('crr_level' | translate)
+                            : loginedVipLevel - 1 > i
+                            ? ('locked' | translate)
+                            : ('un_lock' | translate)
+                        }}
+                      </p>
+                    </div>
+                    <p class="wrap-title" *ngIf="i !== 9">{{ 'customize_vip' + (i + 1) | translate }}</p>
+                    <!-- 解锁状态 -->
+                    <ng-container *ngIf="loginedVipLevel - 1 === i">
+                      <ng-container
+                        *ngTemplateOutlet="
+                          activeCardTemplate;
+                          context: {
+                            idx: i
+                          }
+                        "
+                      ></ng-container>
+                      <ng-container
+                        *ngTemplateOutlet="
+                          bottomTemplate;
+                          context: {
+                            idx: i
+                          }
+                        "
+                      ></ng-container>
+                    </ng-container>
+                    <!-- 未解锁状态 -->
+                    <ng-container *ngIf="i !== loginedVipLevel - 1">
+                      <ng-container
+                        *ngTemplateOutlet="
+                          noActiveCardTemplate;
+                          context: {
+                            idx: i
+                          }
+                        "
+                      >
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+
+                  <!-- super vip  -->
+                  <ng-container *ngIf="isSuperVip">
+                    <div class="top top-radius" [class]="i === 9 ? 'top-curr-9' : 'top-unlock'">
+                      <p class="status" *ngIf="i !== 9">{{ 'un_lock' | translate }}</p>
+                      <p class="status" *ngIf="i === 9">{{ 'crr_level' | translate }}</p>
+                    </div>
+                    <!-- VIP level 普通 -->
+                    <p class="wrap-title" *ngIf="i !== 9">{{ 'customize_vip' + (i + 1) | translate }}</p>
+                    <!-- 超级 vip -->
+                    <p *ngIf="i === 9" class="wrap-title" [style.color]="'white'">
+                      {{ 'customize_vip10' | translate }}
+                    </p>
+                    <!-- 未解锁状态 -->
+                    <ng-container *ngIf="i !== 9">
+                      <ng-container
+                        *ngTemplateOutlet="
+                          noActiveCardTemplate;
+                          context: {
+                            idx: i
+                          }
+                        "
+                      >
+                      </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="i === 9">
+                      <ng-container
+                        *ngTemplateOutlet="
+                          bottomTemplate;
+                          context: {
+                            idx: i
+                          }
+                        "
+                      ></ng-container>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              </div>
+
+              <!-- 未登录状态 -->
+              <div class="cs-swiper" *ngIf="!logined">
+                <div [class]="'swiper-wrapper-li-conatiner-' + i" class="swiper-wrapper-li-wrap">
+                  <div class="top top-unlock">
+                    <!-- vip 当前状态 -->
+                    <p class="status">{{ 'un_lock' | translate }}</p>
+                  </div>
+                  <!-- VIP level 普通 -->
+                  <p class="wrap-title" *ngIf="i != 9">{{ 'customize_vip' + (i + 1) | translate }}</p>
+                  <!-- 未解锁状态 -->
+                  <ng-container
+                    *ngTemplateOutlet="
+                      noActiveCardTemplate;
+                      context: {
+                        idx: i
+                      }
+                    "
+                  >
+                  </ng-container>
+                </div>
+              </div>
+            </ng-template>
+          </swiper>
+          <div
+            class="swiper-button-prev onact96-not"
+            [class.disabled]="loading"
+            (click)="vipSwiperComponent.swiperRef.slidePrev()"
+          ></div>
+          <div
+            class="swiper-button-next onact96-not"
+            [class.disabled]="loading"
+            (click)="vipSwiperComponent.swiperRef.slideNext()"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <!-- 头部底部选项 -->
+    <div class="main-container unity-padding-web">
+      <div class="container header-bottom">
+        <!-- 标题 -->
+        <p *ngIf="!isH5" class="title mutual-opacity" (click)="jumpToPage('promotions/vip-introduction')">
+          {{ 'rules' | translate }}
+        </p>
+        <!-- 活动列表 -->
+        <div class="active-list" [appLoading]="loading">
+          <div
+            class="active-list-item onact96"
+            *ngFor="let item of activityList"
+            (click)="isH5 && jumpToPage('promotions/vip-introduction')"
+          >
+            <div class="wrap">
+              <img class="icon" [src]="item.icon" alt="" />
+            </div>
+            <p class="active-list-item-ratio">{{ item.data }}%</p>
+            <p class="active-list-item-title">{{ item.name | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-container inner-page unity-padding-web pt-20 unity-padding-h5-16">
+      <div class="list container">
+        <ng-container *ngFor="let item of benefitsList; let idx = index">
+          <div
+            class="list-item mutual-opacity onact96"
+            (click)="item.clickAble && jumpToPage('promotions/vip-introduction')"
+          >
+            <div class="value" [class.active-value]="logined && reqVipLevel === loginedVipLevel">
+              <img [src]="item.url" *ngIf="item.url" loading="lazy" alt="" />
+              <p class="value-one" *ngIf="!item.url">{{ item.data }} {{ item.isPercent ? '%' : '' }}</p>
+              <p class="value-two" *ngIf="!item.url && !item.isPercent && item.isMoney">USDT</p>
+            </div>
+            <p class="title">{{ item.name | translate }}</p>
+          </div>
+        </ng-container>
+      </div>
+      <div class="card-center container">
+        <div class="card-center-title">{{ 'coupon_center' | translate }}</div>
+        <app-coupon-card></app-coupon-card>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- vip card 激活状态 -->
+<ng-template #activeCardTemplate let-i="idx">
+  <div class="active-card">
+    <ng-container *ngIf="userVipInfo">
+      <div class="bar-container">
+        <div class="promo-progress">
+          <span class="title">{{ 'promo_p' | translate }}</span>
+          <div class="pro-bar">
+            <div class="bar">
+              <div
+                class="bar-in"
+                [class]="'bar-in-color-' + i"
+                [style.width]="
+                  loginedVipLevel - 1 > i
+                    ? 100 + '%'
+                    : (userVipInfo.process || 0) > 100
+                    ? 100 + '%'
+                    : (userVipInfo.process || 0) + '%'
+                "
+              ></div>
+            </div>
+            <div class="bar-percent" [style.left]="userVipInfo.process > 100 ? 100 + '%' : userVipInfo.process + '%'">
+              {{ loginedVipLevel - 1 > i ? 100 : (userVipInfo.process || 0) > 100 ? 100 : userVipInfo.process || 0 }}%
+            </div>
+          </div>
+        </div>
+        <div class="empty-keep" *ngIf="i === 0"></div>
+        <div class="keep-progress" *ngIf="i !== 0">
+          <span class="title">{{ 'rele_pro' | translate }}</span>
+          <div class="pro-bar">
+            <div class="bar">
+              <div
+                class="bar-in"
+                [style.width]="
+                  loginedVipLevel - 1 > i
+                    ? 100 + '%'
+                    : (userVipInfo.processKeep || 0) > 100
+                    ? 100 + '%'
+                    : (userVipInfo.processKeep || 0) + '%'
+                "
+              ></div>
+            </div>
+            <div
+              class="bar-percent"
+              [style.left]="userVipInfo.processKeep > 100 ? 100 + '%' : userVipInfo.processKeep + '%'"
+            >
+              {{
+                loginedVipLevel - 1 > i
+                  ? 100
+                  : (userVipInfo.processKeep || 0) > 100
+                  ? 100
+                  : userVipInfo.processKeep || 0
+              }}%
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- vip card 未解锁状态 -->
+<ng-template #noActiveCardTemplate let-i="idx">
+  <ng-container *ngIf="vipSettingInfo[i + 1] as levelData">
+    <div class="no-active-badge">
+      <div class="first-line">
+        <span class="title">{{ 'grow_v' | translate }}</span>
+        <span class="value">{{ levelData.upgradePoints || 0 | sliceSymbolStr }}</span>
+        <span class="day">{{ templateInfo?.upgradePeriod || 0 }} {{ 'day_in' | translate }}</span>
+      </div>
+      <div class="second-line">
+        <span class="title">{{ 'keep_v' | translate }}</span>
+        <span class="value">{{ levelData.keepPeriodPoints || 0 | sliceSymbolStr }}</span>
+        <span class="day">{{ templateInfo?.keepPeriod || 0 }} {{ 'day_in' | translate }}</span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<!-- swiper bottom -->
+<ng-template #bottomTemplate let-idx="idx">
+  <!-- <ng-container *ngIf=" idx === (loginedVipLevel - 1) && !isSuperVip">
+    <ng-container *ngTemplateOutlet="growthValue;context:{
+      idx:idx,
+      currentPoints:userVipInfo.currentPoints || 0
+    }">
+    </ng-container>
+  </ng-container> -->
+  <ng-container *ngIf="userVipInfo && isSuperVip">
+    <ng-container
+      *ngTemplateOutlet="
+        growthValue;
+        context: {
+          idx: idx,
+          currentPoints: userVipInfo.currentPoints || 0,
+          inValidTime: (userVipInfo.svipInvalidTime | mdate : 'YYYY-MM-DD') || '--/--/---'
+        }
+      "
+    >
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- 显示保级成长值 -->
+<ng-template #growthValue let-idx="idx" let-currentPoints="currentPoints" let-inValidTime="inValidTime">
+  <div class="bottom" [class.mt-150]="isSuperVip">
+    <div class="bottom-left">
+      <p class="bottom-left-value">
+        {{ 'cumu_value' | translate }}:
+        <span class="bottom-left-value-one" *ngIf="loginedVipLevel - 1 >= idx">{{
+          currentPoints | sliceSymbolStr
+        }}</span>
+      </p>
+    </div>
+
+    <div class="bottom-right">
+      <p class="bottom-right-value" *ngIf="isSuperVip">
+        {{ 'expiry' | translate }}:<span class="date">{{ inValidTime }}</span>
+      </p>
+    </div>
+  </div>
+</ng-template>

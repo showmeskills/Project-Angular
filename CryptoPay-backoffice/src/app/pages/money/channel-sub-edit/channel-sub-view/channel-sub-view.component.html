@@ -1,0 +1,445 @@
+<div class="d-flex">
+  <div class="wrap">
+    <div class="d-flex flex-ac mb-12">
+      <span class="fz-20 flex-1">{{ data.subChannelName }}</span>
+
+      <button class="btn-cube sm" type="button" (click)="router.navigate(['/money/subChannel', id])">
+        <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+      </button>
+    </div>
+
+    <form-row [label]="'payment.bank.merchantName' | lang">
+      <div class="fz-16">{{ merchantName }}</div>
+    </form-row>
+
+    <form-row [label]="'payment.subChannel.mainChannel' | lang" label-width="120">
+      <div class="fz-16">{{ channelName }}</div>
+    </form-row>
+
+    <!-- 支持币种 -->
+    <div class="d-flex py-2" *ngIf="data.channelId && currency.length">
+      <label class="mr-4 mb-0 lh-42 color-999 fz-16" style="flex: 0 0 110px"
+        >{{ 'payment.channelConfig.supCurrencies' | lang }}：</label
+      >
+
+      <!-- tab -->
+      <div class="tab flex-1">
+        <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+        <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel">
+          <div
+            mat-tab-link
+            class="tab-hd-item"
+            [active]="curTab === i"
+            *ngFor="let nav of currency; let i = index"
+            (click)="onCurrency(i)"
+          >
+            {{ nav.code }}
+          </div>
+        </div>
+
+        <div class="tab-bd pb-0">
+          <ng-container *ngFor="let item of currency; let i = index">
+            <div *ngIf="curTab === i">
+              <div class="d-flex py-2 tab-fixed" *ngIf="curSupport.deposit?.length">
+                <label class="mr-0 mb-0 row-title">{{ 'payment.channelConfig.depositMethod' | lang }}：</label>
+                <mat-tab-group class="w-0 flex-1 min-w-0">
+                  <mat-tab [label]="deposit.name" *ngFor="let deposit of curSupport.deposit">
+                    <div class="d-flex flex-wrap">
+                      <form-row class="flex-1 mr-40" [label]="'payment.subChannel.minimumBalance' | lang">
+                        <div class="input-wrap">
+                          ¥{{
+                            deposit.balanceMinimum === null
+                              ? '-'
+                              : (deposit.balanceMinimum | currencyValue : deposit.isDigital)
+                          }}
+                        </div>
+                      </form-row>
+                      <form-row class="flex-1" [label]="'payment.subChannel.balanceCap' | lang" label-width="120">
+                        <div class="input-wrap">
+                          ¥{{
+                            deposit.balanceMaximum === null
+                              ? '-'
+                              : (deposit.balanceMaximum | currencyValue : deposit.isDigital)
+                          }}
+                        </div>
+                      </form-row>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <form-row [label]="'payment.subChannel.singleDayLimit' | lang" class="flex-1 mr-40">
+                        <div class="input-wrap">
+                          {{
+                            deposit.singleDayLimit === null
+                              ? '-'
+                              : (deposit.singleDayLimit | currencyValue : deposit.isDigital)
+                          }}
+                        </div>
+                      </form-row>
+
+                      <form-row
+                        [label]="'payment.subChannel.singleLimit' | lang"
+                        label-width="120"
+                        class="flex-1"
+                        *ngIf="deposit.paymentMethod !== 'Overview'"
+                      >
+                        <ng-template>
+                          <div
+                            class="input-wrap"
+                            *ngIf="
+                              deposit.singleOrderMinimum === null && deposit.singleOrderMinimum === null;
+                              else show
+                            "
+                          >
+                            -
+                          </div>
+                          <ng-template #show>
+                            <div class="input-wrap text-nowrap">
+                              {{ deposit.singleOrderMinimum | currencyValue : deposit.isDigital }}
+                              - {{ deposit.singleOrderMaximum | currencyValue : deposit.isDigital }}
+                            </div>
+                          </ng-template>
+                        </ng-template>
+                      </form-row>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <form-row
+                        [label]="'payment.subChannel.channelRate' | lang"
+                        label-width="120"
+                        class="flex-1 mr-40"
+                        *ngIf="deposit.paymentMethod !== 'Overview' && !deposit.isDigital"
+                      >
+                        <div class="input-wrap">{{ deposit.feeRate }}%</div>
+                      </form-row>
+                      <form-row
+                        [label]="'payment.subChannel.dailyLimitThreshold' | lang"
+                        label-width="120"
+                        class="flex-1"
+                        *ngIf="deposit.paymentMethod !== 'Overview' && !deposit.isDigital"
+                      >
+                        <div class="input-wrap">
+                          {{
+                            deposit.singleDayLimitThreshold === null
+                              ? '-'
+                              : (deposit.singleDayLimitThreshold | currencyValue : deposit.isDigital)
+                          }}
+                        </div>
+                      </form-row>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <!-- VIP等级限制 -->
+                      <form-row
+                        [label]="('payment.subChannel.vipLevel' | lang) + '>='"
+                        class="flex-1 mr-40"
+                        *ngIf="deposit.paymentMethod !== 'Overview'"
+                      >
+                        <div class="input-wrap">
+                          {{ deposit.vipLevelLimit || 0 }}
+                        </div>
+                      </form-row>
+
+                      <!-- 实时余额 -->
+                      <form-row [label]="'payment.subChannel.realTimeBalance' | lang" class="flex-1 mr-40">
+                        <div class="input-wrap">
+                          {{ currentData.currentBalance | currencyValue : deposit.isDigital }}
+                        </div>
+                      </form-row>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                      <form-row [label]="'payment.subChannel.amountProcess' | lang" class="flex-1 mr-40">
+                        <div class="input-wrap">
+                          {{ currentData.processingBalance | currencyValue : deposit.isDigital }}
+                        </div>
+                      </form-row>
+
+                      <form-row [label]="'payment.subChannel.balanceDay' | lang" class="flex-1">
+                        <ng-template>
+                          <div class="input-wrap" *ngIf="currentData.todayBalance === null">-</div>
+                          <div class="input-wrap" *ngIf="currentData.todayBalance !== null">
+                            ¥{{ currentData.todayBalance | currencyValue : deposit.isDigital }}
+                          </div>
+                        </ng-template>
+                      </form-row>
+                    </div>
+
+                    <!--                    <form-row label="子渠道信息" label-width="120" class="flex-1">-->
+                    <!--                      <div class="fz-16 lh-24 py-4 break-all">MD5：9e107d9d372bb6826bd81d3542a419d6</div>-->
+                    <!--                      <div class="fz-16 d-flex flex-wrap">-->
+                    <!--                        <span class="mr-32">用户名：User_name</span>-->
+                    <!--                        <span>密码：1234qwer</span>-->
+                    <!--                      </div>-->
+                    <!--                    </form-row>-->
+
+                    <!-- 信息 -->
+                    <!--                    <div class="d-flex flex-ac flex-wrap" *ngIf="subInfo">-->
+                    <!--                      <form-row [label]="'payment.subChannel.subChannelInfo' | lang" class="flex-1">-->
+                    <!--                        <textarea-->
+                    <!--                          type="text"-->
+                    <!--                          class="form-control w-100 fz-14 resize-none"-->
+                    <!--                          autocomplete="off"-->
+                    <!--                          [value]="subInfo"-->
+                    <!--                          rows="10"-->
+                    <!--                          readonly-->
+                    <!--                        ></textarea>-->
+                    <!--                      </form-row>-->
+                    <!--                    </div>-->
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+
+              <!-- TODO：设计只显示了存款没有提款 -->
+              <!--              <div class="d-flex py-2">-->
+              <!--                <label class="mr-0 mb-0 row-title">提款方式：</label>-->
+
+              <!--                <mat-tab-group class="w-100">-->
+              <!--                  <mat-tab [label]="dra.name" *ngFor="let dra of curSupport.withdrawal">-->
+              <!--                    <form-row label="单日限额" label-width="120" class="flex-1">-->
+              <!--                      <div class="input-wrap">1,000,000.00</div>-->
+              <!--                    </form-row>-->
+              <!--                  </mat-tab>-->
+              <!--                </mat-tab-group>-->
+              <!--              </div>-->
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- 今日收入 -->
+    <div class="d-flex flex-wrap mr-16">
+      <form-row [label]="'payment.subChannel.IncomeToday' | lang" label-width="120">
+        <div class="fz-16">{{ currentData.todayDepositCount | toFormatMoney }}{{ 'common.pen' | lang }}</div>
+      </form-row>
+
+      <form-row [label]="'payment.subChannel.spendDay' | lang" class="ml-40">
+        <div class="fz-16">{{ currentData.todayWithdrawCount | toFormatMoney }}{{ 'common.pen' | lang }}</div>
+      </form-row>
+    </div>
+
+    <!-- 状态 -->
+    <form-row [label]="'common.status' | lang" label-width="120">
+      <span class="label label-lg label-inline label-light-success px-6">{{
+        data.state ? ('payment.currency.open' | lang) : ('payment.currency.shutDown' | lang)
+      }}</span>
+    </form-row>
+  </div>
+
+  <!-- 月份渠道统计 -->
+  <div class="plane-wrap">
+    <channel-sub-card></channel-sub-card>
+
+    <div class="d-flex justify-content-end">
+      <a href="javascript: void(0);" class="btn btn-icon btn-light btn-hover-primary mr-2">
+        <span class="svg-icon ng-star-inserted">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24px"
+            height="24px"
+            viewBox="0 0 24 24"
+            style="width: 16px; height: 24px"
+          >
+            <g stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
+              <path
+                d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z"
+                fill-rule="nonzero"
+                transform="translate(12.000003, 11.999999) scale(-1, 1) rotate(-270.000000) translate(-12.000003, -11.999999) "
+                style="fill: currentColor !important"
+              ></path>
+            </g>
+          </svg> </span
+        ><!---->
+      </a>
+
+      <a href="javascript: void(0);" class="btn btn-icon btn-light btn-hover-primary">
+        <span class="svg-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24px"
+            height="24px"
+            viewBox="0 0 24 24"
+            style="width: 16px; height: 24px"
+          >
+            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <path
+                d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z"
+                fill="#000000"
+                fill-rule="nonzero"
+                transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999) "
+                style="fill: currentColor !important"
+              />
+            </g>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8">
+  <div class="card-body p-12">
+    <div class="d-flex flex-ac">
+      <h2 class="mb-0 fz-20 flex-1">{{ 'payment.subChannel.cashFlow' | lang }}</h2>
+
+      <label class="mb-0 mr-6 label-title">{{ 'payment.subChannel.runningTime' | lang }}：</label>
+      <div class="d-flex flex-ac">
+        <input
+          [style.width.px]="196"
+          class="form-control text-center rounded-0"
+          type="text"
+          placeholder=""
+          selectMode="date-range"
+          [owlDateTime]="picker"
+          [owlDateTimeTrigger]="picker"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [(ngModel)]="flowData.time"
+          (dateTimeChange)="pullFlow()"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+      </div>
+
+      <button (click)="onFunds()" type="button" class="ml-6 btn btn-light-primary py-0 lh-20 px-8" style="height: 34px">
+        <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+        <span class="vam">{{ 'payment.subChannel.fundingAdjustment' | lang }}</span>
+      </button>
+
+      <button disabled="disabled" type="button" class="ml-6 btn btn-light-primary py-0 lh-30 px-8" style="height: 34px">
+        <svg-icon [src]="'./assets/images/svg/admin-import-1.svg'" class="svg-icon svg-icon-2x"></svg-icon>
+        <span class="vam">{{ 'payment.subChannel.uploadCheck' | lang }}</span>
+      </button>
+
+      <button
+        (click)="onExport()"
+        [disabled]="list.length ? '' : 'disabled'"
+        type="button"
+        class="ml-6 btn btn-light-primary py-0 lh-30 px-8"
+        style="height: 34px"
+      >
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-2x"></svg-icon>
+        <span class="vam">{{ 'finance.export' | lang }}</span>
+      </button>
+    </div>
+
+    <div class="mt-4">
+      <!--begin::Datatable-->
+      <table class="table mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'payment.subChannel.merchantName' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.subChannel.merchantOrder' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.subChannel.orderNumber' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.subChannel.channelOrder' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.currency.currency' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.subChannel.amount' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.subChannel.balanceBeforeChange' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.subChannel.balanceAfterChange' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.type' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'common.dateTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'payment.paymentMethod.operating' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.merchantName || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.merchantOrderId || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.orderId || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.channelOrderId || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.amount | currencyValue : item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.oldAccountBalance | currencyValue : item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.newAccountBalance | currencyValue : item.currency }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ getType(item.changeType) }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ +item.createdTime ? (item.createdTime | timeFormat) : '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <span
+                  (click)="onView(item)"
+                  class="btn btn-light btn-light-default btn-hover-primary text-nowrap px-6"
+                  >{{ 'payment.subChannel.view' | lang }}</span
+                >
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-10 table-footer">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="pullFlow(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="pullFlow()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

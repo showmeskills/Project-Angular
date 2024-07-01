@@ -1,0 +1,24 @@
+<div class="scroll-wrapper" #scrollWrapper>
+  <ul #content>
+    <li [class.active]="currentIndex == 'index'" class="onact96" (click)="selectItem('')">
+      <a [href]="domain + '/' + appService.languageCode + '/lottery'" (click)="$event.preventDefault()">
+        <i class="icon-menu-all"></i>
+        <span>{{ 'menu_all' | translate }}</span>
+      </a>
+    </li>
+    <li
+      *ngFor="let item of menus"
+      [class.active]="currentIndex === item.labelCode"
+      class="onact96"
+      (click)="selectItem(item.labelCode)"
+    >
+      <a
+        [href]="domain + '/' + appService.languageCode + '/lottery/' + item.labelCode"
+        (click)="$event.preventDefault()"
+      >
+        <img *ngIf="item.icon" [src]="item.icon" />
+        <span>{{ item.labelName }}</span>
+      </a>
+    </li>
+  </ul>
+</div>

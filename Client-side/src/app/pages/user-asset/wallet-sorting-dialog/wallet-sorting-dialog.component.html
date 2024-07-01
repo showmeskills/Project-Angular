@@ -1,0 +1,26 @@
+<div class="main-container">
+  <div class="header">
+    <i class="icon-close onact96-not" (click)="close()"></i>
+  </div>
+  <div class="contants-box">
+    <span class="txt">{{ 'filter' | translate }}</span>
+    <div class="hideSmallAmount">
+      <mat-checkbox
+        [disableRipple]="true"
+        [(ngModel)]="ishideSmallAmount"
+        (change)="data.hideMinAmount(ishideSmallAmount)"
+      >
+        <span style="color: #707a8a; margin-left: 6px; text-decoration: underline dashed #707a8a; font-size: 14px">
+          {{ 'hide_small_bal' | translate }}
+        </span>
+      </mat-checkbox>
+    </div>
+    <div class="options-row" *ngFor="let item of optionsConfig">
+      <div class="txt">{{ item.title }}</div>
+      <div class="sort-box" [class.active]="item.up || item.down">
+        <span class="icon icon-arrow-up bottom onact96-not" [class.active]="item.up" (click)="handleUp(item)"></span>
+        <span class="icon icon-arrow-down onact96-not" [class.active]="item.down" (click)="handleDown(item)"></span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.content-box {
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .m-top-20 {
+    margin-top: 20px;
+  }
+
+  .select-time {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    @include polyfills.flex-gap(24px, 'row wrap');
+    margin-top: 20px;
+  }
+
+  .check-box-list {
+    display: flex;
+    flex-direction: column;
+    @include polyfills.flex-gap(26px, 'column nowrap');
+
+    ::ng-deep {
+      .mdc-form-field {
+        color: var(--text-color);
+
+        .mdc-label {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .password {
+    margin-top: 20px;
+    max-width: 388px;
+
+    @media (max-width: 767px) {
+      max-width: 100%;
+    }
+  }
+
+  .submit {
+    display: flex;
+    @include polyfills.flex-gap(20px, 'row nowrap');
+    margin-top: 20px;
+
+    @media (max-width: 767px) {
+      justify-content: center;
+    }
+  }
+
+  .selected-game-list {
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    @include polyfills.flex-gap(20px, 'column nowrap');
+
+    @media (max-width: 767px) {
+      max-width: 100%;
+    }
+
+    .group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+.text-12 {
+  font-size: 12px;
+  color: var(--text-color);
+}
+
+.text-14 {
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.flex-gap {
+  display: flex;
+  flex-wrap: wrap;
+  @include polyfills.flex-gap(20px, 'row wrap');
+}

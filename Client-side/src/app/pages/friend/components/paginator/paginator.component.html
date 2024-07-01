@@ -1,0 +1,19 @@
+<div class="container" *ngIf="total > 0" [class.disabled]="disabled">
+  <span
+    class="icon icon-arrow-left-simple onact96-not"
+    *ngIf="pagesLength > 4"
+    [class.disabled]="!prevPage"
+    (click)="goPage(page - 1)"
+  ></span>
+  <ng-container *ngFor="let item of showPages">
+    <span class="page ellipsis" *ngIf="judgeEndDot(item)">...</span>
+    <span class="page onact96-not" [class.active]="item === page" (click)="clickPage(item)">{{ item }}</span>
+    <span class="page ellipsis" *ngIf="judgeBeginDot(item)">...</span>
+  </ng-container>
+  <span
+    class="icon icon-arrow-right-simple onact96-not"
+    *ngIf="pagesLength > 4"
+    [class.disabled]="!nextPage"
+    (click)="goPage(page + 1)"
+  ></span>
+</div>

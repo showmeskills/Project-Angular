@@ -1,0 +1,254 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+div {
+  display: flex;
+}
+
+.animation-icon-loading-dot {
+  i {
+    background-color: var(--primary-color);
+  }
+}
+
+.kyc-container {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .min-height {
+    min-height: 600px;
+  }
+}
+
+.main-header {
+  width: 100%;
+
+  // 标题栏
+  .ac-header {
+    width: 100%;
+    height: 140px;
+    justify-content: center;
+    flex-direction: column;
+    @media (max-width: 767px) {
+      height: 80px;
+    }
+
+    .h-1 {
+      display: flex;
+      font-size: 32px;
+      font-weight: 600;
+      align-items: center;
+      padding-bottom: 16px;
+      color: var(--text-color-30);
+
+      @media (max-width: 767px) {
+        font-size: 24px;
+        padding-bottom: 0;
+      }
+
+      em {
+        padding-right: 15px;
+      }
+
+      .secrity-icon {
+        background-image: url(src/assets/images/kyc/secrity.svg);
+        background-size: 28px 28px;
+        background-repeat: no-repeat;
+        width: 28px;
+        height: 28px;
+        user-select: none;
+        &:hover {
+          background-image: url(src/assets/images/kyc/secrity-hover.svg);
+        }
+        @media (max-width: 767px) {
+          width: 22px;
+          height: 22px;
+          background-size: 22px 22px;
+        }
+      }
+
+      .safe-notice {
+        height: 33px;
+        width: 193px;
+        position: absolute;
+        background-color: #5e6673;
+        font-size: 12px;
+        color: #d0d0d0;
+        left: 64px;
+        top: 40px;
+        z-index: 2;
+        padding: 8px;
+      }
+    }
+
+    .h-2 {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      height: 20px;
+      position: relative;
+      @include polyfills.flex-gap(20px, 'row nowrap');
+
+      .s-1 {
+        padding: 0 11px;
+        align-items: center;
+        font-size: 14px;
+        color: var(--text-color-30);
+        background-color: var(--container-bg-color);
+        white-space: nowrap;
+        @media (max-width: 767px) {
+          padding: 0;
+          margin-top: 12px;
+        }
+        span {
+          background-image: url(src/assets/images/kyc/headshots.svg);
+          height: 20px;
+          width: 20px;
+          margin-right: 6px;
+          background-repeat: no-repeat;
+          background-size: 20px 20px;
+        }
+      }
+
+      .user-Infor-container {
+        z-index: 9;
+        height: 366px;
+        width: 156px;
+        position: absolute;
+        top: 30px;
+        background-color: #5e6673;
+        border-radius: 4px;
+        color: #ffffff;
+        flex-direction: column;
+        padding: 8px;
+
+        &.small {
+          height: 227px;
+        }
+
+        .title {
+          font-size: 16px;
+          font-weight: 500;
+        }
+
+        .colunm-box {
+          flex-direction: column;
+          font-size: 14px;
+          font-weight: 400;
+          margin-top: 26px;
+
+          .txt-bold {
+            font-weight: 400;
+          }
+
+          .row-root {
+            flex-direction: column;
+            border-bottom: 1px solid #7b8698;
+            padding-bottom: 6px;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .row-1 {
+              padding: 6px 0;
+
+              .i-correct {
+                background-image: url(src/assets/images/kyc/green-correct.svg);
+                height: 12px;
+                width: 12px;
+                background-repeat: no-repeat;
+                background-size: 12px 12px;
+              }
+
+              .notice-header {
+                font-size: 12px;
+                color: #d0d0d0;
+                margin-left: 3px;
+              }
+            }
+          }
+
+          .txt {
+          }
+        }
+
+        ///初始权限
+        .default-infor {
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          .safety-icon {
+            margin-top: 26px;
+            background-size: 100%;
+            height: 56px;
+            width: 48px;
+            background-repeat: no-repeat;
+            background-image: url(src/assets/svg/default_infor.svg);
+          }
+
+          .span-1 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            margin-top: 18px;
+          }
+
+          .span-2 {
+            line-height: 1.33;
+            font-size: 12px;
+            text-align: center;
+          }
+        }
+      }
+
+      .s-2 {
+        align-items: center;
+
+        > app-country-selecter {
+          height: 43px;
+
+          @media (max-width: 1000px) {
+            ::ng-deep {
+              .country-selector-container {
+                margin-left: 10px;
+              }
+            }
+          }
+        }
+
+        > span {
+          color: #959cb6;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+.card-container {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 35px;
+
+  app-kyc-ticket {
+    flex: 1;
+
+    & + app-kyc-ticket {
+      border-left: 1px solid #ebecf0;
+
+      &:host-context(.dark) & {
+        border-left-color: var(--default-border-color);
+      }
+    }
+  }
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    @include polyfills.flex-gap(30px, 'column nowrap');
+
+    app-kyc-ticket {
+      border-left: none !important;
+    }
+  }
+}

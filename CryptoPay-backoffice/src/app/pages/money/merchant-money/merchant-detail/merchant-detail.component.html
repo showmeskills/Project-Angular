@@ -1,0 +1,215 @@
+<div class="card">
+  <div class="px-12 py-8 d-flex flex-wrap">
+    <form-row class="mr-18" [label]="'payment.merchantFunding.merchantOrder' | lang">
+      <ng-template>
+        <input
+          class="form-control w-100 rounded-0"
+          type="text"
+          [(ngModel)]="data.merchantOrder"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <!--    <form-row class="mr-18" [label]="'payment.merchantFunding.subChannelName' | lang">-->
+    <!--      <ng-template>-->
+    <!--        <mat-form-field [style.width.px]="200">-->
+    <!--          <mat-select-->
+    <!--            class="form-control rounded-0"-->
+    <!--            [(ngModel)]="data.subChannel"-->
+    <!--            (selectionChange)="loadData(true)"-->
+    <!--            *search="let list of subChannelList; key: 'name'"-->
+    <!--          >-->
+    <!--            <input type="search" searchInput />-->
+    <!--            <mat-option value="">{{ 'common.all' | lang }}</mat-option>-->
+    <!--            <mat-option [value]="item.code" *ngFor="let item of list | async">{{ item.name }}</mat-option>-->
+    <!--          </mat-select>-->
+    <!--        </mat-form-field>-->
+    <!--      </ng-template>-->
+    <!--    </form-row>-->
+
+    <form-row class="mr-18" [label]="'common.type' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="144">
+          <mat-select class="form-control rounded-0" [(ngModel)]="data.type" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.code" *ngFor="let item of typeList">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row class="mr-18" [label]="'common.currency' | lang">
+      <ng-template>
+        <mat-form-field [style.width.px]="144">
+          <mat-select class="form-control rounded-0" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+            <mat-option [value]="item.code" *ngFor="let item of currencyList">
+              {{ item.code || ('common.all' | lang) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <form-row class="mr-18" [label]="'common.date' | lang">
+      <ng-template>
+        <input
+          class="text-center form-control rounded-0"
+          type="text"
+          [placeholder]="'common.dateTips' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="timePicker"
+          [owlDateTimeTrigger]="timePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #timePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 p-8">
+  <div class="d-flex flex-wrap pt-2 pb-4">
+    <div class="flex-1 fz-20">
+      <span *ngIf="curMerchant?.name">{{ curMerchant?.name }} - </span>
+      {{ 'payment.merchantFunding.detailTitle' | lang }}
+    </div>
+    <div>
+      <button
+        type="button"
+        class="min-w140 btn btn-light-primary mx-2"
+        (click)="onExport()"
+        [disabled]="list.length ? '' : 'disabled'"
+      >
+        {{ 'common.export' | lang }}
+      </button>
+      <button type="button" class="min-w140 btn btn-light-primary mx-2" (click)="onAdjustment()">
+        {{ 'payment.merchantFunding.merchantAdjustment' | lang }}
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0">
+    <thead theadAffix>
+      <tr>
+        <!--        <th>-->
+        <!--          <span class="cell">{{ 'payment.merchantFunding.subChannelName' | lang }}</span>-->
+        <!--        </th>-->
+        <th>
+          <span class="cell">{{ 'common.type' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.userID' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.merchantOrder' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.currency' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.amount' | lang }}</span>
+        </th>
+        <!--        <th>-->
+        <!--          <span class="cell">{{ 'payment.merchantFunding.channelFee' | lang }}</span>-->
+        <!--        </th>-->
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.fee' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.merchantFunding.record' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.balance' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.time' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'common.remarks' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tr *ngFor="let item of list">
+      <!--      <td>-->
+      <!--        <span class="cell">{{ item.channelAliasName || '-' }}</span>-->
+      <!--      </td>-->
+      <td>
+        <span class="cell">{{ getType(item) }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.merchantUserAccount }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.merchantOrderId }}</span>
+      </td>
+      <td>
+        <span class="cell">
+          <img [currencyIcon]="item.currency" alt="" />
+        </span>
+      </td>
+      <td>
+        <span class="cell">{{ item.amount | currencyValue : item.currency }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.basicFee | currencyValue : item.currency }}</span>
+      </td>
+      <!--      <td>-->
+      <!--        <span class="cell">{{ item.merchantFee | toFormatNumberDecimal: 8 | toFormatMoney }}</span>-->
+      <!--      </td>-->
+      <td>
+        <span class="cell">{{ item.settle | currencyValue : item.currency }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.newAccountBalance | currencyValue : item.currency }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.createdTime | timeUTCFormat }}</span>
+      </td>
+      <td>
+        <span class="cell">{{ item.remark || '-' }}</span>
+      </td>
+    </tr>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-10 table-footer">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

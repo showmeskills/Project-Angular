@@ -1,0 +1,69 @@
+steps:
+  - template: rebuild.yml
+
+  - template: download_resource.yml
+
+  - template: config_resource.yml
+    parameters:
+      condition: ne(variables.merchantEnv, 'sit')
+
+  - template: build_patch.yml
+    parameters:
+      condition: eq(variables.fullBuild, false)
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        build_branch="$(Build.SourceBranch)"
+        remove_header="refs/heads/"
+        current_branch=${build_branch//$remove_header/}
+        git remote add $(repoName) https://GBDigital@dev.azure.com/GBDigital/SportsBook-Flutter/_git/gogaming_app
+        git fetch --all &>/dev/null
+        sh merchant_scripts/change_version.sh $(Build.BuildNumber) ${current_branch} $(Build.SourceVersion)
+    displayName: "Change Version And Push Code"
+    condition: eq(variables.fullRebuild, true)
+
+  - template: config_resource.yml
+    parameters:
+      condition: and(ne(variables.merchantEnv, 'sit'), eq(variables.fullRebuild, true))
+
+  - task: replacetokens@5
+    inputs:
+      rootDirectory: "$(Build.SourcesDirectory)/lib/config"
+      targetFiles: "**/*config.dart"
+      encoding: "auto"
+      tokenPattern: "default"
+      writeBOM: true
+      actionOnMissing: "warn"
+      keepToken: false
+      actionOnNoFiles: "continue"
+      enableTransforms: false
+      enableRecursion: false
+      useLegacyPattern: false
+      enableTelemetry: true
+    condition: eq(variables.fullRebuild, true)
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        export LC_ALL='C'
+        sh merchant_scripts/config.sh merchant-$(merchantNumber)/configs/merchant_config_$(merchantEnv).yml
+    displayName: "Config Merchant Info"
+    condition: eq(variables.fullRebuild, true)
+
+  - template: build_ios_package.yml
+    parameters:
+      condition: or(eq(variables.fullBuild, true), eq(variables.fullRebuild, true))
+
+  - template: build_android_package.yml
+    parameters:
+      condition: or(eq(variables.fullBuild, true), eq(variables.fullRebuild, true))
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      artifactName: "$(projectName)"
+      artifactType: "container"
+    displayName: "Publish artifacts"
+    condition: or(eq(variables.fullBuild, true), eq(variables.fullRebuild, true))

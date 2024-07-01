@@ -1,0 +1,90 @@
+<div class="page-container">
+  <app-header-title-bar
+    [showIcon]="!isH5"
+    [title]="'upload_specified_file' | translate"
+    [clickForRouterBack]="true"
+  ></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24 custom-container">
+    <div class="inner-container">
+      <ng-container *ngIf="!completed; else pending">
+        <p class="title" *ngIf="stepOne">{{ 'up_file' | translate }}</p>
+        <p class="title" *ngIf="stepTwo">{{ 'transaction_record_screenshot' | translate }}</p>
+        <p class="title" *ngIf="stepThree">{{ 'personal_declaration_video' | translate }}</p>
+        <!-- 第一步 身份证验证-->
+        <ng-container *ngIf="stepOne">
+          <div class="ic-view-contianer">
+            <div class="ic-content">
+              <!--img-->
+              <div class="image" [class]="appService.languageCode"></div>
+              <div class="item-contant" *ngFor="let item of detailConfig; let i = index">
+                <span class="icon-{{ item.icon }} right"></span>
+                {{ item.value }}
+              </div>
+              <div class="req-format">{{ 'file_size' | translate }}</div>
+            </div>
+
+            <div class="uploader-containter">
+              <!--正面-->
+              <div class="front-uploader">
+                <div class="note" [class.hide]="canReFile1">
+                  <i class="icon-kyc-camera"></i>
+                  <span>{{ 'upload_f' | translate }}</span>
+                </div>
+                <div class="note top" *ngIf="canReFile1">
+                  <i class="icon-exit"></i>
+                  <span>{{ 'upload' | translate }}</span>
+                </div>
+                <img class="invisible" #img1 />
+                <input type="file" (change)="handleImgChange($event, img1, true)" />
+              </div>
+              <!--背面-->
+              <div class="back-uploader">
+                <div class="note" [class.hide]="canReFile2">
+                  <i class="icon-kyc-camera"></i>
+                  <span>{{ 'upload_b' | translate }}</span>
+                </div>
+                <div class="note top" *ngIf="canReFile2">
+                  <i class="icon-exit"></i>
+                  <span>{{ 'upload' | translate }}</span>
+                </div>
+                <img class="invisible" #img2 />
+                <input type="file" (change)="handleImgChange($event, img2)" />
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <app-risk-uploader *ngIf="stepTwo" [uploadList]="trxList"></app-risk-uploader>
+        <ng-container *ngIf="stepThree">
+          <app-risk-uploader [uploadList]="videoUpload"></app-risk-uploader>
+
+          <div class="form-item"></div>
+        </ng-container>
+        <customize-button
+          class="final-btn"
+          size="large"
+          [loading]="submitLoading"
+          type="primary"
+          minWidth="388px"
+          (onClick)="onSubmitPending()"
+        >
+          {{ 'next' | translate }}
+        </customize-button>
+        <div class="btm-text">
+          <i class="icon-kyc-protect"></i>
+          <span class="info">{{ 'asset_proof_safety_tips' | translate }}</span>
+        </div>
+      </ng-container>
+
+      <ng-template #pending>
+        <div class="pending">
+          <img lazy="loading" src="assets/images/safe-questionnaire/pending.svg" />
+          <p class="title">{{ 'upload_specified_file_under_review' | translate }}</p>
+          <p class="info">{{ 'upload_specified_file_under_review_content' | translate }}</p>
+          <customize-button type="primary" size="medium" width="100%" (click)="appService.jumpToHome()">
+            {{ 'sure' | translate }}
+          </customize-button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

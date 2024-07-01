@@ -1,0 +1,105 @@
+<div
+  class="page-container home"
+  style="
+  --home-app_b_01: url({{ 'assets/images/home/app_b_01.png' | preferWebp }});
+  --home-app_b_01_dark: url({{ 'assets/images/home/app_b_01_dark.png' | preferWebp }});"
+>
+  <div class="main-container" [class.bottom-gap]="isH5">
+    <!-- 轮播图 -->
+    <app-normal-carousel class="container" [buildFor]="'FrontPage'"></app-normal-carousel>
+
+    <app-swiper-unit
+      class="container"
+      *ngIf="isHotSport"
+      [title]="'pop_eve' | translate"
+      [data]="sportData"
+      [imgCarouselConfig]="imgCarouselConfig"
+      [titleIcon]="'assets/images/home/hot_sport_tip.png'"
+      [for]="'sport'"
+    ></app-swiper-unit>
+    <!-- 原真人娱乐场&小游戏 等 -->
+    <ng-container *ngFor="let item of renderHomeScenesInfo(); trackBy: trackByFn; let i = index">
+      <app-swiper-unit
+        class="container"
+        [style.order]="i"
+        (clickItem)="clickGameItem($event)"
+        (clickTitle)="clickLabelTitle(item)"
+        [data]="item?.gameLists"
+        [title]="item?.labelName"
+        [titleIcon]="item?.icon"
+        [row]="item?.multiLine || 1"
+        [titleHref]="item?.titleHref"
+      ></app-swiper-unit>
+    </ng-container>
+
+    <!-- 游戏供应商 -->
+    <app-swiper-provider-list class="container" [style.order]="1"></app-swiper-provider-list>
+
+    <!-- 每日竞赛 -->
+    <app-daily-races
+      [style.order]="98"
+      [gameCategories]="['SportsBook', 'Esports', 'Lottery', 'LiveCasino', 'SlotGame', 'Chess']"
+    ></app-daily-races>
+    <!-- 打开app按钮 -->
+    <app-open-app *ngIf="isH5 && !appService.isNativeApp"></app-open-app>
+    <!-- app -->
+    <div class="container" [style.order]="99" *ngIf="!isH5">
+      <div class="content-box unit appdownload">
+        <div class="main-text">
+          <div class="line1">
+            <app-logo lockDevice="h5" [onlineSizeH5]="['auto', '54']" [sitSizeH5]="['56', '54']"></app-logo>
+            <div class="tit">
+              <h2>{{ 'native_app' | translate: '{Brand Name}' }}</h2>
+              <p>{{ 'safe_fast_eff' | translate }}</p>
+            </div>
+          </div>
+          <div class="line2">
+            <h3>{{ 'down_app_info' | translate: '{Brand Name}' }}</h3>
+            <div>
+              <p>{{ 'app_info' | translate: '{Brand Name}' }}</p>
+              <p>{{ 'app_leaders' | translate: '{Brand Name}' }}</p>
+            </div>
+          </div>
+          <div class="line3">
+            <a [href]="appService.getAppUrl()" rel="noopener" target="_blank"
+              ><img src="assets/images/home/app_ad.svg" loading="lazy"
+            /></a>
+            <a [href]="appService.getAppUrl()" rel="noopener" target="_blank"
+              ><img src="assets/images/home/app_ap.svg" loading="lazy"
+            /></a>
+            <div
+              cdkOverlayOrigin
+              #downloadOrigin="cdkOverlayOrigin"
+              (mouseenter)="showPop()"
+              (mouseleave)="closePop(150)"
+            >
+              <img src="assets/images/home/app_qr.svg" loading="lazy" />
+              <ng-template
+                cdkConnectedOverlay
+                [cdkConnectedOverlayOrigin]="downloadOrigin"
+                [cdkConnectedOverlayOpen]="downQR"
+                [cdkConnectedOverlayPositions]="qrPopPositions"
+                [cdkConnectedOverlayFlexibleDimensions]="true"
+              >
+                <div class="app-download-qr-pop" (mouseenter)="showPop(false)" (mouseleave)="closePop()">
+                  <span>{{ 'app_scan_download' | translate }}</span>
+                  <a class="onact96-a" [href]="appService.getAppUrl()" rel="noopener" target="_blank">
+                    <qr-code
+                      [value]="appService.getAppUrl()"
+                      [margin]="3"
+                      [lightColor]="'#ffffff50'"
+                      [size]="152"
+                      [darkColor]="'#000'"
+                    >
+                    </qr-code>
+                  </a>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="bg"></div>
+      </div>
+    </div>
+  </div>
+</div>

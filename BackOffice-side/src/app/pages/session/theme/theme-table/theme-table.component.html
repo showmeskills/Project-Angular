@@ -1,0 +1,61 @@
+<header class="d-flex flex-between flex-ac">
+  <div class="fz-20 color-222">{{ 'session.theme.theme' | lang }}</div>
+  <div class="btn btn-light-primary fz-14 px-7" (click)="openAddColorPopup()">
+    <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+    <span class="vam">{{ 'session.theme.addTheme' | lang }}</span>
+  </div>
+</header>
+
+<div class="flex-fill mt-2">
+  <table class="table mb-0">
+    <tbody class="color-222">
+      <tr *ngFor="let item of list" class="d-flex flex-ac flex-between">
+        <td>
+          <!-- <span class="cell">{{ lang.isLocal ? item.nameCn : item.nameEn }}</span> -->
+          <div class="category-wrap">
+            <topic-label [data]="getCategory(item.categoryId)" [pointer]="false" />
+            <span class="color-999">/</span>
+            <topic-label [data]="item" [pointer]="false" />
+          </div>
+        </td>
+        <td>
+          <div class="d-flex flex-ac flex-between">
+            <span class="cell" (click)="openEidtColorPopup(item)">{{ 'common.edit' | lang }}</span>
+            <span class="cell" (click)="onDelete(Warning, item.id)">{{ 'common.delete' | lang }}</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <!-- 二次确认警告 -->
+  <ng-template #Warning let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'budget.prompt' | lang }}</div>
+
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+    </div>
+
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ 'session.theme.confirmWarning' | lang }}</p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="onDeleteSubmit()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </ng-template>
+</div>

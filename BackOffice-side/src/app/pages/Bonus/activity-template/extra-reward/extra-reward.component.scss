@@ -1,0 +1,18 @@
+.operation-btn {
+  padding: 0 7px;
+  line-height: 16px;
+  margin: 2px 0;
+
+  &:not(:first-child) {
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
+  }
+}
+
+.primary {
+  color: #009ef7;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

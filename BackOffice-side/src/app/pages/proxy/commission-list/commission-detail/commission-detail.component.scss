@@ -1,0 +1,174 @@
+:host {
+  background: #fff;
+  border-radius: 6px;
+  display: block;
+}
+
+.detail {
+  &-title {
+    padding: 30px 24px 20px;
+    font-size: 20px;
+  }
+}
+
+.table th .cell {
+  font-weight: 100;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+}
+
+.table-content {
+  tbody tr:nth-child(2n + 1) {
+    background: rgba(#f1faff, 0.48);
+  }
+}
+
+.table-count td {
+  padding: 24px 8px;
+
+  .cell {
+    flex-flow: column nowrap;
+  }
+
+  .cell {
+    border: 0;
+  }
+}
+
+table {
+  table-layout: fixed;
+}
+
+.line {
+  border-top: 1px solid #e4e6ef;
+
+  &.deep {
+    border-color: #707070;
+  }
+}
+
+.tooltip-money {
+  width: 180px;
+  text-align: left;
+  font-size: 14px;
+  //max-height: 180px;
+  //overflow-y: auto;
+
+  &::-webkit-scrollbar-thumb {
+    background: #e9edf1;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &-wrap {
+    &::ng-deep {
+      .tooltip-inner {
+        border-radius: 6px;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.025);
+      }
+    }
+  }
+
+  > div {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 6px;
+    padding-right: 10px;
+  }
+}
+
+.pass-time {
+  margin-left: 92px;
+  margin-right: 54px;
+}
+
+.item {
+  flex: 1 1 274px;
+  width: 274px;
+  max-width: 300px;
+  padding: 32px 20px 24px;
+  position: relative;
+  margin: 0 17px;
+
+  &-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 6px;
+    background: #e9f5ff;
+  }
+
+  &::ng-deep {
+    .pp-progress-bar__inner {
+      background-image: linear-gradient(to left, #85c8ff 3%, #2e9af3);
+    }
+  }
+
+  &:not(:last-child):after {
+    content: "";
+    position: absolute;
+    right: -17px;
+    height: 90px;
+    width: 1px;
+    background: #e4e6ef;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
+}
+
+$color-row1: (#e9f5ff, #85c8ff, #2e9af3), (#fff6e7, #ffd285, #f3aa2e),
+  (#f2e7f3, #ff9ee4, #f049cd), (#e5fceb, #99e7cf, #2feab2);
+
+$color-row2: (#fcf5ff, #edb1ff, #bd44fd), (#ecfcf3, #acef5d, #6ce217),
+  (#e9f5ff, #85c8ff, #2e9af3), (#fff6e7, #ffd285, #f3aa2e);
+
+.item-row-1 {
+  @for $i from 1 through length($color-row1) {
+    $now: nth($color-row1, $i);
+    $len: length($color-row1);
+
+    .item:nth-child(#{$len}n + #{$i}) {
+      .item-icon {
+        background: nth($now, 1);
+      }
+
+      &::ng-deep {
+        .pp-progress-bar__inner {
+          background-image: linear-gradient(
+            to left,
+            nth($now, 2) 3%,
+            nth($now, 3)
+          );
+        }
+      }
+    }
+  }
+}
+
+.item-row-2 {
+  @for $i from 1 through length($color-row2) {
+    $now: nth($color-row2, $i);
+    $len: length($color-row2);
+
+    .item:nth-child(#{$len}n + #{$i}) {
+      .item-icon {
+        background: nth($now, 1);
+      }
+
+      &::ng-deep {
+        .pp-progress-bar__inner {
+          background-image: linear-gradient(
+            to left,
+            nth($now, 2) 3%,
+            nth($now, 3)
+          );
+        }
+      }
+    }
+  }
+}

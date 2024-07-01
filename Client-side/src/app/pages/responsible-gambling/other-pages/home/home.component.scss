@@ -1,0 +1,303 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+div {
+  display: flex;
+}
+
+.top-container {
+  position: relative;
+
+  .top-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 340px;
+    z-index: 0;
+
+    @media (max-width: 767px) {
+      height: 294px;
+    }
+  }
+}
+
+.top-banner {
+  position: relative;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: 767px) {
+    align-items: flex-start;
+    padding: 48px 0 0 16px;
+  }
+
+  .left {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .left-text {
+      font-size: 56px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.6;
+
+      @media (max-width: 991px) {
+        font-size: 28px;
+      }
+    }
+
+    .left-btn {
+      margin-top: 20px;
+    }
+  }
+
+  .right {
+    width: 320px;
+    height: 340px;
+
+    @media (max-width: 767px) {
+      width: 220px;
+      height: 246px;
+    }
+  }
+}
+
+.tool-section {
+  align-items: flex-start;
+  flex-direction: column;
+  margin-top: 40px;
+
+  @media (max-width: 767px) {
+    margin-top: 30px;
+  }
+
+  .title {
+    position: relative;
+
+    &:host-context(.dark) & {
+      &::after {
+        background-color: #14212a;
+      }
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 30px;
+      background-color: #ffede9;
+      bottom: -15px;
+      left: 0;
+      z-index: 0;
+
+      :host-context(.dark) & {
+        opacity: 0.1;
+        background-color: #fff;
+      }
+
+      @media (max-width: 767px) {
+        height: 20px;
+        bottom: -10px;
+      }
+    }
+
+    .text {
+      font-size: 30px;
+      color: var(--text-color);
+      position: relative;
+      z-index: 1;
+
+      @media (max-width: 767px) {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .tool-list {
+    align-items: center;
+    flex-wrap: wrap;
+    @include polyfills.flex-gap(25px, 'row wrap');
+    margin-top: 40px;
+
+    @media (max-width: 767px) {
+      margin-top: 30px;
+    }
+
+    .tool-list-item {
+      width: 220px;
+      padding: 20px 0;
+      align-items: center;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #f9f9fa;
+
+      :host-context(.dark) & {
+        background-color: #0a1620;
+      }
+
+      @media (max-width: 767px) {
+        width: 100%;
+      }
+    }
+
+    .text {
+      margin-top: 20px;
+      font-size: 16px;
+      color: var(--primary-color);
+    }
+
+    .info {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text-color-20);
+      text-align: center;
+      max-width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 20px;
+      word-break: break-all;
+
+      @media (max-width: 767px) {
+        max-width: unset;
+        white-space: unset;
+        overflow: unset;
+        text-overflow: unset;
+      }
+    }
+  }
+}
+
+.banner-one {
+  margin-top: 70px;
+  background-image: url(src/assets/images/responsible-gambling/web-banner.jpg);
+  height: 300px;
+  background-size: cover;
+  align-items: center;
+  justify-content: flex-start;
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+    background-image: url(src/assets/images/responsible-gambling/h5-banner.jpg);
+    object-fit: contain;
+  }
+}
+
+.banner-two {
+  background-image: url(src/assets/images/responsible-gambling/web-banner-2.jpg);
+
+  @media (max-width: 767px) {
+    background-image: url(src/assets/images/responsible-gambling/h5-banner-2.jpg);
+    object-fit: contain;
+  }
+}
+
+.right-info {
+  flex-direction: column;
+  padding: 0 15px;
+  text-align: left;
+  justify-content: center;
+  width: 50%;
+  background-image: linear-gradient(
+    91deg,
+    var(--primary-color-85) 1%,
+    var(--primary-color-opacity-10) 55%,
+    var(--primary-color-opacity-30) 98%
+  );
+  height: 100%;
+
+  @media (min-width: 768px) and (max-width: 1110px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    background-image: unset;
+    width: 100%;
+    text-align: left;
+    padding: 25px 16px;
+    background-color: #f9f9fa;
+
+    &:host-context(.dark) & {
+      background-color: #14212a;
+    }
+  }
+
+  .text-one {
+    font-size: 36px;
+    font-weight: 600;
+    color: #fff;
+
+    @media (max-width: 767px) {
+      font-size: 20px;
+      color: var(--primary-color);
+    }
+  }
+
+  .text-two {
+    font-size: 16px;
+    color: #fff;
+    margin-top: 20px;
+    line-height: 1.6;
+
+    @media (max-width: 767px) {
+      color: var(--text-color);
+
+      &:host-context(.dark) & {
+        color: #b1bad3;
+      }
+    }
+  }
+
+  .text-three {
+    font-size: 14px;
+    color: #fff;
+    margin-top: 20px;
+
+    @media (max-width: 767px) {
+      color: var(--primary-color);
+    }
+  }
+}
+
+.organization {
+  margin-top: 70px;
+  align-items: center;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    margin-top: 50px;
+    margin-bottom: 40px;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 30px;
+    color: var(--text-color);
+
+    @media (max-width: 767px) {
+      font-size: 20px;
+    }
+  }
+
+  .txt {
+    margin-top: 30px;
+    font-size: 16px;
+    line-height: 1.48;
+    color: var(--text-color-20);
+  }
+
+  .img-group {
+    margin-top: 30px;
+    align-items: center;
+    @include polyfills.flex-gap(50px, 'row nowrap');
+
+    @media (max-width: 767px) {
+      @include polyfills.flex-gap-unset('row nowrap');
+      @include polyfills.flex-gap(5px, 'row nowrap');
+    }
+  }
+
+  .btm-txt {
+    margin-top: 30px;
+  }
+}

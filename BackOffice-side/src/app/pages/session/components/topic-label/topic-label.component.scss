@@ -1,0 +1,62 @@
+@use "sass:map";
+
+:host {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 2px;
+
+  .topic-label-txt {
+    display: block;
+    max-width: 126px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  $topicColorList: (
+          (key: 'red01', color: #FFB652),
+          (key: 'red02', color: #9564FF),
+          (key: 1, color: #FFB652),
+          (key: 2, color: #9564FF),
+          (key: 3, color: #70D048),
+          (key: 4, color: #1E85FF),
+          (key: 5, color: #FF4A99),
+          (key: 6, color: #FF8A47),
+          (key: 7, color: #03CE7D),
+          (key: 8, color: #009EF7),
+          (key: 9, color: #E72222),
+          (key: 10, color: #CCFF00),
+          (key: 'del', color: #acacac),
+  );
+
+  &.topic-label {
+    @each $c in $topicColorList {
+
+      @if map-has-key($c, key) {
+        &-#{map-get($c, key)} {
+          $curColor: map-get($c, color);
+          color: $curColor;
+
+          &:not(.active) {
+            opacity: 0.9;
+          }
+
+          @if map-get($c, bgColor) != null {
+            background-color: map-get($c, bgColor);
+          }
+          @else {
+            background-color: rgba($curColor, 0.1);
+          }
+
+          &.active {
+            background-color: $curColor;
+            color: #fff;
+          }
+        }
+      }
+      @else {
+        @warn 'No `key` field found in map for topic color';
+      }
+    }
+  }
+}

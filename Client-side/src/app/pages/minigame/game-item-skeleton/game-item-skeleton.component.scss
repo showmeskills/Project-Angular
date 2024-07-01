@@ -1,0 +1,10 @@
+.content-box {
+  pointer-events: none;
+  row-gap: 0 !important;
+  grid-template-rows: 1fr 0 0 0 0 0 0 0;
+  overflow: hidden;
+
+  > div {
+    border-radius: 4px;
+  }
+}

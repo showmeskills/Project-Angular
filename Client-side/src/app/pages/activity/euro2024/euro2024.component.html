@@ -1,0 +1,91 @@
+<div class="page-container">
+  <div class="main-container">
+    <div class="main">
+      <img class="main-logo" src="assets/images/activity/euro2024/main-logo.png" alt="" />
+      <div class="main-text">
+        <div class="tt">{{ isZH ? '2024 欧洲国家杯' : 'European Cup Schedule' }}</div>
+        <div class="text">
+          {{ isZH ? '四年一度的欧洲足球列强盛世，盛大开幕，竞争最高荣耀' : 'Exciting events planned in advance' }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Group -->
+  <div class="main-container">
+    <div class="title">{{ isZH ? '小组赛分组' : 'Group' }}</div>
+    <div class="group-container">
+      <div class="group" [class]="'group-' + group.idx" *ngFor="let group of groups">
+        <div class="top">{{ isZH ? group.tt : group.entt }}</div>
+        <div class="cont">
+          <div class="item" *ngFor="let item of group.list">
+            <img src="assets/images/activity/euro2024/flag/{{ item.enName }}.png" alt="" />
+            <div class="name">{{ isZH ? item.name : item.enName == 'Turkiye' ? 'Türkiye' : item.enName }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- match schedule -->
+  <div class="main-container">
+    <div class="title">{{ isZH ? '小组赛日程' : 'Match Schedule' }}</div>
+    <div class="match-container">
+      <div class="tab">
+        <div class="item" *ngFor="let item of groups" [class.active]="item.idx == mainTab" (click)="mainTab = item.idx">
+          {{ isZH ? item.tt : item.entt }}
+        </div>
+      </div>
+      <div class="match-wrap">
+        <ng-container *ngFor="let group of matchSchedule | keyvalue">
+          <div class="match" [class.show]="group.key == mainTab" *ngFor="let item of group.value">
+            <div class="team">
+              <img src="assets/images/activity/euro2024/flag/{{ item.enTeamA }}.png" alt="" />
+              <div class="name">{{ isZH ? item.teamA : item.enTeamA == 'Turkiye' ? 'Türkiye' : item.enTeamA }}</div>
+            </div>
+            <div class="time">
+              <div class="date">{{ item.date }}</div>
+              <ng-container *ngIf="item.score; else timeTmp">
+                <div class="score">{{ item.score }}</div>
+                <div>{{ isZH ? '比赛结束' : 'Competition is over' }}</div>
+              </ng-container>
+              <ng-template #timeTmp>
+                <div class="time">{{ item.time }}</div>
+              </ng-template>
+            </div>
+            <div class="team">
+              <img src="assets/images/activity/euro2024/flag/{{ item.enTeamB }}.png" alt="" />
+              <div class="name">{{ isZH ? item.teamB : item.enTeamB == 'Turkiye' ? 'Türkiye' : item.enTeamB }}</div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <!-- knockout round -->
+  <div class="main-container">
+    <div class="title">{{ isZH ? '淘汰赛战况' : 'Knockout Round' }}</div>
+    <div class="tree-container light" [routerLink]="obLink">
+      <img class="tree-h5" src="{{ appService.tenantConfig.config.euro2024_tree_h5_1 }}" alt="" />
+      <img
+        class="tree-h5"
+        style="margin-top: 20px"
+        src="{{ appService.tenantConfig.config.euro2024_tree_h5_2 }}"
+        alt=""
+      />
+      <img class="tree-web" src="{{ appService.tenantConfig.config.euro2024_tree_web }}" alt="" />
+    </div>
+    <div class="tree-container dark" [routerLink]="obLink">
+      <img class="tree-h5" src="{{ appService.tenantConfig.config.euro2024_tree_h5_1_dark }}" alt="" />
+      <img
+        class="tree-h5"
+        style="margin-top: 20px"
+        src="{{ appService.tenantConfig.config.euro2024_tree_h5_2_dark }}"
+        alt=""
+      />
+      <img class="tree-web" src="{{ appService.tenantConfig.config.euro2024_tree_web_dark }}" alt="" />
+    </div>
+  </div>
+  <div class="footer">
+    <img class="footer-h5" src="assets/images/activity/euro2024/bg-footer-h5.png" alt="" />
+    <img class="footer-web" src="assets/images/activity/euro2024/bg-footer-web.png" alt="" />
+  </div>
+</div>

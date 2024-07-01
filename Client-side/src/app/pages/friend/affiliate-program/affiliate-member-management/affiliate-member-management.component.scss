@@ -1,0 +1,123 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.header-icon {
+  background-image: url(src/assets/images/friend/affiliate-member.svg);
+}
+
+.statistic-date,
+.reg-date {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+
+  @media (max-width: 1239px) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    display: block;
+  }
+
+  ::ng-deep {
+    app-datepicker {
+      @media (max-width: 1239px) {
+        width: 50%;
+      }
+
+      .datepicker-container {
+        min-width: 150px;
+
+        @media (max-width: 1239px) {
+          min-width: unset;
+        }
+      }
+    }
+  }
+
+  .calendar-text {
+    font-size: 14px;
+    color: var(--text-color);
+    margin: 0px 12px;
+  }
+}
+
+// 表单
+.field {
+  margin-top: 14px;
+  padding: 34px 10px;
+  border-radius: 12px;
+  background-color: #fcfcfc;
+
+  @media (max-width: 767px) {
+    padding: 20px;
+  }
+
+  &:host-context(.dark) & {
+    background-color: var(--container-bg-color);
+  }
+
+  .form-field {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .label-text {
+      font-size: 14px;
+      color: var(--text-color);
+      white-space: nowrap;
+
+      @media (max-width: 767px) {
+        width: 100%;
+        padding-bottom: 10px;
+      }
+    }
+
+    .member-id {
+      display: flex;
+      align-items: center;
+      width: 245px;
+      margin-top: 30px;
+
+      @media (max-width: 1239px) {
+        width: 100%;
+      }
+
+      @media (max-width: 767px) {
+        display: block;
+        margin-top: 0;
+      }
+    }
+  }
+
+  .select-field {
+    width: 100%;
+
+    @media (max-width: 767px) {
+      margin-top: 15px;
+    }
+  }
+
+  .calendar-group {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    @media (max-width: 767px) {
+      margin-top: 15px;
+    }
+  }
+
+  .button-field {
+    display: flex;
+    justify-content: center;
+    @include polyfills.flex-gap(10px, 'row nowrap');
+    margin-top: 38px;
+  }
+}
+
+::ng-deep {
+  mat-datepicker-content .mat-datepicker-content {
+    background-color: var(--container-bg-color);
+  }
+}

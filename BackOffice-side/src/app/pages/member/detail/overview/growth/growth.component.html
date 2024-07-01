@@ -1,0 +1,358 @@
+<!-- 会员成长系统 -->
+<h2 class="fz-20 fw-bolder">{{ 'member.list.memberGrowthSys' | lang }}</h2>
+
+<!-- 会员积分统计 -->
+<div class="mt-6 d-flex flex-wrap" style="margin: 0 -15px" *ngIf="sumData">
+  <div class="item p-8 d-flex flex-ac flex-1">
+    <div class="flex-1">
+      <!-- 交易积分 -->
+      <span>{{ 'member.list.transPoints' | lang }}</span>
+    </div>
+    <div class="text-right h-100 d-flex flex-column justify-content-between">
+      <div class="color-aaa">24H</div>
+      <div
+        class="fz-18 fw-bolder"
+        *win="this.isFiveMerchant ? sumData?.tradPoints : sumData?.betPoints; let value; prev as prev"
+      >
+        {{ prev }}{{ value | toFormatMoney }}
+      </div>
+    </div>
+  </div>
+  <div class="item p-8 d-flex flex-ac flex-1">
+    <div class="flex-1">
+      <!-- 存提积分 -->
+      <span>{{ 'member.list.depWithdrawalPoints' | lang }}</span>
+    </div>
+    <div class="text-right h-100 d-flex flex-column justify-content-between">
+      <div class="color-aaa">24H</div>
+      <div
+        class="fz-18 fw-bolder"
+        *win="this.isFiveMerchant ? sumData?.depositWithdrawPoints : sumData?.depositPoints; let value; prev as prev"
+      >
+        {{ prev }}{{ value | toFormatMoney }}
+      </div>
+    </div>
+  </div>
+  <div class="item p-8 d-flex flex-ac flex-1">
+    <div class="flex-1">
+      <!-- 其他积分 -->
+      <span>{{ 'member.list.otherPoints' | lang }}</span>
+    </div>
+    <div class="text-right h-100 d-flex flex-column justify-content-between">
+      <div class="color-aaa">24H</div>
+      <div class="fz-18 fw-bolder" *win="sumData?.otherPoints; let value; prev as prev">
+        {{ prev }}{{ value | toFormatMoney }}
+      </div>
+    </div>
+  </div>
+  <div class="item p-8 d-flex flex-ac flex-1">
+    <div class="flex-1">
+      <!-- 总积分 -->
+      <span>{{ 'member.list.totalPoints' | lang }}</span>
+    </div>
+    <div class="text-right h-100 d-flex flex-column justify-content-between">
+      <div class="color-aaa">24H</div>
+      <div
+        class="fz-18 fw-bolder"
+        *win="this.isFiveMerchant ? sumData?.totalPoints : sumData?.totalPorints; let value; prev as prev"
+      >
+        {{ prev }}{{ value | toFormatMoney }}
+      </div>
+    </div>
+  </div>
+  <div class="item p-8 d-flex flex-column justify-content-center flex-1" *ngIf="!isFiveMerchant">
+    <div class="d-flex justify-content-between">
+      <span>{{ 'member.list.relegation' | lang }}</span>
+      <span class="fz-18 fw-bolder">{{ processKeep }}%</span>
+    </div>
+
+    <pp-progress class="w-100 mt-4" [status]="'success'" [percentage]="processKeep" [showText]="false"></pp-progress>
+  </div>
+</div>
+
+<!-- 会员 积分/升级 记录详情 -->
+<div class="card py-8 px-12 my-8">
+  <!-- tab -->
+  <!-- <div class="d-flex mb-8">
+    <span
+      *ngFor="let item of tabList"
+      [class.btn-primary]="item.value === curTabValue"
+      class="btn c-btn btn-default text-nowrap mr-8"
+      (click)="onSelectTab(item.value)"
+    >
+      {{ item.lang | lang }}
+    </span>
+  </div> -->
+
+  <!-- 筛选 -->
+  <div class="d-flex flex-row flex-wrap">
+    <!-- VIP等级 -->
+    <form-row [label]="'member.giveOut.vipLevel' | lang" label-width="95" class="mr-8" [contentWidth]="264">
+      <ng-template>
+        <mat-form-field [style.width.px]="264">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="data.vipLevelList"
+            [placeholder]="'member.giveOut.selectVIP' | lang"
+            multiple
+          >
+            <mat-option *ngFor="let item of vipList" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 积分记录：类型 -->
+    <form-row [label]="'common.type' | lang" class="mr-8" *ngIf="curTabValue === 1">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.type" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option *ngFor="let item of typeList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 升级记录：状态 -->
+    <form-row [label]="'common.status' | lang" class="mr-8" *ngIf="curTabValue === 2">
+      <ng-template>
+        <mat-form-field>
+          <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData(true)">
+            <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+            <mat-option value="upgrade">{{ 'member.list.upgrade' | lang }}</mat-option>
+            <mat-option value="downgrade">{{ 'member.list.downgrade' | lang }}</mat-option>
+            <mat-option *ngIf="!isFiveMerchant" value="keep">{{ 'member.list.keep' | lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <!-- 时间 -->
+    <form-row [label]="'common.time' | lang" class="mr-8" [contentWidth]="250">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'common.dateTips' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="modal-header py-0 card-body" [style.height.px]="75">
+    <!-- 积分记录/升级记录 -->
+    <div class="fz-20 color-aaa d-flex h-100" style="line-height: 75px">
+      <div
+        class="mr-8 tab"
+        *ngFor="let item of tabList"
+        [class.tab-active]="item.value === curTabValue"
+        (click)="onSelectTab(item.value)"
+      >
+        {{ item.lang | lang }}
+      </div>
+    </div>
+
+    <div class="d-flex">
+      <div class="d-flex flex-ac">
+        <!-- VIPA -->
+        <ng-container *ngIf="!isFiveMerchant">
+          <!-- 保级周期截止日期 -->
+          <div class="mr-8">
+            <span class="color-aaa">{{ 'member.list.relegationCycleDeadline' | lang }}:</span>
+            {{ sumData?.keepCycleDeadlineTimestamp | timeFormat }}
+          </div>
+          <div>
+            <!-- 升级周期开始日期 -->
+            <div>
+              <span class="color-aaa">{{ 'member.list.upgradeCycleStartDate' | lang }}:</span>
+              {{ sumData?.upgradeStartCycleDeadlineTimestamp | timeFormat }}
+            </div>
+            <!-- 升级周期截止日期 -->
+            <div>
+              <span class="color-aaa">{{ 'member.list.upgradeCycleDeadline' | lang }}:</span>
+              {{ sumData?.upgradeEndCycleDeadlineTimestamp | timeFormat }}
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- VIPC -->
+        <div *ngIf="isFiveMerchant">
+          <!-- 降级周期截止日期 -->
+          <span class="color-aaa">{{ 'member.list.downgradeCycleDeadline' | lang }}:</span>
+          {{ sumData?.downgradeCycleDeadlineTimestamp | timeFormat }}
+        </div>
+      </div>
+
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <table class="table mb-0 mt-2">
+    <thead class="sticky-wrapper">
+      <tr>
+        <!-- 时间 -->
+        <th>
+          <span class="cell">{{ 'member.list.growthTime' | lang }}</span>
+        </th>
+        <!-- 单号 -->
+        <th>
+          <span class="cell">{{ 'member.list.growthOrder' | lang }}</span>
+        </th>
+
+        <!-- 积分记录 -->
+        <ng-container *ngIf="curTabValue === 1">
+          <!-- 类型 -->
+          <th>
+            <span class="cell">{{ 'common.type' | lang }}</span>
+          </th>
+          <!-- 等级 -->
+          <th>
+            <span class="cell">{{ 'member.list.level' | lang }}</span>
+          </th>
+          <!-- 成长值变化 -->
+          <th>
+            <span class="cell">{{ 'member.list.variationOfPoints' | lang }}</span>
+          </th>
+        </ng-container>
+
+        <!-- 升级记录 -->
+        <ng-container *ngIf="curTabValue === 2">
+          <!-- 之前等级 -->
+          <th>
+            <span class="cell">{{ 'member.list.beforeLevel' | lang }}</span>
+          </th>
+          <!-- 之后等级 -->
+          <th>
+            <span class="cell">{{ 'member.list.afterLevel' | lang }}</span>
+          </th>
+          <!-- 状态 -->
+          <th>
+            <span class="cell">{{ 'common.status' | lang }}</span>
+          </th>
+        </ng-container>
+
+        <!-- 现在成长值 -->
+        <th>
+          <span class="cell">{{ 'member.list.currentGrowthValue' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody *ngIf="list.length" [appLoading]="isLoading">
+      <tr *ngFor="let item of list">
+        <!-- 时间 -->
+        <td>
+          <span class="cell">{{ item?.createTimeTimestamp | timeFormat }}</span>
+        </td>
+        <!-- 单号 -->
+        <td>
+          <span class="cell">{{ (curTabValue === 1 ? item?.sourceId : item?.id) || '-' }}</span>
+        </td>
+
+        <!-- 积分记录 -->
+        <ng-container *ngIf="curTabValue === 1">
+          <!-- 类型 -->
+          <td>
+            <span class="cell">{{ getEventName(item.sourcePoints) | lang }}</span>
+          </td>
+          <!-- 等级 -->
+          <td>
+            <span class="cell">{{ item?.currentVipLevel | vipName }}</span>
+          </td>
+          <!-- 成长值变化 -->
+          <td>
+            <span class="cell">{{ item?.points | toFormatMoney }}</span>
+          </td>
+        </ng-container>
+
+        <!-- 升级记录 -->
+        <ng-container *ngIf="curTabValue === 2">
+          <!-- 之前等级 -->
+          <td>
+            <span class="cell">{{ item?.beforeLevel | vipName }}</span>
+          </td>
+          <!-- 之后等级 -->
+          <td>
+            <span class="cell">{{ item?.afterLevel | vipName }}</span>
+          </td>
+          <!-- 状态 -->
+          <td>
+            <span class="cell" [ngSwitch]="item?.remark">
+              <app-label *ngSwitchCase="'downgrade' || 'downgrade30' || 'downgrade90'" type="danger">
+                {{ 'member.list.downgrade' | lang }}
+              </app-label>
+              <app-label *ngSwitchCase="'upgrade'" type="success">
+                {{ 'member.list.upgrade' | lang }}
+              </app-label>
+              <app-label *ngSwitchCase="'keep'" type="default">
+                {{ 'member.list.keep' | lang }}
+              </app-label>
+              <ng-container *ngSwitchDefault>-</ng-container>
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- 现在成长值 -->
+        <td>
+          <span class="cell">{{
+            (curTabValue === 1 ? item?.currentTotalPoints : item?.totalPoints) | toFormatMoney
+          }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div *ngIf="!list.length" [style.height.px]="380" [appLoading]="isLoading">
+    <empty *ngIf="!isLoading"></empty>
+  </div>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

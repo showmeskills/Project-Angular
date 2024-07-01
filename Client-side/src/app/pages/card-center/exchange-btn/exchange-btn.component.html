@@ -1,0 +1,104 @@
+<div class="exchange-btn">
+  <customize-button
+    icon="icon-coupon-2"
+    size="medium"
+    type="text"
+    [plain]="true"
+    (onClick)="onClickOpenExchangePopup()"
+  >
+    <span class="btn-txt">{{ 'coupon_code' | translate }}</span>
+  </customize-button>
+</div>
+
+<!-- 兑换劵码 webPopup -->
+<ng-template #exchangeWeb>
+  <div class="web-exchange-popup" [appLoading]="exchangeNumberLoading">
+    <app-scrollbar>
+      <div class="header">
+        <span class="title">{{ 'redeem_vou_code' | translate }}</span>
+        <i
+          class="mutual-opacity icon-close-simple onact96-not"
+          [class.active]="exchangeNumberLoading"
+          (click)="exchangeWebPopup.close()"
+        ></i>
+      </div>
+      <div class="info-box">
+        <app-customize-input
+          size="medium"
+          width="100%"
+          [label]="'enter_coupon_code' | translate"
+          type="text"
+          [(value)]="exchangeNumber"
+          [max]="8"
+        >
+        </app-customize-input>
+        <p class="tips">{{ 'enter_coupon_code_tip' | translate }}</p>
+        <div class="info-box-histroy" [appLoading]="exchangeHistroyLoading">
+          <ng-container *ngTemplateOutlet="exchangeBtnTmp; context: { show: isH5() }"></ng-container>
+
+          <p class="label">{{ 'exchange_record' | translate }}</p>
+
+          <ng-container *ngTemplateOutlet="exchangeItemTmp"></ng-container>
+
+          <app-empty
+            *ngIf="renderExchangeHistroyList().length === 0 && !exchangeHistroyLoading"
+            [icon]="'assets/images/card-center/empty.png'"
+            [text]="'no_record' | translate"
+          >
+          </app-empty>
+
+          <app-paginator
+            *ngIf="renderExchangeHistroyList().length > 0"
+            [(page)]="exchangePaginator.page"
+            [total]="exchangePaginator.total"
+            [pageSize]="exchangePaginator.pageSize"
+            [disabled]="exchangeHistroyLoading"
+            (onPageChange)="getExchangeHistoryData()"
+          ></app-paginator>
+        </div>
+        <ng-container *ngTemplateOutlet="exchangeBtnTmp; context: { show: !isH5() }"></ng-container>
+      </div>
+    </app-scrollbar>
+  </div>
+</ng-template>
+
+<!-- 兑换券 模版 -->
+<ng-template #exchangeItemTmp>
+  <div class="content" *ngIf="renderExchangeHistroyList().length > 0">
+    <ng-container *ngIf="!isH5()">
+      <app-scrollbar>
+        <ng-container *ngFor="let item of renderExchangeHistroyList()">
+          <div class="item">
+            <p class="item-text word">{{ item.name }}</p>
+            <p class="item-text">{{ item.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+          </div>
+        </ng-container>
+      </app-scrollbar>
+    </ng-container>
+
+    <ng-container *ngIf="isH5()">
+      <ng-container *ngFor="let item of renderExchangeHistroyList()">
+        <div class="item">
+          <p class="item-text word">{{ item.name }}</p>
+          <p class="item-text">{{ item.createTime | mdate : 'YYYY-MM-DD HH:mm:ss' }}</p>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- 兑换弹窗 按钮 -->
+<ng-template #exchangeBtnTmp let-show="show">
+  <div class="info-box-foot" *ngIf="show">
+    <customize-button
+      [disabled]="exchangeNumber.length !== 8 || exchangeNumberLoading"
+      (onClick)="onClickExchangeSubmit()"
+      type="primary"
+      size="medium"
+      width="100%"
+      [loading]="exchangeNumberLoading"
+    >
+      {{ 'redeem_rewards' | translate }}
+    </customize-button>
+  </div>
+</ng-template>

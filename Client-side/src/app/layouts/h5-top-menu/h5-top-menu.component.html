@@ -1,0 +1,140 @@
+<div class="h5-top-menu">
+  @if (!['register', 'login', 'password'].includes(currentPage)) {
+    <div class="imchat" *ngIf="logined && chatService.chatEnabled" (click)="chatService.toggleChat(true)">
+      <i class="icon-chat2"></i>
+      <em class="avatar-badge" *ngIf="chatService.unreadCount > 0">
+        {{ chatService.unreadCount > 99 ? '99+' : chatService.unreadCount }}
+      </em>
+    </div>
+    <div class="user-avatar onact96" (click)="open('h5-topMenu')">
+      <ng-container *ngIf="logined">
+        <em class="avatar-badge" *ngIf="bounsCount > 0">{{ bounsCount > 99 ? '99+' : bounsCount }}</em>
+        <img class="avatar-img" *ngIf="userInfo.avater; else coloraVater" [src]="userInfo.avater" />
+        <ng-template #coloraVater>
+          <div class="avatar-num" [style.background]="userInfo.bgColor">
+            {{ userInfo.uid | firstLetter }}
+          </div>
+        </ng-template>
+      </ng-container>
+      <div class="avatar-icon" *ngIf="!logined">
+        <i class="icon-user-fill"></i>
+      </div>
+    </div>
+  }
+</div>
+
+<ng-template #commonHead>
+  <div class="popup-head">
+    <i class="mutual-opacity icon-arrow-left onact96-not" style="margin-right: auto" (click)="close()"></i>
+    <!-- <app-theme-switch #themeSwitch [simple]="true"></app-theme-switch> -->
+    <!-- <i class="mutual-opacity icon-kefu"></i> -->
+  </div>
+</ng-template>
+
+<ng-template #menuPopup>
+  <div class="popup-full top-menu-popup" *ngIf="useFor === 'h5-topMenu'; else langSelect">
+    <ng-container *ngTemplateOutlet="commonHead"></ng-container>
+    <div class="popup-body">
+      <div class="btns" *ngIf="!logined">
+        <div class="btn login onact96-not" [routerLink]="'login'" (click)="jumpToLogin()">
+          {{ 'login_button' | translate }}
+        </div>
+        <div class="btn reg onact96-not" [routerLink]="'register'" (click)="close()">
+          {{ 'register_button' | translate }}
+        </div>
+        <div class="customer-service onact96">
+          <span (click)="goService()">
+            {{ 'online_cs' | translate }}
+          </span>
+        </div>
+      </div>
+      <div class="user-Info" *ngIf="logined">
+        <div class="user-name">{{ userInfo.userName || userInfo.uid }}</div>
+        <div>
+          <span class="vip-img onact96-not" [routerLink]="'promotions/vip-level'" (click)="close()"></span>
+          <span class="vip-text onact96" [routerLink]="'promotions/vip-level'" (click)="close()">
+            <ng-container *ngIf="!vipLoading">
+              {{ (isSuperVip ? 'customize_vip10' : 'customize_vip' + currentVipLevel) | translate }}
+            </ng-container>
+            <i class="animation-icon-loading-dot" *ngIf="vipLoading"><i></i><i></i><i></i></i>
+          </span>
+          <div class="kyc-status onact96-not" [class.active]="kycLevel > 1" (click)="jumpToKyc()">
+            <ng-container *ngIf="!kycStatusLoading">
+              {{ kycStatusName }}
+            </ng-container>
+            <i class="animation-icon-loading-dot" *ngIf="kycStatusLoading"><i></i><i></i><i></i></i>
+          </div>
+        </div>
+      </div>
+      <div class="menus">
+        <ng-container *ngFor="let group of menuData">
+          <div class="menu-group" *ngIf="checkGroup(group)">
+            <ng-container *ngFor="let item of group">
+              <div class="menu-item" *ngIf="checkItem(item)">
+                <div
+                  class="menu onact96"
+                  [routerLink]="getRouterLink(item)"
+                  [routerLinkActive]="getRouterLinkActive(item)"
+                  (click)="menuClick(item, $event)"
+                >
+                  <span class="menu-icon icon-{{ item.icon }}"></span>
+                  <span>{{ item.title | translate }}</span>
+                  <span
+                    class="icon-arrow-left-simple expand-icon"
+                    *ngIf="item.children && checkGroup(item.children)"
+                  ></span>
+                  @switch (item.icon) {
+                    @case ('bell') {
+                      <ng-container *ngTemplateOutlet="badge; context: { num: messagesCount }"></ng-container>
+                    }
+                    @case ('coupon') {
+                      <ng-container *ngTemplateOutlet="badge; context: { num: bounsCount }"></ng-container>
+                    }
+                    @case ('chat') {
+                      <ng-container *ngTemplateOutlet="badge; context: { num: chatService.unreadCount }"></ng-container>
+                    }
+                  }
+                </div>
+                <div class="sub-menus" *ngIf="item.children && checkGroup(item.children)">
+                  <ng-container *ngFor="let subItem of item.children">
+                    <div
+                      class="menu sub-menu onact96"
+                      *ngIf="checkItem(subItem)"
+                      [routerLink]="getRouterLink(subItem)"
+                      [routerLinkActive]="getRouterLinkActive(subItem)"
+                      (click)="$event.stopPropagation(); menuClick(subItem, $event)"
+                    >
+                      <span>{{ subItem.title | translate }}</span>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <ng-template #langSelect>
+    <div class="popup-full langSelect-popup">
+      <ng-container *ngTemplateOutlet="commonHead"></ng-container>
+      <div class="title">
+        <div>{{ 'lang_and_region' | translate }}</div>
+      </div>
+      <div class="popup-body">
+        <div class="lang-item desc">{{ 's_lang_and_region' | translate }}</div>
+        <ng-container *ngFor="let item of allLangData">
+          <div class="lang-item onact96" [class.select]="item.code === langCode" (click)="selectLang(item)">
+            <i class="country lang-img" [class]="countryClassName(item.code)"></i>
+            <span>{{ item.name }}</span>
+            <span class="icon icon-correct"> </span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #badge let-num="num">
+  <em class="badge" *ngIf="num > 0">{{ num > 99 ? '99+' : num }}</em>
+</ng-template>

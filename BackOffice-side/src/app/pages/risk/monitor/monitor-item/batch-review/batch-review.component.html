@@ -1,0 +1,60 @@
+<div class="monitor-item monitor-item-warning h-25" [ngClass]="item" *ngFor="let item of list" [appLoading]="loading">
+  <div>
+    <img class="mr-4" iconSrc="/assets/images/svg/monitor-operate-new.svg" />
+    <!-- 批量类型：批量风控、批量调账 -->
+    <span class="vam title">
+      {{ 'risk.batch.batch' | lang
+      }}<ng-container *ngFor="let type of batchTypeList">
+        <ng-container *ngIf="$any(type.code) === item.batchType">{{ type.description }}</ng-container>
+      </ng-container>
+    </span>
+  </div>
+
+  <!-- 批量ID -->
+  <div>{{ item.batchId || '-' }}</div>
+
+  <!-- 提交人 -->
+  <div>{{ item.applicant }}</div>
+
+  <!-- 提交时间 -->
+  <div>{{ item.applicationDate | timeFormat }}</div>
+
+  <!-- 状态 -->
+  <div class="last cursor-pointer" (click)="onDetail(item)">
+    <span batch-status [list]="statusList" [status]="item.status"></span>
+  </div>
+</div>
+
+<!-- loading -->
+<div *ngIf="!list.length && loading" style="height: 380px" [appLoading]="loading"></div>
+
+<!-- 每个item都有自己的页码才能分开控制 Total总量 -->
+<ng-container *ngIf="!isAllType">
+  <!-- 空显示 -->
+  <empty class="bg-fff rounded" [show]="!list.length && !loading"></empty>
+
+  <div class="d-flex flex-between pt-6 flex-ac">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          style="background: #fff"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</ng-container>

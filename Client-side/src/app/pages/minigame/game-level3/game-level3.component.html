@@ -1,0 +1,388 @@
+<app-tournament-popup *ngIf="!isH5" [gameTypeDto]="gameTypeDto"></app-tournament-popup>
+<div
+  class="page-container"
+  [class.fixed-iframe]="gameActive && (!showOverlay || !showFullIframe) && (isH5 || isRealPhone)"
+  #container
+>
+  <div class="main-container">
+    <div class="container" [class.theater]="theater && !isH5">
+      <!-- 小游戏屏幕 -->
+      <div
+        class="iframe-container"
+        [class.theater]="theater"
+        *ngIf="!isH5; else h5GameContainer"
+        [appLoading]="loaddingGameInfo"
+      >
+        <ng-container *ngIf="gameInfo && !loaddingGameInfo">
+          <div
+            class="game-view game-view-content"
+            [appLoading]="iframeLoading"
+            appLifeObserve
+            (lifeChange)="buildGameViewSize($event)"
+          >
+            <ng-container *ngTemplateOutlet="iframeOverlay"></ng-container>
+          </div>
+
+          <div class="option-bar">
+            <div class="left">
+              <!-- 全屏 -->
+              <app-tool-tip class="option-icon" [class.disabled]="!gameActive || showOverlay || showFullIframe">
+                <i origin class="icon-full onact96" (click)="fullscreenDiv.requestFullscreen()"></i>
+                <span tooltip>{{ 'full_mode' | translate }}</span>
+              </app-tool-tip>
+
+              <!-- 剧场 -->
+              <app-tool-tip class="option-icon" [class.active]="theater">
+                <i origin class="icon-theatre onact96-not" (click)="turnTheater()"></i>
+                <span tooltip>{{ theater ? ('dis_theater' | translate) : ('en_theater' | translate) }}</span>
+              </app-tool-tip>
+
+              <!-- 统计 -->
+              <app-tool-tip class="option-icon" [class.active]="layout.statisticsPanelState$.value">
+                <i origin class="icon-chart onact96-not" (click)="toggleStatistics()"></i>
+                <span tooltip>
+                  {{ layout.statisticsPanelState$.value ? ('turn_off_real' | translate) : ('turn_real' | translate) }}
+                </span>
+              </app-tool-tip>
+
+              <!-- 收藏 -->
+              <app-tool-tip class="option-icon" *ngIf="gameInfo && logined" [class.active]="gameInfo.isFavorite">
+                <i
+                  class="onact96-not"
+                  origin
+                  [class]="gameInfo.isFavorite ? 'icon-full-start' : 'icon-fov'"
+                  (click)="handleFavorite(gameInfo)"
+                ></i>
+                <span tooltip>
+                  {{ gameInfo.isFavorite ? ('cancel_favor' | translate) : ('coll_games' | translate) }}
+                </span>
+              </app-tool-tip>
+
+              <!-- 打开竞赛排名弹窗 -->
+              <app-tool-tip class="option-icon" [class.active]="activityService.tournamentRankPanel$.value">
+                <i class="icon-tournamen-flag onact96-not" origin (click)="toggleTournamentPanel()"></i>
+                <span tooltip>{{ 'tournament_rank_a' | translate }}</span>
+              </app-tool-tip>
+
+              <!-- 没有遮盖时显示 游戏币种列表-->
+              <ng-container *ngIf="!showOverlay && gameInfo && playMode">
+                <ng-container *ngTemplateOutlet="coinSelect; context: { style: 'padding' }"></ng-container>
+                <ng-container *ngIf="betRangeSetting">
+                  <ng-container *ngTemplateOutlet="rangeSetting; context: { style: 'padding' }"></ng-container>
+                </ng-container>
+              </ng-container>
+            </div>
+            <div class="right">
+              <div class="slide" *ngIf="gameInfo.isTry">
+                <mat-slide-toggle
+                  color="blue"
+                  [checked]="playMode"
+                  [disabled]="maintenance || !logined"
+                  (change)="playGame($event.checked, true)"
+                ></mat-slide-toggle>
+                <div class="text" [class.disabled]="maintenance">{{ 'real_money' | translate }}</div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-template #h5GameContainer>
+        <div class="h5-game-container" [appLoading]="loaddingGameInfo">
+          <ng-container *ngIf="gameInfo && !loaddingGameInfo">
+            <div class="desc-container">
+              <div class="img-wrapper">
+                <div *ngIf="maintenance" class="maintenance-mask maintenance-info">{{ 'game_main' | translate }}</div>
+                <img
+                  #imgEl
+                  [src]="$any(imgEl).isError ? defaultImg : gameInfo.webLogo || defaultImg"
+                  (error)="$any(imgEl).isError = true"
+                />
+              </div>
+              <div class="text-container">
+                <div class="desc" [class.logined]="logined">{{ gameInfo.gameName }}</div>
+                <div class="desc-cat">{{ gameInfo.providerName }}</div>
+                <div class="icon-group">
+                  <div
+                    [class]="gameInfo.isFavorite ? 'icon-full-start' : 'icon-fov'"
+                    class="onact96-not"
+                    [class.active]="gameInfo.isFavorite"
+                    (click)="handleFavorite(gameInfo)"
+                    *ngIf="logined"
+                  ></div>
+                  <div
+                    class="icon-chart onact96-not"
+                    [class.active]="layout.statisticsPanelState$.value"
+                    (click)="toggleStatistics()"
+                    *ngIf="logined"
+                  ></div>
+                  <div
+                    class="icon-tournamen-flag onact96-not"
+                    [class.active]="activityService.tournamentRankPanel$.value"
+                    (click)="toggleTournamentPanel()"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <ng-container *ngTemplateOutlet="errorTip"></ng-container>
+            <div class="row2" *ngIf="!maintenance && selectedPlayCoin">
+              <div class="text" *ngIf="!isTransferGame">{{ 'sel_display' | translate }}</div>
+              <div class="balance">
+                <div>{{ 'show_curr' | translate }}</div>
+                <ng-container *ngTemplateOutlet="coinSelect"></ng-container>
+              </div>
+              <div class="range-setting" *ngIf="betRangeSetting">
+                <div>{{ 'bet_range' | translate }}</div>
+                <ng-container *ngTemplateOutlet="rangeSetting"></ng-container>
+              </div>
+              <ng-container
+                *ngTemplateOutlet="
+                  currencyTip;
+                  context: {
+                    ratio: gameInfo.currencyRatio | filterByKeyValue: 'currency' : selectedPlayCoin : 'ratio'
+                  }
+                "
+              >
+              </ng-container>
+            </div>
+            <!-- 游戏模式 -->
+            <div class="mode" [class.fixed-height]="maintenance">
+              <ng-container *ngIf="!maintenance">
+                <customize-button
+                  type="primary"
+                  (onClick)="playGame(true, true)"
+                  [disabled]="loadingGameUrl"
+                  [loading]="loadingGameUrl && playMode"
+                  [icon]="logined ? (needTransfer ? 'icon-duihuan' : 'icon-play-right') : 'icon-user-fill'"
+                >
+                  {{
+                    logined
+                      ? needTransfer
+                        ? ('trans' | translate)
+                        : ('real_money' | translate)
+                      : ('login_button' | translate)
+                  }}
+                </customize-button>
+                <customize-button
+                  class="try-btn"
+                  *ngIf="gameInfo.isTry"
+                  [icon]="'icon-play-right'"
+                  [loading]="loadingGameUrl && !playMode"
+                  (onClick)="playGame(false, true)"
+                  [disabled]="loadingGameUrl"
+                >
+                  {{ 'trial_play' | translate }}
+                </customize-button>
+              </ng-container>
+              <customize-button *ngIf="maintenance" type="primary" (onClick)="goHome()" (onReady)="buildGoHome()">
+                {{ 'return_to_home' | translate }}({{ goHomeTime || 0 }})
+              </customize-button>
+            </div>
+          </ng-container>
+        </div>
+      </ng-template>
+      <!-- 小游戏屏幕选项 -->
+    </div>
+
+    <!-- 游戏描述 tab-->
+    <app-game-info [gameInfo]="gameInfo"></app-game-info>
+
+    <!-- 每日竞赛 -->
+    <ng-container *ngIf="gameCategories.length > 0">
+      <app-daily-races [gameCategories]="gameCategories"></app-daily-races>
+    </ng-container>
+  </div>
+
+  <!-- 统一游戏屏幕 -->
+  <div
+    #fullscreenDiv
+    class="global-iframe-container"
+    [class.visible]="gameActive && (!showOverlay || !showFullIframe)"
+    [class.fixed]="isH5 || isRealPhone"
+    [style.top]="iframePosition.top + 'px'"
+    [style.left]="iframePosition.left + 'px'"
+    [style.width]="iframePosition.width + 'px'"
+    [style.height]="iframePosition.height + 'px'"
+  >
+    <iframe #iframe (load)="iframeLoad(iframe)" [src]="gameLink | safe" allow="fullscreen"></iframe>
+    <app-fullscreen
+      #fullscreenBtn
+      [class.visible]="(showFullIframe && gameActive && !showOverlay) || fullscreenBtn.state"
+      [ref]="fullscreenDiv"
+      (onClose)="afterCloseFullscreen()"
+    ></app-fullscreen>
+    <ng-container *ngIf="gameActive && !showOverlay && showFullIframe">
+      <i appLifeObserve (lifeChange)="layout.lockLayoutScroll$.next($event); layout.h5BottomMenuHide$.next($event)"></i>
+    </ng-container>
+  </div>
+</div>
+
+<!-- 币种选择 -->
+<ng-template #coinSelect let-style="style">
+  <div
+    class="coin-drop-down onact96 mutual-opacity {{ style }}"
+    [class.disabled]="loadingGameUrl || currentGameWalletInfo.length === 1"
+    cdkOverlayOrigin
+    #origin="cdkOverlayOrigin"
+    (click)="showCoinList = !showCoinList"
+    (clickOutside)="showCoinList = false"
+  >
+    <div>
+      <img [src]="selectedPlayCoin | usdChangeToUsdt | currencyIcon" />
+      <span>{{ selectedPlayCoin | usdChangeToUsdt }}</span>
+    </div>
+    <i
+      *ngIf="currentGameWalletInfo.length > 1"
+      [class]="showCoinList ? 'icon-arrow-up-simple' : 'icon-arrow-down-simple'"
+    ></i>
+  </div>
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayPositions]="positions"
+    [cdkConnectedOverlayOpen]="showCoinList"
+    [cdkConnectedOverlayOrigin]="origin"
+  >
+    <div class="select-coin-container">
+      <div class="select-coin-list">
+        <div
+          class="mutual-opacity onact96"
+          *ngFor="let item of gameInfo?.currencyRatio ?? []"
+          [class.active]="selectedPlayCoin === item.currency"
+          (click)="selectedPlayCoin !== item.currency && onSelectPlayCoin(item.currency)"
+        >
+          <img [src]="item.currency | usdChangeToUsdt | currencyIcon" />
+          <span>{{ item.currency | usdChangeToUsdt }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- 限额选择 -->
+<ng-template #rangeSetting let-style="style">
+  <div
+    class="coin-drop-down onact96 mutual-opacity {{ style }}"
+    [class.disabled]="loadingGameUrl"
+    cdkOverlayOrigin
+    #rangeSettingorigin="cdkOverlayOrigin"
+    (click)="showRangList = !showRangList"
+    (clickOutside)="showRangList = false"
+  >
+    <div *ngIf="betRangeSetting">
+      <img [src]="selectedPlayCoin | usdChangeToUsdt | currencyIcon" />
+      <span>{{
+        betRangeSetting.currencySettingList
+          | filterByKeyValue: 'currency' : selectedPlayCoin : 'rangeSettingList'
+          | filterByKeyValue: 'oddType' : selectedOddType : 'value'
+      }}</span>
+    </div>
+    <i [class]="showRangList ? 'icon-arrow-up-simple' : 'icon-arrow-down-simple'"></i>
+  </div>
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayPositions]="positions"
+    [cdkConnectedOverlayOpen]="showRangList"
+    [cdkConnectedOverlayOrigin]="rangeSettingorigin"
+  >
+    <div class="select-coin-container" *ngIf="betRangeSetting">
+      <div class="select-coin-list">
+        <div
+          class="mutual-opacity onact96"
+          *ngFor="
+            let item of betRangeSetting.currencySettingList
+              | filterByKeyValue: 'currency' : selectedPlayCoin : 'rangeSettingList'
+          "
+          [class.active]="selectedOddType === item.oddType"
+          (click)="selectedOddType !== item.oddType && onSelectOddType(item.oddType)"
+        >
+          <img [src]="selectedPlayCoin | usdChangeToUsdt | currencyIcon" />
+          <span>{{ item.value }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- 币种提示 -->
+<ng-template #currencyTip let-style="style" let-ratio="ratio">
+  <div *ngIf="selectedPlayCoin && showCurrencyTip" class="currency-tip {{ style }}">
+    <span>{{ 'game_currency_tip' | translate: ratio }}</span>
+    <app-tool-tip>
+      <i origin class="currency-tip-icon icon-warning mutual-opacity"></i>
+      <span tooltip class="currency-tip-text">
+        {{ 'game_currency_tip_d' | translate: ratio : selectedPlayCoin }}
+      </span>
+    </app-tool-tip>
+  </div>
+</ng-template>
+
+<!-- 错误提示 -->
+<ng-template #errorTip>
+  <div *ngIf="errorText || maintenance" class="error-tip">
+    {{ errorText || ('game_main_desc_re' | translate) }}
+  </div>
+</ng-template>
+
+<!-- web时候的遮罩 -->
+<ng-template #iframeOverlay>
+  <div class="iframe-overlay" *ngIf="showOverlay" [appLoading]="loadingGameUrl && !silenceLoading">
+    <ng-container *ngIf="!loadingGameUrl || silenceLoading">
+      <ng-container *ngTemplateOutlet="errorTip"></ng-container>
+      <div class="value-box" *ngIf="!maintenance && selectedPlayCoin">
+        <div class="balance">
+          <div class="overlay-text">{{ 'show_curr' | translate }}</div>
+          <ng-container *ngTemplateOutlet="coinSelect; context: { style: 'light' }"></ng-container>
+        </div>
+        <div class="range-setting" *ngIf="betRangeSetting">
+          <div class="overlay-text">{{ 'bet_range' | translate }}</div>
+          <ng-container *ngTemplateOutlet="rangeSetting; context: { style: 'light' }"></ng-container>
+        </div>
+        <ng-container
+          *ngTemplateOutlet="
+            currencyTip;
+            context: {
+              style: 'light',
+              ratio: gameInfo?.currencyRatio ?? [] | filterByKeyValue: 'currency' : selectedPlayCoin : 'ratio'
+            }
+          "
+        >
+        </ng-container>
+      </div>
+
+      <!-- 游戏模式 -->
+      <div class="mode">
+        <ng-container *ngIf="!maintenance">
+          <customize-button
+            type="primary"
+            (onClick)="playGame(true, true)"
+            [disabled]="loadingGameUrl"
+            [loading]="loadingGameUrl && playMode"
+            [icon]="logined ? (needTransfer ? 'icon-duihuan' : 'icon-play-right') : 'icon-user-fill'"
+          >
+            {{
+              logined
+                ? needTransfer
+                  ? ('trans' | translate)
+                  : ('real_money' | translate)
+                : ('login_button' | translate)
+            }}
+          </customize-button>
+
+          <customize-button
+            class="try-btn"
+            *ngIf="gameInfo?.isTry"
+            [icon]="'icon-play-right'"
+            (onClick)="playGame(false, true)"
+            [loading]="loadingGameUrl && !playMode"
+            [disabled]="loadingGameUrl"
+          >
+            {{ 'trial_play' | translate }}
+          </customize-button>
+        </ng-container>
+        <customize-button *ngIf="maintenance" type="primary" (onClick)="goHome()" (onReady)="buildGoHome()">
+          {{ 'return_to_home' | translate }}({{ goHomeTime || 0 }})
+        </customize-button>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

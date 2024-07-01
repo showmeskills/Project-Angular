@@ -1,0 +1,113 @@
+.card-header {
+  border-color: transparent;
+}
+
+.total {
+  height: 30px;
+}
+
+.people {
+  flex: 0 1 300px;
+  height: 142px;
+  border-radius: 14px;
+
+  &.d-flex {
+    background: #f1416d;
+    color: #fff;
+  }
+
+  &-s.d-flex {
+    margin-right: 20px;
+    background: #fffafb;
+    color: inherit;
+
+    .people-flag {
+      border-radius: 20px;
+      color: #f1416d;
+      background: #ffe6ed;
+      font-weight: 700;
+      padding: 0 8px;
+    }
+  }
+
+  &-header {
+    height: 60px;
+    line-height: 60px;
+    padding-left: 30px;
+  }
+}
+
+.vip-count {
+  height: 142px;
+  flex: 0 1 186px;
+  display: flex;
+  color: #a1a5b7;
+  flex-flow: column nowrap;
+
+  &-flag {
+    border-radius: 20px;
+    color: #f07800;
+    background: #ffefdd;
+    font-weight: 700;
+    padding: 0 8px;
+  }
+
+  &:nth-child(-n + 3) &-flag {
+    color: #f0bc00;
+    background: #fff8dd;
+  }
+
+  &:nth-child(-n + 4) &-first &-flag {
+    color: #f0bc00;
+    background: #fff8dd;
+  }
+
+  &-wrap {
+    overflow-x: auto;
+    background: #fff;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    border-radius: 6px;
+
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #e3e6e9;
+      border-radius: 6px;
+    }
+  }
+
+  > div {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    padding: 12px 30px;
+  }
+}
+
+.article-left {
+  width: calc(62% - 22px);
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px 0 rgba(82, 63, 105, 0.05);
+}
+
+.article-right {
+  width: 38%;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px 0 rgba(82, 63, 105, 0.05);
+}
+
+ngb-carousel::ng-deep {
+  .carousel-inner {
+    border-radius: 6px;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+}

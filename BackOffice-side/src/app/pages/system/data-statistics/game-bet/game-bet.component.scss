@@ -1,0 +1,40 @@
+:host {
+  .member-bonus {
+    width: 100%;
+    position: relative;
+    table {
+      thead {
+        th {
+          min-width: 120px;
+        }
+      }
+    }
+
+    .table1 {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    // .table2 {
+    //   position: absolute;
+    //   left: 0;
+    //   top: 6px;
+    //   overflow: hidden;
+    //   width: 240px;
+
+    //   td,
+    //   th {
+    //     background-color: #fff;
+    //   }
+    //   // td:first-child,
+    //   // th:first-child {
+    //   //   background-color: #fff;
+    //   // }
+
+    //   // td:not(:first-child),
+    //   // th:not(:first-child) {
+    //   //   visibility: hidden;
+    //   // }
+    // }
+  }
+}

@@ -1,0 +1,142 @@
+<modal-title [title]="'分时数据详情'" (close)="modal.dismiss()"></modal-title>
+
+<div class="px-8">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <!-- 币种 -->
+        <th>
+          <span class="cell">币种</span>
+        </th>
+        <!-- 存款金額 -->
+        <th>
+          <span class="cell">存款金額</span>
+        </th>
+        <!-- 存款金額(USDT) -->
+        <th>
+          <span class="cell">存款金額(USDT)</span>
+        </th>
+        <!-- 提款金額 -->
+        <th>
+          <span class="cell">提款金額</span>
+        </th>
+        <!-- 提款金額(USDT) -->
+        <th>
+          <span class="cell">提款金額(USDT)</span>
+        </th>
+        <!-- 调账金额 -->
+        <th>
+          <span class="cell">调账金额</span>
+        </th>
+        <!-- 调账金额(USDT) -->
+        <th>
+          <span class="cell">调账金额(USDT)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(存款)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(存款)(usdt)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(提款)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(提款)(usdt)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(红利)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(红利)(usdt)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(输赢)</span>
+        </th>
+        <th>
+          <span class="cell">调账金额(输赢)(usdt)</span>
+        </th>
+        <!-- 小时 -->
+        <th>
+          <span class="cell">小时</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.depositAmount | currencyValue: item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.depositAmountUsdt | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.withdrawAmount | currencyValue: item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.withdrawAmountUsdt | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.adjustAmount | currencyValue: item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.adjustAmountUsdt | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.depositAdjustAmount | currencyValue: item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.depositAdjustAmountUsdt | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.withdrawAdjustAmount | currencyValue: item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.withdrawAdjustAmountUsdt | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.bonusAdjustAmount | currencyValue: item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.bonusAdjustAmountUsdt | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.payoutAdjustAmount | currencyValue: item.currency }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.payoutAdjustAmountUsdt | currencyValue: 'USDT' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.hour || '-' }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && !isLoading">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between table-footer py-6 px-8">
+    <div></div>
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>
+
+<!-- 按钮 -->
+<div class="modal-footer btn-wrap">
+  <button class="c-btn c-btn-primary" (click)="modal.dismiss()">{{ 'common.confirm' | lang }}</button>
+</div>

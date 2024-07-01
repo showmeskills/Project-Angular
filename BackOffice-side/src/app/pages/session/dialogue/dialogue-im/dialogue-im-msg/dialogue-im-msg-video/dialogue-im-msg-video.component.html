@@ -1,0 +1,46 @@
+<div
+  class="im-msg-video-cover im-msg-video-cover-wrap cursor-pointer"
+  [style]="{ width: asset?.width + 'px', height: asset?.height + 'px' }"
+  (click)="openPreview(preview)"
+>
+  <img
+    class="vam im-msg-video-cover"
+    [src]="_src"
+    [width]="asset?.width || ''"
+    [height]="asset?.height || ''"
+    (error)="onCoverError()"
+    [hidden]="!_src"
+  />
+  <img
+    class="vam im-msg-video-cover im-msg-video-cover-bg"
+    [src]="_src"
+    [width]="asset?.width || ''"
+    [height]="asset?.height || ''"
+    (error)="onCoverError()"
+    [hidden]="!_src"
+  />
+
+  <div class="d-flex flex-center vam im-msg-video-cover im-msg-video-cover-wrap im-msg-video-cover-poster w-100 h-100">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/play.svg'" class="svg-icon svg-icon-40 color-fff"></svg-icon>
+      <div>{{ asset.duration | durationFormat }}</div>
+    </div>
+  </div>
+</div>
+
+<ng-template #preview let-c="close">
+  <video
+    (error)="onError()"
+    class="vam"
+    [style.max-width.%]="100"
+    [style]="{ minWidth: '100px', minHeight: '50px' }"
+    controls
+    [src]="asset?.url || ''"
+    autoplay
+    muted
+  ></video>
+
+  <div class="modal-close">
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" (click)="c()" class="svg-icon svg-icon-40"></svg-icon>
+  </div>
+</ng-template>

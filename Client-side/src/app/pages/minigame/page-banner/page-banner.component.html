@@ -1,0 +1,10 @@
+<div class="main-container">
+  <div class="container">
+    <div class="content-box">
+      <div class="title onact96" (click)="isH5 && location.back()">
+        <i *ngIf="isH5" class="icon-back"></i><span>{{ title }}</span>
+      </div>
+      <img [src]="banner" />
+    </div>
+  </div>
+</div>

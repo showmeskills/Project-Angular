@@ -1,0 +1,533 @@
+<div class="card rounded mb-10" *ngIf="all">
+  <div class="card-header py-8">
+    <div class="d-flex flex-ac flex-wrap">
+      <form-row [label]="'game.provider.trans_time' | lang" class="mr-8" [contentWidth]="200">
+        <ng-template>
+          <input
+            class="form-control text-center"
+            type="text"
+            [placeholder]="'game.provider.choose_trans_time' | lang"
+            selectMode="date-range"
+            [owlDateTime]="picker"
+            [owlDateTimeTrigger]="picker"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [(ngModel)]="data.range"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time pickerType="calendar" class="fz-20" #picker></owl-date-time>
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'game.overview.account' | lang" class="mr-8">
+        <ng-template>
+          <mat-form-field [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="selectionCategory()">
+              <!-- <mat-option value="">全部</mat-option> -->
+              <mat-option *ngFor="let item of categoryList" [value]="item.category">{{ item.description }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'game.overview.accountChangeType' | lang" class="mr-8">
+        <ng-template>
+          <mat-form-field [style.width.px]="lang.isLocal ? 200 : 262">
+            <mat-select class="form-control" [(ngModel)]="data.type" (selectionChange)="loadData(true)">
+              <mat-option value="">{{ 'common.all' | lang }} </mat-option>
+              <mat-option *ngFor="let item of typeList" [value]="item.orderCategory">{{
+                item.categoryDescription
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'game.overview.credit' | lang" class="mr-8" *ngIf="data.category === 'Bonus'">
+        <ng-template>
+          <mat-form-field [style.width.px]="200">
+            <mat-select class="form-control" [(ngModel)]="data.bonusId" (selectionChange)="loadData(true)">
+              <mat-option [value]="0">{{ 'common.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of bonusList" [value]="item.bonusId">{{ item.description }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+
+      <form-row [label]="'game.overview.currency' | lang" class="mr-8" *ngIf="data.category !== 'Bonus'">
+        <ng-template>
+          <mat-form-field [style.width.px]="110">
+            <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="selectionCurrency()">
+              <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+              <mat-option *ngFor="let item of currencyList" [value]="item">{{ item }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </form-row>
+    </div>
+
+    <div class="btn-wrap d-flex">
+      <button class="c-btn c-btn-default my-2" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary my-2" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- 余额 -->
+<ng-container *ngIf="all">
+  <div
+    class="card card-body d-flex flex-ac flex-wrap mb-10 fz-16"
+    style="flex-direction: row"
+    *ngIf="data.category !== 'Bonus'"
+  >
+    <ng-container [ngSwitch]="data.category">
+      <!-- 主钱包 -->
+      <ng-container *ngSwitchCase="'Main'">
+        <ng-container *ngIf="accountBalance">
+          <div class="d-flex flex-ac mr-8">
+            <!-- 主钱包余额 -->
+            <span class="color-aaa mr-3">{{ 'game.overview.accountBalance' | lang }}:</span>
+            <span [winColor]="accountBalance?.mainAmount" [winColorReverse]="true">
+              {{ accountBalance?.mainAmount | currencyValue: accountBalance?.currency }}
+            </span>
+            <img class="ml-2" [currencyIcon]="accountBalance?.currency" />
+          </div>
+          <div
+            class="d-flex flex-ac mr-8 cursor-pointer"
+            (click)="openBalanceDetailModal('gameWallet', 3)"
+            *ngIf="data.category === 'Main'"
+          >
+            <!-- 子钱包余额 -->
+            <span class="color-aaa mr-3">{{ 'game.overview.subAccount' | lang }}:</span>
+            {{ accountBalance?.subTotalAmount | currencyValue: accountBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="accountBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8 cursor-pointer" (click)="openBalanceDetailModal('freezeAmount', 'freeze')">
+            <!-- 冻结余额 -->
+            <span class="color-aaa mr-3">{{ 'payment.merchantFunding.freezeAmount' | lang }}:</span>
+            {{ accountBalance?.freezeAmount | currencyValue: accountBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="accountBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <!-- 余额 -->
+            <span class="color-aaa mr-3">{{ 'common.balance' | lang }}:</span>
+            {{
+              accountBalance?.mainAmount + accountBalance?.subTotalAmount + accountBalance?.freezeAmount
+                | currencyValue: accountBalance?.currency
+            }}
+            <img class="ml-2" [currencyIcon]="accountBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <!-- 理论余额 -->
+            <span class="color-aaa mr-3">{{ 'payment.companyAccountManagement.theoBalance' | lang }}:</span>
+            {{ accountBalance?.actualAmount | currencyValue: accountBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="accountBalance?.currency" />
+          </div>
+        </ng-container>
+      </ng-container>
+      <!-- 真人娱乐场 -->
+      <ng-container *ngSwitchCase="'NSLiveCasino'">
+        <ng-container *ngIf="nsLiveBalance">
+          <div class="d-flex flex-ac mr-8">
+            <!-- 主钱包余额 -->
+            <span class="color-aaa mr-3">{{ 'game.overview.accountBalance' | lang }}:</span>
+            <span [winColor]="nsLiveBalance?.mainAmount" [winColorReverse]="true">
+              {{ nsLiveBalance?.mainAmount | currencyValue: nsLiveBalance?.currency }}
+            </span>
+            <img class="ml-2" [currencyIcon]="nsLiveBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8 cursor-pointer">
+            <!-- 冻结余额 -->
+            <span class="color-aaa mr-3">{{ 'payment.merchantFunding.freezeAmount' | lang }}:</span>
+            {{ nsLiveBalance?.freezeAmount | currencyValue: nsLiveBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="nsLiveBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <!-- 余额 -->
+            <span class="color-aaa mr-3">{{ 'common.balance' | lang }}:</span>
+            {{ nsLiveBalance?.mainAmount + nsLiveBalance?.freezeAmount | currencyValue: nsLiveBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="nsLiveBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <!-- 理论余额 -->
+            <span class="color-aaa mr-3">{{ 'payment.companyAccountManagement.theoBalance' | lang }}:</span>
+            {{ nsLiveBalance?.actualAmount | currencyValue: nsLiveBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="nsLiveBalance?.currency" />
+          </div>
+        </ng-container>
+      </ng-container>
+      <!-- 娱乐场 -->
+      <ng-container *ngSwitchCase="'NSSlotGame'">
+        <ng-container *ngIf="nslotBalance">
+          <div class="d-flex flex-ac mr-8">
+            <!-- 主钱包余额 -->
+            <span class="color-aaa mr-3">{{ 'game.overview.accountBalance' | lang }}:</span>
+            <span [winColor]="nslotBalance?.mainAmount" [winColorReverse]="true">
+              {{ nslotBalance?.mainAmount | currencyValue: accountBalance?.currency }}
+            </span>
+            <img class="ml-2" [currencyIcon]="nslotBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8 cursor-pointer" (click)="openBalanceDetailModal('freezeAmount', 'freeze')">
+            <!-- 冻结余额 -->
+            <span class="color-aaa mr-3">{{ 'payment.merchantFunding.freezeAmount' | lang }}:</span>
+            {{ nslotBalance?.freezeAmount | currencyValue: nslotBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="nslotBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <!-- 余额 -->
+            <span class="color-aaa mr-3">{{ 'common.balance' | lang }}:</span>
+            {{ nslotBalance?.mainAmount + nslotBalance?.freezeAmount | currencyValue: nslotBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="nslotBalance?.currency" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <!-- 理论余额 -->
+            <span class="color-aaa mr-3">{{ 'payment.companyAccountManagement.theoBalance' | lang }}:</span>
+            {{ nslotBalance?.actualAmount | currencyValue: nslotBalance?.currency }}
+            <img class="ml-2" [currencyIcon]="nslotBalance?.currency" />
+          </div>
+        </ng-container>
+      </ng-container>
+      <!-- 游戏钱包  -->
+      <ng-container *ngSwitchDefault>
+        <ng-container *ngIf="gameBalance">
+          <div class="d-flex flex-ac mr-8">
+            <span class="color-aaa mr-3">{{ 'game.overview.cumulative' | lang }}</span>
+            {{ gameBalance.intoAmount | currencyValue: 'USDT' }}
+            <img class="ml-2" [currencyIcon]="'USDT'" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <span class="color-aaa mr-3">{{ 'game.overview.transferOut' | lang }}</span>
+            {{ gameBalance.outAmount | currencyValue: 'USDT' }}
+            <img class="ml-2" [currencyIcon]="'USDT'" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <span class="color-aaa mr-3">{{ 'game.overview.winOrLose' | lang }}</span>
+            <span [winColor]="gameBalance.payoutAmount" [winColorReverse]="true">
+              {{ gameBalance.payoutAmount | currencyValue: 'USDT' : true }}
+            </span>
+            <img class="ml-2" [currencyIcon]="'USDT'" />
+          </div>
+          <div class="d-flex flex-ac mr-8">
+            <span class="color-aaa mr-3">{{ 'game.overview.walletBalance' | lang }}</span>
+            {{ gameBalance.walletBalance | currencyValue: gameBalance.walletCurrency }}
+            <img class="ml-2" [currencyIcon]="gameBalance.walletCurrency" />
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-container>
+
+<div class="card">
+  <div class="card-body p-12">
+    <div class="d-flex flex-ac justify-content-between">
+      <ng-container *ngIf="all; else allTpl">
+        <h2 class="mb-0 fw-bolder fz-20">{{ 'game.overview.fundingHistoryDetails' | lang }}</h2>
+
+        <button (click)="onExport()" type="button" class="ml-6 btn btn-light-primary py-2">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl d-inline-block"></svg-icon>
+          <span class="vam">{{ 'common.export' | lang }}</span>
+        </button>
+      </ng-container>
+
+      <ng-template #allTpl>
+        <h2 class="mb-0 fw-bolder fz-20">{{ 'game.overview.fundingDetails' | lang }}</h2>
+
+        <div>
+          <button type="button" class="f14 btn btn-light-primary ml-2">
+            {{ 'game.overview.fundingChanges' | lang }}
+          </button>
+          <button type="button" class="f14 btn btn-light-primary ml-2">
+            {{ 'game.overview.tradingPayouts' | lang }}
+          </button>
+          <button
+            type="button"
+            class="f14 btn btn-light-primary ml-2"
+            (click)="
+              this.router.navigate(['/member/list/detail/funding-history'], {
+                queryParams: { uid, id, tenantId }
+              })
+            "
+          >
+            {{ 'game.overview.viewAll' | lang }}
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="mt-4">
+      <!--begin::Datatable-->
+      <table class="table mb-0" selectChildren>
+        <thead>
+          <tr>
+            <th class="w-10px" *ngIf="all">
+              <span class="cell">
+                <label class="checkbox">
+                  <input type="checkbox" selectGroup />
+                  <span></span>
+                </label>
+              </span>
+            </th>
+            <th [style.width]="'12%'">
+              <span class="cell">{{ 'game.overview.transactionHour' | lang }}</span>
+            </th>
+            <th [style.width]="'12%'">
+              <span class="cell">{{ 'game.provider.orders' | lang }}</span>
+            </th>
+            <ng-container [ngSwitch]="data.category">
+              <!-- 主钱包 -->
+              <ng-container *ngSwitchCase="'Main'">
+                <th [style.width]="'14%'">
+                  <span class="cell">{{ 'game.overview.accountChangeDetails' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.trans_amount' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.overview.accountBalance' | lang }}</span>
+                </th>
+                <th [style.width]="'15%'">
+                  <span class="cell">{{ 'payment.companyAccountManagement.theoBalance' | lang }}</span>
+                </th>
+                <!-- <th><span class="cell">有效流水</span></th> -->
+                <th>
+                  <span class="cell">{{ 'payment.channelConfig.withdrawalLimit' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'payment.merchantFunding.fee' | lang }}</span>
+                </th>
+              </ng-container>
+              <!-- 抵扣金 -->
+              <ng-container *ngSwitchCase="'Bonus'">
+                <th>
+                  <span class="cell">{{ 'game.overview.creditName' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.trans_content' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.trans_amount' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.overview.creditBalance' | lang }}</span>
+                </th>
+              </ng-container>
+              <!-- 娱乐场 -->
+              <ng-container *ngSwitchCase="'NSSlotGame'">
+                <th>
+                  <span class="cell">{{ 'game.trans_content' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.overview.transactionAmount' | lang }}</span>
+                </th>
+                <!-- 当前奖金余额 -->
+                <th>
+                  <span class="cell">{{ 'member.detail.nonsticky.currentBalance' | lang }}</span>
+                </th>
+              </ng-container>
+              <!-- 真人娱乐场 -->
+              <ng-container *ngSwitchCase="'NSLiveCasino'">
+                <th>
+                  <span class="cell">{{ 'game.trans_content' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.overview.transactionAmount' | lang }}</span>
+                </th>
+                <!-- 当前奖金余额 -->
+                <th>
+                  <span class="cell">{{ 'member.detail.nonsticky.currentBalance' | lang }}</span>
+                </th>
+              </ng-container>
+              <!-- 游戏钱包 -->
+              <ng-container *ngSwitchDefault>
+                <th>
+                  <span class="cell">{{ 'game.overview.transactionType' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">{{ 'game.overview.transactionAmount' | lang }}</span>
+                </th>
+                <th>
+                  <span class="cell">
+                    {{ 'game.overview.wBalance' | lang }}
+                    <div class="game-balance-titps">
+                      <svg-icon
+                        [src]="'./assets/images/svg/admin-funding-warning.svg'"
+                        class="svg-icon svg-icon-xl d-inline-block ml-2"
+                      ></svg-icon>
+                      <div class="tips-box">
+                        {{ 'game.overview.wallTips' | lang }}
+                      </div>
+                    </div>
+                  </span>
+                </th>
+                <!-- <th><span class="cell">有效流水</span></th> -->
+              </ng-container>
+            </ng-container>
+            <th>
+              <span class="cell">{{ 'game.overview.validTransaction' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td *ngIf="all">
+              <span class="cell">
+                <label class="checkbox">
+                  <input type="checkbox" select [(ngModel)]="item.checked" [checked]="item.checked" />
+                  <span></span>
+                </label>
+              </span>
+            </td>
+            <!-- 交易时间 -->
+            <td>
+              <span class="cell">{{ item.transactionTime | timeFormat }}</span>
+            </td>
+
+            <!-- 订单号 -->
+            <td>
+              <span class="cell">{{ item.orderNum || '--' }}</span>
+            </td>
+
+            <ng-container [ngSwitch]="data.category">
+              <!-- 1.主钱包 -->
+              <ng-container *ngSwitchCase="'Main'">
+                <!-- 帐变详情 -->
+                <ng-container *ngTemplateOutlet="itemContent; context: { $implicit: item }"></ng-container>
+                <!-- 交易金额 -->
+                <ng-container *ngTemplateOutlet="itemAmount; context: { $implicit: item }"></ng-container>
+                <!-- 账户余额 -->
+                <ng-container *ngTemplateOutlet="itemBalance; context: { $implicit: item }"></ng-container>
+                <!-- 理论余额 -->
+                <td>
+                  <span class="cell">
+                    {{ item.actualBalance | currencyValue: item.currency }}
+                    <img class="vam rounded-circle" [src]="item.icon" alt="" />
+                  </span>
+                </td>
+                <!-- 有效流水 -->
+                <!-- <ng-container *ngTemplateOutlet="itemActiveFlow; context: { $implicit: item }"></ng-container> -->
+                <!-- 提款流水要求 -->
+                <td>
+                  <span class="cell">
+                    {{ item.withdrawLimit | currencyValue: item.currency }}
+                  </span>
+                </td>
+                <!-- 手续费 -->
+                <td>
+                  <span class="cell">
+                    {{ item.handlingFeeChange | currencyValue: item.currency }}
+                    <img class="vam rounded-circle" [src]="item.icon" alt="" />
+                  </span>
+                </td>
+              </ng-container>
+              <!-- 2.抵扣金 -->
+              <ng-container *ngSwitchCase="'Bonus'">
+                <!-- 抵用金名称 -->
+                <td>
+                  <!-- 抵用金名称 -->
+                  <span class="cell">{{ item.bonusName || '-' }}</span>
+                </td>
+                <!-- 交易内容 -->
+                <ng-container *ngTemplateOutlet="itemContent; context: { $implicit: item }"></ng-container>
+                <!-- 交易金额 -->
+                <ng-container *ngTemplateOutlet="itemAmount; context: { $implicit: item }"></ng-container>
+                <!-- 抵用金余额 -->
+                <ng-container *ngTemplateOutlet="itemBalance; context: { $implicit: item }"></ng-container>
+              </ng-container>
+              <!-- 3.游戏钱包 -->
+              <ng-container *ngSwitchDefault>
+                <!-- 交易类型 -->
+                <ng-container *ngTemplateOutlet="itemContent; context: { $implicit: item }"></ng-container>
+                <!-- 交易金额 -->
+                <ng-container *ngTemplateOutlet="itemAmount; context: { $implicit: item }"></ng-container>
+                <!-- 钱包余额 -->
+                <ng-container *ngTemplateOutlet="itemBalance; context: { $implicit: item }"></ng-container>
+                <!-- 有效流水 -->
+                <!-- <ng-container *ngTemplateOutlet="itemActiveFlow; context: { $implicit: item }"></ng-container> -->
+              </ng-container>
+            </ng-container>
+
+            <!-- 有效交易 -->
+            <td>
+              <span class="cell" *win="item.activeFlow; let value; prev as prev">
+                <span [winColor]="value">{{ prev }}{{ (value | currencyValue: item.currency) || '-' }}</span>
+                <img class="vam rounded-circle" [src]="item.icon" alt="" />
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list?.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-10 table-footer">
+        <div>
+          <mat-form-field [style.width.px]="76" *ngIf="all">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData(true)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 有效流水 -->
+<ng-template #itemActiveFlow let-item>
+  <td>
+    <span class="cell">
+      {{ (item.activeFlow | currencyValue: item.currency) || '-' }}
+    </span>
+  </td>
+</ng-template>
+
+<!-- 账户余额,抵用金余额,钱包余额 -->
+<ng-template #itemBalance let-item>
+  <td>
+    <span class="cell">
+      {{ (item.afterBalance | currencyValue: item.currency) || '-' }}
+      <img class="vam rounded-circle" [src]="item.icon" alt="" />
+    </span>
+  </td>
+</ng-template>
+
+<!-- 帐变详情,交易类型,交易内容 -->
+<ng-template #itemContent let-item>
+  <td>
+    <span class="cell">{{ getAccountCotent(item) }}</span>
+  </td>
+</ng-template>
+
+<!-- 交易金额 -->
+<ng-template #itemAmount let-item>
+  <td>
+    <ng-container *win="item.amount; let value; prev as prev">
+      <span class="cell" [winColor]="value">
+        <span [winColor]="value">{{ prev }}{{ (value | currencyValue: item.currency) || '-' }}</span>
+        <img class="vam rounded-circle" [src]="item.icon" alt="" />
+      </span>
+    </ng-container>
+  </td>
+</ng-template>

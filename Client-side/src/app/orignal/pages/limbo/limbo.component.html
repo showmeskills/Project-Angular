@@ -1,0 +1,42 @@
+<div class="wrapper" [class.loading]="loading">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="limbo"
+      [isFast]="false"
+      [(isAnimation)]="isAnimation"
+      [(fairnessData)]="fairnessData"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+  <div class="history-h5-container">
+    <div class="numbers">
+      <div class="zoushi"><img src="assets/orignal/images/crash/zoushi.svg" alt="" /></div>
+      <ng-container *ngFor="let item of historyList">
+        <div class="item" [class]="item.winLossAmount > 0 ? 'pt1' : 'pt09'">{{ item.lotteryBetDetail }}x</div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="mian">
+    <div class="mian-content">
+      <img class="mian-bg" [src]="'assets/orignal/images/limbo/bg' + (isAnimation ? '.gif' : '.png')" alt="" />
+      <div class="content">
+        <div class="step" [class]="roleColor">
+          <span>{{ stepValue }}x</span>
+        </div>
+        <div class="car" [class]="isRun ? 'car-run' : 'car-prepare'" [class.visibility]="!isAnimation">
+          <img src="assets/orignal/images/limbo/car.svg" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <orignal-bet
+    type="limbo"
+    (toBet)="toBet($event)"
+    (commitLoop)="submitLoop($event)"
+    [(isLoop)]="isLoop"
+    [(rate)]="rate"
+    [operate]="operate"
+    [isDice]="false"
+  ></orignal-bet>
+</div>

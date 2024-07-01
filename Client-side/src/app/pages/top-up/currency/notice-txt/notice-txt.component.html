@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="img-clounm">
+    <span class="icon-img"></span>
+    <p>Card deposits and withdrawals have temporarily been suspended for your region.</p>
+  </div>
+  <div class="row-1">
+    <span class="icon-speaker"></span>
+    {{ 'dep_not_arrive' | translate }}
+  </div>
+  <div class="row-2">
+    {{ 'faq' | translate }}
+    <div class="span-row">
+      {{ 'faqs00' | translate }}
+      <span class="icon-arrow"></span>
+    </div>
+  </div>
+  <div class="row-3">
+    <div class="txt-colunm">
+      <span>{{ 'recharge_tip01' | translate }}</span>
+      <span class="ditals" *ngIf="isShow1">{{ 'check_detail00' | translate }}</span>
+    </div>
+    <span class="icon-arrow-down-lin onact96-not" [class.active]="isShow1" (click)="open1()"></span>
+  </div>
+  <div class="row-3">
+    <div class="txt-colunm">
+      <span>{{ 'recharge_tip00' | translate }}</span>
+      <span class="ditals" *ngIf="isShow2">{{ 'check_detail00' | translate }}</span>
+    </div>
+    <span class="icon-arrow-down-lin onact96-not" [class.active]="isShow2" (click)="open2()"></span>
+  </div>
+</div>

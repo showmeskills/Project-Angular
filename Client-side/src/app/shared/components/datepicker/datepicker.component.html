@@ -1,0 +1,85 @@
+<div
+  class="datepicker-container {{ size }}"
+  [class.versatile-mode]="versatileMode"
+  (mouseenter)="hov = true"
+  (mouseleave)="hov = false"
+  [class.error]="error || invalidError"
+  [class.active]="opened"
+  [class.readonly]="readonly"
+  [class.disabled]="disabled"
+>
+  <ng-container *ngIf="versatileMode">
+    <app-customize-input
+      #dayInput
+      type="number"
+      [(value)]="dateValueDay"
+      [format]="dateValueDayFormat"
+      (onChange)="dateValueInputChange($event, 2, monthInput.focus)"
+      (onFocus)="foc = true; onFocus.emit([dayInput, dateValueDay])"
+      (onBlur)="autoCompleteDay(); foc = false; onBlur.emit([dayInput, dateValueDay])"
+      (onKeyDown)="inputKeyDown($event, dateValueDay, undefined)"
+      [hasClear]="false"
+      width="auto"
+      placeholder="DD"
+    ></app-customize-input>
+    <em>/</em>
+    <app-customize-input
+      #monthInput
+      type="number"
+      [(value)]="dateValueMonth"
+      [format]="dateValueMonthFormat"
+      (onChange)="dateValueInputChange($event, 2, yearInput.focus)"
+      (onFocus)="foc = true; onFocus.emit([monthInput, dateValueMonth])"
+      (onBlur)="autoCompleteMonth(); foc = false; onBlur.emit([monthInput, dateValueMonth])"
+      (onKeyDown)="inputKeyDown($event, dateValueMonth, dayInput.focus)"
+      [hasClear]="false"
+      width="auto"
+      placeholder="MM"
+    ></app-customize-input>
+    <em>/</em>
+    <app-customize-input
+      #yearInput
+      type="number"
+      [(value)]="dateValueYear"
+      [format]="dateValueYearFormat"
+      (onChange)="dateValueInputChange($event, 4, undefined)"
+      (onFocus)="foc = true; onFocus.emit([yearInput, dateValueYear])"
+      (onBlur)="autoCompleteYear(); foc = false; onBlur.emit([yearInput, dateValueYear])"
+      (onKeyDown)="inputKeyDown($event, dateValueYear, monthInput.focus)"
+      [hasClear]="false"
+      width="auto"
+      placeholder="YYYY"
+    ></app-customize-input>
+  </ng-container>
+
+  <input
+    matInput
+    #matInputRef
+    [matDatepicker]="picker"
+    [(ngModel)]="dateValue"
+    [min]="minDate"
+    [max]="maxDate"
+    (dateInput)="dateInput($event)"
+    (dateChange)="dateChange($event)"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    [placeholder]="placeholder"
+    (click)="readonly && picker.open()"
+    (focus)="foc = true; onFocus.emit([dateValue, $event])"
+    (blur)="foc = false; onBlur.emit([dateValue, $event])"
+  />
+  <div class="datepicker-input-icos mutual-opacity" (click)="picker.open()">
+    <span class="icon-calendar"></span>
+  </div>
+  <mat-datepicker
+    #picker
+    [touchUi]="isH5"
+    [startAt]="startAt"
+    (closed)="opened = false"
+    (opened)="opened = true"
+    [panelClass]="panelClass"
+  ></mat-datepicker>
+</div>
+<ng-container *ngIf="versatileMode && invalidDate">
+  <span class="err-text">{{ 'invalid_date' | translate }}</span>
+</ng-container>

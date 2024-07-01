@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="27.664" height="30.643" viewBox="0 0 27.664 30.643">
+    <defs>
+        <clipPath id="xkjv3abhna">
+            <path data-name="矩形 56" style="stroke:#1d1d1e;fill:none" d="M0 0h27.664v30.643H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="组 49">
+        <g data-name="组 48" style="clip-path:url(#xkjv3abhna)">
+            <path data-name="路径 25" d="M25.656 14.6a.975.975 0 0 0 .935-.688 1.658 1.658 0 0 0-.413-1.657L15.7 1.773a2.636 2.636 0 0 0-3.729 0L1.485 12.254a1.658 1.658 0 0 0-.413 1.657.977.977 0 0 0 .935.688h4.724a.979.979 0 0 1 .979.979v5.536a1.072 1.072 0 0 0 1.075 1.069h10.093a1.073 1.073 0 0 0 1.076-1.069v-5.536a.979.979 0 0 1 .979-.979z" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke:#1d1d1e;fill:none"/>
+            <path data-name="直线 42" transform="translate(7.749 25.663)" style="fill:#fff;stroke:#1d1d1e" d="M0 0h12.166"/>
+            <path data-name="直线 43" transform="translate(7.749 25.663)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke:#1d1d1e;fill:none" d="M0 0h12.166"/>
+            <path data-name="直线 44" transform="translate(7.749 29.643)" style="fill:#fff;stroke:#1d1d1e" d="M0 0h12.166"/>
+            <path data-name="直线 45" transform="translate(7.749 29.643)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke:#1d1d1e;fill:none" d="M0 0h12.166"/>
+        </g>
+    </g>
+</svg>

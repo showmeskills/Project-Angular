@@ -1,0 +1,150 @@
+<div class="bg-fff rounded px-12 py-8 d-flex flex-wrap">
+  <form-row label="MID" class="mr-12">
+    <ng-template>
+      <input
+        [(ngModel)]="mid"
+        class="form-control"
+        type="text"
+        [placeholder]="'system.merchants.searchMID' | lang"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row [label]="'system.merchants.merchantName' | lang" class="mr-12">
+    <ng-template>
+      <input
+        [(ngModel)]="name"
+        class="form-control"
+        type="text"
+        [placeholder]="'system.merchants.searchMerchantName' | lang"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body">
+    <div class="d-flex flex-ac flex-between">
+      <div class="title">{{ 'system.merchants.merchantList' | lang }}</div>
+      <div>
+        <button (click)="add()" type="button" class="btn btn-light-primary">
+          <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon"></svg-icon>
+          <span class="vam">{{ 'common.add' | lang }}</span>
+        </button>
+        <button type="button" class="ml-6 btn btn-light-primary" (click)="onExport()">
+          <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+          <span class="vam">{{ 'common.export' | lang }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-10">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>MID</th>
+            <th>{{ 'system.merchants.merchantName' | lang }}</th>
+            <th>{{ 'system.merchants.contactEmail' | lang }}</th>
+            <th>{{ 'common.status' | lang }}</th>
+            <th>{{ 'common.operate' | lang }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>{{ item.id }}</td>
+            <td>{{ item.merchantName }}</td>
+            <td>
+              {{ item.email }}
+            </td>
+            <td>
+              <span class="switch switch-success">
+                <label class="mx-auto">
+                  <input type="checkbox" (change)="openEnableModal(confirm, item)" [(ngModel)]="item.isEnable" />
+                  <span></span>
+                </label>
+              </span>
+            </td>
+            <td>
+              <span class="edit" (click)="onEdit(item)">{{ 'common.edit' | lang }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="flex-between pt-30 d-flex">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="onPageSizeChange($event)"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">
+                {{ size }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div [hidden]="!paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+            [isLoading]="isLoading"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #confirm let-d="dismiss">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'components.prompt' | lang }}</div>
+
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="closeModal()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">
+        {{
+          'system.merchants.prohibatedMerchant'
+            | lang : { state: (!item.isEnable ? 'common.enable' : 'common.disable') | lang }
+        }}
+      </p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="closeModal()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="updateStatus()">
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</ng-template>

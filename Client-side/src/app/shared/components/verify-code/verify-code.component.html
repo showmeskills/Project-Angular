@@ -1,0 +1,124 @@
+<!-- 手机验证 -->
+<ng-container *ngIf="verifyType === 'PHONE'">
+  <div class="form-group">
+    <label>{{ inputLabel }}</label>
+    <div
+      class="input-group group-phone"
+      [class.error]="!!authcode && authcode.length !== 6"
+      [class.disabled]="submitLoading"
+    >
+      <app-customize-input
+        [type]="'number'"
+        [fixedHeight]="true"
+        [loading]="isLoading"
+        [width]="'100%'"
+        [max]="6"
+        #iAuthcode
+        [(value)]="authcode"
+        (onChange)="onAuthcodeInput(iAuthcode)"
+        [disabled]="submitLoading"
+      >
+      </app-customize-input>
+      <div
+        class="input-group-txt get-code onact96-not"
+        (click)="completePhoneNum(false)"
+        *ngIf="authStatus !== 'sent' && !isLoading"
+      >
+        {{ authStatus !== 'timeout' ? ('get_verification_code_button' | translate) : ('resend' | translate) }}
+      </div>
+      <div class="input-group-txt has-send-code" *ngIf="authStatus === 'sent' && !isLoading">
+        {{ 'vercode_send' | translate }}
+        <app-tool-tip>
+          <i origin class="icon-warning mutual-opacity"></i>
+          <div tooltip class="tooltip-info">
+            <div class="tooltip-info-text">{{ 'no_rece' | translate }}{{ timer }}{{ 'resend_info' | translate }}</div>
+          </div>
+        </app-tool-tip>
+      </div>
+    </div>
+    <!-- 输入框下面的错误信息 -->
+    <div class="error-msg" *ngIf="!!authcode && authcode.length !== 6">
+      {{ 'verification_error_msg' | translate }}
+    </div>
+    <div class="tips-msg" *ngIf="tips">
+      {{ tips }}
+    </div>
+    <!-- 请输入您在手机 XXXXX 收到的6位验证码, 验证码30分钟有效 -->
+    <p class="text-p" *ngIf="authStatus !== 'initial' && showTextP">
+      {{ 'enter_phones' | translate }} {{ currentPhoneZone }} {{ phone }} {{ 'valid_time' | translate }}
+    </p>
+    <p class="none-p" [class.margin]="otpType !== 'Login'" *ngIf="authStatus !== 'initial'">
+      <span class="link onact96-not" (click)="notReceiveCode()">{{ 'null' | translate }} </span>
+      {{ 'sms_info' | translate }}
+      <span class="link onact96-not" (click)="completePhoneNum(true)">{{ 'null_t' | translate }}</span>
+    </p>
+  </div>
+</ng-container>
+
+<!-- google 验证 -->
+<ng-container *ngIf="verifyType === 'GOOGLE'">
+  <div class="form-group">
+    <app-customize-input
+      [size]="'large'"
+      #iGoogle
+      [label]="'google_code' | translate"
+      [type]="'password'"
+      [size]="'large'"
+      [(value)]="googleCode"
+      (onChange)="onGoogleInput(iGoogle)"
+      [max]="6"
+    ></app-customize-input>
+    <div class="error-msg" *ngIf="!!googleCode && googleCode.length !== 6">
+      {{ 'verification_error_msg' | translate }}
+    </div>
+  </div>
+</ng-container>
+
+<!-- 新增邮箱 验证码 -->
+<ng-container *ngIf="verifyType === 'EMAIL'">
+  <div class="form-group">
+    <label>{{ inputLabel }}</label>
+    <div
+      class="input-group group-phone"
+      [class.error]="!!emailAuthCode && emailAuthCode.length !== 6"
+      [class.disabled]="submitLoading"
+    >
+      <app-customize-input
+        [type]="'number'"
+        [fixedHeight]="true"
+        [loading]="isLoading"
+        [width]="'100%'"
+        [max]="6"
+        #iEmailAuthCode
+        [(value)]="emailAuthCode"
+        (onChange)="onEmailAuthcodeInput(iEmailAuthCode)"
+        [disabled]="submitLoading"
+      ></app-customize-input>
+      <div
+        class="input-group-txt get-code onact96-not"
+        [class.disabled]="!isFromSafeEmailValid"
+        (click)="sendEmailAuthCode()"
+        *ngIf="emailAuthStatus !== 'sent' && !isLoading"
+      >
+        {{ emailAuthStatus !== 'timeout' ? ('get_verification_code_button' | translate) : ('resend' | translate) }}
+      </div>
+      <div class="input-group-txt has-send-code" *ngIf="emailAuthStatus === 'sent' && !isLoading">
+        {{ 'vercode_send' | translate }}
+        <app-tool-tip>
+          <i origin class="icon-warning mutual-opacity"></i>
+          <div tooltip class="tooltip-info">
+            <div class="tooltip-info-text">
+              {{ 'no_rece' | translate }}{{ emailTimer }}{{ 'resend_info' | translate }}
+            </div>
+          </div>
+        </app-tool-tip>
+      </div>
+    </div>
+    <div class="error-msg" *ngIf="!!emailAuthCode && emailAuthCode.length !== 6">
+      {{ 'verification_error_msg' | translate }}
+    </div>
+    <div class="tips-msg" *ngIf="tips">
+      {{ tips }}
+    </div>
+  </div>
+</ng-container>

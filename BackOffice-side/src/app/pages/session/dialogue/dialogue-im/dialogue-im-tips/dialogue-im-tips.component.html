@@ -1,0 +1,10 @@
+<div class="im-tips">
+  <div class="d-flex">
+    <svg-icon class="svg-icon baseline" [ngClass]="'text-' + type" [name]="iconName"></svg-icon>
+    <div class="im-tips-msg vam color-999">
+      <ng-content></ng-content>
+    </div>
+  </div>
+
+  <ng-content select="[content]"></ng-content>
+</div>

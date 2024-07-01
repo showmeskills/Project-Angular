@@ -1,0 +1,154 @@
+<div class="wrapper">
+  <div class="wrapper-top">
+    <orignal-bar
+      type="baccarat"
+      [(fairnessData)]="fairnessData"
+      [(isAnimation)]="isAnimation"
+      [(isFastBet)]="isFastBet"
+      [(isHotkey)]="isHotkey"
+    >
+    </orignal-bar>
+  </div>
+  <div class="game-view">
+    <div class="wfwdy game-box g9fmla2">
+      <div class="table-stylewrap">
+        <div class="stvmnp2 anim-end">
+          <div class="cards-group-wrap" #leftCardsGroup>
+            <div class="cards-group">
+              <div
+                *ngFor="let item of playerCards; let i = index"
+                class="c1qgmkpe card-wrap"
+                [class.win]="wintype == 1"
+                [style]="{
+                  transform: ' translate(' + item.left + 'px, ' + item.top + 'px)'
+                }"
+              >
+                <div class="c1t29bx7 card" [class.active]="item.active">
+                  <div class="card-back"></div>
+                  <div class="card-front">
+                    <div class="point" [class]="'card-back_' + item.color">{{ item.num }}</div>
+                    <img class="ssuit" [src]="'assets/orignal/images/hilo/' + item.color + '.svg'" />
+                    <img class="suit" [src]="'assets/orignal/images/hilo/' + item.color + '.svg'" />
+                    <div class=""></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="placehold" [class]="{ 'is-visible': playerCards.length == 0 }">
+                <div class="one"></div>
+                <div class="two"></div>
+                <div class="three"></div>
+              </div>
+            </div>
+            <div class="tip">
+              <div>{{ 'player_num' | translate }}</div>
+              <div class="result" [class.win]="wintype == 1">{{ !playerResult ? '?' : playerResult }}</div>
+            </div>
+          </div>
+          <div class="cards-group-wrap" #rghitCardsGroup>
+            <div class="cards-group clen-3">
+              <div
+                *ngFor="let item of bankerCards; let i = index"
+                class="c1qgmkpe card-wrap"
+                [class.win]="wintype == 2"
+                [style]="{
+                  transform: ' translate(' + item.left + 'px, ' + item.top + 'px)'
+                }"
+              >
+                <div class="c1t29bx7 card" [class.active]="item.active">
+                  <div class="card-back"></div>
+                  <div class="card-front">
+                    <div class="point" [class]="'card-back_' + item.color">{{ item.num }}</div>
+                    <img class="ssuit" [src]="'assets/orignal/images/hilo/' + item.color + '.svg'" />
+                    <img class="suit" [src]="'assets/orignal/images/hilo/' + item.color + '.svg'" />
+                    <div class=""></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="placehold" [class]="{ 'is-visible': bankerCards.length == 0 }">
+                <div class="one"></div>
+                <div class="two"></div>
+                <div class="three"></div>
+              </div>
+            </div>
+            <div class="tip">
+              <div>{{ 'banker_num' | translate }}</div>
+              <div class="result" [class.win]="wintype == 2">{{ !bankerResult ? '?' : bankerResult }}</div>
+            </div>
+          </div>
+          <div class="dealer" #dealer>
+            <img class="dealer-svg" src="assets/orignal/images/baccarat/poker_three.png" />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="actionlist-wrap">
+            <button class="ui-button button-normal action" (click)="onUndo()">
+              <div class="button-inner">
+                <div class="orignal-icon-undo"></div>
+                <span>{{ 'undo_click' | translate }}</span>
+              </div>
+            </button>
+            <div class="baccarat-logo">
+              <img alt="baccarat" [src]="'assets/orignal/images/baccarat/baccarat_' + theme + '.png'" />
+            </div>
+            <button class="ui-button button-normal action clear" (click)="onClear()">
+              <div class="button-inner">
+                <span>{{ 'clear_click' | translate }}</span>
+                <div class="orignal-icon-circle"></div>
+              </div>
+            </button>
+          </div>
+          <div class="s12kl4p5">
+            <div class="type-area type-t">
+              <div class="type-inner" (click)="onAddChip('t')" #areaTypeT>
+                <p class="t">{{ 't_table' | translate }}</p>
+                <p class="d">x9.00</p>
+              </div>
+            </div>
+            <div class="type-area type-pp">
+              <div class="type-inner" (click)="onAddChip('pp')" #areaTypePP>
+                <p class="t">{{ 'pp_table' | translate }}</p>
+                <p class="d">x12.00</p>
+              </div>
+            </div>
+            <div class="type-area type-bp">
+              <div class="type-inner" (click)="onAddChip('bp')" #areaTypeBp>
+                <p class="t">{{ 'bp_table' | translate }}</p>
+                <p class="d">x12.00</p>
+              </div>
+            </div>
+            <div class="type-area type-p">
+              <div class="type-inner" (click)="onAddChip('p')">
+                <p class="t">{{ 'p_table' | translate }}</p>
+                <p class="d">x2.00</p>
+                <div class="type-left" #areaTypeP></div>
+              </div>
+            </div>
+            <div class="type-area type-b">
+              <div class="type-inner" (click)="onAddChip('b')">
+                <p class="t">{{ 'b_table' | translate }}</p>
+                <p class="d">x1.95</p>
+                <div class="type-right" #areaTypeB></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <orignal-bet type="baccarat" (toBet)="toBet($event)" [rate]="rate" [operate]="operate" [isDice]="false"></orignal-bet>
+
+  <div
+    class="win-tip"
+    [style]="{
+      backgroundImage:
+        'url(assets/orignal/images/baccarat/' + (wintype == 3 ? 'tip' : 'win') + '-bg-' + languageCode + '.png)'
+    }"
+    *ngIf="isShowWinTip"
+  >
+    <div>{{ rate }}X</div>
+    <div><img class="currency-icon" [src]="currentCurrencyData?.icon" />{{ winMoney }}</div>
+  </div>
+</div>

@@ -1,0 +1,209 @@
+<!-- 1 - 11 级 -->
+<ng-container *ngFor="let item of levelElevenList">
+  <form-row [label]="item.level + ('risk.level.grade' | lang)" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <ng-container *ngTemplateOutlet="levelTpl; context: { $implicit: item }"></ng-container>
+    </ng-template>
+  </form-row>
+</ng-container>
+
+<ng-container *ngFor="let item of levelList">
+  <!-- 12 级 -->
+  <form-row *ngIf="item.level === 12" [label]="'risk.level.g12' | lang" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap">
+        <div class="mr-5 fz-14">{{ 'risk.level.crePoint' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '90' : '110'">
+          <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="item.minScore" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+        <div class="ml-5 mr-5 fz-14">-</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '100' : '120'">
+          <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="item.maxScore" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+        </form-wrap>
+
+        <div class="ml-10 mr-5 fz-14">{{ 'risk.level.singleBet' | lang }}</div>
+        <form-wrap [style.width.px]="lang.isLocal ? '90' : '110'">
+          <span class="color-aaa fz-16">x</span>
+          <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="item.multiplier" />
+          <span suffix class="color-aaa fz-14">{{ 'risk.config.bei' | lang }}</span>
+        </form-wrap>
+
+        <div class="ml-10 mr-5 fz-14">{{ 'risk.level.liveLimir' | lang }}</div>
+        <form-wrap [style.width.px]="140">
+          <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="item.riskQuota" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 13 级 -->
+  <form-row *ngIf="item.level === 13" [label]="'risk.level.g13' | lang" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <ng-container *ngTemplateOutlet="levelTpl; context: { $implicit: item }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="limitTpl; context: { $implicit: { value1: 10, value2: 500, value3: 5 } }"
+      ></ng-container>
+    </ng-template>
+  </form-row>
+
+  <!-- 14 级 -->
+  <form-row *ngIf="item.level === 14" [label]="'risk.level.g14' | lang" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <ng-container *ngTemplateOutlet="levelTpl; context: { $implicit: item }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="limitTpl; context: { $implicit: { value1: 5, value2: 100, value3: 5 } }"
+      ></ng-container>
+    </ng-template>
+  </form-row>
+
+  <!-- 15 级 -->
+  <form-row *ngIf="item.level === 15" [label]="'risk.level.g15' | lang" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <ng-container *ngTemplateOutlet="levelTpl; context: { $implicit: item }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="limitTpl; context: { $implicit: { value1: 1, value2: 50, value3: 5 } }"
+      ></ng-container>
+    </ng-template>
+  </form-row>
+
+  <!-- 16 级 -->
+  <form-row *ngIf="item.level === 16" [label]="'risk.level.g16' | lang" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap fz-14">
+        <div class="mr-5 color-aaa">{{ 'risk.level.enterCre' | lang }}</div>
+        <div>{{ 'risk.level.liveCheck' | lang }}</div>
+
+        <div class="ml-10 mr-5 color-aaa">{{ 'risk.level.enterTrans' | lang }}</div>
+        <div>{{ 'risk.level.oriLimit' | lang }}</div>
+
+        <div class="ml-10 mr-5">{{ 'risk.level.liveLimir' | lang }}</div>
+        <form-wrap [style.width.px]="140">
+          <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="item.riskQuota" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+
+      <div class="d-flex flex-ac flex-wrap fz-14 mt-4">
+        <div class="mr-5">{{ 'risk.level.fiatWdLimir' | lang }}</div>
+        <form-wrap [style.width.px]="70">
+          <input class="form-control fz-14" autocomplete="off" type="number" value="0" />
+        </form-wrap>
+        <!-- <div>0</div> -->
+
+        <div class="ml-10 mr-5">{{ 'risk.level.creWdLimir' | lang }}</div>
+        <form-wrap [style.width.px]="70">
+          <input class="form-control fz-14" autocomplete="off" type="number" value="0" />
+        </form-wrap>
+        <!-- <div>0</div> -->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 17 级 -->
+  <form-row *ngIf="item.level === 17" [label]="'risk.level.g17' | lang" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap fz-14">
+        <div class="mr-5 color-aaa">{{ 'risk.level.enterCre' | lang }}</div>
+        <div>{{ 'risk.level.limitTrans' | lang }}</div>
+
+        <div class="ml-10 mr-5 color-aaa">{{ 'risk.level.enterTrans' | lang }}</div>
+        <div>{{ 'risk.level.diaTrans' | lang }}</div>
+
+        <div class="ml-10 mr-5">{{ 'risk.level.liveLimir' | lang }}</div>
+        <form-wrap [style.width.px]="140">
+          <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="item.riskQuota" />
+          <span suffix class="color-aaa fz-14">USDT</span>
+        </form-wrap>
+      </div>
+
+      <div class="d-flex flex-ac flex-wrap fz-14 mt-4">
+        <div class="mr-5">{{ 'risk.level.fiatWdLimir' | lang }}</div>
+        <form-wrap [style.width.px]="70">
+          <input class="form-control fz-14" autocomplete="off" type="number" value="0" />
+        </form-wrap>
+        <!-- <div>0</div> -->
+
+        <div class="ml-10 mr-5">{{ 'risk.level.creWdLimir' | lang }}</div>
+        <form-wrap [style.width.px]="70">
+          <input class="form-control fz-14" autocomplete="off" type="number" value="0" />
+        </form-wrap>
+        <!-- <div>0</div> -->
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 18 级 -->
+  <form-row *ngIf="item.level === 18" [label]="'risk.level.g18' | lang" [label-width]="lang.isLocal ? '160' : '130'">
+    <ng-template>
+      <div class="d-flex flex-ac flex-wrap fz-14">
+        <div class="mr-5 color-aaa">{{ 'risk.level.enterCre' | lang }}</div>
+        <div>{{ 'risk.level.autoSet' | lang }}</div>
+
+        <div class="ml-10 mr-5 color-aaa">{{ 'risk.level.enterTrans' | lang }}</div>
+        <div>{{ 'risk.level.diaAct' | lang }}</div>
+      </div>
+    </ng-template>
+  </form-row>
+</ng-container>
+
+<div class="btn-wrap pt-14 flex-center d-flex" *ngIf="levelList.length">
+  <button type="button" class="c-btn c-btn-primary" (click)="submit()">{{ 'common.submit' | lang }}</button>
+</div>
+
+<!-- 基础模板 -->
+<ng-template #levelTpl let-data>
+  <div class="d-flex flex-ac flex-wrap">
+    <div class="mr-5 fz-14">{{ 'risk.level.crePoint' | lang }}</div>
+    <form-wrap [style.width.px]="lang.isLocal ? '140' : '160'">
+      <span class="color-aaa fz-16">＞</span>
+      <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="data.minScore" />
+      <span suffix class="color-aaa fz-14">{{ 'risk.cConfig.point' | lang }}</span>
+    </form-wrap>
+
+    <div class="ml-10 mr-5 fz-14">{{ 'risk.level.singleBet' | lang }}</div>
+    <form-wrap [style.width.px]="lang.isLocal ? '100' : '130'">
+      <span class="color-aaa fz-16">x</span>
+      <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="data.multiplier" />
+      <span suffix class="color-aaa fz-14">{{ 'risk.config.bei' | lang }}</span>
+    </form-wrap>
+
+    <div class="ml-10 mr-5 fz-14">{{ 'risk.level.liveLimir' | lang }}</div>
+    <form-wrap [style.width.px]="140">
+      <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="data.riskQuota" />
+      <span suffix class="color-aaa fz-14">USDT</span>
+    </form-wrap>
+  </div>
+</ng-template>
+
+<!-- 13-15 限额模板 -->
+<ng-template #limitTpl let-data>
+  <div class="d-flex flex-ac mt-4">
+    <div class="mr-5 fz-14">{{ 'risk.level.fiatStan' | lang }}</div>
+    <!-- <div>X {{ data.value1 }}%</div>  -->
+    <form-wrap [style.width.px]="lang.isLocal ? '90' : '110'">
+      <span class="color-aaa fz-16">x</span>
+      <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="data.value1" />
+      <span suffix class="color-aaa fz-14">%</span>
+    </form-wrap>
+
+    <div class="ml-10 mr-5 fz-14">{{ 'risk.level.creWdLimir' | lang }}</div>
+    <!-- <div>{{ data.value2 }} USDT/日</div> -->
+    <form-wrap [style.width.px]="140">
+      <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="data.value2" />
+      <span suffix class="color-aaa fz-14">{{ 'risk.config.usdtDay' | lang }}</span>
+    </form-wrap>
+  </div>
+
+  <div class="d-flex flex-ac mt-4">
+    <div class="mr-5 fz-14">{{ 'risk.level.ifBound' | lang }}</div>
+    <form-wrap [style.width.px]="lang.isLocal ? '90' : '110'">
+      <input class="form-control fz-14" autocomplete="off" type="number" [(ngModel)]="data.value3" />
+      <span suffix class="color-aaa fz-14">{{ 'risk.config.ci' | lang }}</span>
+    </form-wrap>
+    <!-- <div>{{ data.value3 }} 次</div> -->
+    <div class="ml-5 fz-14">{{ 'risk.level.receiveBonus' | lang }}</div>
+  </div>
+</ng-template>

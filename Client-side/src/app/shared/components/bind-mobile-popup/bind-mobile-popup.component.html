@@ -1,0 +1,72 @@
+<div class="main-container" [class.is-success]="isSuccess" [class.disabled]="submitLoading">
+  <ng-container *ngIf="!isSuccess; else successPage">
+    <div class="header-row">
+      <span class="title">{{ 'verify_mobile_number' | translate }}</span>
+      <i class="icon-close onact96-not" (click)="close()"></i>
+    </div>
+    <div class="container">
+      <div class="form-group">
+        <label>{{ 'phone' | translate }}</label>
+        <!--手机区号选择-->
+        <div class="phone-container">
+          <div class="area-code onact96" (click)="handleSelectPhone()">
+            <div class="country-image">
+              <i class="country" class="{{ fogClassName }}"></i>
+            </div>
+            <p class="code">{{ currentPhoneZone }}</p>
+            <i class="icon-arrow-down"></i>
+          </div>
+          <!--手机号输入框-->
+          <app-customize-input
+            [type]="'number'"
+            [size]="'large'"
+            #iPhone
+            [error]="!!phone && phoneError"
+            (keyup.enter)="checkToSubmit()"
+            (onChange)="onPhoneInput()"
+            [(value)]="phone"
+          >
+          </app-customize-input>
+        </div>
+        <!-- 输入框下面的错误信息 -->
+        <div class="error-msg" *ngIf="phoneError && !iPhone.foc">{{ 'phone_error_msg' | translate }}</div>
+        <!--手机验证码 -->
+        <app-verify-code
+          [otpType]="otpType"
+          [currentPhoneZone]="currentPhoneZone"
+          [phone]="phone"
+          [inputLabel]="'p_code' | translate"
+          [authStatus]="authStatus"
+          (onChangeAuthStatus)="handleAuthStatus($event)"
+          (verfityInputSuccess)="onOtpCode($event)"
+          (keyup.enter)="checkToSubmit()"
+          [submitLoading]="!(phone.length >= 2 && !phoneError)"
+          [showTextP]="true"
+        >
+        </app-verify-code>
+      </div>
+      <customize-button
+        width="100%"
+        type="primary"
+        size="large"
+        [disabled]="!canSubmit() || submitLoading"
+        [loading]="submitLoading"
+        (onClick)="submit()"
+      >
+        {{ 'confirm_button' | translate }}</customize-button
+      >
+    </div>
+  </ng-container>
+  <!-- 绑定成功页面 -->
+  <ng-template #successPage>
+    <div class="success-cont">
+      <i class="icon-close onact96-not" (click)="close()"></i>
+      <img src="assets/images/pop-success-icon.svg" alt="" />
+      <div class="text-bold">{{ 'bound_phone_success' | translate }}</div>
+      <div class="text-normal">{{ 'binding_successful_content' | translate }}</div>
+      <customize-button type="primary" size="large" minWidth="210px" (onClick)="close(); onTriggerCallback()">
+        {{ 'confirm_button' | translate }}
+      </customize-button>
+    </div>
+  </ng-template>
+</div>

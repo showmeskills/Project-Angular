@@ -1,0 +1,578 @@
+<div class="wrapper" [class.row]="type == 'hilo' && !isH5" [class]="type">
+  <div
+    class="top"
+    [class.crash-h5]="isH5 && (type == 'crash' || type == 'limbo' || type == 'slide' || type == 'csgo')"
+    [class.offset-right]="type == 'hilo' && !isH5"
+  >
+    <!--web  bet-->
+    <ng-container *ngIf="!isH5; else h5Bet">
+      <ng-container [ngTemplateOutlet]="webBetContent"></ng-container>
+    </ng-container>
+
+    <!--h5  bet-->
+    <ng-template #h5Bet>
+      <ng-container *ngIf="isH5" [ngTemplateOutlet]="h5BetContent"></ng-container>
+    </ng-template>
+
+    <div
+      class="cash"
+      [class.crash-h5]="isH5 && (type == 'crash' || type == 'limbo' || type == 'slide' || type == 'csgo')"
+      *ngIf="type == 'crash' || type == 'limbo' || type == 'slide' || type == 'csgo'"
+    >
+      <!--兑现box H5-->
+      <ng-container *ngIf="isH5" [ngTemplateOutlet]="h5Cash"></ng-container>
+      <!--兑现box web-->
+      <ng-container *ngIf="!isH5" [ngTemplateOutlet]="webCash"></ng-container>
+    </div>
+
+    <!-- baccarat筹码选择 -->
+    <div class="baccarat_c" *ngIf="type == 'baccarat'">
+      <div class="chip_money">
+        <span> {{ 'chip_value' | translate }} {{ chipMoney }}</span>
+        <img class="currency-icon" [src]="currentCurrencyData?.icon" />
+      </div>
+      <div class="swiper-container">
+        <app-scroll-select-item [data]="chipData" [gap]="5" (clickTab)="indexChange($event.index)">
+          <ng-template #item let-item let-i="index">
+            <div class="img-container onact96" [class.active]="i == currentIdx" [class.isDisabled]="item.isDisabled">
+              <img [src]="item.img" alt="" />
+            </div>
+          </ng-template>
+        </app-scroll-select-item>
+      </div>
+    </div>
+
+    <!-- 未登录状态 -->
+    <div
+      class="bet-button onact96-not"
+      [class.canSubmit]="true"
+      [class.crash-h5]="isH5"
+      [class.reset]="type == 'hilo'"
+      *ngIf="!isLogin"
+      [ngStyle]="{ flex: isDice ? 418 : 200 }"
+      (click)="goToLogin()"
+    >
+      <span>{{ 'login' | translate }}</span>
+    </div>
+    <!-- 普通投注 -->
+    <div
+      class="bet-button onact96-not"
+      [class.canSubmit]="canSubmit"
+      [class.loading]="
+        (['mines', 'teemo', 'hilo', 'stairs', 'tower', 'blackjack', 'coinflip'].includes(type) &&
+          loading &&
+          rate == 1) ||
+        (rate == 0 && loading && type == 'coinflip')
+      "
+      [class.crash-h5]="isH5"
+      *ngIf="!isLoop && type != 'crash' && type != 'slide' && type != 'csgo' && isLogin"
+      [class.reset]="type == 'hilo'"
+      [ngStyle]="{ flex: isDice ? 418 : 200 }"
+      (click)="submit()"
+    >
+      <span>{{
+        (['mines', 'teemo', 'hilo', 'stairs', 'tower', 'coinflip'].includes(type)
+          ? loading
+            ? 'to_result'
+            : 'to_start'
+          : 'to_bet'
+        ) | translate
+      }}</span>
+      <span *ngIf="active">
+        <span class="ff">{{ loopInfo.betNmb !== '' ? loopInfo.betNmb : '∞' }}</span></span
+      >
+      <span
+        *ngIf="
+          !active &&
+          (!['mines', 'teemo', 'hilo', 'stairs', 'tower', 'coinflip'].includes(type) || loading) &&
+          this.type != 'wheel' &&
+          this.type != 'limbo'
+        "
+        ><span class="ff" *ngIf="money && rate">{{ formatPersonTel() }} </span>
+      </span>
+    </div>
+    <!-- crash普通投注按钮与自动按钮分开 因为涉及到 取消cancel，投注bet（火箭飞时显示下一轮next round，开始投注点击投注后下面显示已订购is placed），停止投注时显示转圈圈 已投注火箭正在飞时显示套现CASHOUT，-->
+    <div
+      class="bet-button onact96-not"
+      [class.canSubmit]="canSubmit"
+      [class.loading]="loading"
+      *ngIf="!active && (type == 'crash' || type == 'slide' || type == 'csgo') && isLogin"
+      [ngStyle]="{ flex: isDice ? 418 : 200 }"
+      (click)="submit()"
+    >
+      <span
+        *ngIf="
+          crashBetStart != 'betcancel' &&
+          crashBetStart != 'betcashout' &&
+          crashBetStart != 'stoploading' &&
+          crashBetStart != 'betsussceloading'
+        "
+        >{{ 'to_bet' | translate }}</span
+      >
+      <span *ngIf="crashBetStart == 'betcancel'">{{ 'cancel' | translate }}</span>
+      <span *ngIf="crashBetStart == 'betcashout'">{{ 'early_settlement' | translate }}</span>
+      <span *ngIf="crashBetStart == 'stoploading' || crashBetStart == 'betsussceloading'"><i class="circle"></i></span>
+      <span>
+        {{ crashBetTest }}
+      </span>
+    </div>
+    <div
+      class="bet-button onact96-not"
+      [class.canSubmit]="canSubmit"
+      [class.loading]="loading"
+      *ngIf="active && !isLoop && (type == 'crash' || type == 'slide' || type == 'csgo') && isLogin"
+      [ngStyle]="{ flex: isDice ? 418 : 200 }"
+      (click)="submit()"
+    >
+      <span>{{ 'to_bet' | translate }}</span>
+      <span>
+        <span class="ff">{{ loopInfo.betNmb !== '' ? loopInfo.betNmb : '∞' }}</span>
+      </span>
+    </div>
+
+    <!-- 停止自动投注按钮 -->
+    <div
+      class="bet-stop-button onact96-not"
+      [class.canSubmit]="canSubmit"
+      *ngIf="isLoop && isLogin"
+      [class.reset]="type == 'hilo'"
+      [ngStyle]="{ flex: isDice ? 418 : 200 }"
+      (click)="stopLoop()"
+    >
+      <span>{{ 'stop' | translate }} <i class="circle"></i></span>
+      <span class="ff"
+        ><span class="ff">{{ loopInfo.betNmb !== '' ? loopInfo.betNmb : '∞' }}</span></span
+      >
+    </div>
+  </div>
+  <!--实时投注记录-->
+  <div
+    class="real-bet"
+    *ngIf="
+      (isRealHistory && isH5 && type == 'crash') ||
+      (isRealHistory && type == 'slide') ||
+      (isRealHistory && type == 'csgo')
+    "
+  >
+    <orignal-real-bet [type]="type" [currentCurrencyData]="currentCurrencyData"> </orignal-real-bet>
+  </div>
+
+  <!--mines游戏选择钻石数量-->
+  <div
+    class="diamonds-control"
+    [class.stairs]="type == 'stairs'"
+    *ngIf="['mines', 'teemo', 'stairs', 'tower'].includes(type)"
+  >
+    <div class="numbers">
+      <p *ngIf="['tower'].includes(type)">{{ 'devil_elves' | translate }}</p>
+      <div
+        class="button"
+        *ngFor="let item of [].constructor(['mines', 'teemo', 'tower'].includes(type) ? 4 : 7); let i = index"
+        (click)="bombChange({ value: i + 1 })"
+        [class.disable]="loading || isLoop"
+        [class.active]="bombCounts == i + 1"
+      >
+        {{ i + 1 }}
+      </div>
+      <div class="numbers-div" [class.disable]="loading || isLoop">
+        <span
+          >{{
+            ['mines', 'teemo'].includes(type)
+              ? ('hits' | translate)
+              : type === 'tower'
+              ? ('devil_elves' | translate)
+              : ('stones' | translate)
+          }}:</span
+        >
+        <mat-select
+          [disabled]="loading || isLoop"
+          class="numbers-select"
+          [class.active]="bombCounts > 4 && !isH5"
+          panelClass="numbers-select"
+          disableOptionCentering="true"
+          (selectionChange)="bombChange($event)"
+          [value]="bombCounts > 4 || isH5 ? bombCounts : ['mines', 'teemo'].includes(type) ? '' : bombCounts"
+          [placeholder]="'mines' | translate"
+        >
+          <mat-option
+            [value]="i + 1"
+            *ngFor="
+              let item of [].constructor(['mines', 'teemo'].includes(type) ? 24 : type === 'tower' ? 4 : 7);
+              let i = index
+            "
+            >{{ i + 1 }}
+          </mat-option>
+        </mat-select>
+      </div>
+    </div>
+    <div class="select">
+      <div
+        class="button"
+        [class.disable]="(active == 0 && !loading) || (active == 1 && loading)"
+        (click)="autoSelectArea()"
+      >
+        {{ 'auto_select' | translate }}
+      </div>
+      <span *ngIf="['mines', 'teemo', 'stairs'].includes(type)">{{ 'or' | translate }}</span>
+      <span *ngIf="['mines', 'teemo', 'stairs'].includes(type)">{{ 'select_a_square' | translate }}</span>
+      <div
+        *ngIf="['tower'].includes(type)"
+        class="button clear"
+        [class.disable]="tempBet.length == 0 || isLoop"
+        (click)="onAutoClear()"
+      >
+        {{ 'clear_table' | translate }}
+
+        <!-- Clear Table -->
+        <!-- 清除选择 -->
+      </div>
+    </div>
+  </div>
+
+  <!--plinko难度与排数选择-->
+  <div class="diamonds-control plinko-control" *ngIf="type === 'plinko' || type === 'wheel'">
+    <div class="numbers">
+      <div class="numbers-div" [class.disable]="loading || isLoop">
+        <div class="name">{{ 'risk' | translate }}：</div>
+        <mat-select
+          class="numbers-select"
+          [disabled]="loading || isLoop"
+          panelClass="numbers-select"
+          disableOptionCentering="true"
+          (selectionChange)="riskChange($event)"
+          [(value)]="selectedRisk"
+        >
+          <mat-option value="low">{{ 'risk_low' | translate }}</mat-option>
+          <!-- 这里因为是2个后端写的不同游戏，value定义不一样 -->
+          <ng-container *ngIf="type === 'plinko'">
+            <mat-option value="centre">{{ 'risk_centre' | translate }}</mat-option>
+            <mat-option value="high">{{ 'risk_high' | translate }}</mat-option>
+          </ng-container>
+          <ng-container *ngIf="type === 'wheel'">
+            <mat-option value="middling">{{ 'risk_centre' | translate }}</mat-option>
+            <mat-option value="higher">{{ 'risk_high' | translate }}</mat-option>
+          </ng-container>
+          <mat-option *ngIf="type === 'wheel'" value="extreme">{{ 'extreme' | translate }}</mat-option>
+        </mat-select>
+      </div>
+    </div>
+    <div class="numbers">
+      <div class="numbers-div" [class.disable]="loading || isLoop">
+        <div class="name" *ngIf="type === 'plinko'">{{ 'row_number' | translate }}：</div>
+        <div class="name" *ngIf="type === 'wheel'">{{ 'subdivision' | translate }}：</div>
+        <mat-select
+          class="numbers-select"
+          [disabled]="loading || isLoop"
+          panelClass="numbers-select"
+          disableOptionCentering="true"
+          (selectionChange)="rowChange($event)"
+          [(value)]="selectedRow"
+        >
+          <ng-container *ngIf="type === 'plinko'">
+            <mat-option [value]="i + 8" *ngFor="let item of [].constructor(9); let i = index"
+              >{{ i + 8 }}{{ 'row' | translate }}</mat-option
+            >
+          </ng-container>
+          <ng-container *ngIf="type === 'wheel'">
+            <mat-option [value]="(i + 1) * 10" *ngFor="let item of [].constructor(5); let i = index">{{
+              (i + 1) * 10
+            }}</mat-option>
+          </ng-container>
+        </mat-select>
+      </div>
+    </div>
+  </div>
+
+  <!--coinflip投注下面的两个按钮 -->
+  <div class="diamonds-control coinflip-control" [class.loading]="!loading" *ngIf="type === 'coinflip'">
+    <div class="bet-stop-button onact96-not" (click)="guessCoin(true)">
+      <img class="coin" src="/assets/orignal/images/coinflip/front.svg" alt="" />
+      <div class="right-item">
+        <span class="choice">{{ 'head' | translate }}</span>
+        <span class="detail"
+          >{{ 'profit' | translate }}: {{ formatPersonTel('nextMultiplier') }} {{ currentCurrencyData?.currency }}</span
+        >
+      </div>
+    </div>
+    <div class="bet-stop-button tail onact96-not" (click)="guessCoin(false)">
+      <img class="coin" src="/assets/orignal/images/coinflip/back.svg" alt="" />
+      <div class="right-item">
+        <span class="choice">{{ 'tails' | translate }}</span>
+        <span class="detail"
+          >{{ 'profit' | translate }}: {{ formatPersonTel('nextMultiplier') }} {{ currentCurrencyData?.currency }}</span
+        >
+      </div>
+    </div>
+  </div>
+  <!--手动/自动投注-->
+  <div class="bet-setting" [class.hide]="['hilo', 'stairs', 'baccarat', 'blackjack', 'coinflip'].includes(type)">
+    <div class="tabs">
+      <div class="option" *ngFor="let item of list; let i = index" (click)="changeTab(i)" [class.active]="i == active">
+        {{ item }}
+      </div>
+      <i class="orignal-tip" (click)="showModel()"></i>
+    </div>
+    <div class="content" [class.h5]="isH5" *ngIf="active">
+      <div class="item" [class.order-1]="isH5">
+        <div class="title">{{ 'bet_number' | translate }}</div>
+        <div class="input-wrap" [class.wrap-readonly]="isLoop">
+          <input
+            class="ff"
+            type="text"
+            placeholder="0"
+            [class.readonly]="isLoop"
+            [readonly]="isLoop"
+            [(ngModel)]="loopInfo.betNmb"
+            (input)="oninputLoop($event, 'betNmb')"
+          />
+          <div class="suffix" *ngIf="loopInfo.betNmb == '' && loopInfo.betNmb == 0">∞</div>
+          <!-- <div class="border"></div> -->
+        </div>
+      </div>
+      <div class="item" [class.order-2]="isH5" *ngIf="type !== 'plinko'">
+        <div class="title">{{ 'take_profit' | translate }}</div>
+        <div class="input-wrap" [class.wrap-readonly]="isLoop">
+          <div class="preffix">
+            <img class="currency-icon" [src]="currentCurrencyData?.icon" />
+          </div>
+          <input
+            class="ff"
+            type="text"
+            placeholder="0"
+            [class.readonly]="isLoop"
+            [readonly]="isLoop"
+            [(ngModel)]="profitNmb"
+            (input)="oninput($event, 'profitNmb')"
+            (blur)="setNmb($event, 'profitNmb')"
+          />
+          <!-- <div class="border"></div> -->
+        </div>
+      </div>
+      <div class="item" [class.order-4]="isH5" *ngIf="type !== 'plinko'">
+        <div class="title">{{ 'stop_loss' | translate }}</div>
+        <div class="input-wrap" [class.wrap-readonly]="isLoop">
+          <div class="preffix">
+            <img class="currency-icon" [src]="currentCurrencyData?.icon" />
+          </div>
+          <input
+            class="ff"
+            type="text"
+            placeholder="0"
+            [class.readonly]="isLoop"
+            [readonly]="isLoop"
+            [(ngModel)]="lossNmb"
+            (input)="oninput($event, 'lossNmb')"
+            (blur)="setNmb($event, 'lossNmb')"
+          />
+          <!-- <div class="border"></div> -->
+        </div>
+      </div>
+      <div class="item" [class.order-3]="isH5" *ngIf="type !== 'plinko'">
+        <div class="title">{{ 'max_bet' | translate }}</div>
+        <div class="input-wrap" [class.wrap-readonly]="isLoop">
+          <div class="preffix">
+            <img class="currency-icon" [src]="currentCurrencyData?.icon" />
+          </div>
+          <input
+            class="ff"
+            type="text"
+            placeholder="0"
+            [class.readonly]="isLoop"
+            [readonly]="isLoop"
+            [(ngModel)]="MaxbetNmb"
+            (input)="oninput($event, 'MaxbetNmb')"
+            (blur)="setNmb($event, 'MaxbetNmb')"
+          />
+          <!-- <div class="border"></div> -->
+        </div>
+      </div>
+      <div class="item" [class.order-5]="isH5" [class.h5-col]="isH5" *ngIf="type !== 'plinko'">
+        <div class="title">{{ 'won' | translate }}</div>
+        <div class="content-input" [class.h5-col]="isH5">
+          <div class="switch" [class.h5-col]="isH5">
+            <mat-slide-toggle [(ngModel)]="win" [disabled]="isLoop" (change)="toggleChange($event, 'win')">
+            </mat-slide-toggle>
+            <div class="text" [class.active]="win">
+              <span>{{ 'reset' | translate }}</span>
+              <span>{{ 'increase' | translate }}</span>
+            </div>
+          </div>
+          <div class="input-wrap" [class.h5-col]="isH5" [class.wrap-readonly]="isLoop">
+            <input
+              class="ff"
+              type="text"
+              placeholder="0"
+              [class.readonly]="isLoop"
+              [readonly]="isLoop"
+              [(ngModel)]="winPercent"
+              (input)="oninputLoop($event, 'winPercent')"
+              (focus)="onblur('win')"
+            />
+            <div class="suffix">%</div>
+            <!-- <div class="border"></div> -->
+          </div>
+        </div>
+      </div>
+      <div
+        class="item"
+        [class.order-6]="isH5"
+        [class.h5-col]="isH5"
+        [class.wrap-readonly]="isLoop"
+        *ngIf="type !== 'plinko'"
+      >
+        <div class="title">{{ 'loss' | translate }}</div>
+        <div class="content-input" [class.h5-col]="isH5">
+          <div class="switch" [class.h5-col]="isH5">
+            <mat-slide-toggle [(ngModel)]="lose" [disabled]="isLoop" (change)="toggleChange($event, 'lose')">
+            </mat-slide-toggle>
+            <div class="text" [class.active]="lose">
+              <span>{{ 'reset' | translate }}</span>
+              <span>{{ 'increase' | translate }}</span>
+            </div>
+          </div>
+          <div class="input-wrap" [class.h5-col]="isH5" [class.wrap-readonly]="isLoop">
+            <input
+              class="ff"
+              type="text"
+              [class.readonly]="isLoop"
+              [readonly]="isLoop"
+              placeholder="0"
+              [(ngModel)]="losePercent"
+              (input)="oninputLoop($event, 'losePercent')"
+              (focus)="onblur('lose')"
+            />
+            <div class="suffix">%</div>
+            <!-- <div class="border"></div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="type == 'hilo' && !isH5">
+    <app-bet-size (buyChange)="handleBuyType($event)" [canBuy]="loading"></app-bet-size>
+  </ng-container>
+</div>
+
+<ng-template #webBetContent>
+  <div class="bet-content">
+    <div>
+      <div class="button" (click)="handleMoney(0)">{{ 'min' | translate }}</div>
+      <div class="button" (click)="handleMoney(1)">{{ 'max' | translate }}</div>
+    </div>
+    <div class="center">
+      <div>
+        <img class="currency-icon" [src]="currentCurrencyData?.icon" />
+        <span>{{ money }}</span>
+        <input
+          class="ff"
+          [(ngModel)]="money"
+          [class.readonly]="
+            isLoop ||
+            isDisabled ||
+            (['mines', 'teemo', 'stairs', 'plinko', 'hilo', 'tower', 'blackjack', 'coinflip'].includes(type) && loading)
+          "
+          [readonly]="
+            isLoop ||
+            isDisabled ||
+            (['mines', 'teemo', 'stairs', 'plinko', 'hilo', 'tower', 'blackjack', 'coinflip'].includes(type) &&
+              loading) ||
+            type == 'baccarat'
+          "
+          (input)="oninput($event, 'money')"
+          (blur)="setMoneyRange()"
+          (click)="oCopy($event)"
+          #moneyInput
+        />
+      </div>
+    </div>
+    <div>
+      <div class="button ff" (click)="handleMoney(2)">1/2</div>
+      <div class="button ff" (click)="handleMoney(3)">2x</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #h5BetContent>
+  <div
+    class="h5-bet-contant"
+    [class.crash-h5]="isH5 && (type == 'crash' || type == 'limbo' || type == 'slide' || type == 'csgo')"
+  >
+    <div class="currency-col" [class.h5]="isH5">
+      <div>
+        <img class="currency-icon" [class.h5]="isH5" [src]="currentCurrencyData?.icon" />
+        <input
+          type="digit"
+          class="ff"
+          [(ngModel)]="money"
+          [class.readonly]="
+            isLoop ||
+            isDisabled ||
+            (['mines', 'teemo', 'stairs', 'plinko', 'hilo', 'tower', 'blackjack', 'coinflip'].includes(type) && loading)
+          "
+          [readonly]="
+            isLoop ||
+            isDisabled ||
+            (['mines', 'teemo', 'stairs', 'plinko', 'hilo', 'tower', 'blackjack', 'coinflip'].includes(type) &&
+              loading) ||
+            type == 'baccarat'
+          "
+          (input)="oninput($event, 'money')"
+          (blur)="setMoneyRange()"
+          (click)="oCopy($event)"
+          #moneyInput
+        />
+      </div>
+    </div>
+    <div class="events-col">
+      <div class="button" (click)="handleMoney(2)">1/2</div>
+      <div class="button" (click)="handleMoney(3)">2x</div>
+    </div>
+  </div>
+</ng-template>
+
+<!--crash 兑现box H5-->
+<ng-template #h5Cash>
+  <div class="cash-h5">
+    <em>{{ 'cash' | translate }}</em>
+    <div class="row">
+      <div class="button" (click)="onReduce()">-</div>
+      <input
+        type="digit"
+        [class.readonly]="isLoop || isDisabled"
+        [readonly]="isLoop || isDisabled"
+        [(ngModel)]="rate"
+        (input)="oninput($event, 'rate')"
+      />
+      <div class="hint" [class.visible]="isTip">
+        <i class="hint-point"></i>
+        <span>{{ tipTest }}</span>
+      </div>
+      <div class="button" (click)="onAdd()">+</div>
+    </div>
+  </div>
+</ng-template>
+
+<!--crash 兑现box web-->
+<ng-template #webCash>
+  <div>
+    <div class="button" (click)="onReduce()">-</div>
+  </div>
+  <div class="center">
+    <div>
+      <input
+        [class.readonly]="isLoop || isDisabled"
+        [readonly]="isLoop || isDisabled"
+        [(ngModel)]="rate"
+        (input)="oninput($event, 'rate')"
+      />
+      <div class="hint" [class.visible]="isTip">
+        <i class="hint-point"></i>
+        <span>{{ tipTest }}</span>
+      </div>
+    </div>
+    <div>{{ 'cash' | translate }}</div>
+  </div>
+  <div>
+    <div class="button" (click)="onAdd()">+</div>
+  </div>
+</ng-template>

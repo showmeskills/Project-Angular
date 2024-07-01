@@ -1,0 +1,54 @@
+<div class="d-flex">
+  <span class="fz-20 flex-1">{{ 'member.detail.discount.title' | lang }}</span>
+
+  <div>
+    <button
+      type="button"
+      class="btn btn-default p-3 ml-2"
+      *ngFor="let item of typeList"
+      [class.btn-primary]="activeType === item.value"
+      (click)="onType(item.value)"
+    >
+      {{ item.lang | lang }}
+    </button>
+
+    <button type="button" class="btn btn-light-primary p-3 ml-2" (click)="openDiscount()">
+      {{ 'member.detail.discount.viewAll' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="mt-10" *ngIf="bonusList.length">
+  <ng-container *ngFor="let item of bonusList">
+    <div class="item flex-row-fluid d-flex flex-ac" [class.is-blue]="true">
+      <div class="item-icon rounded-circle d-flex justify-content-center align-items-center">
+        <svg-icon class="svg-icon svg-icon-2x5" [src]="'./assets/images/svg/card.svg'"></svg-icon>
+        <!--              <svg-icon [src]="'./assets/images/svg/wallet.svg'"></svg-icon>-->
+      </div>
+      <div class="ml-8">
+        <div class="fz-14">
+          <span class="vam">{{ item.balance | currencyValue: 'USDT' }}</span>
+          <img class="ml-3" currencyIcon="USDT" alt="" />
+        </div>
+        <div class="fz-12 color-aaa">{{ item.name }}</div>
+        <!--              <div class="fz-14">-->
+        <!--                <span class="color-aaa">0000-00-00 00:00:00</span>-->
+        <!--                <app-label type="danger" class="px-2 fz-12 ml-4" height="18px" *ngIf="!i">-->
+        <!--                  {{ 'member.detail.discount.received' | lang }}-->
+        <!--                </app-label>-->
+        <!--                <app-label type="yellow" class="px-2 fz-12 ml-4" height="18px" *ngIf="i">-->
+        <!--                  {{ 'member.detail.discount.expired' | lang }}-->
+        <!--                </app-label>-->
+        <!--              </div>-->
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- 空显示 -->
+<div class="container-empty" *ngIf="!bonusList?.length && !isLoading">
+  <div>
+    <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+    <div class="txt">{{ 'common.emptyText' | lang }}</div>
+  </div>
+</div>

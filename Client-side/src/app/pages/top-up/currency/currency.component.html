@@ -1,0 +1,511 @@
+<div class="container">
+  @if (!['en-us'].includes(languageCode)) {
+    <div class="notice">
+      <div class="title"><i class="icon-warn-tip"></i>{{ 'deposit_not_award_tips' | translate }}</div>
+      <div class="wrap">
+        <div class="tip">{{ 'deposit_not_within_time' | translate }}</div>
+        <div class="tip">{{ 'deposit_modify_amount' | translate }}</div>
+        <div class="tip">{{ 'deposit_not_arrive_and_check' | translate }}</div>
+      </div>
+    </div>
+  }
+
+  <div class="new-container">
+    <div class="dp-main">
+      <!-- 步骤1标题 -->
+      <div class="dp-main-item">
+        <div class="row-line">
+          <div class="title-1">{{ isH5 ? ('select_cur' | translate) : '1.' + ('sel_cur_pay' | translate) }}</div>
+          @if (isH5) {
+            <div class="h5-questions">
+              <div class="q-1 onact96" (click)="openHistory()">
+                <span class="icon-speaker"></span>
+                <span class="txt-dotted">{{ 'dep_not_arrive' | translate }}</span>
+              </div>
+              <div class="q-2 onact96" (click)="openQuestion()">
+                <span>{{ 'faq' | translate }}</span>
+                <span class="icon-question"></span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- 选择币种 -->
+      <div class="dp-main-item mt-20">
+        <app-customize-select
+          [disabled]="isPayLoading || loadingCurrencies || checkingPaymentIq"
+          [rightArrow]="false"
+          [label]="'depo_cur' | translate"
+          [width]="'100%'"
+          [height]="'48px'"
+          [readonly]="true"
+          [inputTemplate]="dpcInputTemplate"
+          (onClickInput)="handleSelectCurrency()"
+        ></app-customize-select>
+        <ng-template #dpcInputTemplate>
+          <div class="row-line center-a gap-10 sel-template mutual-opacity onact96">
+            @if (seletedDepositCurrencyItem) {
+              <img class="cur-icon" [src]="seletedDepositCurrencyItem.icon" />
+              <span class="color-20">{{ seletedDepositCurrencyItem.currency }}</span>
+              <span class="color-dpx size-sm">{{ seletedDepositCurrencyItem.name }}</span>
+            } @else {
+              <span class="opacity-50">{{ 'select_cur' | translate }}</span>
+            }
+            @if (isPayLoading || loadingCurrencies || checkingPaymentIq) {
+              <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+            } @else {
+              <i class="icon-drop-down"></i>
+            }
+          </div>
+        </ng-template>
+      </div>
+
+      @if (seletedDepositCurrencyItem) {
+        @if (paymentWayList.length > 0) {
+          <!-- 支付方式选择 -->
+          <div class="dp-main-item mt-20 grid-3">
+            @for (payListGroup of paymentWayList; track $index) {
+              @for (payMethod of payListGroup.list; track $index) {
+                <div
+                  class="method-item colgap-5 mutual-opacity onact96-not"
+                  (click)="handleSelectTab(payMethod, payListGroup)"
+                  [class.active]="seletedDepositWay?.code === payMethod.code"
+                >
+                  <div class="row-line center gap-5">
+                    @if (payMethod?.icons && payMethod.icons.length > 0) {
+                      <img class="method-icon" [src]="payMethod.icons[0]" alt="" />
+                    } @else {
+                      <img class="method-icon" [src]="'assets/images/wallet/yellow-bankcard.svg'" alt="" />
+                    }
+                    <span class="color-20">{{ payMethod.name }}</span>
+                  </div>
+                  <div class="row-line center gap-5">
+                    @if (
+                      payMethod.tipsInfo &&
+                      payMethod.tipsInfo[0]?.tipsType == 'Operate' &&
+                      payMethod.tipsInfo[0]?.content
+                    ) {
+                      <span class="color-gre" [innerHTML]="payMethod.tipsInfo[0].content | toHtmlElement"></span>
+                    }
+                    <span class="color-20">{{ payMethod.fee }}% {{ 'fee' | translate }}</span>
+                  </div>
+                  @if (payMethod.isRecommend) {
+                    <div class="recommend center-j">
+                      <i class="icon-zan"></i>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        } @else if (isShowPaymentIq) {
+          <!-- 无支付方式，显示PIQ -->
+          <div class="dp-main-item mt-20">
+            @if (allowPaymentIq) {
+              <app-payment-iq
+                [selectedCurrency]="piqSelectedCurrency"
+                method="deposit"
+                (getHistory)="getCurrencytxHistory()"
+              >
+              </app-payment-iq>
+            } @else if (!checkingPaymentIq) {
+              <customize-button
+                [loading]="checkingPaymentIq"
+                type="primary"
+                size="medium"
+                (onClick)="checkKycForPaymentIq()"
+              >
+                {{ 'continue' | translate }}
+              </customize-button>
+            }
+          </div>
+        }
+      }
+
+      <!-- 存虚得法 -->
+      @if (isShowDepositToCrypto) {
+        <div class="dp-main-item mt-20 colgap-20 hold-height" [appLoading]="loadingSelectedCurrency">
+          @if (!loadingSelectedCurrency) {
+            <app-customize-select
+              [rightArrow]="false"
+              [label]="'curr' | translate"
+              [width]="'100%'"
+              [height]="'48px'"
+              [readonly]="true"
+              [inputTemplate]="dpcInputTemplate2"
+              (onClickInput)="onSelectCurrency()"
+            ></app-customize-select>
+            <ng-template #dpcInputTemplate2>
+              <div class="row-line center-a gap-10 sel-template mutual-opacity onact96">
+                @if (selectedCurrency) {
+                  <img class="cur-icon" [src]="selectedCurrency.icon" />
+                  <span class="color-20">{{ selectedCurrency.currency }}</span>
+                  <span class="color-dpx size-sm">{{ selectedCurrency.name }}</span>
+                } @else {
+                  <span class="opacity-50">{{ 'sel_coin' | translate }}</span>
+                }
+                <i class="icon-drop-down"></i>
+              </div>
+            </ng-template>
+            <app-customize-select
+              [disabled]="!selectedCurrency"
+              [rightArrow]="false"
+              [label]="'trans_network' | translate"
+              [width]="'100%'"
+              [height]="'48px'"
+              [readonly]="true"
+              [inputTemplate]="dpcInputTemplate3"
+              (onClickInput)="handleSelectNetWork()"
+            ></app-customize-select>
+            <ng-template #dpcInputTemplate3>
+              <div class="row-line center-a gap-10 sel-template mutual-opacity onact96">
+                @if (selectedNetwork) {
+                  <span class="color-20">{{ selectedNetwork.networkInfo.network }}</span>
+                  <span class="color-dpx size-sm">{{ selectedNetwork.networkInfo.desc }}</span>
+                } @else {
+                  <span class="opacity-50">{{ 'sel_net' | translate }}</span>
+                }
+                <i class="icon-drop-down"></i>
+              </div>
+            </ng-template>
+          }
+        </div>
+      }
+
+      @if (isMore) {
+        @if (isMaintenance) {
+          <!-- 维护中 -->
+          <div class="dp-main-item mt-20">
+            <div class="maintainance">
+              <img src="assets/images/wallet/maintainance.svg" alt="" />
+              <div class="title">{{ 'in_maint' | translate }}</div>
+              <div class="content">{{ 'channel_try' | translate }}</div>
+            </div>
+          </div>
+        } @else {
+          <!-- 步骤2标题 -->
+          <div class="dp-main-item mt-20">
+            <div class="row-line">
+              <div class="title-2">{{ isH5 ? ('ent_amount' | translate) : '2.' + ('topup_info' | translate) }}</div>
+            </div>
+          </div>
+
+          <!-- 固定金额 -->
+          @if (seletedDepositWay.fixedAmounts?.length > 0) {
+            <div class="dp-main-item mt-20">
+              <div class="row-line">
+                <span class="color-20 size-14">{{ 'fixed_amount_title' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="dp-main-item grid-3 mt-10">
+              @for (item of seletedDepositWay.fixedAmounts; track $index) {
+                @if (item > 0) {
+                  <customize-button
+                    type="text"
+                    width="100%"
+                    size="large"
+                    [plain]="true"
+                    (onClick)="handleAmount(item)"
+                    [disabled]="rateLoading"
+                  >
+                    {{ item }}
+                  </customize-button>
+                }
+              }
+            </div>
+          }
+
+          <!-- 输入金额 -->
+          <div class="dp-main-item mt-20">
+            <app-customize-input
+              type="number"
+              size="large"
+              [label]="(isH5 ? 'number' : 'enter_amount') | translate"
+              [error]="amount && !iAmountIsValid ? ('valid_amount' | translate) : false"
+              [placeholder]="
+                ('please_enter' | translate) +
+                seletedDepositWay.minAmount +
+                '-' +
+                seletedDepositWay.maxAmount +
+                ' ' +
+                seletedDepositCurrencyItem.currency
+              "
+              [(value)]="amount"
+              (paste)="$event.preventDefault()"
+              (keydown)="amountKeydown($event)"
+              (valueChange)="handleAmount(amount)"
+              (onBlur)="amountBlur$.next(true)"
+              [disabled]="rateLoading"
+            >
+              <div class="more-txt" right-content>
+                @if (isH5) {
+                  <span>{{ seletedDepositCurrencyItem.currency }}</span>
+                } @else {
+                  {{ 'limit' | translate }}:
+                  <span class="limit">
+                    {{ seletedDepositWay.minAmount }}-{{ seletedDepositWay.maxAmount }}
+                    {{ seletedDepositCurrencyItem.currency }}
+                  </span>
+                }
+              </div>
+            </app-customize-input>
+          </div>
+
+          @if (isShowDepositToCrypto) {
+            <!-- 存虚得法汇率显示 -->
+            <div class="dp-main-item mt-10">
+              <div class="rate">
+                <div class="text-20">
+                  {{ 'pre_pay' | translate }}:
+                  <p class="text">
+                    {{ getPrePayment | currencyValue: selectedCurrency?.currency || '' }}
+                    {{ selectedCurrency?.currency! }}
+                  </p>
+                </div>
+                <div class="text-20">
+                  {{ 'check_rate' | translate }}
+                  @if (!rateLoading) {
+                    <p class="text">
+                      1 {{ selectedCurrency?.currency }} = {{ currentRateData?.rate || 0 }}
+                      {{ seletedDepositCurrencyItem.currency }}
+                    </p>
+                  }
+                </div>
+                <p class="text-20">{{ 'tips_one' | translate }}</p>
+                <p class="text-20">{{ 'tips_two' | translate }}</p>
+              </div>
+            </div>
+          } @else {
+            <!-- 普通支付实际到账 -->
+            <div class="dp-main-item mt-10">
+              <div class="row-line gap-5 center-a">
+                <span class="size-14 color-20">{{ 'act_arr' | translate }}</span>
+                <span class="size-14">{{ getRealAmount }} {{ seletedDepositCurrencyItem.currency }}</span>
+              </div>
+            </div>
+
+            <!-- 真实姓名 -->
+            <div class="dp-main-item mt-20">
+              <app-customize-input
+                [label]="'dep_real_name' | translate"
+                [value]="userName"
+                size="large"
+                [disabled]="true"
+              >
+              </app-customize-input>
+            </div>
+
+            <!-- 银行选择 -->
+            @if (isShowBankCard) {
+              <div class="dp-main-item mt-20">
+                <app-customize-select
+                  [showFilter]="true"
+                  [rightArrow]="false"
+                  [label]="'select_bank' | translate"
+                  (onSelect)="handleSelectBank($event)"
+                  [defaultText]="'-' + ('choose_bank' | translate) + '-'"
+                  [options]="systemBankList"
+                  [iconKey]="'iconKey'"
+                  [textKey]="'textKey'"
+                  [valueKey]="'valueKey'"
+                  [inputTemplate]="dpcInputTemplate4"
+                  [disabled]="isSelectBankLoading"
+                  [width]="'100%'"
+                  [height]="'48px'"
+                >
+                </app-customize-select>
+                <ng-template #dpcInputTemplate4>
+                  <div class="row-line center-a gap-10 sel-template mutual-opacity onact96">
+                    @if (selectedBank.bankCode) {
+                      <img class="cur-icon" src="assets/images/bankicon/{{ selectedBank.bankCode }}.png" alt="" />
+                      <span class="color-20">{{ selectedBank.bankNameLocal }}</span>
+                    } @else {
+                      <span class="opacity-50">{{ 'choose_bank' | translate }}</span>
+                    }
+                    <i class="icon-drop-down"></i>
+                  </div>
+                </ng-template>
+              </div>
+            }
+          }
+
+          <!-- 红利 -->
+          @if (isValid) {
+            <div class="dp-main-item mt-20">
+              <app-select-deposit-bonus
+                [depositType]="'faitDeposit'"
+                (voucherPopup)="openDividendOptions()"
+                [voucherLoading]="bonusLoading"
+                [voucherList]="bonuslist"
+                [selectedVoucher]="seletedDividend"
+                [currency]="seletedDepositCurrencyItem.currency"
+                [amount]="amount"
+                (handleCallback)="closeSelectDividandCallBack($event)"
+              ></app-select-deposit-bonus>
+            </div>
+          }
+
+          <!-- 重要提示 -->
+          @if (seletedDepositWay?.tipsInfo) {
+            @if (seletedDepositWay.tipsInfo | filterByKeyValue: 'tipsType' : 'Deposit' : 'content'; as depositTips) {
+              <div class="dp-main-item mt-40 colgap-20 size-14 color-20">
+                <div class="row-line">{{ 'import_notes' | translate }}</div>
+                <div class="row-line importan-notice">
+                  <p [innerHTML]="depositTips | toHtmlElement"></p>
+                </div>
+              </div>
+            }
+          }
+
+          <!-- 视频教学连接 -->
+          @if (videoLink) {
+            <div class="dp-main-item mt-20">
+              <div class="row-short-line gap-5 color-pri mutual-opacity onact96" (click)="openGuideDialog()">
+                <span class="size-14 text-udl">{{ seletedDepositWay.name }}</span>
+                <i class="icon-video-play"></i>
+              </div>
+            </div>
+          }
+
+          <!-- 最终提交按钮 -->
+          <div class="dp-main-item mt-20">
+            <customize-button
+              size="large"
+              type="primary"
+              [disabled]="isDisableSubmit()"
+              [loading]="submitLoading"
+              (onClick)="submit()"
+            >
+              {{ 'confirm_button' | translate }}
+            </customize-button>
+          </div>
+        }
+      } @else if (isClick) {
+        <div class="dp-main-item mt-20 hold-height" [appLoading]="isClick"></div>
+      }
+    </div>
+
+    @if (!isH5) {
+      <!-- web的Faq。h5的FAQ在步骤1标题中，可以弹窗打开 -->
+      <div class="dp-info">
+        <app-tips tag="LegalCurrencyRecharge"></app-tips>
+      </div>
+    }
+  </div>
+
+  <!-- 历史记录之类 -->
+  @if (!isH5 || (isH5 && !isMore)) {
+    <div class="clounm-container">
+      @if (isH5) {
+        <!--法币充值历史记录 h5-->
+        <div class="history-container" [appLoading]="isLoading">
+          <div class="title-row">
+            <div class="title">{{ 'deposit_fait' | translate }}</div>
+            <div class="more">
+              <div class="all onact96-not" (click)="openHistoryPage()">{{ 'view_all' | translate }}</div>
+            </div>
+          </div>
+          @if (!isLoading) {
+            @if (currencyHistory.length > 0) {
+              @for (item of currencyHistory; track $index) {
+                <div class="history-container-details">
+                  <div class="history-container-details-left">
+                    <p>{{ 'order' | translate }} {{ item.orderNum }}</p>
+                    <p>{{ item.date }}</p>
+                  </div>
+                  <div class="history-container-details-right">
+                    <p>{{ item.receiveAmount }} {{ item.currency }}</p>
+                    <p>{{ item.statusName }}</p>
+                  </div>
+                </div>
+              }
+            } @else {
+              <td colspan="5">
+                <app-empty></app-empty>
+              </td>
+            }
+          }
+        </div>
+      } @else {
+        <!--法币充值历史记录 web-->
+        <div class="history-container" [class.active]="isMore">
+          <div class="title-row">
+            <div class="title">{{ 'deposit_fait' | translate }}</div>
+            <div class="more">
+              <div class="all onact96-not" (click)="openHistoryPage()">{{ 'view_all' | translate }}</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <th>{{ 'order' | translate }}</th>
+              <th>{{ 'time' | translate }}</th>
+              <th>{{ 'curr' | translate }}</th>
+              <th>{{ 'amount' | translate }}</th>
+              <th>{{ 'status' | translate }}</th>
+              <th>{{ 'voucher' | translate }}</th>
+            </thead>
+            <tbody [appLoading]="isLoading">
+              @if (!isLoading) {
+                @if (currencyHistory.length > 0) {
+                  @for (item of currencyHistory; track $index) {
+                    <tr>
+                      <td>{{ item.orderNum }}</td>
+                      <td>{{ item.date }}</td>
+                      <td>{{ item.currency }}</td>
+                      <td>{{ item.receiveAmount | currencyValue: item.currency }}</td>
+                      <td>{{ item.statusName }}</td>
+                      <td>{{ (item.isVoucher ? 'used' : 'inused') | translate }}</td>
+                    </tr>
+                  }
+                } @else {
+                  <td colspan="5">
+                    <app-empty></app-empty>
+                  </td>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+      @if (!isMore) {
+        <app-currency-process></app-currency-process>
+      }
+    </div>
+  }
+</div>
+
+<ng-template #waitPop>
+  <div class="wait-pop">
+    <i class="close-icon icon-close-simple mutual-opacity onact96-not" (click)="destroyWaitPop()"></i>
+    <img src="assets/images/top_up_wait.png" />
+    <div class="info">
+      <img src="assets/images/top_up_wait2.svg" />
+      <div class="text">
+        @switch (waitPopStatus$ | async) {
+          @case (1) {
+            <div>
+              <span>{{ 'tp_w_p_a1' | translate }}</span>
+            </div>
+            <div>
+              <span
+                >{{ 'tp_w_p_a2' | translate }} <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i
+              ></span>
+            </div>
+          }
+          @case (2) {
+            <div>
+              <span>{{ 'tp_w_p_b1' | translate }}</span>
+            </div>
+            <div>
+              <span
+                >{{ 'tp_w_p_b2' | translate }} <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i
+              ></span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</ng-template>

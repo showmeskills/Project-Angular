@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+    <defs>
+        <linearGradient id="a" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#ff7e10"/>
+            <stop offset="1" stop-color="#f5432c"/>
+        </linearGradient>
+    </defs>
+    <g data-name="Group 3523">
+        <path data-name="Rectangle 1960" style="fill:none" d="M0 0h22v22H0z"/>
+        <g data-name="Group 3422">
+            <g data-name="Group 3419">
+                <g data-name="Group 3418">
+                    <path data-name="Path 5189" d="M1124.449 930.71a5.273 5.273 0 1 0 5.274 5.273 5.279 5.279 0 0 0-5.274-5.273z" transform="translate(-1113.449 -929.71)" style="fill:url(#a)"/>
+                </g>
+            </g>
+            <g data-name="Group 3421">
+                <g data-name="Group 3420">
+                    <path data-name="Path 5190" d="M1130.659 945.874a7.517 7.517 0 0 0-5.39-2.274h-2.344a7.517 7.517 0 0 0-5.389 2.274 7.686 7.686 0 0 0-2.228 5.422.587.587 0 0 0 .586.586h16.406a.586.586 0 0 0 .585-.586 7.685 7.685 0 0 0-2.226-5.422z" transform="translate(-1113.097 -930.882)" style="fill:#54616f"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

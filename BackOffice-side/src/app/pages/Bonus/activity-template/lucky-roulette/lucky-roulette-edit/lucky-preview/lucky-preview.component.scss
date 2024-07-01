@@ -1,0 +1,100 @@
+.symbol-label {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.luck {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  transform: rotate(23deg);
+
+  &-item {
+    position: absolute;
+    left: 223px;
+    top: 83px;
+    transform-origin: left center;
+    height: 280px;
+    width: 100px;
+
+    $startAng: 2;
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        transform: rotate(#{$i * 30 + $startAng}deg);
+      }
+    }
+
+    &-wrap {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-11deg);
+    }
+  }
+
+  .point {
+    position: absolute;
+    left: -76px;
+    top: 75px;
+  }
+
+  &-desc {
+    position: absolute;
+    left: 630px;
+    top: 135px;
+    color: #fff;
+    transform: translateX(-50%);
+  }
+
+  &-recent {
+    color: #fff;
+    position: absolute;
+    top: 140px;
+    right: 0;
+    width: 30px;
+    height: 130px;
+    writing-mode: vertical-rl;
+    transform: scale(-1);
+    text-align: center;
+    line-height: 30px;
+
+    /** 中文 */
+    &.local {
+      transform: none;
+      line-height: 28px;
+      letter-spacing: 2px;
+    }
+  }
+
+  &-draw {
+    position: absolute;
+    left: 476px;
+    top: 321px;
+    width: 412px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    color: #fff;
+    font-size: 26px;
+  }
+
+  &-currency {
+    position: absolute;
+    right: 50px;
+    width: 410px;
+    top: 390px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-item {
+      padding: 4px 8px 4px 4px;
+      background: rgba(#222, 0.48);
+      border-radius: 100px;
+      font-style: italic;
+    }
+  }
+}

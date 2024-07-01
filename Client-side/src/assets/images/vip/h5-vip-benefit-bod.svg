@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30.288" height="26" viewBox="0 0 30.288 26">
+    <defs>
+        <clipPath id="t674smvvna">
+            <path data-name="矩形 53" style="fill:none;stroke:#1d1d1e" d="M0 0h30.288v26H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="组 44">
+        <g data-name="组 43" style="clip-path:url(#t674smvvna)">
+            <path data-name="路径 23" d="M26.1 25H4.467V14.43a2.742 2.742 0 0 1 2.742-2.742h16.148A2.742 2.742 0 0 1 26.1 14.43z" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e"/>
+            <path data-name="直线 35" transform="translate(1 25)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e" d="M0 0h28.288"/>
+            <path data-name="直线 36" transform="translate(9.32 4.616)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e" d="M0 0v6.656"/>
+            <path data-name="直线 37" transform="translate(9.32 1)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e" d="M0 0v.567"/>
+            <path data-name="直线 38" transform="translate(15.144 5.032)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e" d="M0 0v6.656"/>
+            <path data-name="直线 39" transform="translate(15.144 1)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e" d="M0 0v.567"/>
+            <path data-name="直线 40" transform="translate(20.968 5.032)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e" d="M0 0v6.656"/>
+            <path data-name="直线 41" transform="translate(20.968 1)" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e" d="M0 0v.567"/>
+            <path data-name="路径 24" d="M4.467 17.1s1.941 2.088 4.853 0 4.523 0 4.523 0a2.5 2.5 0 0 0 4.213.408c2.5-2.5 4.16 0 4.16 0a2.435 2.435 0 0 0 3.884-.158" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill:none;stroke:#1d1d1e"/>
+        </g>
+    </g>
+</svg>

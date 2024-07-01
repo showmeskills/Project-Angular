@@ -1,0 +1,153 @@
+<ng-template #presetAmountTpl let-d="dismiss" let-c="close">
+  <modal-title [title]="'payment.paymentMethod.preAmountEdit' | lang" (close)="d()"></modal-title>
+  <div class="modal-body">
+    <form-row [label]="'common.amount' | lang" [control]="preAmountCtr">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input
+          class="form-control rounded-0"
+          (keyup)="$event.key === 'Enter' && onAddPreAmount(c)"
+          type="text"
+          input-float
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        />
+      </ng-template>
+    </form-row>
+  </div>
+  <modal-footer (confirm)="onAddPreAmount(c)" (dismiss)="d()"></modal-footer>
+</ng-template>
+
+<div class="card" *ngIf="info">
+  <div class="card-body">
+    <form [formGroup]="formGroup" action="#" class="form" #from>
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex flex-ac">
+            <label class="mr-0 mb-0 title">{{ 'payment.paymentMethod.paymentMethod' | lang }}：</label>
+            <span>{{ info.paymentMethod }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex flex-ac">
+            <label class="mr-0 mb-0 title">{{ 'common.name' | lang }}：</label>
+            <input
+              type="text"
+              class="form-control"
+              autocomplete="off"
+              [placeholder]="'payment.paymentMethod.pleaseEnterName' | lang"
+              [class.is-invalid]="validator.isControlInvalid('cnName')"
+              name="cnName"
+              formControlName="cnName"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex flex-ac">
+            <label class="mr-0 mb-0 title">{{ 'payment.paymentMethod.enName' | lang }}：</label>
+            <input
+              type="text"
+              class="form-control"
+              autocomplete="off"
+              [placeholder]="'payment.paymentMethod.enterLocalName' | lang"
+              [class.is-invalid]="validator.isControlInvalid('enName')"
+              name="enName"
+              formControlName="enName"
+            />
+          </div>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex flex-ac">
+            <label class="mr-0 mb-0 title">{{ 'payment.currency.currency' | lang }}：</label>
+            <span>{{ info.supportedCurrencies }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex flex-ac">
+            <label class="mr-0 mb-0 title">{{ 'payment.paymentMethod.uploadPicture' | lang }}：</label>
+            <div class="upload-list">
+              <upload
+                type="PaymethodIcon"
+                class="logo-img pr"
+                desc="120x120"
+                [formControlName]="'icon' + key"
+                *ngFor="let key of [1, 2, 3, 4, 5, 6, 7, 8, 9]"
+                [class.is-upload-invalid]="validator.isControlInvalid('icon' + key)"
+              ></upload>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form-row [label]="'payment.paymentMethod.preAmount' | lang" label-width="150">
+        <ng-template>
+          <div class="d-flex flex-wrap flex-1">
+            <div class="pre-amount-edit" (click)="onOpenEditPreAmount(presetAmountTpl)"></div>
+
+            <ng-container *ngFor="let item of info.fixedAmounts; index as i">
+              <div class="pre-amount">
+                <span>{{ item || 0 }}</span>
+                <svg-icon
+                  (click)="onDelPreAmount(i)"
+                  class="cursor-pointer p-2 svg-icon svg-icon-1x"
+                  [src]="'assets/images/svg/close.svg'"
+                ></svg-icon>
+              </div>
+            </ng-container>
+          </div>
+        </ng-template>
+      </form-row>
+
+      <!-- 状态 -->
+      <div class="row">
+        <div class="col-12">
+          <div class="w-100 d-flex flex-ac">
+            <label class="mr-0 mb-0 title">{{ 'common.status' | lang }}：</label>
+
+            <div class="d-flex flex-ac">
+              <span class="switch switch-success">
+                <label>
+                  <input type="checkbox" formControlName="status" />
+                  <span></span>
+                </label>
+              </span>
+              <span class="switch-txt">{{
+                info.isEnable ? ('payment.currency.open' | lang) : ('payment.currency.shutDown' | lang)
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex flex-ac">
+            <label class="mr-0 mb-0 title">{{ 'payment.paymentMethod.supChannel' | lang }}：</label>
+            <span style="word-break: break-all">{{ info.supportedPaymentService }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="btn-wrap d-flex flex-center">
+            <button class="c-btn c-btn-default" type="button" (click)="back()">{{ 'common.back' | lang }}</button>
+            <button class="c-btn c-btn-primary" type="button" (click)="submit()">{{ 'common.confirm' | lang }}</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

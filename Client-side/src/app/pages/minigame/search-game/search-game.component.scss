@@ -1,0 +1,341 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+:host {
+  margin-top: 19px;
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+    height: 100%;
+    position: relative;
+    background-color: transparent !important;
+  }
+}
+
+.content-box {
+  width: 100%;
+}
+
+.content-label {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+
+  .label-item {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+
+    background-color: var(--label-bg);
+    color: var(--text-color-20);
+    padding: 6px 10px;
+    border-radius: 21px;
+    font-weight: bold;
+    width: fit-content;
+
+    @media (max-width: 767px) {
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .label-text {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-color-20);
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+}
+
+.search {
+  height: 39px;
+  border-radius: 29px;
+  background-color: var(--bg-color-10);
+
+  :host-context(.dark) & {
+    border: solid 2px #2f4553;
+    background-color: var(--container-bg-color);
+  }
+
+  ::ng-deep {
+    app-customize-input {
+      height: 100%;
+      display: flex;
+
+      .input-container {
+        width: 100%;
+      }
+
+      .input-box {
+        background-color: transparent !important;
+        height: 100% !important;
+        border: none !important;
+        padding: 0 14px !important;
+
+        input::placeholder {
+          opacity: 0.5 !important;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .dark {
+    .search-dark {
+      border: solid 2px var(--primary-color);
+      background-color: var(--container-bg-color);
+    }
+  }
+}
+
+.result-box {
+  margin-top: 10px;
+  border-radius: 4px;
+  background-color: #fff;
+  min-height: 357px;
+  max-height: 400px;
+  display: flex;
+  position: relative;
+
+  .result-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .tip-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-color-20);
+      padding: 14px;
+      min-height: 66px;
+    }
+
+    .result-games {
+      padding: 0 14px;
+    }
+
+    .search-history {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+
+      .title {
+        height: 35px;
+        color: var(--text-color-20);
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+      }
+
+      p {
+        padding: 0 14px;
+        height: 35px;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        user-select: none;
+
+        @media (any-hover: hover) {
+          &:hover {
+            background-color: #f5f5f5;
+          }
+        }
+
+        @media (any-hover: none) {
+          &:active {
+            background-color: #f5f5f5;
+          }
+        }
+
+        span {
+          display: flex;
+          @include polyfills.flex-gap(6px, 'row nowrap');
+        }
+
+        i {
+          color: var(--text-color-20);
+
+          &::before {
+            color: inherit;
+          }
+        }
+
+        .del-btn {
+          padding-left: 8px;
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  .attach-recommend {
+    margin-top: auto;
+    padding: 0 14px 14px 14px;
+  }
+
+  ::ng-deep {
+    app-swiper-unit .content-box.unit {
+      margin-top: 20px;
+    }
+
+    .scroll-box {
+      overflow-x: hidden;
+    }
+  }
+}
+
+::ng-deep {
+  .dark {
+    .result-box {
+      background-color: #0f212e;
+
+      .result-main {
+        .search-history {
+          p {
+            color: #707a8a !important;
+
+            @media (any-hover: hover) {
+              &:hover {
+                background-color: #304454 !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.h5-search {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+  .page-title {
+    height: 60px;
+    flex-shrink: 0;
+    background-color: var(--bg-color-10);
+    padding-left: 12px;
+    padding-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-color);
+    position: relative;
+
+    // &::before {
+    //   content: '';
+    //   pointer-events: none;
+    //   position: absolute;
+    //   left: -100px;
+    //   right: -100px;
+    //   top: 0;
+    //   bottom: -100px;
+    //   box-shadow: inset 0 3px 6px 0 rgb(0 0 0 / 10%);
+    // }
+
+    .wrap {
+      display: flex;
+      align-items: center;
+      @include polyfills.flex-gap(7px, 'row nowrap');
+      font-weight: bold;
+
+      i {
+        font-size: 20px;
+      }
+    }
+
+    i {
+      font-size: 16px;
+      font-weight: normal;
+      color: #707a8a;
+
+      &::before {
+        color: inherit;
+      }
+    }
+
+    .close-btn {
+      padding-left: 10px;
+    }
+  }
+
+  .content-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    background-color: var(--container-bg-color);
+
+    .search {
+      flex-shrink: 0;
+      margin-top: 14px;
+      margin-left: 12px;
+      margin-right: 12px;
+    }
+
+    .result-box {
+      min-height: 0;
+      max-height: none;
+      overflow: hidden;
+      margin: 14px 0;
+      flex: 1;
+
+      .result-main {
+        flex: 0 1 auto;
+
+        .tip-text,
+        .result-games {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+
+        .search-history {
+          .title,
+          p {
+            padding-left: 12px;
+            padding-right: 12px;
+          }
+        }
+      }
+
+      .attach-recommend {
+        padding-left: 12px;
+        padding-right: 12px;
+        margin-top: 0;
+      }
+    }
+  }
+
+  ::ng-deep {
+    app-swiper-unit .content-box.unit {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}

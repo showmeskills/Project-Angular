@@ -1,0 +1,87 @@
+plugins {
+     id "com.android.application"
+     id "dev.flutter.flutter-gradle-plugin"
+     id "org.jetbrains.kotlin.android"
+     id "com.google.gms.google-services"
+ }
+
+ dependencies {
+    implementation 'androidx.window:window:1.0.0'
+    implementation 'androidx.window:window-java:1.0.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+ }
+
+def getAutoVersionCode() {
+    Process process = "git rev-list --count HEAD".execute([], rootProject.projectDir)
+    process.waitFor()
+    int versionCode = process.getText().toInteger()
+    return  versionCode
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    compileSdkVersion 34
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.gogaming.sit1"
+        minSdkVersion 24
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        // versionName "2.#{Build.BuildNumber}#"
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+
+        release {
+            keyAlias 'gogaming'
+            keyPassword 'Fx12345678'
+            storeFile file('../../keystore')
+            storePassword 'Fx12345678'
+        }
+    }
+
+    buildTypes {
+        release {
+            lintOptions {
+                disable 'InvalidPackage'
+                disable "Instantiatable"
+                checkReleaseBuilds false
+                abortOnError false
+            }
+
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}

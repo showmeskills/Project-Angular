@@ -1,0 +1,148 @@
+<div class="card px-12 py-8 d-flex flex-wrap flex-row" sticky>
+  <form-row class="mr-12" [label]="'payment.bank.bankName' | lang">
+    <ng-template>
+      <input
+        (keyup)="$event.code.endsWith('Enter') && loadData(true)"
+        [(ngModel)]="data.bankName"
+        [style.width.px]="428"
+        class="form-control rounded-0"
+        type="text"
+      />
+    </ng-template>
+  </form-row>
+
+  <form-row class="mr-12" [label]="'payment.bank.supportedCurrencies' | lang">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control rounded-0" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+          <mat-option [value]="item.code" *ngFor="let item of currencyList">{{
+            item.code || ('common.all' | lang)
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card px-12 py-10 mt-8">
+  <div class="d-flex justify-content-end">
+    <button (click)="onEdit()" type="button" class="btn btn-light-primary py-2" [style.width.px]="126">
+      <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl vam lh-18"></svg-icon>
+      <span class="vam">{{ 'payment.bank.addBank' | lang }}</span>
+    </button>
+  </div>
+
+  <table class="table mb-0">
+    <thead sticky>
+      <tr>
+        <th>
+          <span class="cell">{{ 'payment.bank.bankLocalName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.bank.bankEnglishName' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.bank.bankCode' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.bank.supportedCurrencies' | lang }}</span>
+        </th>
+        <th>
+          <span class="cell">{{ 'payment.bank.operating' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="color-222">
+      <tr *ngFor="let item of list">
+        <td>
+          <span class="cell">{{ item.bankNameLocal || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.bankNameEn || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.bankCode || '-' }}</span>
+        </td>
+        <td>
+          <span class="cell">{{ item.currencyType.join(',') }}</span>
+        </td>
+        <td>
+          <span class="cell">
+            <span class="btn text-nowrap btn-light btn-light-default mx-4" (click)="onEdit(item)">{{
+              'common.edit' | lang
+            }}</span>
+            <span class="btn text-nowrap btn-light-danger mx-4" (click)="onDel(delWarning, item)">{{
+              'common.delete' | lang
+            }}</span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <div class="container-empty" *ngIf="!list.length && (appService.loading$ | async) === false">
+    <div>
+      <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+      <div class="txt">{{ 'common.emptyText' | lang }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-between pt-30">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control rounded-0"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+        [isLoading]="appService.isContentLoadingSubject | async"
+      ></app-paginator>
+    </div>
+  </div>
+</div>
+
+<!-- 删除提示 -->
+<ng-template #delWarning let-d="dismiss" let-c="close" let-data>
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">{{ 'payment.bank.prompt' | lang }}</div>
+      <!--begin::Close-->
+      <div class="c-btn-close" (click)="d()">
+        <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+      </div>
+      <!--end::Close-->
+    </div>
+
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">
+        {{ 'payment.bank.confirmWhetherDeleteBank' | lang }}《<span class="text-danger">{{ data.bankNameLocal }}</span
+        >》？
+      </p>
+    </div>
+
+    <div class="modal-footer btn-wrap">
+      <button type="button" class="c-btn btn btn-light" (click)="d()">{{ 'common.cancel' | lang }}</button>
+      <button type="button" class="c-btn btn btn-primary" (click)="c(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</ng-template>

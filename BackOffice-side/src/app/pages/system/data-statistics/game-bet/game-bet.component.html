@@ -1,0 +1,368 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <form-row label="UID" class="mr-8" [contentWidth]="200">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.uid"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+
+    <form-row [label]="'common.currency' | lang" class="mr-10">
+      <ng-template>
+        <mat-form-field [style.width.px]="110">
+          <mat-select class="form-control" [(ngModel)]="data.currency" (selectionChange)="loadData(true)">
+            <mat-option [value]="''">{{ 'common.all' | lang }}</mat-option>
+            <mat-option [value]="item.code" *ngFor="let item of currencyList">{{ item.code }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+    </form-row>
+
+    <div class="d-flex flex-ac mr-8">
+      <form-row [label]="'system.statistics.statisticTime' | lang" class="mr-4" [contentWidth]="264">
+        <ng-template>
+          <input
+            class="text-center form-control w-100"
+            type="text"
+            [placeholder]="'system.statistics.selectStatisticsTime' | lang"
+            selectMode="date-range"
+            formatLabel="yyyy-MM-dd"
+            rangeSeparator="-"
+            [owlDateTime]="tradePicker"
+            [owlDateTimeTrigger]="tradePicker"
+            [(ngModel)]="data.time"
+            (dateTimeChange)="loadData(true)"
+          />
+          <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+        </ng-template>
+      </form-row>
+      <div class="btn btn-primary" (click)="reStatistics()">{{ 'system.statistics.recounting' | lang }}</div>
+    </div>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" (click)="onReset()">{{ 'common.reset' | lang }}</button>
+      <button class="c-btn c-btn-primary" (click)="loadData(true)">{{ 'common.confirm' | lang }}</button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'system.statistics.gameBet' | lang }}</div>
+
+    <!-- 列表操作 -->
+    <div class="d-flex flex-ac">
+      <!-- 导出 -->
+      <button
+        type="button"
+        class="ml-6 btn btn-light-primary px-9 fz-14 py-0 d-inline-flex flex-center h32"
+        (click)="onExport()"
+      >
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <div class="member-bonus">
+      <div class="table1">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <!-- 商户 -->
+              <!-- <th>
+                <span class="cell">商户</span>
+              </th> -->
+              <!-- UID -->
+              <th>
+                <span class="cell">UID</span>
+              </th>
+              <!-- 币种 -->
+              <th>
+                <span class="cell">{{ 'common.currency' | lang }}</span>
+              </th>
+              <!-- 游戏厂商 -->
+              <th>
+                <span class="cell">{{ 'budget.record.gameMaker' | lang }}</span>
+              </th>
+              <!-- 游戏类别 -->
+              <th>
+                <span class="cell">{{ 'member.detail.freeSpin.gameCategory' | lang }}</span>
+              </th>
+              <!-- 游戏名称 -->
+              <th>
+                <span class="cell">{{ 'original.profitAnalysis.gameName' | lang }}</span>
+              </th>
+              <!-- 下注金额 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_1' | lang }}</span>
+              </th>
+              <!-- 下注金额(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_1' | lang }}(U)</span>
+              </th>
+              <!-- 有效流水 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_2' | lang }}</span>
+              </th>
+              <!-- 有效流水(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_2' | lang }}(U)</span>
+              </th>
+              <!-- 游戏有效流水 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_3' | lang }}</span>
+              </th>
+              <!-- 游戏有效流水(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_3' | lang }}(U)</span>
+              </th>
+              <!-- 赢钱的下注金额 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_4' | lang }}</span>
+              </th>
+              <!-- 赢钱的下注金额(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_4' | lang }}(U)</span>
+              </th>
+              <!-- 赢钱的输赢 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_5' | lang }}</span>
+              </th>
+              <!-- 赢钱的输赢(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_5' | lang }}(U)</span>
+              </th>
+              <!-- 赢钱的有效流水 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_6' | lang }}</span>
+              </th>
+              <!-- 赢钱的有效流水(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_6' | lang }}(U)</span>
+              </th>
+              <!-- 赢钱的游戏有效流水 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_7' | lang }}</span>
+              </th>
+              <!-- 赢钱的游戏有效流水(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_7' | lang }}(U)</span>
+              </th>
+              <!-- 取消的下注金额 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_8' | lang }}</span>
+              </th>
+              <!-- 取消的下注金额(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_8' | lang }}(U)</span>
+              </th>
+              <!-- 下注次数 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_9' | lang }}</span>
+              </th>
+              <!-- 赢的次数 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_10' | lang }}</span>
+              </th>
+              <!-- 输的次数 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_11' | lang }}</span>
+              </th>
+              <!-- 取消的次数 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_12' | lang }}</span>
+              </th>
+              <!-- 抵用金 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_13' | lang }}</span>
+              </th>
+              <!-- 抵用金(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_13' | lang }}(U)</span>
+              </th>
+              <!-- 输钱总额 -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_14' | lang }}</span>
+              </th>
+              <!-- 输钱总额(U) -->
+              <th>
+                <span class="cell">{{ 'system.gameBet.th_14' | lang }}(U)</span>
+              </th>
+              <!-- 统计时间 -->
+              <th>
+                <span class="cell">{{ 'system.memberBonus.th_16' | lang }}</span>
+              </th>
+              <!-- 修改时间 -->
+              <!-- <th>
+                <span class="cell">修改时间</span>
+              </th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of list; let i = index">
+              <!-- <td>
+                <span class="cell">{{ subHeaderService.getMerchantName(item.tenantId) }}</span>
+              </td> -->
+              <td>
+                <span class="cell">{{ item.uid }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.gameProvider }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.gameCategory }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.name || '-' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.betAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.betUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.activeFlowAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.activeFlowUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.gameActiveFlowAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.gameActiveFlowUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winBetAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winBetUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winPayoutAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winPayoutUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winActiveFlowAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winActiveFlowUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winGameActiveFlowAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winGameActiveFlowUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.cancelBetAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.cancelBetUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.wagerCount | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.winCount | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.lostCount | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.cancelCount | toFormatMoney }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.couponAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.couponUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.lostPayoutAmount | currencyValue: item.currency }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.lostPayoutUsdt | currencyValue: 'USDT' }}</span>
+              </td>
+              <td>
+                <span class="cell">{{ item.statDate | timeFormat: 'yyyy-MM-DD' }}</span>
+              </td>
+              <!-- <td>
+                <span class="cell">{{ item. | timeFormat: 'yyyy-MM-DD' }}</span>
+              </td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- <div class="table2">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>
+                <span class="cell">商户</span>
+              </th>
+              <th>
+                <span class="cell">UID</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of list; let i = index">
+              <td>
+                <span class="cell">1</span>
+              </td>
+              <td>
+                <span class="cell">1</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+    </div>
+
+    <!-- 空显示 -->
+    <div class="container-empty" *ngIf="!list.length && !isLoading">
+      <div>
+        <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+        <div class="txt">{{ 'common.emptyText' | lang }}</div>
+      </div>
+    </div>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

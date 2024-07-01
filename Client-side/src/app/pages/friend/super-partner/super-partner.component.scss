@@ -1,0 +1,65 @@
+.theme-background {
+  background-image: url(src/assets/images/friend/theme/agent-bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  @media (max-width: 767px) {
+    background-size: cover;
+  }
+
+  &:host-context(.dark) & {
+    background-image: url(src/assets/images/friend/theme/agent-dark-bg.png);
+  }
+}
+
+.super-container {
+  padding: 200px 178px 200px 35px;
+
+  @media (max-width: 767px) {
+    padding: 145px 35px 110px 35px;
+  }
+}
+
+.first-text {
+  font-size: 50px;
+  color: #fff;
+
+  @media (max-width: 767px) {
+    font-size: 30px;
+  }
+}
+
+.second-text {
+  margin-top: 10px;
+  font-size: 50px;
+  font-weight: 600;
+  color: var(--primary-color);
+
+  @media (max-width: 767px) {
+    font-size: 36px;
+    display: flex;
+    align-items: center;
+  }
+
+  .coming-soon {
+    width: 70px;
+    height: 60px;
+    margin-left: 18px;
+  }
+}
+
+.third-text {
+  margin-top: 24px;
+  width: 633px;
+  font-size: 16px;
+  color: #fff;
+  line-height: 1.48;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.img-wrapper {
+  text-align: right;
+}

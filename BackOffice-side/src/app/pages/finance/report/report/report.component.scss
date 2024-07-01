@@ -1,0 +1,141 @@
+.return-info {
+  border-radius: 10px;
+}
+
+.color-purple {
+  color: #7e4aeb;
+}
+
+.bg-purple {
+  background: #fcfaff;
+}
+
+.color-green {
+  color: #50cd89;
+}
+
+.bg-green {
+  background: #e8fff3;
+}
+
+.color-blue {
+  color: #31a0f7;
+}
+
+.bg-skyblue {
+  background: #f2f8ff;
+}
+
+.color-grass {
+  color: #77be43;
+}
+
+.bg-grass {
+  background: #f7fff2;
+}
+
+.color-red {
+  color: #e45174;
+}
+
+.bg-red {
+  background: #fff4ff;
+}
+
+.label.label-lg {
+  height: 34px;
+
+  &.label-light-danger {
+    background: #fff5f8;
+    color: #f1416c;
+  }
+
+  &.label-light-warning {
+    background: #fff8dd;
+    color: #ffc700;
+  }
+}
+
+.table {
+  td .cell {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    flex-flow: column wrap;
+    justify-content: center;
+
+    &.has-icon {
+      flex-flow: inherit;
+    }
+  }
+}
+
+.plane-wrap {
+  border-radius: 10px;
+  margin-bottom: -30px;
+}
+
+.rounded-10 {
+  border-radius: 10px;
+}
+
+.filter-wrap {
+  form-row {
+    margin-right: 30px;
+  }
+}
+
+.label.label-lg.label-inline {
+  width: auto;
+  min-width: 72px;
+  text-align: center;
+}
+
+.scroll-x {
+  overflow-x: auto;
+
+  &::-webkit-scrollbar-thumb {
+    background: #e9edf1;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+}
+
+.red-text {
+  color: #f1416c !important;
+}
+
+.green-text {
+  color: #50cd89 !important;
+}
+
+.game-module {
+  &:nth-child(4n - 3) {
+    color: #e45174;
+    background: #fff4ff;
+  }
+
+  &:nth-child(4n - 2) {
+    color: #31a0f7;
+    background: #f2f8ff;
+  }
+
+  &:nth-child(4n - 1) {
+    color: #7e4aeb;
+    background: #fcfaff;
+  }
+
+  &:nth-child(4n) {
+    color: #77be43;
+    background: #f7fff2;
+  }
+}
+
+.order-number {
+  color: #009ef7;
+  text-decoration: underline;
+  cursor: pointer;
+}

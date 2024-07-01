@@ -1,0 +1,73 @@
+<div class="page-container">
+  <app-header-title-bar
+    [showIcon]="!isH5"
+    [title]="'risk_assessment' | translate"
+    [clickForRouterBack]="true"
+  ></app-header-title-bar>
+  <div class="main-container inner-page unity-padding-web unity-padding-h5-24 custom-container">
+    <ng-container *ngIf="!completed; else pending">
+      <p class="title">{{ 'risk_assessment' | translate }}</p>
+      <app-customize-form-group [column]="true" marginTop="24px">
+        <ng-container *ngFor="let item of foundSourceProof | keyvalue">
+          <div class="form-item" *ngIf="item.value.input || item.value.drop">
+            <app-customize-input
+              #iAmount
+              *ngIf="item.value.input"
+              [label]="item.value.label"
+              width="100%"
+              size="medium"
+              [max]="item.value.max!"
+              [type]="item.value.type!"
+              [(value)]="item.value.value"
+              [error]="item.value.errorTxt!"
+              [disabled]="rejected"
+              (onChange)="handleNumberChange(iAmount, item.value.type)"
+            >
+              <p right-content *ngIf="item.value.unit">
+                {{ item.value.unit }}
+              </p>
+            </app-customize-input>
+            <app-customize-select
+              *ngIf="item.value.drop"
+              [label]="item.value.label"
+              width="100%"
+              size="medium"
+              [(value)]="item.value.value"
+              [options]="item.value.optionLists!"
+              textKey="name"
+              valueKey="value"
+              defaultText=""
+              [disabled]="rejected"
+              (valueChange)="onSelectValueChange(item.value.selectType!, $event)"
+            ></app-customize-select>
+          </div>
+        </ng-container>
+        <customize-button
+          [style.order]="7"
+          size="large"
+          type="primary"
+          width="100%"
+          [disabled]="!canSubmit || rejected"
+          (onClick)="onSubmitPending()"
+          [loading]="submitLoading"
+        >
+          {{ 'continue' | translate }}
+        </customize-button>
+      </app-customize-form-group>
+      <div class="btm-text">
+        <i class="icon-kyc-protect"></i>
+        <span class="info">{{ 'asset_proof_safety_tips' | translate }}</span>
+      </div>
+    </ng-container>
+    <ng-template #pending>
+      <div class="pending">
+        <img lazy="loading" src="assets/images/safe-questionnaire/pending.svg" />
+        <p class="title">{{ 'risk_assessment_under_review' | translate }}</p>
+        <p class="info">{{ 'risk_assessment_under_review_content' | translate }}</p>
+        <customize-button type="primary" size="medium" width="100%" (click)="appService.jumpToHome()">
+          {{ 'sure' | translate }}
+        </customize-button>
+      </div>
+    </ng-template>
+  </div>
+</div>

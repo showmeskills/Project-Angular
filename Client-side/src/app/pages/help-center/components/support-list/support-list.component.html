@@ -1,0 +1,41 @@
+<!-- 常见问题 -->
+<ng-container
+  *ngTemplateOutlet="
+    centerTemplate;
+    context: {
+      centerName: 'faq',
+      title: ('faq' | translate),
+      data: faqList
+    }
+  "
+>
+</ng-container>
+<!-- 公告中心 -->
+<ng-container
+  *ngTemplateOutlet="
+    centerTemplate;
+    context: {
+      centerName: 'announcement',
+      title: ('ann_center' | translate),
+      data: announcementList
+    }
+  "
+>
+</ng-container>
+
+<!-- center template -->
+<ng-template #centerTemplate let-data="data" let-title="title" let-centerName="centerName">
+  <div class="support-list" *ngIf="data.length > 0">
+    <p class="title onact96-not" (click)="toOthersCenterPage(centerName, null)">{{ title }}</p>
+    <ul class="list-container">
+      <li
+        class="list-item mutual-opacity onact96"
+        *ngFor="let item of data"
+        (click)="toOthersCenterPage(centerName, item.id)"
+      >
+        <img class="list-img" [src]="item.iconAddress + item.icon" alt="" lazy="loading" />
+        <span class="list-title">{{ item.title }}</span>
+      </li>
+    </ul>
+  </div>
+</ng-template>

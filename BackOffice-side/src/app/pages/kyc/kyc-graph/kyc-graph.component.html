@@ -1,0 +1,409 @@
+<!-- 头部地区 -->
+<ng-template subHeader>
+  <div class="ml-8" [hidden]="+this.subHeaderService.merchantCurrentId !== 1">
+    <span class="fz-16 color-999 mr-6">{{ 'member.kyc.region.region' | lang }}: </span>
+    <mat-form-field [style.width.px]="106" [appLoading]="kycService.isLoading" loadingBgColor="#fff">
+      <mat-select
+        class="px-4 form-control"
+        [class.is-invalid]="!kycService.regionList || !kycService.curRegion"
+        [(ngModel)]="kycService.curRegion"
+        [style.height.px]="34"
+      >
+        <mat-option *ngFor="let item of kycService.regionList" [value]="item.name">
+          {{ 'member.kyc.region' | lang: item.name }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+  </div>
+</ng-template>
+
+<div class="card d-flex flex-row px-8 py-6">
+  <form-row [label]="'member.kyc.timeInterval' | lang">
+    <ng-template>
+      <div class="d-flex">
+        <input
+          class="form-control text-center"
+          type="text"
+          selectMode="rangeFrom"
+          [placeholder]="'budget.record.startingTime' | lang"
+          [style.width.px]="148"
+          [owlDateTime]="timeStart"
+          [owlDateTimeTrigger]="timeStart"
+          [(ngModel)]="time"
+          (dateTimeChange)="onTime()"
+          formatLabel="yyyy-MM-dd"
+        />
+        <owl-date-time class="fz-20" pickerType="calendar" #timeStart></owl-date-time>
+
+        <div class="date-line lh-42"></div>
+
+        <input
+          class="form-control text-center"
+          type="text"
+          selectMode="rangeTo"
+          [placeholder]="'budget.record.endTime' | lang"
+          [style.width.px]="148"
+          [owlDateTime]="timeEnd"
+          [owlDateTimeTrigger]="timeEnd"
+          [(ngModel)]="time"
+          (dateTimeChange)="onTime()"
+          formatLabel="yyyy-MM-dd"
+        />
+        <owl-date-time class="fz-20" pickerType="calendar" #timeEnd></owl-date-time>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="onReset(); loadData()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="d-flex mt-8">
+  <div class="p-10 rounded bg-fff form-list-box d-flex">
+    <div class="form-list-nav">
+      <div class="form-list-title d-flex flex-ac">
+        <!-- 认证分析 -->
+        <div class="fz-18">{{ 'member.kyc.authentication' | lang }}</div>
+        <div class="btn-box">
+          <!-- 配置管理 -->
+          <button class="c-btn c-btn-primary" (click)="onOption()">
+            {{ 'member.kyc.configuration' | lang }}
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="mt-8">
+          <div class="d-flex mb-3">
+            <!-- 审核中 -->
+            <div class="flex-1">{{ 'member.kyc.underReview' | lang }}</div>
+            <div class="color-aaa">{{ reporAllcountList.passedAll }}/{{ reporAllcountList.allCount }}</div>
+          </div>
+          <pp-progress
+            [strokeWidth]="5"
+            [percentage]="toDate(reporAllcountList.passedAll, reporAllcountList.allCount)"
+            [showText]="false"
+            [color]="'#50C6CD'"
+          ></pp-progress>
+        </div>
+        <div class="mt-8">
+          <div class="d-flex mb-3">
+            <!-- 中级认证数 -->
+            <div class="flex-1">{{ 'member.kyc.Intermediate' | lang }}</div>
+            <div class="color-aaa">
+              {{ reporAllcountList.middlePassedCountRange }}/{{ reporAllcountList.middleCountRange }}
+            </div>
+          </div>
+          <pp-progress
+            [strokeWidth]="5"
+            [percentage]="toDate(reporAllcountList.middlePassedCountRange, reporAllcountList.middleCountRange)"
+            [showText]="false"
+            [color]="'#50C6CD'"
+          ></pp-progress>
+        </div>
+        <div class="mt-8">
+          <div class="d-flex mb-3">
+            <!-- 高级认证数 -->
+            <div class="flex-1">{{ 'member.kyc.advanced' | lang }}</div>
+            <div class="color-aaa">
+              {{ reporAllcountList.highPassedCountRange }}/{{ reporAllcountList.highCountRange }}
+            </div>
+          </div>
+          <pp-progress
+            [strokeWidth]="5"
+            [percentage]="toDate(reporAllcountList.highPassedCountRange, reporAllcountList.highCountRange)"
+            [showText]="false"
+            [color]="'#50C6CD'"
+          ></pp-progress>
+        </div>
+        <div class="mt-8">
+          <div class="d-flex mb-3">
+            <!-- 人脸识别 -->
+            <div class="flex-1">{{ 'member.kyc.faceRecognition' | lang }}</div>
+            <div class="color-aaa">
+              {{ reporAllcountList.facePassedCountRange }}/{{ reporAllcountList.faceCountRange }}
+            </div>
+          </div>
+          <pp-progress
+            [strokeWidth]="5"
+            [percentage]="toDate(reporAllcountList.facePassedCountRange, reporAllcountList.faceCountRange)"
+            [showText]="false"
+            [color]="'#50C6CD'"
+          ></pp-progress>
+        </div>
+        <div class="mt-8">
+          <div class="d-flex mb-3">
+            <!-- 近期存款记录 -->
+            <div class="flex-1">{{ 'member.kyc.depositHistory' | lang }}</div>
+            <div class="color-aaa">
+              {{ reporAllcountList.depositPassedCountRange }}/{{ reporAllcountList.depositCountRange }}
+            </div>
+          </div>
+          <pp-progress
+            [strokeWidth]="5"
+            [percentage]="toDate(reporAllcountList.depositPassedCountRange, reporAllcountList.depositCountRange)"
+            [showText]="false"
+            [color]="'#50C6CD'"
+          ></pp-progress>
+        </div>
+        <div class="mt-8">
+          <div class="d-flex mb-3">
+            <!-- 资产来源证明 -->
+            <div class="flex-1">{{ 'member.kyc.proSource' | lang }}</div>
+            <div class="color-aaa">
+              {{ reporAllcountList.sourcesPassedCountRange }}/{{ reporAllcountList.sourcesCountRange }}
+            </div>
+          </div>
+          <pp-progress
+            [strokeWidth]="5"
+            [percentage]="toDate(reporAllcountList.sourcesPassedCountRange, reporAllcountList.sourcesCountRange)"
+            [showText]="false"
+            [color]="'#50C6CD'"
+          ></pp-progress>
+        </div>
+      </div>
+    </div>
+    <div class="form-list">
+      <div class="form-list-title d-flex flex-ac">
+        <div class="fz-18">
+          <div class="d-flex flex-ac">
+            <mat-form-field [style.width.px]="110">
+              <mat-select class="form-control" [(ngModel)]="listStatus" (selectionChange)="onPageChange()">
+                <mat-option *ngFor="let item of statusList" [value]="item.code">{{ item.name | lang }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="btn-box">
+          <!-- 审核管理：移动至监控列表 -->
+          <!--          <button class="c-btn c-btn-primary" (click)="router.navigate(['/kyc/count/examine'])">-->
+          <!--            {{ 'member.kyc.auditManagement' | lang }}-->
+          <!--          </button>-->
+        </div>
+      </div>
+      <div class="mt-4 w-100">
+        <apx-chart
+          class="d-flex"
+          style="width: 100%; height: 100%"
+          [series]="lineChartOptions.series"
+          [chart]="lineChartOptions.chart"
+          [xaxis]="lineChartOptions.xaxis"
+          [yaxis]="lineChartOptions.yaxis"
+          [grid]="lineChartOptions.grid"
+          [dataLabels]="lineChartOptions.dataLabels"
+          [stroke]="lineChartOptions.stroke"
+          [tooltip]="lineChartOptions.tooltip"
+          [fill]="lineChartOptions.fill"
+          #chart
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-12 rounded bg-fff ml-8" style="width: 330px">
+    <!-- 热门国家排名 -->
+    <div class="fz-18">{{ 'member.kyc.topCountryRanking' | lang }}</div>
+    <div>
+      <div class="mt-8" *ngFor="let item of reportCountrysumList; let i = index">
+        <div class="d-flex mb-3">
+          <div class="flex-1">{{ item.country }}</div>
+          <div class="color-aaa">{{ item.successNum }}/{{ item.totalNum }}</div>
+        </div>
+        <pp-progress
+          [strokeWidth]="5"
+          [percentage]="toDate(item.successNum, item.totalNum)"
+          [showText]="false"
+          [color]="'#50C6CD'"
+        ></pp-progress>
+      </div>
+      <empty [show]="!reportCountrysumList.length && !isLoading"></empty>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap mt-8" style="gap: 20px">
+  <!-- 亚洲天眼 -->
+  <div
+    *ngIf="+subHeaderService.merchantCurrentId !== 1 || kycService.isAsia"
+    class="p-10 rounded bg-fff min-w-0"
+    style="flex: 0 0 300px"
+  >
+    <!-- 天眼查返回结果 -->
+    <div class="fz-18">{{ 'member.kyc.TianyanReturn' | lang }}</div>
+    <div class="d-flex chart-title-box mt-12">
+      <!-- 验证次数 -->
+      <div class="left-box">{{ 'member.kyc.verificationTimes' | lang }}</div>
+      <div class="right-box">{{ reportCallthirdList.ttyTotal }}</div>
+    </div>
+    <div class="mt-12">
+      <apx-chart
+        class="d-flex"
+        #ttyChart
+        [series]="ttyChartOptions.series"
+        [chart]="ttyChartOptions.chart"
+        [dataLabels]="ttyChartOptions.dataLabels"
+        [responsive]="ttyChartOptions.responsive"
+        [labels]="ttyChartOptions.labels"
+        [legend]="ttyChartOptions.legend"
+        [colors]="ttyChartOptions.colors"
+        [plotOptions]="ttyChartOptions.plotOptions"
+        [tooltip]="ttyChartOptions.tooltip"
+        [states]="ttyChartOptions.states"
+      ></apx-chart>
+    </div>
+  </div>
+
+  <div class="p-10 rounded bg-fff min-w-0" style="flex: 0 0 300px">
+    <!-- Jumio返回结果 -->
+    <div class="fz-18">{{ 'member.kyc.jumioResults' | lang }}</div>
+    <div class="d-flex chart-title-box mt-12">
+      <!-- 验证次数 -->
+      <div class="left-box">{{ 'member.kyc.verificationTimes' | lang }}</div>
+      <div class="right-box">{{ reportCallthirdList.jumioTotal }}</div>
+    </div>
+    <div class="mt-12">
+      <apx-chart
+        class="d-flex"
+        #cirChart
+        [series]="circleChartOptions.series"
+        [chart]="circleChartOptions.chart"
+        [dataLabels]="circleChartOptions.dataLabels"
+        [responsive]="circleChartOptions.responsive"
+        [labels]="circleChartOptions.labels"
+        [legend]="circleChartOptions.legend"
+        [colors]="circleChartOptions.colors"
+        [plotOptions]="circleChartOptions.plotOptions"
+        [tooltip]="circleChartOptions.tooltip"
+        [states]="circleChartOptions.states"
+      ></apx-chart>
+    </div>
+  </div>
+
+  <!-- 亚洲腾讯 -->
+  <div
+    *ngIf="+subHeaderService.merchantCurrentId !== 1 || kycService.isAsia"
+    class="p-10 rounded bg-fff min-w-0"
+    style="flex: 0 0 300px"
+  >
+    <!-- 腾讯云慧返回结果 -->
+    <div class="fz-18">{{ 'member.kyc.tencentResults' | lang }}</div>
+    <div class="d-flex chart-title-box mt-12">
+      <!-- 验证次数 -->
+      <div class="left-box">{{ 'member.kyc.verificationTimes' | lang }}</div>
+      <div class="right-box">{{ reportCallthirdList.tencentTotal }}</div>
+    </div>
+    <div class="mt-12">
+      <apx-chart
+        class="d-flex"
+        #tencentChart
+        [series]="tencentChartOptions.series"
+        [chart]="tencentChartOptions.chart"
+        [dataLabels]="tencentChartOptions.dataLabels"
+        [responsive]="tencentChartOptions.responsive"
+        [labels]="tencentChartOptions.labels"
+        [legend]="tencentChartOptions.legend"
+        [colors]="tencentChartOptions.colors"
+        [plotOptions]="tencentChartOptions.plotOptions"
+        [tooltip]="tencentChartOptions.tooltip"
+        [states]="tencentChartOptions.states"
+      ></apx-chart>
+    </div>
+  </div>
+
+  <div class="p-10 rounded bg-fff flex-1" style="min-width: 300px">
+    <div class="d-flex flex-ac">
+      <!-- 最新认证记录 -->
+      <div class="fz-20 flex-1">{{ 'member.kyc.LatestRecords' | lang }}</div>
+    </div>
+
+    <div class="flex-fill mt-4 px-3">
+      <table class="table mb-0">
+        <thead class="sticky-wrapper">
+          <tr>
+            <th><span class="cell">UID</span></th>
+            <!-- 认证内容 -->
+            <th>
+              <span class="cell">{{ 'member.kyc.authenticationContent' | lang }}</span>
+            </th>
+            <!-- 时间 -->
+            <th>
+              <span class="cell">{{ 'member.kyc.time' | lang }}</span>
+            </th>
+            <!-- 状态  -->
+            <th>
+              <span class="cell">{{ 'member.kyc.status' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <!--初级-->
+              <span class="cell" *ngIf="item.kycType === 0">{{ 'member.kyc.basis' | lang }}</span>
+              <!--中级-->
+              <span class="cell" *ngIf="item.kycType === 1">{{ 'member.kyc.middle' | lang }}</span>
+              <!--高级-->
+              <span class="cell" *ngIf="item.kycType === 2">{{ 'member.kyc.adv' | lang }}</span>
+              <!--活体认证-->
+              <span class="cell" *ngIf="item.kycType === 3">{{ 'member.kyc.vivoAuthentication' | lang }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.updateTimestamp | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <!-- 审批中 -->
+                <app-label *ngIf="item.processState === 0" class="cursor-pointer" minWidth="72" type="yellow"
+                  >{{ 'member.kyc.underReview' | lang }} >
+                </app-label>
+                <!-- 认证失败 -->
+                <app-label *ngIf="item.processState === 1" class="cursor-pointer" minWidth="72" type="danger"
+                  >{{ 'member.kyc.authenticationFailed' | lang }} ></app-label
+                >
+                <!-- 认证成功 -->
+                <app-label *ngIf="item.processState === 2" class="cursor-pointer" minWidth="72" type="success"
+                  >{{ 'member.kyc.authenticationSucceeded' | lang }} ></app-label
+                >
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty [show]="!list.length && !isLoading"></empty>
+    </div>
+
+    <div class="d-flex flex-between flex-ac pt-12">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="onList()"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap"
+          [paginator]="paginator"
+          [isLoading]="isLoading"
+          (paginate)="onList()"
+          [maxSize]="3"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>

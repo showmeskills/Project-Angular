@@ -1,0 +1,8 @@
+output: R.dart
+class_name: R
+gen_package_path: false
+ignore_resolution: true
+code_style: lowerCamelCase
+format_dart_code: false
+omit_path_levels: 2
+with_file_extension_name: false

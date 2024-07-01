@@ -1,0 +1,105 @@
+<div class="monitor-item audit" *ngFor="let item of list" [appLoading]="loading">
+  <div>
+    <img class="mr-4" iconSrc="/assets/images/svg/monitor-operate-new.svg" />
+    <span class="vam title">{{ 'risk.transaction' | lang }}</span>
+  </div>
+  <!--
+  <div>{{ (item.category !== 'Activity' ? item.uid : item.detail.name) || '' }}</div> -->
+  <div>
+    <ng-container [ngSwitch]="item.category">
+      <ng-container *ngSwitchCase="'Activity'">{{ item.detail?.name || '-' }}</ng-container>
+      <ng-container *ngSwitchCase="'Coupon'">{{ item.detail?.name || '-' }}</ng-container>
+
+      <!-- 发券审核 -->
+      <ng-container *ngSwitchCase="'SendCoupon'">
+        <ng-container *ngIf="item.detail?.info?.length">
+          <ng-container *ngFor="let sub of $any(item.detail?.info)">
+            <ng-container *ngIf="sub.languageCode === lang.currentLang?.toLowerCase()">{{
+              sub.title || '-'
+            }}</ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="!item.detail?.info?.length">{{ item.detail?.defalutName || '-' }}</ng-container>
+      </ng-container>
+      <ng-container *ngSwitchDefault>{{ item.uid || '-' }}</ng-container>
+    </ng-container>
+  </div>
+
+  <ng-container [ngSwitch]="item.category">
+    <!-- 反水审核 -->
+    <ng-container *ngSwitchCase="TransactionReviewCategoryObjEnum.Transaction">
+      <div>{{ 'risk.manualTransaction' | lang }}</div>
+      <div>
+        <span class="vam">
+          {{ 'risk.receiveAmount' | lang }}
+        </span>
+        <div class="d-flex flex-ac">
+          {{ item.detail?.receiveAmount | currencyValue: item.detail?.currency }}
+          <img class="ml-2" [currencyIcon]="item.detail?.currency" />
+        </div>
+      </div>
+      <div>
+        <span class="vam">
+          {{ 'risk.remainingAmount' | lang }}
+        </span>
+        <div class="d-flex flex-ac">
+          {{ item.detail?.remainingAmount | currencyValue: item.detail?.currency }}
+          <img class="ml-2" [currencyIcon]="item.detail?.currency" />
+        </div>
+      </div>
+    </ng-container>
+    <!-- 结束 -->
+  </ng-container>
+
+  <div>{{ item.createdUserName || '-' }}</div>
+
+  <div>{{ item.createdTime | timeFormat }}</div>
+
+  <div class="last cursor-pointer" [ngSwitch]="item.status">
+    <app-label *ngSwitchCase="StatusEnum.Pending" type="warning" (click)="onDetail(item)">{{
+      'risk.pending' | lang
+    }}</app-label>
+    <app-label *ngSwitchCase="StatusEnum.Finish" type="success" (click)="onDetail(item)">{{
+      'risk.pass' | lang
+    }}</app-label>
+    <app-label *ngSwitchCase="StatusEnum.Rejected" type="warning" (click)="onDetail(item)">{{
+      'risk.reject' | lang
+    }}</app-label>
+    <app-label *ngSwitchCase="StatusEnum.Processing" type="warning">{{ 'risk.processing' | lang }}</app-label>
+    <app-label *ngSwitchCase="StatusEnum.Cancel" type="danger">{{ 'common.cancel' | lang }}</app-label>
+  </div>
+</div>
+
+<!-- loading -->
+<div *ngIf="!list.length && loading" style="height: 380px" [appLoading]="loading"></div>
+
+<!-- 每个item都有自己的页码才能分开控制 Total总量 -->
+<ng-container *ngIf="!isAllType">
+  <!-- 空显示 -->
+  <empty class="bg-fff rounded" [show]="!list.length && !loading"></empty>
+
+  <div class="d-flex flex-between pt-6 flex-ac">
+    <div>
+      <mat-form-field [style.width.px]="68">
+        <mat-select
+          class="form-control"
+          style="background: #fff"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="paginator.total">
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</ng-container>

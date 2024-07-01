@@ -1,0 +1,122 @@
+<ng-container *ngIf="!orderSuccess; else iSuccess">
+  <div class="guide-container">
+    <span class="icon-guide"></span>
+    <!--内容-->
+    <div class="clounm">
+      <div class="contant-row">
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle">1</span>
+            <span class="thread"></span>
+          </div>
+          <div class="txt-group">
+            <p class="title">{{ 'init_coin' | translate }}</p>
+            <p class="txt w-142">{{ 'wait_block_trans' | translate }}</p>
+          </div>
+        </div>
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle">2</span>
+            <span class="thread"></span>
+          </div>
+          <div class="txt-group">
+            <p class="title">{{ 'get_coin' | translate }}</p>
+            <p class="txt w-76">{{ 'paste_re_add' | translate }}</p>
+          </div>
+        </div>
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle">3</span>
+            <span class="thread"></span>
+          </div>
+          <div class="txt-group">
+            <p class="title">{{ 'net_comfirm' | translate }}</p>
+            <p class="txt w-52">{{ 'wait_confirm' | translate }}</p>
+          </div>
+        </div>
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle">4</span>
+            <span class="thread hide"></span>
+          </div>
+          <div class="txt-group">
+            <p class="title">{{ 'wd_success' | translate }}</p>
+            <p class="txt">{{ 'wd_send_add' | translate }}</p>
+          </div>
+        </div>
+      </div>
+      <span class="link-text"
+        >{{ 'dc_info' | translate
+        }}<span class="orange-link onact96-not" [routerLink]="getLink('fiat')">{{ 'heres' | translate }}</span></span
+      >
+    </div>
+    <!--关闭-->
+    <span class="icon-close onact96-not" (click)="handleCloseGuide()"></span>
+  </div>
+</ng-container>
+<ng-template #iSuccess>
+  <div class="guide-container none-p-r" [class.non-bgc]="orderSuccess">
+    <span class="icon-guide"></span>
+    <!--内容-->
+    <div class="clounm">
+      <div class="contant-row">
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle">1</span>
+            <span class="thread"></span>
+          </div>
+          <div class="txt-group">
+            <p class="s-title p-110">{{ 'oder_info' | translate }}</p>
+          </div>
+        </div>
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle" [class.disable]="stepNum < 2">2</span>
+            <span class="thread" [class.disable]="stepNum < 2"></span>
+          </div>
+          <div class="txt-group">
+            <p class="s-title p-190">{{ 'fund_review' | translate }}</p>
+            <p class="txt offset-right max-width">{{ 'check_account' | translate }}</p>
+          </div>
+        </div>
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle" [class.disable]="stepNum < 3">3</span>
+            <span class="thread" [class.disable]="stepNum < 3"></span>
+          </div>
+          <div class="txt-group">
+            <p class="s-title p-112">{{ 'fund_approval' | translate }}</p>
+            <p class="txt offset-right">
+              {{
+                transferType == 'crypto'
+                  ? ('wait_block_trans' | translate)
+                  : transferType == 'currency'
+                  ? ('wait_bank_trans' | translate)
+                  : ('wait_trans_processing' | translate)
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="clounm-root">
+          <div class="step-row">
+            <span class="circle" [class.disable]="stepNum < 4">4</span>
+            <span class="thread h5" [class.disable]="stepNum < 4"></span>
+          </div>
+          <div class="txt-group">
+            <p class="s-title p-112">
+              {{
+                transferType == 'crypto'
+                  ? ('block_complete' | translate)
+                  : transferType == 'currency'
+                  ? ('bank_complete' | translate)
+                  : ('finish' | translate)
+              }}
+            </p>
+            <p class="txt offset-right">{{ 'fund_arr' | translate }}</p>
+          </div>
+          <span class="icon-guide-h5"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

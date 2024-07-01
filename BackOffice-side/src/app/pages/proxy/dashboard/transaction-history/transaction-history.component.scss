@@ -1,0 +1,11 @@
+:host {
+  flex: 0 0 60.75%;
+  margin-left: 26px;
+  width: 505px;
+  display: flex;
+  flex-flow: column nowrap;
+
+  .transaction-content {
+    flex: 1 1 0;
+  }
+}

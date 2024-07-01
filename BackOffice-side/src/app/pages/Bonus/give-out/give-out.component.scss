@@ -1,0 +1,17 @@
+.tableList {
+  // min-height: 533px;
+  .refresh {
+    cursor: pointer;
+    display: inline-block;
+  }
+  .blue {
+    color: #009ef7;
+    cursor: pointer;
+  }
+}
+
+.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+  cursor: not-allowed;
+}

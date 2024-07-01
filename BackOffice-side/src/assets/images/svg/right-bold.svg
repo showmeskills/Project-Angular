@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="currentColor">
+    <defs>
+        <clipPath id="ge9yauu5qa">
+            <path data-name="矩形 9550" style="stroke:currentColor;fill:currentColor" d="M0 0h29v29H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="蒙版组 36" style="clip-path:url(#ge9yauu5qa)">
+        <path data-name="路径 13243" d="M.137.322A.162.162 0 0 1 .162 0H12.3a.405.405 0 0 1 .4.405v12.134a.162.162 0 0 1-.322.026l-1.592-9.978a.81.81 0 0 0-.672-.672z" transform="rotate(45 -.878 16.723)" style="stroke:currentColor;stroke-width:4px;fill:currentColor"/>
+    </g>
+</svg>

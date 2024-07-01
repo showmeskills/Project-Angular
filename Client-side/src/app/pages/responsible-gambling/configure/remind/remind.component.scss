@@ -1,0 +1,45 @@
+@use 'src/assets/styles/compatibility-fixe.scss' as polyfills;
+
+.content-box {
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .m-top-20 {
+    margin-top: 20px;
+  }
+
+  .select-time {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    @include polyfills.flex-gap(24px, 'row wrap');
+    margin-top: 20px;
+
+    .customize-time {
+      font-size: 14px;
+      color: var(--btn-bg-color);
+    }
+  }
+
+  .password {
+    margin-top: 20px;
+    max-width: 388px;
+
+    @media (max-width: 767px) {
+      max-width: 100%;
+    }
+  }
+
+  .submit {
+    display: flex;
+    @include polyfills.flex-gap(20px, 'row nowrap');
+    margin-top: 20px;
+
+    @media (max-width: 767px) {
+      justify-content: center;
+    }
+  }
+}

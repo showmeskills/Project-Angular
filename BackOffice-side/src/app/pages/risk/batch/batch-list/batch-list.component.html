@@ -1,0 +1,170 @@
+<div class="card py-8 px-12 d-flex flex-row flex-wrap">
+  <!-- 类型 -->
+  <form-row [label]="'common.type' | lang" class="mr-16">
+    <ng-template>
+      <mat-form-field>
+        <mat-select class="form-control" [(ngModel)]="data.type" (selectionChange)="loadData(true)">
+          <mat-option value>{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of typeList" [value]="item.code">{{
+            lang.isLocal ? item.description : item.code
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <!-- 批量ID -->
+  <form-row [label]="'risk.batchList.batchID' | lang" class="mr-16">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.batchID"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 申请人 -->
+  <form-row [label]="'risk.batchList.applicant' | lang" class="mr-16">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.applicant"
+        (keyup)="$event.key === 'Enter' && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 日期 -->
+  <form-row [label]="'common.date' | lang" class="mr-16">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.date"
+        (dateTimeChange)="loadData(true)"
+      />
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" (click)="reset()">{{ 'common.reset' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="loadData()">{{ 'common.confirm' | lang }}</button>
+  </div>
+</div>
+
+<div class="card mt-8 p-8">
+  <div class="d-flex flex-ac" style="justify-content: flex-end">
+    <!-- 导出全部 -->
+    <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+      <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+    </button>
+    <!-- 导出 -->
+    <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+      <span class="vam">{{ 'game.provider.export' | lang }}</span>
+    </button>
+  </div>
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <!-- 批量ID -->
+        <th>
+          <span class="cell">{{ 'risk.batchList.batchID' | lang }}</span>
+        </th>
+        <!-- 类型 -->
+        <th>
+          <span class="cell">{{ 'common.type' | lang }}</span>
+        </th>
+        <!-- 提交日期 -->
+        <th>
+          <span class="cell">{{ 'risk.batchList.applicationDate' | lang }}</span>
+        </th>
+        <!-- 完成时间 -->
+        <th>
+          <span class="cell">{{ 'finance.deposit.completeTime' | lang }}</span>
+        </th>
+        <!-- 申请人 -->
+        <th>
+          <span class="cell">{{ 'risk.batchList.applicant' | lang }}</span>
+        </th>
+        <!-- 状态 -->
+        <th>
+          <span class="cell">{{ 'common.status' | lang }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody [appLoading]="loading">
+      <tr *ngFor="let item of list">
+        <!-- 批量ID -->
+        <td>
+          <span class="cell">{{ item.batchId || '-' }}</span>
+        </td>
+        <!-- 类型 -->
+        <td>
+          <span class="cell">{{ getType($any(item.batchType)) }}</span>
+        </td>
+        <!-- 提交日期 -->
+        <td>
+          <span class="cell">{{ item.applicationDate | timeFormat }}</span>
+        </td>
+        <!-- 完成时间 -->
+        <td>
+          <span class="cell">{{ item.completionDate | timeFormat }}</span>
+        </td>
+        <!-- 申请人 -->
+        <td>
+          <span class="cell">{{ item.applicant }}</span>
+        </td>
+        <!-- 状态 -->
+        <td>
+          <span class="cell">
+            <span
+              class="cursor-pointer"
+              batch-status
+              [list]="statusList"
+              [status]="item.status"
+              (click)="onDetail(item)"
+            ></span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 空显示 -->
+  <empty [show]="!list.length && !loading"></empty>
+
+  <!-- 页码 -->
+  <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+    <div>
+      <mat-form-field [style.width.px]="76">
+        <mat-select
+          class="form-control"
+          [(ngModel)]="paginator.pageSize"
+          [style.height.px]="34"
+          [style.font-size.px]="14"
+          (selectionChange)="loadData(true)"
+        >
+          <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <app-paginator
+        class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+        [paginator]="paginator"
+        (paginate)="loadData()"
+      ></app-paginator>
+    </div>
+  </div>
+</div>

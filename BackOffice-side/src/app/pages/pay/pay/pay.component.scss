@@ -1,0 +1,55 @@
+:host {
+  table {
+    .btn-default {
+      color: #7e8299;
+    }
+  }
+}
+
+.title {
+  color: #181c32;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.label-title {
+  white-space: nowrap;
+  font-size: 16px;
+  color: #969bad;
+}
+
+.field-input {
+  margin-left: 15px;
+}
+
+.list {
+  .edit {
+    padding: 7px 11px;
+    line-height: 20px;
+    font-size: 14px;
+    background-color: #f5f8fa;
+    cursor: pointer;
+    color: #7e8299;
+    transition: all 0.2s linear;
+    border-radius: 6px;
+
+    &:hover {
+      color: #7e8299;
+      background-color: #e4e6ef;
+    }
+  }
+}
+
+.label.label-lg {
+  height: 34px;
+
+  &.label-light-danger {
+    background: #fff5f8;
+    color: #f1416c;
+  }
+
+  &.label-light-warning {
+    background: #fff8dd;
+    color: #ffc700;
+  }
+}

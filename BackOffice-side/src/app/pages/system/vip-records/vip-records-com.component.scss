@@ -1,0 +1,35 @@
+@use 'sass/tools';
+
+@include tools.tabs('tabs') {
+  height: 60px;
+}
+
+:host{
+  ::ng-deep{
+    .triangle-up {
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-bottom: 4px solid #a1a5b7;
+    
+      &.active {
+        border-bottom: 4px solid #3699ff;
+      }
+    }
+    
+    .triangle-down {
+      margin-top: 2px;
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 4px solid #a1a5b7;
+    
+      &.active {
+        border-top: 4px solid #3699ff;
+      }
+    }
+    
+  }
+}

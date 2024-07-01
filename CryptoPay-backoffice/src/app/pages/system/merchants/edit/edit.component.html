@@ -1,0 +1,373 @@
+<div class="bg-fff rounded-2 p-12" [formGroup]="formGroup">
+  <div class="fz-18 mb-7 fw-bolder" *ngIf="isAdd">{{ 'system.merchants.addMerchant' | lang }}</div>
+  <div class="fz-18 mb-7 fw-bolder" *ngIf="isEdit">{{ 'system.merchants.editMerchant' | lang }}</div>
+
+  <!-- 商户名称 -->
+  <form-row
+    [label]="'system.merchants.merchantName' | lang"
+    name="merchantsName"
+    label-width="250"
+    required
+    [invalidFeedback]="{ required: ('system.merchants.fullMerchantName' | lang) }"
+  >
+    <ng-template let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'system.merchants.maxPlaceholder' | lang"
+        autocomplete="off"
+        [class.is-invalid]="invalid"
+        formControlName="merchantsName"
+        maxlength="20"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 邮箱 -->
+  <form-row
+    [label]="'system.merchants.contactEmail' | lang"
+    name="email"
+    label-width="250"
+    [invalidFeedback]="{
+      email: 'system.merchants.emailTips' | lang,
+      required: 'system.merchants.emailPlaceholder' | lang
+    }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="email"
+        class="form-control"
+        [placeholder]="'system.merchants.emailPlaceholder' | lang"
+        autocomplete="off"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+        maxlength="50"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 平台服务费比例 -->
+  <!--  <form-row [label]="'system.merchants.platformFees' | lang" [label-width]="250">-->
+  <!--    <form-wrap>-->
+  <!--      <input formControlName="serviceFee" input-percentage class="w-100" type="text" />-->
+  <!--      <span class="fz-16">%</span>-->
+  <!--    </form-wrap>-->
+  <!--  </form-row>-->
+
+  <!-- 商户秘钥 -->
+  <form-row
+    name="merchantsKey"
+    [label]="'system.merchants.merchantKey' | lang"
+    label-width="250"
+    [invalidFeedback]="{ required: ('system.merchants.merchentKeyPlaceholder' | lang) }"
+  >
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'system.merchants.merchentKeyPlaceholder' | lang"
+        autocomplete="off"
+        [formControl]="control"
+        [class.is-invalid]="invalid"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 商户回调地址 -->
+  <form-row name="callBackUrl" [label]="'system.merchants.merchantCallBackUrl' | lang" label-width="250">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'system.merchants.callBackPlaceholder' | lang"
+        autocomplete="off"
+        [formControl]="control"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 商户IP白名单 -->
+  <form-row name="whiteList" [label]="'system.merchants.IPWhiteList' | lang" label-width="250">
+    <ng-template let-control="formControl" let-invalid="invalid">
+      <input
+        type="text"
+        class="form-control"
+        [placeholder]="'system.merchants.IPWhiteListTip' | lang"
+        autocomplete="off"
+        [formControl]="control"
+      />
+    </ng-template>
+  </form-row>
+
+  <!-- 是否启用关联子渠道币种 -->
+  <form-row [label]="'system.merchants.isEnableSubChannelCurrency' | lang" label-width="250">
+    <ng-template>
+      <div class="d-flex flex-wrap py-2 lh-32" [formGroup]="formGroup">
+        <label class="checkbox checkbox-lg flex-auto fz-16 mr-16" *ngFor="let item of currencyTypeList; index as i">
+          <input
+            type="checkbox"
+            [formControlName]="$any(['isFiatMoneyEnable', 'isVirtualMoneyEnable', 'isVirtualToFiatMoneyEnable'][i])"
+          />
+          <span class="mr-4"></span>{{ 'system.merchants.type' | lang : item.key }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- PSP路由（存款） -->
+  <form-row name="isDepositRuleEnable" [label]="'system.merchants.pspAssignDeposit' | lang" label-width="250">
+    <ng-template let-control="formControl">
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-10 fz-16" *ngFor="let item of pspAssign">
+          <input name="pspAssignDeposit" type="radio" [value]="item.value" [formControl]="control" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- PSP路由（提款） -->
+  <form-row name="isWithdrawRuleEnable" [label]="'system.merchants.pspAssignWithdrawal' | lang" label-width="250">
+    <ng-template let-control="formControl">
+      <div class="d-flex flex-wrap">
+        <label class="radio radio-lg radio-success mr-10 fz-16" *ngFor="let item of pspAssign">
+          <input name="pspAssignWithdrawal" type="radio" [value]="item.value" [formControl]="control" />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 负值提单 -->
+  <form-row name="negativeLading" [label]="'system.merchants.negativeLading' | lang" label-width="250">
+    <ng-template let-control="formControl">
+      <div class="d-flex flex-wrap">
+        <label
+          class="radio radio-lg radio-success mr-10 fz-16"
+          *ngFor="let item of negativeLading"
+          [class.radio-disabled]="isEdit"
+        >
+          <input
+            name="negativeLading"
+            type="radio"
+            [value]="item.value"
+            [formControl]="control"
+            [attr.disabled]="isEdit ? 'disabled' : undefined"
+          />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 服务配置费 -->
+  <form-row name="rateCategory" [label]="'system.merchants.serviceConfigFee' | lang" label-width="250">
+    <ng-template let-control="formControl">
+      <!-- 浮动、固定 -->
+      <div class="d-flex flex-wrap">
+        <label
+          class="radio radio-lg radio-success mr-10 fz-16"
+          *ngFor="let item of serviceConfigFee"
+          [class.radio-disabled]="isEdit"
+        >
+          <input
+            name="rateCategory"
+            type="radio"
+            [value]="item.value"
+            [formControl]="control"
+            [attr.disabled]="isEdit ? 'disabled' : undefined"
+          />
+          <span class="mr-4"></span>{{ item.lang | lang }}
+        </label>
+      </div>
+
+      <!-- 费率币种类别切换 -->
+      <mat-tab-nav-panel #tabPanelCurrency></mat-tab-nav-panel>
+      <div class="tabs-currency-type mt-4 px-0 flex-1" mat-tab-nav-bar [tabPanel]="tabPanelCurrency">
+        <div
+          class="tabs-currency-type-item"
+          mat-tab-link
+          *ngFor="let item of currencyTypeList"
+          [disableRipple]="true"
+          [active]="curPaymentTabCurrency === item.key"
+          [class.active]="curPaymentTabCurrency === item.key"
+          (click)="onFeeCurrencyType(item.key, navBar)"
+        >
+          <div class="tabs-currency-type-item-name">{{ 'system.merchants.type' | lang : item.key }}</div>
+        </div>
+      </div>
+
+      <!--  费率配置 -->
+      <div class="fee-config flex-1 mt-4">
+        <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+        <div class="tab-hd d-flex flex-1" mat-tab-nav-bar [tabPanel]="tabPanel" #navBar>
+          <div
+            mat-tab-link
+            class="tab-hd-item"
+            [active]="goMoneyConfigCurTab === i"
+            *ngFor="let nav of currencyType; let i = index"
+            (click)="onMoneyTab(i)"
+          >
+            {{ nav.currency }}
+          </div>
+        </div>
+
+        <div class="tab-bd">
+          <!-- 存款 -->
+          <ng-template #depositTpl let-item let-list="list">
+            <div class="d-flex mt-8">
+              <label class="mr-0 mb-0 label-title fee-title">{{ 'system.merchants.feeConfig' | lang }}：</label>
+              <div>
+                <!-- 大额 -->
+                <div class="d-flex mb-4">
+                  <!--                  <span class="mr-6">{{ 'system.merchants.feeConfigBig' | lang }}</span>-->
+                  <form-wrap style="width: 130px">
+                    <input
+                      input-percentage
+                      form-full
+                      [placeholder]="'system.merchants.feeConfigTip' | lang"
+                      class="px-0 rounded-0"
+                      type="text"
+                      [value]="item.largeRate"
+                      (input)="item.largeRate = $event.target['value']"
+                    />
+                    <span suffix>%</span>
+                  </form-wrap>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- 提款 -->
+          <ng-template #withdrawTpl let-item let-list="list">
+            <div class="d-flex mt-8">
+              <label class="mr-0 mb-0 label-title fee-title pt-2">{{ 'system.merchants.feeConfig' | lang }}：</label>
+              <div class="d-flex flex-wrap">
+                <!-- 大额/提款收费 -->
+                <div class="d-flex mr-12 py-2">
+                  <label form-wrap style="width: 130px">
+                    <input
+                      form-full
+                      input-percentage
+                      [placeholder]="'system.merchants.feeConfigTip' | lang"
+                      class="px-0 rounded-0"
+                      type="text"
+                      [value]="item.largeRate"
+                      (input)="item.largeRate = $event.target['value']"
+                    />
+                    <span suffix>%</span>
+                  </label>
+                </div>
+
+                <!-- 最低 -->
+                <form-row [label]="'system.merchants.feeMin' | lang" class="d-flex mr-12">
+                  <ng-template>
+                    <input
+                      input-float="8"
+                      [placeholder]="'system.merchants.feeConfigTip' | lang"
+                      class="form-control"
+                      type="text"
+                      style="width: 130px"
+                      [formControl]="item.feeControl.get('feeMin')"
+                      [class.is-invalid]="item.feeControl.invalid"
+                    />
+                  </ng-template>
+
+                  <div class="invalid-feedback lh-1" afterContent *ngIf="item.feeControl.errors?.['gtFeeMax']">
+                    {{ 'system.merchants.feeMinGtTip' | lang }}
+                  </div>
+                </form-row>
+
+                <!-- 最高 -->
+                <form-row [label]="'system.merchants.feeMax' | lang" class="d-flex mr-12">
+                  <ng-template>
+                    <input
+                      input-float="8"
+                      [placeholder]="'system.merchants.feeConfigTip' | lang"
+                      class="form-control"
+                      type="text"
+                      style="width: 130px"
+                      [formControl]="item.feeControl.get('feeMax')"
+                      [class.is-invalid]="item.feeControl.invalid"
+                    />
+                  </ng-template>
+
+                  <div class="invalid-feedback lh-1" afterContent *ngIf="item.feeControl.errors?.['gtFeeMax']">
+                    {{ 'system.merchants.feeMaxGtTip' | lang }}
+                  </div>
+                </form-row>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- 渲染 -->
+          <ng-container *ngFor="let item of currencyType; let i = index">
+            <ng-container *ngIf="goMoneyConfigCurTab === i">
+              <!-- 存款 -->
+              <div class="d-flex" *ngIf="curSupport?.deposit?.length">
+                <label class="mr-0 mb-0 label-title">{{ 'payment.channelConfig.depositMethod' | lang }}：</label>
+
+                <!-- 存款：支付方式 -->
+                <mat-tab-nav-panel #tabPanelDeposit></mat-tab-nav-panel>
+                <div class="tabs flex-1" mat-tab-nav-bar [tabPanel]="tabPanelDeposit">
+                  <div
+                    class="tabs-item"
+                    mat-tab-link
+                    *ngFor="let item of curSupport?.deposit; index as i"
+                    [disableRipple]="true"
+                    [active]="curPaymentTabDeposit === i"
+                    [class.active]="curPaymentTabDeposit === i"
+                    (click)="curPaymentTabDeposit = i"
+                  >
+                    <div class="tabs-item-name">{{ item.name }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngFor="let item of curSupport?.deposit; index as i" [hidden]="curPaymentTabDeposit !== i">
+                <ng-container
+                  *ngTemplateOutlet="depositTpl; context: { $implicit: item, list: curSupport?.deposit }"
+                ></ng-container>
+              </div>
+
+              <!-- 提款 -->
+              <div class="d-flex py-2 mt-12" *ngIf="curSupport?.withdrawal?.length">
+                <label class="mr-0 mb-0 label-title">{{ 'payment.channelConfig.withdrawMethod' | lang }}：</label>
+
+                <!-- 提款支付方式 -->
+                <mat-tab-nav-panel #tabPanelWithdrawl></mat-tab-nav-panel>
+                <div class="tabs flex-1" mat-tab-nav-bar [tabPanel]="tabPanelWithdrawl">
+                  <div
+                    class="tabs-item"
+                    mat-tab-link
+                    *ngFor="let item of curSupport?.withdrawal; index as i"
+                    [disableRipple]="true"
+                    [active]="curPaymentTabWithdraw === i"
+                    [class.active]="curPaymentTabWithdraw === i"
+                    (click)="curPaymentTabWithdraw = i"
+                  >
+                    <div class="tabs-item-name">{{ item.name }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngFor="let item of curSupport?.withdrawal; index as i" [hidden]="curPaymentTabWithdraw !== i">
+                <ng-container
+                  *ngTemplateOutlet="withdrawTpl; context: { $implicit: item, list: curSupport?.withdrawal }"
+                ></ng-container>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 底部按钮 -->
+  <div class="btn-wrap flex-center mt-10">
+    <button type="button" class="c-btn c-btn-default" (click)="back()">{{ 'common.back' | lang }}</button>
+    <button type="button" class="c-btn c-btn-primary" (click)="submit()">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="91.364" height="83.45" viewBox="0 0 91.364 83.45">
+    <defs>
+        <linearGradient id="ybu83xwgqa" x1="1" y1=".5" x2="0" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#33c984"/>
+            <stop offset="1" stop-color="#33c984" stop-opacity=".051"/>
+        </linearGradient>
+    </defs>
+    <g data-name="组 3487">
+        <g data-name="组 3438" transform="translate(-3936.672 -4058.55)">
+            <circle data-name="椭圆 263" cx="40" cy="40" r="40" transform="translate(3945 4062)" style="opacity:.999;fill:url(#ybu83xwgqa)"/>
+            <circle data-name="椭圆 264" cx="29" cy="29" r="29" transform="translate(3956 4073)" style="fill:#33c984"/>
+            <g data-name="组 3475">
+                <path data-name="矩形 2031" transform="rotate(45 -2937.323 6870.322)" style="fill:#fff" d="M0 0h6v30H0z"/>
+                <path data-name="矩形 2032" transform="rotate(135 1141.19 2880.563)" style="fill:#fff" d="M0 0h6v18H0z"/>
+            </g>
+        </g>
+        <path data-name="矩形 2033" transform="rotate(45 11.414 27.556)" style="fill:#33c984" d="M0 0h6v6H0z"/>
+        <path data-name="矩形 2034" transform="rotate(45 27.515 114.225)" style="fill:#33c984" d="M0 0h3v3H0z"/>
+        <path data-name="矩形 2036" transform="rotate(45 -47.621 23.725)" style="fill:#33c984" d="M0 0h4v4H0z"/>
+        <path data-name="矩形 2035" transform="rotate(45 -39.376 140.518)" style="fill:#33c984" d="M0 0h5v5H0z"/>
+    </g>
+</svg>

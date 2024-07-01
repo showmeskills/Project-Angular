@@ -1,0 +1,15 @@
+<div class="currency-select">
+  <div class="modal-header">
+    <div class="modal-title">选择父级主题</div>
+
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+    </div>
+  </div>
+
+  <select-group type="radio" [(select)]="select" [data]="list" value="categoryId" label="title"></select-group>
+
+  <div class="modal-footer">
+    <button class="c-btn c-btn-primary" (click)="onConfirm()">确认</button>
+  </div>
+</div>

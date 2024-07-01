@@ -1,0 +1,5 @@
+<div class="empty animate__animated animate__fadeIn">
+  <img *ngIf="icon" [src]="icon" />
+  <div class="text" [class.small]="smallText">{{ text }}</div>
+  <ng-content></ng-content>
+</div>

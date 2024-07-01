@@ -1,0 +1,43 @@
+<app-friend-header *ngIf="isH5" [goRouter]="true" [bgColor]="true" headerTitle="{{ 'agent_p' | translate }}">
+</app-friend-header>
+<div class="page-container">
+  <div class="main-container">
+    <div class="container shadow">
+      <div class="container" *ngIf="!isH5">
+        <div class="header">
+          <p class="title">{{ 'agent_p' | translate }}</p>
+        </div>
+      </div>
+      <div class="container min-height" [appLoading]="loading">
+        <div class="section" *ngIf="!loading">
+          <p class="title">{{ statusText || ('status_wait' | translate) }}</p>
+          <div class="bar">
+            <div class="red-bar" [style]="isH5 ? 'height:' + redBarHeight + 'px' : 'width:' + redBarWith + '%'"></div>
+            <div
+              class="circle"
+              *ngFor="let item of status; let idx = index"
+              [class.active]="item.active"
+              [class]="idx === 0 ? 'poistion-start' : idx === 1 ? 'position-mid' : 'position-end'"
+            >
+              {{ item.num }}
+              <i [class]="item.icon" [class.active-icon]="item.active"></i>
+              <p class="text">{{ item.text | translate }}</p>
+            </div>
+          </div>
+          <div class="tips">
+            <img src="assets/images/friend/bulb.svg" alt="" lazy="loading" />
+            {{ tips }}
+          </div>
+          <customize-button
+            class="back-btn"
+            [width]="isH5 ? '100%' : '30%'"
+            size="large"
+            type="primary"
+            (onClick)="jumpToPage(page)"
+            >{{ btnText || ('return' | translate) }}</customize-button
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

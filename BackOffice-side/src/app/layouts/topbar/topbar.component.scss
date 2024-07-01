@@ -1,0 +1,12 @@
+.topbar-item {
+  display: flex;
+  align-items: center !important;
+
+  button:hover {
+    color: #3699ff;
+  }
+
+  button:active {
+    background-color: transparent !important;
+  }
+}

@@ -1,0 +1,13 @@
+<svg data-name="组 8295" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <linearGradient id="825mp53zia" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fb6943"/>
+            <stop offset="1" stop-color="#f74c28"/>
+        </linearGradient>
+    </defs>
+    <path data-name="矩形 1960" style="fill:none" d="M0 0h22v22H0z"/>
+    <g data-name="下载 (7)">
+        <path data-name="路径 13731" d="M3.675 14.483 1 17.158h19.617l-2.675-2.675v-5.35a7.133 7.133 0 1 0-14.267 0z" style="fill:url(#825mp53zia)" transform="translate(.192 -.362)"/>
+        <path data-name="路径 13732" d="M11.567 22.567A3.567 3.567 0 0 0 15.133 19H8a3.567 3.567 0 0 0 3.567 3.567z" transform="translate(-.566 -2.204)" style="fill:#76808f"/>
+    </g>
+</svg>

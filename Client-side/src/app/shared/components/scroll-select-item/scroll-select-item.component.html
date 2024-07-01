@@ -1,0 +1,28 @@
+<div class="wrap" [class]="position">
+  <div
+    class="prev"
+    (click)="toPrev()"
+    [class.disable]="isBeginning"
+    [class.hide]="(isBeginning && isEnd) || !showPrevNext"
+  >
+    <div class="mat-mdc-tab-header-pagination-chevron"></div>
+  </div>
+  <div
+    mat-tab-nav-bar
+    #menuTabNav
+    [class.hide-prev-next]="!showPrevNext"
+    [style]="'--gap: ' + gap + 'px;'"
+    [tabPanel]="tabPanel"
+    appLifeObserve
+    (lifeInit)="menuTabNavCreate($event, menuTabNav)"
+  >
+    <div mat-tab-link *ngFor="let item of list; let i = index" (click)="clickItem(item, i)">
+      <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item, index: i }"></ng-container>
+    </div>
+  </div>
+  <div class="next" (click)="toNext()" [class.disable]="isEnd" [class.hide]="(isBeginning && isEnd) || !showPrevNext">
+    <div class="mat-mdc-tab-header-pagination-chevron"></div>
+  </div>
+</div>
+<!-- 没有这个开发模式会报错 -->
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>

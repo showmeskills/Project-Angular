@@ -1,0 +1,270 @@
+@use 'sass:math';
+
+.main-container {
+  flex-direction: column;
+  width: 100%;
+
+  .container {
+    div {
+      display: flex;
+    }
+
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    @media (max-width: 1024px) {
+      margin-left: 0;
+      align-self: center;
+    }
+
+    @media (max-width: 767px) {
+      width: 100%;
+      padding-top: 33px;
+      border-top-left-radius: 23px;
+      border-top-right-radius: 23px;
+    }
+
+    .form-clonum {
+      max-width: 370px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 417px;
+      margin: auto;
+      @media (max-width: 767px) {
+        max-width: none;
+      }
+
+      .header {
+        color: var(--text-color);
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.38;
+        margin-bottom: 25px;
+      }
+
+      //返回btn
+      .back-btn {
+        margin: 40px 0;
+      }
+
+      //Form表单
+      .form-group {
+        flex-direction: column;
+        margin-top: 25px;
+        margin-bottom: 25px;
+        width: 100%;
+
+        label {
+          font-size: 14px;
+          color: var(--text-color);
+          line-height: 14px;
+        }
+
+        .input-group {
+          border-radius: 4px;
+          // border: solid 1px var(--input-border-color);
+          margin-top: 3px;
+          height: 48px;
+          align-items: center;
+          width: 100%;
+          position: relative;
+          padding-right: 15px;
+
+          &:host-context(.dark) & {
+            background-color: var(--bg-color-10);
+            color: #fff;
+          }
+
+          &:hover,
+          &.focus {
+            border-color: var(--primary-color);
+          }
+
+          &.error {
+            border-color: var(--txt-err-color);
+          }
+
+          &.hidden {
+            display: none;
+          }
+
+          input {
+            outline: none;
+            border: none;
+            flex: 1;
+            padding: 15px;
+            font-size: 14px;
+            color: #333;
+            height: 100%;
+            width: 0;
+            border-radius: 4px;
+
+            &:host-context(.dark) & {
+              background-color: var(--bg-color-10);
+              color: #fff;
+            }
+
+            &:disabled {
+              background-color: transparent;
+            }
+          }
+
+          input::-ms-reveal {
+            display: none;
+          }
+
+          .offset-left {
+            left: -10px !important;
+          }
+
+          .offset-remove {
+            right: 0 !important;
+          }
+
+          //密码显示与隐藏的ICON
+          //清除ICON
+          .icon-clear {
+            font-size: 22px;
+            cursor: pointer;
+            position: relative;
+            right: 41px;
+            user-select: none;
+            &:hover::before {
+              color: var(--text-color-20);
+            }
+          }
+
+          .icon-pwd-show,
+          .icon-pwd-hidden {
+            font-size: 22px;
+            position: absolute;
+            left: 90%;
+            cursor: pointer;
+            top: 26%;
+            user-select: none;
+            &:hover::before {
+              color: var(--text-color-20);
+            }
+          }
+        }
+
+        // 规则验证浮动框
+        .valid-pop-container {
+          position: relative;
+
+          .valid-pop {
+            padding: 10px 15px;
+            border-radius: 4px;
+            background-color: #5e6673;
+            color: #fff;
+            font-size: 14px;
+            flex-direction: column;
+            position: absolute;
+            top: 8px;
+            right: 9px;
+            z-index: 2;
+
+            i {
+              margin-left: 10px;
+              font-size: 12px;
+            }
+
+            p {
+              display: flex;
+              align-items: center;
+            }
+
+            p:not(:last-child) {
+              margin-bottom: 14px;
+            }
+          }
+        }
+
+        //输入框错误信息
+        .error-msg {
+          color: var(--txt-err-color);
+          font-size: 14px;
+          line-height: 14px;
+          margin-top: 4px;
+          margin-bottom: 10px;
+        }
+
+        //
+        .voice-verification-tips {
+          font-size: 14px;
+
+          .link {
+            color: var(--primary-color);
+          }
+        }
+
+        .phone-container {
+          display: flex;
+
+          app-customize-input {
+            flex: 1;
+          }
+
+          .area-code {
+            width: 96px;
+            margin-top: 4px;
+            margin-right: 8px;
+            display: flex;
+          }
+
+          .country-image {
+            display: flex;
+          }
+
+          .input-group {
+            margin-top: 4px;
+          }
+        }
+      }
+
+      //下一步
+      .next-btn {
+        margin: 40px 0;
+      }
+    }
+
+    .verify-container {
+      flex-direction: column;
+      width: 100%;
+
+      //输入框错误信息
+      .error-msg {
+        color: var(--txt-err-color);
+        font-size: 14px;
+        line-height: 14px;
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+:host {
+  ::ng-deep {
+    :host-context(.dark) & {
+      .mat-stepper-horizontal,
+      .mat-stepper-vertical {
+        background-color: #0f212e;
+      }
+    }
+
+    mat-horizontal-stepper {
+      width: 100%;
+    }
+
+    .mat-horizontal-stepper-header-container {
+      margin: auto;
+    }
+
+    .mat-horizontal-stepper-content {
+      width: 100%;
+    }
+  }
+}

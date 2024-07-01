@@ -1,0 +1,49 @@
+:host {
+  display: block;
+
+  .table {
+    .rounded-circle {
+      width: 16px;
+      height: 16px;
+      margin-left: 4px;
+    }
+  }
+}
+
+.game-balance-titps {
+  position: relative;
+  cursor: pointer;
+  &:hover {
+    .svg-icon {
+      color: #181c32;
+    }
+    .tips-box {
+      display: block;
+    }
+  }
+  .tips-box {
+    display: none;
+    position: absolute;
+    left: -100px;
+    top: -102px;
+    width: 224px;
+    background-color: #fff;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.06);
+    border-radius: 6px;
+    padding: 16px;
+    font-size: 14px;
+    color: #181c32;
+    &::after {
+      content: '';
+      display: block;
+      width: 0px;
+      height: 0px;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid #fff;
+      position: absolute;
+      bottom: -8px;
+      left: 105px;
+    }
+  }
+}

@@ -1,0 +1,3 @@
+class ResetPasswordState {
+  ResetPasswordState();
+}

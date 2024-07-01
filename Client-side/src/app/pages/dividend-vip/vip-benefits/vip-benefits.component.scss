@@ -1,0 +1,454 @@
+.page-container {
+  background-color: #020035 !important;
+  min-height: 800px;
+
+  //web css start
+  .web-container {
+    padding-top: 40px;
+    padding-bottom: 98px;
+
+    @media (max-width: 767px) {
+      padding-top: 10px;
+      padding-bottom: 80px;
+    }
+
+    .header-container {
+      min-height: 400px;
+
+      @media (max-width: 1024px) {
+        min-height: 260px;
+      }
+    }
+
+    .h5-goback-icon {
+      width: 27px;
+      height: 27px;
+      background-image: url(src/assets/images/vip/h5-vip-arrow.svg);
+      margin-left: 14px;
+    }
+
+    .page-header {
+      width: 100%;
+
+      @media (max-width: 767px) {
+        max-height: unset;
+        height: 260px;
+      }
+
+      .intro {
+        color: #ffffcd;
+        font-size: 52px;
+        position: absolute;
+        left: 0;
+        top: 65px;
+        right: 0;
+        display: flex;
+        justify-content: center;
+
+        @media (max-width: 767px) {
+          font-size: 24px;
+        }
+      }
+
+      .header-img {
+        width: 100%;
+        height: auto !important;
+        object-fit: cover;
+
+        @media (max-width: 767px) {
+          height: 260px !important;
+        }
+      }
+    }
+  }
+}
+
+.top-title {
+  font-size: 48px;
+  text-align: left;
+  color: #fff;
+
+  @media (max-width: 767px) {
+    font-size: 28px;
+  }
+}
+
+.vip-intro-container {
+  .intro-title {
+    font-size: 28px;
+    color: #fff;
+    margin-top: 24px;
+    font-weight: 600;
+
+    @media (max-width: 767px) {
+      font-size: 20px;
+      margin-top: 12px;
+    }
+  }
+
+  .vip-card-container {
+    margin-top: 46px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-items: center;
+    gap: 40px;
+
+    @media (min-width: 908px) and (max-width: 1350px) {
+      grid-template-columns: auto auto;
+    }
+
+    @media (max-width: 907px) {
+      grid-template-columns: auto;
+    }
+
+    @media (max-width: 399px) {
+      display: flex;
+      margin-top: 0;
+    }
+
+    .vip-card {
+      width: 370px;
+      height: 790px;
+      position: relative;
+      margin: 0 auto;
+      @media (max-width: 403px) {
+        width: 100%;
+      }
+      .card-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        object-fit: contain;
+
+        @media (max-width: 399px) {
+          height: 850px;
+        }
+      }
+    }
+
+    .card-info {
+      position: absolute;
+      top: 210px;
+      z-index: 1;
+      width: 100%;
+      padding: 0 16px;
+
+      @media (max-width: 400px) {
+        top: 275px;
+      }
+
+      @media (max-width: 320px) {
+        top: 290px;
+      }
+
+      .level {
+        text-align: right;
+        font-size: 32px;
+        font-weight: bold;
+        color: #f6cc9f;
+        padding-right: 32px;
+
+        @media (max-width: 436px) {
+          font-size: 28px;
+        }
+      }
+
+      .growth-value {
+        margin-top: 12px;
+        display: flex;
+        align-items: flex-start;
+        padding-left: 30px;
+
+        &:host-context(.en-us) &,
+        &:host-context(.th) &,
+        &:host-context(.vi) & {
+          padding-left: 15px;
+
+          @media (max-width: 767px) {
+            padding-left: 10px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          padding-left: 20px;
+        }
+      }
+
+      .m-left-100 {
+        margin-left: 100px;
+
+        &:host-context(.en-us) &,
+        &:host-context(.th) &,
+        &:host-context(.vi) & {
+          margin-left: 60px;
+
+          @media (max-width: 436px) {
+            margin-left: 15px;
+          }
+        }
+      }
+
+      .value-left,
+      .value-right {
+        display: flex;
+        flex-direction: column;
+
+        .title {
+          opacity: 0.5;
+          font-size: 14px;
+          color: #fff;
+
+          @media (max-width: 436px) {
+            font-size: 12px;
+          }
+        }
+
+        .text {
+          margin-top: 4px;
+          opacity: 0.7;
+          font-size: 16px;
+          color: var(--text-white-at-night);
+
+          @media (max-width: 436px) {
+            font-size: 14px;
+          }
+        }
+
+        .value {
+          margin-top: 4px;
+          font-size: 16px;
+          color: var(--text-white-at-night);
+
+          @media (max-width: 436px) {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .benefits-info {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto;
+        gap: 2px;
+
+        &:host-context(.en-us) &,
+        &:host-context(.th) &,
+        &:host-context(.vi) & {
+          margin-top: 10px;
+        }
+
+        .border-left {
+          border-top-left-radius: 10px;
+        }
+
+        .border-right {
+          border-top-right-radius: 10px;
+        }
+
+        .border-bottom-left {
+          border-bottom-left-radius: 10px;
+        }
+
+        .border-bottom-right {
+          border-bottom-right-radius: 10px;
+        }
+
+        .grid-three-layout {
+          display: grid;
+          gap: 2px;
+          grid-template-columns: repeat(3, 1fr);
+          align-items: center;
+        }
+
+        .grid-one-layout {
+          display: grid;
+          gap: 2px;
+          grid-template-columns: auto;
+          align-items: center;
+        }
+
+        .grid-two-layout {
+          display: grid;
+          gap: 2px;
+          grid-template-columns: repeat(2, 1fr);
+          align-items: center;
+        }
+
+        .bottom-bg-color {
+          background-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .benefit-text {
+          opacity: 0.6;
+          font-size: 12px;
+          color: var(--text-white-at-night);
+          padding: 8px;
+          background-color: rgba(255, 255, 255, 0.05);
+          text-align: center;
+
+          @media (max-width: 399px) {
+            padding: 6px;
+          }
+
+          @media (max-width: 364px) {
+            padding: 5px;
+          }
+
+          @media (max-width: 320px) {
+            padding: 4px;
+          }
+        }
+
+        .benefit-value-text {
+          font-size: 12px;
+          color: #f6cc9f;
+          padding: 8px;
+          background-color: rgba(255, 255, 255, 0.1);
+          text-align: center;
+
+          @media (max-width: 399px) {
+            padding: 6px;
+          }
+
+          @media (max-width: 364px) {
+            padding: 5px;
+          }
+
+          @media (max-width: 320px) {
+            padding: 4px;
+          }
+        }
+
+        .text-color-6 {
+          color: rgba(246, 204, 159, 0.6);
+        }
+      }
+    }
+  }
+}
+
+.text-container {
+  margin-top: 80px;
+
+  @media (max-width: 767px) {
+    margin-top: 30px;
+  }
+
+  .text-title {
+    margin: auto;
+    max-width: 458px;
+    padding: 16px 0;
+    text-align: center;
+    border-radius: 45px;
+    background-image: linear-gradient(to bottom, #fae0aa, #e1a0a0 89%, #fe6bb5);
+    font-size: 24px;
+    color: #2e2e2e;
+    cursor: pointer;
+    flex: 1;
+    user-select: none;
+    @media (max-width: 767px) {
+      max-width: 255px;
+      font-size: 16px;
+      padding: 12px 0;
+    }
+  }
+
+  .text-title-2 {
+    width: 100%;
+    text-align: left;
+    margin-top: 72px;
+    font-size: 32px;
+    color: #fff;
+
+    @media (max-width: 767px) {
+      margin-top: 60px;
+      font-size: 20px;
+    }
+  }
+}
+
+.context {
+  padding: 50px 32px 10px 32px;
+  border-radius: 16px;
+  background-color: #191e46;
+  margin-top: 40px;
+
+  @media (max-width: 767px) {
+    padding: 30px 20px 1px 20px;
+    margin-top: 20px;
+  }
+
+  > p {
+    font-size: 18px;
+    text-align: left;
+    color: #b1bad3;
+    line-height: 1.6;
+    margin-bottom: 35px;
+
+    @media (max-width: 767px) {
+      font-size: 14px;
+      text-align: left;
+    }
+  }
+}
+
+.web-show {
+  display: block;
+
+  @media (max-width: 574px) {
+    display: none;
+  }
+}
+
+.h5-show {
+  display: none;
+
+  @media (max-width: 574px) {
+    display: block;
+  }
+}
+
+.swiper-container {
+  @media (max-width: 574px) {
+    width: 100%;
+
+    ::ng-deep {
+      .swiper-pagination-bullet {
+        width: 10px;
+        height: 10px;
+        background: #2f4553;
+        opacity: 1;
+        margin: 0 var(--swiper-pagination-bullet-horizontal-gap, 10px);
+      }
+
+      .swiper-pagination-bullet-active {
+        background: var(--primary-color-70);
+      }
+    }
+
+    .vip-card {
+      margin: auto;
+      height: 850px !important;
+    }
+  }
+
+  @media (max-width: 399px) {
+    .vip-card {
+      width: 100% !important;
+    }
+  }
+
+  @media (max-width: 364px) {
+    .vip-card {
+      height: 830px !important;
+    }
+  }
+
+  @media (max-width: 364px) {
+    .vip-card {
+      height: 800px !important;
+    }
+  }
+}

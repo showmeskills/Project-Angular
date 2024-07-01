@@ -1,0 +1,83 @@
+<label
+  class="label-wrap fz-16"
+  [style]="labelWrapStyle"
+  *ngIf="showLabel"
+  [class.label-disabled]="labelAutoDisable && control!?.disabled"
+>
+  <!-- 标签名 -->
+  <span *ngIf="!labelTemplate" class="label-text" [style]="labelStyle" [innerHTML]="labelHTML"></span>
+  <span *ngIf="labelTemplate" class="label-text" [style]="labelStyle">
+    <ng-container [ngTemplateOutlet]="labelTemplate"></ng-container>
+  </span>
+
+  <!-- 必选红星展示 -->
+  <ng-container *ngIf="labelTemplate || labelHTML">
+    <span *ngIf="required !== undefined && required !== false" class="text-danger text-required">*</span
+    ><span *ngIf="flag">：</span>
+  </ng-container>
+</label>
+
+<ng-content *ngIf="!labelHTML" select="[label]"></ng-content>
+
+<div class="flex-1 min-w-0">
+  <!-- 内容层 -->
+  <div class="form-content" [style]="contentStyle">
+    <div
+      class="form-field d-flex cursor-pointer flex-ac"
+      *ngIf="showMultiContent"
+      [class.is-invalid]="invalid"
+      (click)="onMultiContentClick()"
+    >
+      <span class="flex-fill">{{ multiContent }}</span>
+      <svg-icon class="form-icon-clear" [src]="'./assets/images/svg/triangle.svg'"></svg-icon>
+    </div>
+
+    <!-- template模板内容可传数据 -->
+    <ng-container
+      *ngIf="templateRef"
+      [ngTemplateOutlet]="templateRef"
+      [ngTemplateOutletContext]="{
+        $implicit: data,
+        invalid,
+        valid,
+        formControl: control,
+        formGroup: group,
+        disabled: control!?.disabled,
+        enabled: control!?.enabled,
+      }"
+    ></ng-container>
+
+    <!-- 默认投影内容 -->
+    <ng-content></ng-content>
+  </div>
+
+  <!-- 无效提示 -->
+  <div class="is-invalid"></div>
+
+  <!-- 无效提示自定义模板 -->
+  <ng-container [ngTemplateOutlet]="invalidFeedbackCustom || null"></ng-container>
+
+  <!-- 无效提示遍历 -->
+  <ng-container *ngFor="let feed of showInvalidFeedback">
+    <div class="invalid-feedback" *ngIf="invalidFeedbackTpl">
+      <ng-container
+        [ngTemplateOutlet]="invalidFeedbackTpl"
+        [ngTemplateOutletContext]="{
+          $implicit: feed,
+          invalid: showInvalid(feed.validation),
+          formControl: control
+        }"
+      ></ng-container>
+    </div>
+
+    <ng-container *ngIf="!invalidFeedbackTpl">
+      <div class="invalid-feedback" *ngIf="showInvalid(feed.validation)">
+        <!-- 提示语支持模板 -->
+        <ng-container *ngIf="isTemplate(feed.content)" [ngTemplateOutlet]="feed.content"></ng-container>
+        <ng-container *ngIf="!isTemplate(feed.content)">{{ feed.content }}</ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-content select="[afterContent]"></ng-content>
+</div>

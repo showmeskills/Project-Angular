@@ -1,0 +1,201 @@
+:host {
+  .tab-wrapper {
+    width: 100%;
+    height: 60px;
+
+    //matTab组件样式覆盖
+    &::ng-deep {
+      .mat-mdc-tab-link,
+      .mat-mdc-tab-links {
+        height: 100%;
+      }
+
+      .mat-mdc-tab-link {
+        opacity: 1;
+        height: auto;
+        padding: 0;
+
+        .mdc-tab__text-label {
+          position: relative;
+          flex-direction: column;
+          min-width: 58px;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          overflow: visible;
+          cursor: pointer;
+        }
+      }
+
+      .mat-ink-bar {
+        display: flex;
+        background-color: transparent;
+
+        &::before {
+          content: '';
+          width: 4px;
+          height: 2px;
+          border-radius: 5px;
+          position: relative;
+          flex: 1;
+          margin: 0 4px;
+          background-color: #009ef7;
+        }
+      }
+    }
+
+    .item {
+      position: relative;
+      flex-direction: column;
+      min-width: 58px;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      margin-right: 40px;
+      overflow: visible;
+      cursor: pointer;
+
+      //选中
+      &.active {
+        color: #009ef7 !important;
+        .tab-name {
+          color: #009ef7 !important;
+        }
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          color: #009ef7;
+          .tab-name {
+            color: #009ef7 !important;
+          }
+        }
+      }
+
+      &:first-child {
+        margin-left: 5px;
+        transition: none;
+      }
+
+      &:last-child {
+        margin-right: 5px;
+      }
+
+      .tab-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #969bad;
+      }
+    }
+  }
+  .flex-end {
+    justify-content: flex-end;
+  }
+  .color-blue {
+    background: rgba($color: #f1faff, $alpha: 0.4);
+  }
+  .btn-light-primary:hover::ng-deep path {
+    fill: #fff !important;
+  }
+}
+
+.head {
+  &-bottom {
+    .yellow {
+      background: rgba($color: #e8b579, $alpha: 0.4);
+    }
+    .red {
+      background: rgba($color: #b74a4d, $alpha: 0.4);
+    }
+    .green {
+      background: rgba($color: #008e4f, $alpha: 0.4);
+    }
+  }
+}
+
+.overview {
+  .item:nth-child(2n) {
+    background: rgba($color: #f1faff, $alpha: 0.4);
+  }
+
+  .progress {
+    background: #f6f6f6;
+    border-radius: 4px;
+    overflow: hidden;
+    .bar {
+      border-radius: 4px;
+
+      &.yellow {
+        background: #ffc700;
+      }
+      &.red {
+        background: #f1416c;
+      }
+      &.green {
+        background: #50cd89;
+      }
+      &.blue {
+        background: #009ef7;
+      }
+    }
+  }
+}
+
+.settlement {
+  .point {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #f1faff;
+  }
+  .middle {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    color: #009ef7;
+    background: #f1faff;
+  }
+
+  .item-left,
+  .item-right {
+    height: 60px;
+    background: #f1faff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .item-left {
+    &::after {
+      content: '';
+      display: block;
+      width: 0px;
+      height: 0px;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 12px solid #f1faff;
+      position: absolute;
+      top: 20px;
+      right: -12px;
+    }
+  }
+
+  .item-right {
+    &::after {
+      content: '';
+      display: block;
+      width: 0px;
+      height: 0px;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 12px solid #f1faff;
+      position: absolute;
+      top: 20px;
+      left: -12px;
+    }
+  }
+}

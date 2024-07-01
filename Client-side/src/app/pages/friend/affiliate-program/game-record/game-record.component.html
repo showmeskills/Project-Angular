@@ -1,0 +1,197 @@
+<div class="sub-theme-container">
+  <div class="sub-theme-header">
+    <div class="sub-theme-left">
+      <i class="header-icon"></i>
+      <span class="header-title">{{ 'game_record' | translate }}</span>
+    </div>
+  </div>
+  <!-- 表单 -->
+  <ng-container *ngTemplateOutlet="formField"></ng-container>
+
+  <app-table-component
+    [tableHeader]="tableHead"
+    [tableBodyTmp]="tableBodyTmp"
+    [h5DataTemp]="h5DataTemp"
+    [loading]="loading"
+    (onLoadData)="loadData($event)"
+    [dataLen]="gameTransList.length"
+    [page]="paginator.page"
+    [total]="paginator.total"
+    [pageSize]="paginator.pageSize"
+    [isShowInfo]="false"
+    [infoTips]="'sent_i' | translate"
+  >
+  </app-table-component>
+</div>
+
+<ng-template #formField>
+  <div class="field">
+    <div class="form-field">
+      <div class="member-id">
+        <p class="label-text">{{ 'degrade_uid' | translate }}：</p>
+        <div class="select-field">
+          <app-customize-input [placeholder]="'member_id' | translate" size="medium" [(value)]="data.uid" width="100%">
+          </app-customize-input>
+        </div>
+      </div>
+      <div class="game-place">
+        <p class="label-text">{{ 'venue' | translate }}：</p>
+        <div class="select-field">
+          <app-customize-select
+            [disabled]="providerLoading"
+            [options]="gameProvider"
+            size="medium"
+            width="100%"
+            [(value)]="data.providerCode"
+            [valueKey]="'providerCode'"
+            [textKey]="'providerName'"
+          >
+          </app-customize-select>
+        </div>
+      </div>
+      <div class="select-status">
+        <p class="label-text">{{ 'status' | translate }}：</p>
+        <div class="select-field">
+          <app-customize-select
+            [options]="statusOptions"
+            size="medium"
+            width="100%"
+            [(value)]="data.status"
+            [valueKey]="'value'"
+            [textKey]="'key'"
+          >
+          </app-customize-select>
+        </div>
+      </div>
+      <div class="bet-date">
+        <p class="label-text">{{ 'bet_date' | translate }}：</p>
+        <div class="calendar-group">
+          <app-datepicker
+            [readonly]="true"
+            [(dateValue)]="data.betBeginTime"
+            placeholder="YYYY-MM-DD"
+            (dateValueChange)="onClearDate()"
+          >
+          </app-datepicker>
+          <span class="calendar-text">{{ isH5 ? ('f_to' | translate) : '-' }}</span>
+          <app-datepicker
+            [readonly]="true"
+            [(dateValue)]="data.betEndTime"
+            [minDate]="data.betBeginTime"
+            [maxDate]="betMaxDate"
+            [disabled]="!data.betBeginTime"
+            (dateValueChange)="onClearDate()"
+            placeholder="{{ !data.betBeginTime ? ('sel_start_time00' | translate) : 'YYYY-MM-DD' }}"
+          >
+          </app-datepicker>
+        </div>
+      </div>
+    </div>
+    <div class="button-field">
+      <customize-button
+        [disabled]="loading"
+        size="medium"
+        [width]="isH5 ? '100%' : ''"
+        [minWidth]="isH5 ? '' : '180px'"
+        (onClick)="onReset()"
+      >
+        {{ 'reset' | translate }}
+      </customize-button>
+      <customize-button
+        size="medium"
+        type="primary"
+        [disabled]="loading"
+        [width]="isH5 ? '100%' : ''"
+        [minWidth]="isH5 ? '' : '180px'"
+        (onClick)="loadData()"
+      >
+        {{ isH5 ? ('confirm_button' | translate) : ('filter' | translate) }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- 表格模版 -->
+<ng-template #tableBodyTmp>
+  <tr *ngFor="let item of gameTransList">
+    <td>{{ item?.uid || '' }}</td>
+    <td>{{ item?.providerName || '' }}</td>
+    <td>{{ item?.gameName || '' }}</td>
+    <td>
+      {{ item?.betAmountUsdt || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>
+      {{ item?.activeFlowUsdt || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td [class.font-green]="item?.wagerStatus === 1" [class.font-red]="item?.wagerStatus === 0">
+      {{ (item?.wagerStatus === 1 ? 'settlemented' : 'unsettlement') | translate }}
+    </td>
+    <td [class.positive-income]="item.payoutUsdtAmount > 0" [class.negative-income]="item.payoutUsdtAmount < 0">
+      {{ item.payoutUsdtAmount > 0 ? '+' : '' }}{{ item?.payoutUsdtAmount || 0 | currencyValue : 'USDT' }}
+      <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+    </td>
+    <td>{{ item?.betTime ? (item.betTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}</td>
+  </tr>
+</ng-template>
+<!-- h5数据 -->
+<ng-template #h5DataTemp>
+  <div class="h5-agent-table-data" *ngFor="let item of gameTransList">
+    <div class="group">
+      <p class="group-text">{{ 'degrade_uid' | translate }}</p>
+      <p class="group-text">
+        {{ item?.uid || '' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'venue' | translate }}</p>
+      <p class="group-text">
+        {{ item?.providerName || '' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'gname' | translate }}</p>
+      <p class="group-text">
+        {{ item?.gameName || '' }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'betting_money' | translate }}</p>
+      <p class="group-text">
+        {{ item?.betAmountUsdt || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'active_betting' | translate }}</p>
+      <p class="group-text">
+        {{ item?.activeFlowUsdt || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'status' | translate }}</p>
+      <p class="group-text" [class.font-green]="item?.wagerStatus === 1" [class.font-red]="item?.wagerStatus === 0">
+        {{ (item?.wagerStatus === 1 ? 'settlemented' : 'unsettlement') | translate }}
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'pay_reward' | translate }}</p>
+      <p
+        class="group-text"
+        [class.positive-income]="item.payoutUsdtAmount > 0"
+        [class.negative-income]="item.payoutUsdtAmount < 0"
+      >
+        {{ item.payoutUsdtAmount > 0 ? '+' : '' }}{{ item?.payoutUsdtAmount || 0 | currencyValue : 'USDT' }}
+        <img class="img-size-icon m-left-5" [src]="'USDT' | currencyIcon" alt="" />
+      </p>
+    </div>
+    <div class="group">
+      <p class="group-text">{{ 'betting_time' | translate }}</p>
+      <p class="group-text">
+        {{ item?.betTime ? (item.betTime | mdate : 'YYYY-MM-DD HH:mm:ss') : '-' }}
+      </p>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,92 @@
+.tourists-tips {
+  pointer-events: none;
+  position: fixed;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.tourists-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.tourists-box {
+  align-self: flex-end;
+  pointer-events: all;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 5px 5px;
+  width: 100%;
+  display: flex;
+}
+
+.tourists-main {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 30px 20px 40px;
+  margin-top: auto;
+  width: 100%;
+}
+
+.tourists-step {
+  display: flex;
+  flex-direction: column;
+  color: #1e2329;
+
+  > * + * {
+    margin-top: 20px;
+  }
+
+  .tit {
+    font-size: 20px;
+  }
+
+  .text {
+    font-size: 14px;
+    line-height: 20px;
+    display: flex;
+
+    i {
+      color: var(--primary-color);
+      margin-right: 5px;
+      line-height: inherit;
+    }
+  }
+
+  &::ng-deep {
+    .customize-button {
+      font-size: 14px !important;
+    }
+  }
+}
+
+.away-theme {
+  &::ng-deep {
+    .input-container {
+      .input-box {
+        background-color: transparent !important;
+        color: inherit !important;
+        border-color: #eaecef !important;
+
+        &:focus-within {
+          border-color: var(--btn-bg-color) !important;
+        }
+
+        @media (any-hover: hover) {
+          &:hover {
+            border-color: var(--btn-bg-color) !important;
+          }
+        }
+
+        input {
+          color: inherit !important;
+        }
+      }
+
+      .right-content {
+        color: mix(#707a8a, #fff, 60%) !important;
+      }
+    }
+  }
+}

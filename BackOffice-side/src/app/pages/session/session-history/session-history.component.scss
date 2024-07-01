@@ -1,0 +1,41 @@
+.table {
+    .start,
+    .end,
+    .duration {
+        position: relative;
+        &::after{
+            content:'';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            position: absolute;
+            left: -10px;
+            top: 51%;
+            transform: translateY(-50%);
+        }
+    }
+    .start{
+        &::after{
+            background-color: #50CD89;
+        }
+    }
+    .end{
+        &::after{
+            background-color: #D9D9D9;
+        }
+    }
+    .duration{
+        &::after{
+            background-color: #009EF7;
+        }
+    }
+}
+
+.text-primary{
+    cursor: pointer;
+}
+
+.green-color{
+    color: #50CD89;
+    cursor: pointer;
+}

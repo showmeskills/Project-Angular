@@ -1,0 +1,27 @@
+<ng-container *ngIf="renderActivityCodes()">
+  <div class="fz-24 mb-5 fw-bolder">{{ 'risk.level.riskConfigTitle' | lang }}</div>
+  <ng-container *ngFor="let item of renderActivityCodes() | keyvalue">
+    <form-row [label]="item.key + ('risk.level.riskLevel' | lang)">
+      <ng-template>
+        <div class="d-flex flex-wrap pt-3 lh-20" *ngIf="item.value.length">
+          <label class="checkbox checkbox-lg mr-8 my-1" [style.width]="'180px'" *ngFor="let value of item.value">
+            <input
+              type="checkbox"
+              [(ngModel)]="value.isBlocked"
+              (change)="onChange(item.key, value.activityCode, value.isBlocked)"
+              [attrDisabled]="item.key === 'R1'"
+            />
+            <span class="mr-5"></span>
+            {{ value.displayName || '' }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+  </ng-container>
+</ng-container>
+
+<div class="btn-wrap pt-14 flex-center d-flex" *ngIf="renderActivityCodes()" [attrDisabled]="renderDisabled()">
+  <button type="button" class="c-btn c-btn-primary" (click)="submit()">{{ 'common.submit' | lang }}</button>
+</div>
+
+<empty *ngIf="!renderActivityCodes()"></empty>

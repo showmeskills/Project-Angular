@@ -1,0 +1,206 @@
+<div class="card py-8 px-12 mb-12">
+  <div class="d-flex flex-ac flex-wrap">
+    <!-- 活动名称 -->
+    <form-row [label]="'member.activity.sencliCommon.eventName' | lang" class="mr-16" [contentWidth]="280">
+      <ng-template>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="data.title"
+          (keyup)="$event.keyCode === 13 && loadData(true)"
+        />
+      </ng-template>
+    </form-row>
+    <!-- 活动时间 -->
+    <form-row [label]="'member.activity.sencliCommon.activityTime' | lang" class="mr-16" [contentWidth]="264">
+      <ng-template>
+        <input
+          class="text-center form-control w-100"
+          type="text"
+          [placeholder]="'member.activity.sencliCommon.selectAcitivityTime' | lang"
+          selectMode="date-range"
+          formatLabel="yyyy-MM-dd"
+          rangeSeparator="-"
+          [owlDateTime]="tradePicker"
+          [owlDateTimeTrigger]="tradePicker"
+          [(ngModel)]="data.time"
+          (dateTimeChange)="loadData(true)"
+        />
+
+        <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+      </ng-template>
+    </form-row>
+
+    <div class="btn-wrap py-2">
+      <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+        {{ 'common.reset' | lang }}
+      </button>
+      <button
+        class="c-btn c-btn-primary"
+        [disabled]="appService.isContentLoadingSubject | async"
+        (click)="loadData(true)"
+      >
+        {{ 'common.confirm' | lang }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="d-flex flex-ac justify-content-between">
+    <!-- 活动列表 -->
+    <div class="fz-20">{{ 'member.activity.sencliCommon.eventsList' | lang }}</div>
+    <button type="button" class="btn btn-light-primary px-9 fz-14 py-2 ml-4" (click)="gotoEdit()">
+      <svg-icon [src]="'./assets/images/svg/add.svg'" class="svg-icon svg-icon-xl"></svg-icon>
+      <!-- 新增活动 -->
+      <span class="vam">{{ 'member.activity.sencliCommon.addEvent' | lang }}</span>
+    </button>
+  </div>
+
+  <div class="pt-5">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <!-- 活动名称 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencliCommon.eventName' | lang }}</span>
+          </th>
+          <!-- 活动时间 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencliCommon.activityTime' | lang }}</span>
+          </th>
+          <!-- 发放次数 -->
+          <th>
+            <span class="cell">{{ 'member.activity.prizesIssuedCount' | lang }}</span>
+          </th>
+          <!-- 发放人数 -->
+          <th>
+            <span class="cell">{{ 'member.activity.giveOutPeopleCount' | lang }}</span>
+          </th>
+          <!-- 活动状态 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencliCommon.activeStatus' | lang }}</span>
+          </th>
+          <!-- 活动操作 -->
+          <th>
+            <span class="cell">{{ 'member.activity.sencliCommon.activeAction' | lang }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list; let i = index">
+          <td>
+            <span class="cell">{{ item.tmpName || '-' }}</span>
+          </td>
+          <td>
+            <span class="cell"
+              >{{ item.tmpStartTime.slice(0, -3) || '-' }} ~ {{ item.tmpEndTime.slice(0, -3) || '-' }}</span
+            >
+          </td>
+          <td>
+            <span class="cell">NaN</span>
+          </td>
+          <td>
+            <span class="cell">NaN</span>
+          </td>
+          <td>
+            <span class="cell" [ngSwitch]="item.tmpState">
+              <!-- 绿色 - 待开始 -->
+              <span
+                *ngSwitchCase="0"
+                class="text-nowrap label label-xl label-inline px-8 label-light-success text-center"
+                >{{ 'member.activity.sencliCommon.toBeStarted' | lang }}</span
+              >
+              <!-- 红色 - 进行中 -->
+              <span
+                *ngSwitchCase="1"
+                class="text-nowrap label label-xl label-inline px-8 label-light-danger text-center"
+                >{{ 'member.activity.sencliCommon.processing' | lang }}</span
+              >
+              <!-- 黄色 - 已停止 -->
+              <span
+                *ngSwitchCase="2"
+                class="text-nowrap label label-xl label-inline px-8 label-light-yellow text-center"
+                >{{ 'member.activity.sencliCommon.stopped' | lang }}</span
+              >
+            </span>
+          </td>
+          <td>
+            <span class="cell">
+              <div
+                class="px-3 primary"
+                (click)="
+                  router.navigate(['/bonus/activity-manage/activity-list/edit'], {
+                    queryParams: { tenantId: this.tenantId, id: item.id }
+                  })
+                "
+              >
+                <!-- 查看 -->
+                {{ 'member.activity.sencliCommon.view' | lang }}
+              </div>
+              <div class="px-3 primary line" *ngIf="item.tmpState === 0" (click)="gotoEdit(item)">
+                <!-- 编辑 -->
+                {{ 'common.edit' | lang }}
+              </div>
+              <div
+                class="px-3 primary line"
+                *ngIf="item.tmpState === 0"
+                (click)="onOpenWarningPopup(warningTpl, 'start', item.id)"
+              >
+                <!-- 开启 -->
+                {{ 'common.open' | lang }}
+              </div>
+              <div
+                class="px-3 primary line"
+                *ngIf="item.tmpState === 1"
+                (click)="onOpenWarningPopup(warningTpl, 'end', item.id)"
+              >
+                <!-- 停止 -->
+                {{ 'member.activity.sencliCommon.stop' | lang }}
+              </div>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 空显示 -->
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #warningTpl let-msg let-c="close" let-d="dismiss">
+  <div class="modal-content">
+    <modal-title [title]="'common.prompt' | lang" (close)="d()"></modal-title>
+    <div class="modal-body text-center">
+      <svg-icon [src]="'./assets/images/svg/warning.svg'" class="svg-icon svg-icon-7x mt-8"></svg-icon>
+      <p class="fz-16 mt-8">{{ msg | lang }}</p>
+    </div>
+    <modal-footer (confirm)="c(true)" (dismiss)="d()"></modal-footer>
+  </div>
+</ng-template>

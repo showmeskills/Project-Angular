@@ -1,0 +1,133 @@
+<div class="primary-container" [class.disable]="submitLoading">
+  <!--标题栏-->
+  <div class="header-container">
+    <!--icon 关闭-->
+    <div class="dailog-header">{{ 'basic_ver' | translate }}</div>
+    <div
+      class="onact96-not"
+      [class.disable]="initLoading || submitLoading"
+      (click)="close()"
+      class="icon-close-simple"
+    ></div>
+  </div>
+  <div class="dailog-container">
+    <!--labe-->
+    <div class="dailog-labe">
+      <span class="offset-right">{{ 'id_info' | translate }}</span>
+      <!--绑定手机状态-->
+      <div class="offset-left">
+        <span
+          [class.gray-close]="!cnPrimaryKycForm.phone.boundPhone"
+          [class.green-correct]="cnPrimaryKycForm.phone.boundPhone"
+        ></span>
+        {{ cnPrimaryKycForm.phone.boundPhone ? ('bounded_phone' | translate) : ('un_phone' | translate) }}
+      </div>
+    </div>
+    <!--表单验证-->
+    <div class="space-around">
+      <form>
+        <ul>
+          <!--选择国家-->
+          <!-- <li class="form-colunm">
+            <label class="form-header">{{ 'nationality' | translate }}</label>
+            <app-country-selecter
+              [isFromDialog]="true"
+              [isShowSearch]="true"
+              [disabled]="boundPhone"
+              [countryISO]="boundPhone ? countryCode : ''"
+            >
+            </app-country-selecter>
+          </li> -->
+          <li class="form-colunm">
+            <app-customize-input
+              size="large"
+              [(value)]="cnPrimaryKycForm.fullName.value"
+              #iUName
+              [label]="'name' | translate"
+              (onChange)="onUserNameInput()"
+              [required]="true"
+              [error]="
+                !cnPrimaryKycForm.fullName.value && iUName.foc
+                  ? ('required_msg' | translate)
+                  : cnPrimaryKycForm.fullName.errorText
+              "
+              notice="{{ 'fullname_notice' | translate }}"
+              [loading]="initLoading"
+              [disabled]="initLoading"
+            >
+            </app-customize-input>
+          </li>
+          <!-- <li class="form-colunm">
+            <app-customize-input
+              size="large"
+              [(value)]="email"
+              [label]="'email' | translate"
+              (onChange)="onEmailInput()"
+              [error]="emailError"
+            >
+            </app-customize-input>
+          </li>
+          <li class="form-colunm">
+            <app-customize-input
+              size="large"
+              [(value)]="address"
+              [trim]="false"
+              [label]="'residence_ad' | translate"
+            ></app-customize-input>
+          </li>
+          <li class="form-colunm">
+            <div class="form-row">
+              <app-customize-input
+                size="large"
+                type="text"
+                [(value)]="zipCode"
+                [format]="kycService.zipCodeFormat"
+                [trim]="false"
+                [label]="'pt_c' | translate"
+              ></app-customize-input>
+              <app-customize-input
+                size="large"
+                [(value)]="city"
+                [trim]="false"
+                [label]="'city' | translate"
+              ></app-customize-input>
+            </div>
+          </li> -->
+          <li class="form-colunm" [class.disable]="initLoading">
+            <app-kyc-otp
+              [phoneInfor]="cnPrimaryKycForm.phone.value"
+              [boundPhone]="cnPrimaryKycForm.phone.boundPhone"
+              (inputValue)="getKycOtpChange($event)"
+            >
+            </app-kyc-otp>
+          </li>
+        </ul>
+      </form>
+      <!--submit button-->
+      <div class="bottom-colum">
+        <div class="footer-container">
+          <div class="footer-colunm">
+            <div class="btn-contanier">
+              <customize-button
+                width="100%"
+                type="primary"
+                size="large"
+                [disabled]="!canSubmit()"
+                [loading]="submitLoading"
+                (onClick)="handleSubmit()"
+                >{{ 'continue' | translate }}</customize-button
+              >
+            </div>
+          </div>
+        </div>
+        <!--页角提示-->
+        <div class="footer-notice-container">
+          <i class="safety-i"></i>
+          <div class="notice-text">
+            {{ 'secure_info' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

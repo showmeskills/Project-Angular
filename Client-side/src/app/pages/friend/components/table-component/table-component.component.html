@@ -1,0 +1,51 @@
+<div [class.render-data-container]="isMinHeight" [appLoading]="loading">
+  <ng-container *ngIf="dataLen > 0">
+    <ng-container *ngIf="!isH5">
+      <div class="table-list">
+        <table [class]="tableClassName">
+          <thead>
+            <tr>
+              <th class="text-gray-14" *ngFor="let item of tableHeader">
+                {{ item.headTitle }}
+                <i *ngIf="item.icon" class="m-left-5" [class]="item.icon"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngTemplateOutlet="tableBodyTmp"></ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isH5">
+      <ng-container *ngTemplateOutlet="h5DataTemp"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="!isH5 && isShowInfo">
+      <div class="content-web-export">
+        <p class="text mutual-opacity">*{{ infoTips ? infoTips : ('sent_f' | translate) }}</p>
+        <ng-container *ngIf="isExportBtn">
+          <div class="content-web-export-graph onact96" (click)="openToExport()">
+            <i class="export-icon"></i>
+            <span>{{ 'export00' | translate }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <app-paginator
+      [disabled]="loading"
+      [loading]="loading"
+      [(page)]="page"
+      [total]="total"
+      [pageSize]="pageSize"
+      (onPageChange)="nextData()"
+    >
+    </app-paginator>
+  </ng-container>
+  <app-empty
+    class="clearfix"
+    *ngIf="dataLen === 0 && !loading"
+    [icon]="'assets/images/friend/empty.png'"
+    [text]="'no_data' | translate"
+  >
+  </app-empty>
+</div>

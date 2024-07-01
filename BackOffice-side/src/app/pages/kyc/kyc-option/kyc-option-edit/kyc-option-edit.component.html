@@ -1,0 +1,207 @@
+<div class="fz-20 fw-bolder">{{ 'member.kyc.model.basicInformation' | lang }}</div>
+<div class="mt-12 border-wrap px-12 lh-22 fz-16">
+  <div class="d-flex py-4">
+    <div class="flex-1">{{ 'member.kyc.model.merchant' | lang }} {{ editData.tenantName }}</div>
+    <div class="border-left pl-4 ml-4 flex-1">
+      {{ 'member.kyc.model.chinaReq' | lang }} {{ 'member.kyc.model.personInfo' | lang }}
+    </div>
+  </div>
+  <div class="d-flex border-top py-4">
+    <!-- 认证内容 -->
+    <div class="flex-1" [ngSwitch]="editData.kycType">
+      {{ 'member.kyc.model.authenticationContent' | lang }}：
+      <ng-template [ngSwitchCase]="'KycPrimary'">{{ 'member.kyc.basis' | lang }}</ng-template>
+      <ng-template [ngSwitchCase]="'KycIntermediat'">{{ 'member.kyc.middle' | lang }}</ng-template>
+      <ng-template [ngSwitchCase]="'KycAdvanced'">{{ 'member.kyc.adv' | lang }}</ng-template>
+    </div>
+    <!-- 中国要求：国籍、身份账号、姓名 -->
+    <div class="border-left pl-4 ml-4 flex-1">
+      {{ 'member.kyc.model.chinaReq' | lang }} {{ 'member.kyc.model.personInfo' | lang }}
+    </div>
+  </div>
+</div>
+<!-- 标题配置 -->
+<div class="fz-20 fw-bolder mt-12">{{ 'member.kyc.model.titleConfiguration' | lang }}</div>
+<div class="tab mt-12" [formGroup]="formGroup">
+  <div class="tab-hd">
+    <div class="mr-4 d-flex">
+      <div
+        class="tab-hd-item"
+        [class.active]="curTab === i"
+        *ngFor="let nav of langTabList; let i = index"
+        (click)="curTab = i"
+      >
+        {{ nav.name }}
+      </div>
+    </div>
+
+    <div class="edit position-relative">
+      <button class="btn-cube sm" type="button" (click)="showEditTab = true">
+        <svg-icon [src]="'./assets/images/svg/admin-edit.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+      </button>
+
+      <select-group
+        [position]="true"
+        [select]="selectLang"
+        [(show)]="showEditTab"
+        [data]="langList"
+        label="name"
+        value="code"
+        (confirm)="onLanguage($event)"
+      ></select-group>
+    </div>
+  </div>
+
+  <div class="tab-bd" formArrayName="lang">
+    <div *ngFor="let lang of langArrayForm.controls; let i = index" [hidden]="curTab !== i" [formGroupName]="i">
+      <!-- 请输入标题 -->
+      <form-row
+        name="title"
+        [group]="lang"
+        [label]="'member.kyc.model.title' | lang"
+        label-width="210"
+        required
+        [invalidFeedback]="{ required: ('member.kyc.model.pleaseEnterTitle' | lang) }"
+      >
+        <!-- 请输入 -->
+        <ng-template let-invalid="invalid">
+          <input
+            [class.is-invalid]="invalid"
+            [placeholder]="'member.kyc.model.pleaseEnter' | lang"
+            class="form-control rounded-0"
+            type="text"
+            formControlName="title"
+          />
+        </ng-template>
+      </form-row>
+    </div>
+  </div>
+</div>
+<!-- 功能与限制配置（输入-1时等于无限制） -->
+<div class="fz-20 fw-bolder mt-12">{{ 'member.kyc.model.Frc' | lang }}</div>
+<div class="mt-12 fz-16" [formGroup]="formGroup">
+  <!-- 法币限额 -->
+  <div>{{ 'member.kyc.model.FiatCurrencylimit' | lang }}</div>
+  <div class="px-7 d-flex flex-wrap d-grid">
+    <!-- 充值 -->
+    <form-row
+      name="fiatDepositLimit"
+      class="mr-40"
+      [label]="'member.kyc.model.recharge' | lang"
+      required
+      [invalidFeedback]="{ required: ('member.kyc.model.pleaseEnter' | lang) }"
+    >
+      <ng-template let-invalid="invalid">
+        <div class="d-flex">
+          <form-wrap [invalid]="invalid" class="ml-6 rounded-0" [style.width.px]="232">
+            <span class="color-aaa">$</span>
+            <input
+              class="num-input"
+              formControlName="fiatDepositLimit"
+              [placeholder]="'member.kyc.model.pleaseEnter' | lang"
+              type="number"
+            />
+            <!-- 日 -->
+            <span class="color-aaa">/ {{ 'member.kyc.model.day' | lang }}</span>
+          </form-wrap>
+        </div>
+      </ng-template>
+
+      <ng-template #invalidFeedback let-data let-invalid="invalid">
+        <div *ngIf="invalid" style="margin-left: 165px">{{ data.content }}</div>
+      </ng-template>
+    </form-row>
+
+    <form-row
+      name="fiatWithdrawLimit"
+      [label]="'member.kyc.model.withdraw' | lang"
+      required
+      [invalidFeedback]="{ required: ('member.kyc.model.pleaseEnter' | lang) }"
+    >
+      <ng-template let-invalid="invalid">
+        <div class="d-flex">
+          <form-wrap [invalid]="invalid" class="ml-6 rounded-0" [style.width.px]="232">
+            <span class="color-aaa">$</span>
+            <input
+              class="num-input"
+              formControlName="fiatWithdrawLimit"
+              [placeholder]="'member.kyc.model.pleaseEnter' | lang"
+              type="number"
+            />
+            <span class="color-aaa">/ {{ 'member.kyc.model.day' | lang }}</span>
+          </form-wrap>
+        </div>
+      </ng-template>
+
+      <ng-template #invalidFeedback let-data let-invalid="invalid">
+        <div *ngIf="invalid" style="margin-left: 165px">{{ data.content }}</div>
+      </ng-template>
+    </form-row>
+  </div>
+</div>
+
+<div class="mt-10 fz-16" [formGroup]="formGroup">
+  <!-- 数字货币限额： -->
+  <div>{{ 'member.kyc.model.digitalCurrencyLimit' | lang }}</div>
+  <div class="px-7 d-flex flex-wrap d-grid">
+    <form-row
+      name="virtualDepositLimit"
+      class="mr-40"
+      [label]="'member.kyc.model.recharge' | lang"
+      required
+      [invalidFeedback]="{ required: ('member.kyc.model.pleaseEnter' | lang) }"
+    >
+      <ng-template let-invalid="invalid">
+        <div class="d-flex">
+          <form-wrap [invalid]="invalid" class="ml-6 rounded-0" [style.width.px]="232">
+            <span class="color-aaa">$</span>
+            <!-- 输入正整数 -->
+            <input
+              class="num-input"
+              formControlName="virtualDepositLimit"
+              [placeholder]="'member.kyc.model.positiveInteger' | lang"
+              type="number"
+            />
+            <span class="color-aaa">/ {{ 'member.kyc.model.day' | lang }}</span>
+          </form-wrap>
+        </div>
+      </ng-template>
+
+      <ng-template #invalidFeedback let-data let-invalid="invalid">
+        <div *ngIf="invalid" style="margin-left: 165px">{{ data.content }}</div>
+      </ng-template>
+    </form-row>
+
+    <form-row
+      name="virtualWithdrawLimit"
+      [label]="'member.kyc.model.withdraw' | lang"
+      required
+      [invalidFeedback]="{ required: ('member.kyc.model.pleaseEnter' | lang) }"
+    >
+      <ng-template let-invalid="invalid">
+        <div class="d-flex">
+          <form-wrap [invalid]="invalid" class="ml-6 rounded-0" [style.width.px]="232">
+            <span class="color-aaa">$</span>
+            <input
+              class="num-input"
+              formControlName="virtualWithdrawLimit"
+              [placeholder]="'member.kyc.model.positiveInteger' | lang"
+              type="number"
+            />
+            <span class="color-aaa">/ {{ 'member.kyc.model.day' | lang }}</span>
+          </form-wrap>
+        </div>
+      </ng-template>
+
+      <ng-template #invalidFeedback let-data let-invalid="invalid">
+        <div *ngIf="invalid" style="margin-left: 165px">{{ data.content }}</div>
+      </ng-template>
+    </form-row>
+  </div>
+</div>
+
+<div class="btn-wrap d-flex flex-center pt-10">
+  <button class="c-btn c-btn-default" (click)="back()">{{ 'common.cancel' | lang }}</button>
+  <!-- 提交 -->
+  <button class="c-btn c-btn-primary" (click)="onSubmit()">{{ 'common.submit' | lang }}</button>
+</div>

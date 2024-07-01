@@ -1,0 +1,148 @@
+<div class="main-container unity-padding-web unity-padding-h5-16">
+  <div class="container calculator-container">
+    <ng-container *ngIf="!isShowResult">
+      <p class="text-20">{{ 'r_a' | translate }}</p>
+      <div class="top-info">
+        <span class="text-16">{{ 'r_b' | translate }}</span>
+      </div>
+      <ng-container *ngFor="let item of datas; let i = index">
+        <div class="calcu-temp-container">
+          <div class="flex-layout">
+            <p class="cycle-number">{{ i + 1 }}</p>
+            <p class="text-20">{{ item.title }}</p>
+          </div>
+          <div class="calculate-area m-top-30">
+            <div class="input-area">
+              <div class="input-column" *ngFor="let value of item.values">
+                <app-customize-input
+                  [label]="value.label"
+                  type="number"
+                  size="medium"
+                  [max]="30"
+                  width="100%"
+                  [(value)]="value.value"
+                  (onChange)="onChange($event)"
+                >
+                </app-customize-input>
+              </div>
+            </div>
+            <div class="result-area m-top-h5-20">
+              <p class="text-16">{{ item.totalTitle }}</p>
+              <p class="text-50 m-top-10">
+                {{ total(item.isTotalIncome) | sliceSymbolStr }}
+                <img class="currency-icon" [src]="'USD' | currencyIcon" loading="lazy" alt="" />
+              </p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="footer m-top-20">
+        <div class="flex-layout">
+          <p class="cycle-number">3</p>
+          <p class="text-20">{{ 'r_o' | translate }}</p>
+        </div>
+        <div class="footer-input-area m-top-30">
+          <app-customize-input
+            [label]="'r_p' | translate"
+            type="number"
+            size="medium"
+            [max]="30"
+            width="100%"
+            [(value)]="gamingPay"
+            (onChange)="onChange($event)"
+          >
+          </app-customize-input>
+        </div>
+        <app-customize-text class="m-top-30 text-16" [text]="'r_q' | translate"></app-customize-text>
+        <div class="foot-button m-top-50">
+          <customize-button
+            [type]="canCalculate() ? 'primary' : 'default'"
+            size="medium"
+            [disabled]="!canCalculate()"
+            minWidth="70px"
+            (onClick)="onCalculate()"
+          >
+            {{ 'r_r' | translate }}
+          </customize-button>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isShowResult">
+      <ng-container *ngTemplateOutlet="resultTemplate"></ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #resultTemplate>
+  <div class="result-container">
+    <div class="header text-16 mutual-opacity onact96" (click)="isShowResult = !isShowResult">
+      <i class="icon-left-arrow"></i>
+      {{ 'back' | translate }}
+    </div>
+    <p class="text-20 m-top-20">{{ 'r_t' | translate }}</p>
+    <div class="list m-top-30">
+      <div class="icome-list">
+        <p class="text-20">{{ 'r_c' | translate }}</p>
+        <div class="list-item m-top-20">
+          <ng-container *ngFor="let item of incomeList">
+            <div class="item">
+              <p class="text-16">{{ item.label }}</p>
+              <p class="text-color-16">
+                {{ item.value * 1 }}
+                <img class="currency-icon" [src]="'USD' | currencyIcon" loading="lazy" alt="" />
+              </p>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="payment-list">
+        <p class="text-20">{{ 'r_h' | translate }}</p>
+        <div class="list-item m-top-20">
+          <ng-container *ngFor="let item of paymentList">
+            <div class="item">
+              <p class="text-16">{{ item.label }}</p>
+              <p class="text-color-16">
+                {{ item.value * 1 }}
+                <img class="currency-icon" [src]="'USD' | currencyIcon" loading="lazy" alt="" />
+              </p>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="process-bar m-top-50">
+      <div class="payment" [style.width]="paymentWidth + '%'">
+        <div class="tips">
+          <p class="line payment"></p>
+          <p class="text-16">{{ 'r_u' | translate }}</p>
+          <p class="text-color-20">{{ totalPayment }}</p>
+        </div>
+      </div>
+      <div class="game" [style.width]="gameWidth + '%'">
+        <div class="tips">
+          <p class="line game"></p>
+          <p class="text-16">{{ 'r_v' | translate }}</p>
+          <p class="text-color-20">{{ gamingPay }}</p>
+        </div>
+      </div>
+      <div class="balance" [style.width]="balanceWidth + '%'">
+        <div class="tips">
+          <p class="line balance"></p>
+          <p class="text-16">{{ 'r_w' | translate }}</p>
+          <p class="text-color-20">{{ totalBalance }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <span class="bottom-text">
+        <span class="text-16">{{ 'next_p' | translate }}</span>
+        <span class="mutual-opacity page">{{ 'respon_p' | translate }}</span>
+      </span>
+    </div>
+    <div class="recalculate m-top-50">
+      <customize-button type="primary" size="small" (onClick)="onRecalculcate()" minWidth="90px">
+        {{ 'r_x' | translate }}
+      </customize-button>
+    </div>
+  </div>
+</ng-template>

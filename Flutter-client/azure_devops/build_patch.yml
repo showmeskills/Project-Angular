@@ -1,0 +1,30 @@
+parameters:
+  - name: condition
+    type: string
+    default: succeeded()
+
+steps:
+  - script: |
+      export PATH="$HOME/.shorebird/bin:$PATH"
+      export SHOREBIRD_TOKEN=$(shorebirdToken)
+      export FLUTTER_STORAGE_BASE_URL=https://download.shorebird.dev
+      android_command_result=$(shorebird patch android --allow-native-diffs --allow-asset-diffs --dry-run)
+      echo "android_command_result start"
+      echo $android_command_result
+      echo "android_command_result end"
+      if [[ $android_command_result == *"native-changes"* ]]; then
+        echo "##vso[task.setvariable variable=fullRebuild]true"
+      else
+        ios_command_result=$(shorebird patch ios --no-codesign --allow-native-diffs --allow-asset-diffs --dry-run)
+        echo "ios_command_result start"
+        echo $ios_command_result
+        echo "ios_command_result end"
+        if [[ $ios_command_result == *"native-changes"* ]]; then
+          echo "##vso[task.setvariable variable=fullRebuild]true"
+        else
+          shorebird patch android --allow-native-diffs --allow-asset-diffs
+          shorebird patch ios --no-codesign --allow-native-diffs --allow-asset-diffs
+        fi
+      fi
+    displayName: "Shorebird Build Patch"
+    condition: ${{ parameters.condition }}

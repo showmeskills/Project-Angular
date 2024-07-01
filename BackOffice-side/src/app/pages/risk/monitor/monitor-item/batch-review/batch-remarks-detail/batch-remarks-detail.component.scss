@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+}
+
+.review-detail-wrap {
+  flex: 1;
+  min-height: 0;
+}

@@ -1,0 +1,202 @@
+:host {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.often {
+  margin-top: 8px;
+  flex: 0 0 33.333333%;
+  display: block;
+
+  &-label {
+    font-size: 12px;
+    line-height: 14px;
+    height: 28px;
+  }
+
+  &-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0;
+    padding-bottom: 12px;
+    padding-top: 10px;
+  }
+
+  &-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto;
+
+    &-wrap {
+      padding-top: 8px;
+      height: 56px;
+    }
+  }
+
+  &-section {
+    flex: 0 0 320px;
+    padding: 0 10px;
+  }
+}
+
+.up {
+  color: #f64e60;
+  display: flex;
+  align-items: center;
+
+  .triangle {
+    width: 0;
+    height: 0;
+    margin-top: 1px;
+    vertical-align: middle;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #f64e60;
+  }
+}
+
+.down {
+  color: #50cd89;
+  display: flex;
+  align-items: center;
+
+  .triangle {
+    width: 0;
+    height: 0;
+    margin-top: 1px;
+    vertical-align: middle;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #50cd89;
+  }
+}
+
+.live {
+  border-radius: 8px;
+  box-shadow: 0 8px 10px 0 rgba(228, 232, 241, 0.4);
+  background-color: #fff;
+  margin-bottom: 17px;
+  margin-top: 8px;
+  padding-bottom: 12px;
+  min-width: 220px;
+  flex: 1 1 calc(30% - 25px);
+
+  &-wrap {
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  &-more {
+    min-width: 430px;
+    flex: 1 1 calc(40% - 25px);
+
+    &-data {
+      height: 40px;
+      line-height: 40px;
+      margin-top: 2.5px;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.monitor {
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 8px 10px 0 rgba(228, 232, 241, 0.4);
+  background-color: #fff;
+  margin-bottom: 12px;
+  min-width: 160px;
+  max-width: 460px;
+  margin-right: 12px;
+  flex: 1;
+
+  &-wrap {
+    display: flex;
+    flex-flow: row wrap;
+  }
+}
+
+.transaction {
+  display: flex;
+  align-items: center;
+
+  &::ng-deep {
+    .mat-select-min-line {
+      color: #969bad;
+    }
+  }
+}
+
+.filter-day {
+  line-height: 22px;
+  transition: all 0.2 ease-in;
+  text-align: center;
+
+  &.active {
+    position: relative;
+    color: var(--primary);
+    font-size: 16px;
+
+    &:after {
+      position: absolute;
+      content: '';
+      bottom: -2px;
+      background: var(--primary);
+      height: 2px;
+      width: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+}
+
+.chart-wrap {
+  width: 100%;
+  flex: 1 1 100%;
+}
+
+.arrow {
+  border-top: 3px solid #969bad;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -2px;
+}
+
+.circle-chart {
+  width: 100%;
+  height: 100%;
+
+  &::ng-deep {
+    .apexcharts-tooltip {
+      background: transparent;
+    }
+  }
+}
+
+apx-chart {
+  &::ng-deep > div {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.table-panel {
+  th,
+  td {
+    line-height: 18px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+}
+
+.text-primary {
+  .arrow {
+    border-top: 3px solid #3699ff;
+  }
+}

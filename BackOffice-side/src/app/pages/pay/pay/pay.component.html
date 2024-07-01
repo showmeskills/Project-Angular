@@ -1,0 +1,156 @@
+<div class="card hd">
+  <div class="card-header px-12 py-8">
+    <div class="d-flex mt-8">
+      <div class="flex-row-fluid d-flex flex-ac flex-wrap">
+        <div class="d-flex pb-4 flex-ac mr-16">
+          <div class="label-title">{{ 'payment.paymentMethod.paymentMethod' | lang }}：</div>
+          <input
+            [style.width.px]="300"
+            [(ngModel)]="data.name"
+            class="form-control ml-6"
+            type="text"
+            placeholder=""
+            (keyup)="$event.keyCode === 13 && loadData()"
+          />
+        </div>
+
+        <div class="d-flex pb-4 flex-ac mr-16">
+          <div class="label-title">{{ 'payment.method.paymentDirection' | lang }}：</div>
+          <mat-form-field [style.margin-left.px]="15" [style.width.px]="110">
+            <mat-select class="form-control" [(ngModel)]="data.category" (selectionChange)="loadData()">
+              <mat-option *ngFor="let item of categoryList" [value]="item.key">{{ item.value | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="d-flex pb-4 flex-ac">
+          <div class="label-title">{{ 'common.status' | lang }}：</div>
+          <mat-form-field [style.margin-left.px]="15" [style.width.px]="110">
+            <mat-select class="form-control" [(ngModel)]="data.status" (selectionChange)="loadData()">
+              <mat-option *ngFor="let item of statusList" [value]="item.key">{{ item.value | lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="btn-wrap">
+        <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="reset()">
+          {{ 'common.reset' | lang }}
+        </button>
+        <button
+          class="c-btn c-btn-primary"
+          [disabled]="appService.isContentLoadingSubject | async"
+          (click)="loadData()"
+        >
+          {{ 'common.confirm' | lang }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-8 list">
+  <div class="card-body px-12 py-8">
+    <div class="d-flex flex-ac">
+      <div class="title">
+        <span>{{ 'payment.method.listPaymentMethods' | lang }}</span>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <!--begin::Datatable-->
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>{{ 'payment.paymentMethod.paymentMethod' | lang }}</th>
+            <th>LOGO</th>
+            <th>{{ 'payment.method.paymentMethod' | lang }}</th>
+            <th>{{ 'payment.method.feeRatio' | lang }}</th>
+            <th>{{ 'payment.method.singleLimit' | lang }}</th>
+            <th>{{ 'common.status' | lang }}</th>
+            <th>{{ 'payment.method.label' | lang }}</th>
+            <!--            <th>手续费</th>-->
+            <th>{{ 'payment.currency.operating' | lang }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of list">
+            <td>
+              <span class="cell">{{ item.name }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <img [src]="item.icon?.[0]" alt="" height="34" />
+              </span>
+            </td>
+            <td>
+              <span class="cell">{{ category(item) | lang }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ (item.fee * 1e4) / 100 }}%</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.minAmount | toFormatMoney }}-{{ item.maxAmount | toFormatMoney }}</span>
+            </td>
+            <td>
+              <span class="cell">
+                <span *ngIf="item.status" class="label label-lg label-inline label-light-primary px-9">{{
+                  'payment.method.open' | lang
+                }}</span>
+                <span *ngIf="!item.status" class="label label-lg label-inline label-light-danger px-9">{{
+                  'payment.method.shutDown' | lang
+                }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="cell">
+                <ng-container *ngIf="!item?.selectLabel | isObjectNull">-</ng-container>
+                <!-- <ng-container *ngFor="let item of item.selectLabel | keyvalue; last as last"
+                  >{{ item.value }}{{ last ? '' : ', ' }}</ng-container
+                > -->
+                <ng-container *ngFor="let item of item.selectLabel; last as last"
+                  >{{ item }}{{ last ? '' : ', ' }}</ng-container
+                >
+              </span>
+            </td>
+            <!--            <td>-->
+            <!--              <span class="switch switch-success">-->
+            <!--                <label class="mx-auto">-->
+            <!--                  <input type="checkbox" (change)="onState(item)" [(ngModel)]="item.feeEnabled" />-->
+            <!--                  <span></span>-->
+            <!--                </label>-->
+            <!--              </span>-->
+            <!--            </td>-->
+            <td>
+              <span class="cell">
+                <span class="edit" (click)="onEdit(item)">{{ 'payment.method.edit' | lang }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <div class="container-empty" *ngIf="!list.length && !isLoading">
+        <div>
+          <svg-icon [src]="'./assets/images/svg/icon-empty.svg'" class="svg-icon menu-icon"></svg-icon>
+          <div class="txt">{{ 'common.emptyText' | lang }}</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-between pt-30">
+        <div></div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+            [isLoading]="isLoading"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

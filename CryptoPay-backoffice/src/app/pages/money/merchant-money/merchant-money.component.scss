@@ -1,0 +1,38 @@
+.table-merchant {
+  $border: #e4e6ef;
+  border: 1px solid $border;
+
+  thead th {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid $border;
+  }
+
+  th,
+  td {
+    border-top: 1px solid $border;
+  }
+
+  tbody tr {
+    transition: background-color 0.3s ease-in;
+  }
+
+  .td-merchant {
+    border-right: 1px solid $border;
+  }
+
+  &-header {
+    &,
+    & thead th {
+      border-bottom: 0;
+    }
+  }
+
+  .total {
+    background: #f1fafe;
+  }
+}
+
+.table {
+  table-layout: fixed;
+}

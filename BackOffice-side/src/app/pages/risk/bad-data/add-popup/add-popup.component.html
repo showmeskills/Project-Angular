@@ -1,0 +1,65 @@
+<modal-title [title]="'risk.badData.add' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body">
+  <form class="form w-100" [formGroup]="formGroup" #form>
+    <form-row name="category" label-width="150" [label]="'common.type' | lang">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <div class="d-flex flex-wrap">
+          <label class="radio radio-lg radio-success mr-8 fz-16" *ngFor="let item of categoryList">
+            <input type="radio" name="category" [value]="item.value" [formControl]="control" />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </div>
+      </ng-template>
+    </form-row>
+
+    <!-- 不良数据值 -->
+    <form-row name="dataValue" required label-width="150" [label]="'risk.badData.value' | lang">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <input class="form-control" type="text" [class.is-invalid]="invalid" [formControl]="control" />
+      </ng-template>
+    </form-row>
+
+    <!-- 评论信息 -->
+    <form-row name="comment" required label-width="150" [label]="'risk.badData.commentInformation' | lang">
+      <ng-template let-invalid="invalid" let-control="formControl">
+        <textarea
+          class="form-control resize-none"
+          type="text"
+          rows="5"
+          [class.is-invalid]="invalid"
+          [formControl]="control"
+        ></textarea>
+      </ng-template>
+    </form-row>
+
+    <!-- 品牌 -->
+    <form-row
+      name="brand"
+      label-width="150"
+      required
+      [label]="'risk.badData.brand' | lang"
+      [invalidFeedback]="{ arrayRequired: 'risk.badData.sup_brand' | lang }"
+    >
+      <ng-template let-control="formControl" let-invalid="invalid">
+        <div class="d-flex flex-wrap pt-4 lh-20" style="gap: 10px">
+          <label class="checkbox checkbox-lg mr-4" *ngFor="let item of subHeaderService.merchantListAll">
+            <input type="checkbox" [checkboxArrayControl]="control" [checkboxArrayValue]="item.value" />
+            <span class="mr-4"></span>{{ item.name }}
+          </label>
+        </div>
+        <!-- <div class="d-flex flex-wrap pt-4 lh-20" style="gap: 10px">
+          <label
+            class="radio radio-lg radio-success mr-8 fz-16"
+            *ngFor="let item of subHeaderService.merchantListAll; index as i"
+          >
+            <input type="radio" name="brand" [value]="item.value" [formControl]="control" />
+            <span class="mr-4"></span>{{ item.name }}
+          </label>
+        </div> -->
+      </ng-template>
+    </form-row>
+  </form>
+</div>
+
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>

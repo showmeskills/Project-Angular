@@ -1,0 +1,77 @@
+@mixin itemClose() {
+  margin-right: 6px;
+  margin-bottom: 6px;
+  background: #f5f8fa;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 42px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  height: 42px;
+
+  .svg-icon {
+    margin-left: 12px;
+    margin-top: -2px;
+  }
+
+  .close {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    cursor: pointer;
+    height: 100%;
+    margin-left: 6px;
+
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: #a1a5b7;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    &:before {
+      width: 12px;
+    }
+
+    &:after {
+      height: 12px;
+    }
+  }
+
+  &-edit {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 6px;
+    background: #f5f8fa;
+    cursor: pointer;
+    position: relative;
+
+    &:before,
+    &:after {
+      content: '';
+      width: 2px;
+      height: 2px;
+      background: #a1a5b7;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    &:before {
+      width: 16px;
+    }
+
+    &:after {
+      height: 16px;
+    }
+  }
+}

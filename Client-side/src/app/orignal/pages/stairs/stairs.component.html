@@ -1,0 +1,87 @@
+<div class="wrapper">
+  <div class="wrapper-top">
+    <orignal-bar type="stairs" [(fairnessData)]="fairnessData" [(isFastBet)]="isFastBet" [(isHotkey)]="isHotkey">
+    </orignal-bar>
+  </div>
+
+  <div class="board">
+    <div class="coefficients">
+      <div class="coefficients__outer desktop">
+        <div class="coefficients__inner">
+          <div
+            class="coeficient-item"
+            *ngFor="let tab of multiplier; let index = index"
+            [class.active]="selected == tab?.floorIndex"
+          >
+            {{ tab.multiplier }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="coefficients_h5">
+      <div class="pagination onact96" (click)="page('prev')">
+        <span class="pagination-chevron"></span>
+      </div>
+      <div style="min-width: calc(100% + 22px)" #tabgroup>
+        <mat-tab-group [selectedIndex]="selected" (selectedIndexChange)="selected = $event" [disablePagination]="true">
+          <mat-tab *ngFor="let tab of multiplier; let index = index" disabled [label]="tab.index">
+            <ng-template mat-tab-label>
+              <div class="coefficient-item" [class.active]="selected == tab?.floorIndex">
+                <span class="coefficient-item-label ff">{{ tab?.multiplier }}x</span>
+              </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <div class="pagination onact96" (click)="page('next')">
+        <span class="pagination-chevron"></span>
+      </div>
+    </div>
+
+    <div class="stairs-board" #board>
+      <div
+        class="stairs-board__row"
+        *ngFor="let row of rowStairs; let index = index"
+        [ngClass]="{ disabled: row.disabled }"
+      >
+        <button
+          class="stairs-tile"
+          *ngFor="let item of row.item; let i = index"
+          [disabled]="item.disabled"
+          [ngClass]="{ empty: item.empty }"
+          (click)="onStair(row, index, i)"
+        >
+          <div class="item"></div>
+          <div class="stair" *ngIf="!item.disabled"></div>
+          <div class="stair2" *ngIf="item.stair"></div>
+          <div class="stone" *ngIf="item.stone"></div>
+        </button>
+      </div>
+      <div
+        class="man"
+        [ngClass]="{ run: type == 1, climb: type == 2, die: type == 3, win: type == 4 }"
+        [class.left]="isLeft"
+        [class.isAnimate]="isAnimate"
+        style="left: -2%; bottom: 0%"
+        #man
+      ></div>
+    </div>
+  </div>
+
+  <orignal-bet
+    type="stairs"
+    (toBet)="toBet($event)"
+    [rate]="rate"
+    [operate]="operate"
+    [isDice]="true"
+    [bombCounts]="bombCounts"
+    (bombCountsChange)="bombCountsChange($event)"
+    (autoSelect)="autoSelect()"
+    (toSubmit)="toSubmit($event)"
+  ></orignal-bet>
+
+  <div class="win-tip" *ngIf="isShowWinTip">
+    <div>{{ rate }}X</div>
+    <div><img class="currency-icon" [src]="currentCurrencyData?.icon" />{{ winMoney }}</div>
+  </div>
+</div>

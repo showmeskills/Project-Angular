@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="56" viewBox="0 0 48 56">
+    <defs>
+        <linearGradient id="cal8patxdb" x1=".5" y1="-.026" x2=".5" y2=".974" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#fafafa"/>
+            <stop offset="1" stop-color="#e6e8ea"/>
+        </linearGradient>
+        <linearGradient id="tnp66b8b0a" x1="1" y1=".5" x2="0" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#a3adba"/>
+            <stop offset="1" stop-color="#8d96a4"/>
+        </linearGradient>
+        <linearGradient id="f7pfs42s2c" x1="0" x2="1" xlink:href="#tnp66b8b0a"/>
+        <linearGradient id="lm9oqtwvnd" y1=".5" x2="1" y2=".66" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#f04e23"/>
+            <stop offset="1" stop-color="#fa8465" stop-opacity=".502"/>
+        </linearGradient>
+    </defs>
+    <g data-name="组 7117">
+        <g data-name="组 7276">
+            <path data-name="路径 13459" d="m12 48.117 23.962 15.971v-56H12z" transform="translate(-12.001 -8.088)" style="fill:url(#cal8patxdb);fill-rule:evenodd"/>
+            <path data-name="路径 13460" d="M48 8.088v56l23.961-16v-40z" transform="translate(-23.962 -8.088)" style="fill:#e6e8ea;fill-rule:evenodd"/>
+            <circle data-name="椭圆 167" cx="11" cy="11" r="11" transform="translate(12.96 4.91)" style="fill:url(#tnp66b8b0a)"/>
+            <path data-name="路径 13462" d="m19 33.387 2.668 2.662 2.668-2.662-2.668-2.662zM55.014 28.4l1.667 1.664 1.667-1.664-1.667-1.664zm-8.67-13.65h2.668v-2.662h-2.668z" transform="translate(-14.342 -9.426)" style="fill:#fff"/>
+            <path data-name="路径 13463" d="M24 62.737h32.026V52.088H24z" transform="translate(-16.014 -22.743)" style="fill:url(#f7pfs42s2c)"/>
+            <path data-name="路径 13464" d="M51 58.088h9.984v2.662H51z" transform="translate(-24.99 -24.752)" style="fill:url(#lm9oqtwvnd)"/>
+            <path data-name="路径 13465" d="M30 58.088h9.984v2.662H30z" transform="translate(-17.996 -24.752)" style="fill:url(#lm9oqtwvnd)"/>
+        </g>
+    </g>
+</svg>

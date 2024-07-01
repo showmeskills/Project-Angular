@@ -1,0 +1,71 @@
+<div class="modal-body p-8 align-items-stretch">
+  <header *ngIf="title !== ''">{{ title }}</header>
+
+  <ng-container [ngTemplateOutlet]="tabTemplate"></ng-container>
+
+  <div class="search-bar">
+    <div class="input-icon">
+      <input type="search" class="form-control" [(ngModel)]="kw" />
+      <svg-icon [src]="'./assets/images/svg/admin-search.svg'" class="svg-icon svg-icon-2x5"></svg-icon>
+    </div>
+  </div>
+
+  <div class="checkbox-list mt-8" [style.max-height.px]="scrollHeight">
+    <div class="item" [hidden]="!(showSelectAll && list && list.length && isCheckbox && !isSearchEmpty)">
+      <label class="checkbox checkbox-lg" [class.checkbox-indeterminate]="isIndeterminate">
+        <input type="checkbox" (change)="onAllChange($event)" #all />
+        <span></span>
+        {{ 'common.all' | lang }}
+      </label>
+    </div>
+
+    <div class="item" *ngFor="let item of list; let i = index" [hidden]="!hasSearchKW(item)">
+      <label
+        [class]="labelClassName"
+        [ngClass]="{
+          disabled: isCheckbox && item[disabled],
+          'radio-disabled': isRadio && item[disabled]
+        }"
+      >
+        <!-- 动态绑定type 会导致绑定值丢失 -->
+        <ng-container *ngIf="isCheckbox">
+          <input
+            type="checkbox"
+            [(ngModel)]="item.checked"
+            (ngModelChange)="onChange(item)"
+            [disabled]="isCheckbox && item[disabled]"
+          />
+        </ng-container>
+
+        <!-- 动态绑定type 会导致绑定值丢失 -->
+        <ng-container *ngIf="!isCheckbox">
+          <input
+            name="selectGroupItem"
+            type="radio"
+            [value]="item[value]"
+            [checked]="item.checked"
+            (change)="onChange(item)"
+            [disabled]="isRadio && item[disabled]"
+          />
+        </ng-container>
+        <span class="mr-3"></span>
+        {{ item[label] }}
+      </label>
+    </div>
+
+    <div *ngIf="!(list && list.length)" class="item empty flex-center">
+      {{ emptyText === '' ? ('common.noOption' | lang) : emptyText }}
+    </div>
+    <!-- 当前搜索无选项 -->
+    <div *ngIf="list && list.length && isSearchEmpty" class="item empty flex-center">
+      {{ 'components.NoCurrentSearch' | lang }}
+    </div>
+  </div>
+</div>
+
+<ng-content select="[footer],.group-footer"></ng-content>
+
+<div class="modal-footer btn-wrap" *ngIf="position && !hideBtn">
+  <button class="c-btn c-btn-default ml-0" (click)="show = false">{{ 'common.cancel' | lang }}</button>
+  <button class="c-btn c-btn-primary" (click)="ok()">{{ 'common.confirm' | lang }}</button>
+</div>

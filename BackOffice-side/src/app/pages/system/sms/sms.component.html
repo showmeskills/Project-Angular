@@ -1,0 +1,189 @@
+<div class="bg-fff rounded py-8 px-12 d-flex flex-wrap">
+  <form-row [label]="'system.sms.verifyType' | lang" class="mr-16" [contentWidth]="200">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="data.verifyType" (selectionChange)="loadData(true)">
+          <mat-option *ngFor="let item of verifyTypeList" [value]="item.value">{{ item.lang | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+  <form-row label="UID" class="mr-16" [contentWidth]="200">
+    <ng-template>
+      <input
+        class="form-control w-100"
+        type="text"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+  <form-row [label]="'system.sms.phoneSearch' | lang" class="mr-16" [contentWidth]="200">
+    <ng-template>
+      <input
+        class="form-control w-100"
+        type="text"
+        [(ngModel)]="data.mobileNo"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+  <!-- 操作类型 -->
+  <form-row [label]="'system.sms.operationType' | lang" class="mr-16" [contentWidth]="200">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="data.selectedType" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option *ngFor="let item of typeList" [value]="item.code">{{ item.description }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+  <!-- 发送时间 -->
+  <form-row [label]="'otp.sendTime' | lang" class="mr-16" [contentWidth]="200">
+    <ng-template>
+      <input
+        class="text-center form-control w-100"
+        type="text"
+        [placeholder]="'system.sms.selectTime' | lang"
+        selectMode="date-range"
+        formatLabel="yyyy-MM-dd"
+        rangeSeparator="-"
+        [owlDateTime]="tradePicker"
+        [owlDateTimeTrigger]="tradePicker"
+        [(ngModel)]="data.time"
+        (dateTimeChange)="loadData(true)"
+      />
+
+      <owl-date-time pickerType="calendar" class="fz-20" #tradePicker></owl-date-time>
+    </ng-template>
+  </form-row>
+  <!-- 发送状态 -->
+  <form-row [label]="'system.sms.sendStatus' | lang" class="mr-16" [contentWidth]="200">
+    <ng-template>
+      <mat-form-field [style.width.px]="200">
+        <mat-select class="form-control" [(ngModel)]="data.sendType" (selectionChange)="loadData(true)">
+          <mat-option value="">{{ 'common.all' | lang }}</mat-option>
+          <mat-option value="Success">{{ 'common.success' | lang }}</mat-option>
+          <mat-option value="Fail">{{ 'common.fail' | lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="card mt-8">
+  <div class="card-body">
+    <div class="flex-fill mt-2">
+      <div class="d-flex flex-ac">
+        <div class="fz-20 flex-1"></div>
+
+        <div>
+          <!-- 导出全部 -->
+          <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+            <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+            <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+          </button>
+          <!-- 导出 -->
+          <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+            <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+            <span class="vam">{{ 'game.provider.export' | lang }}</span>
+          </button>
+        </div>
+      </div>
+
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">{{ 'system.sms.verifyType' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'system.sms.operationType' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'system.sms.phoneEmail' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'otp.sendTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'otp.sendStatus' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'system.sms.reasonFailure' | lang }}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="color-222">
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.otpCategory }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.otpType }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.sendNumber }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createdTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.status }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.failReason }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 空显示 -->
+      <empty *ngIf="!list?.length && !isLoading"></empty>
+      <!-- 页码 -->
+      <div class="d-flex flex-between pt-10 table-footer" *ngIf="list?.length > 0">
+        <div>
+          <mat-form-field [style.width.px]="68">
+            <mat-select
+              class="form-control"
+              [(ngModel)]="paginator.pageSize"
+              [style.height.px]="34"
+              [style.font-size.px]="14"
+              (selectionChange)="loadData()"
+            >
+              <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginator.total">
+          <app-paginator
+            class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+            [paginator]="paginator"
+            (paginate)="loadData()"
+          ></app-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

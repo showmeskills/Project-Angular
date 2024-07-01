@@ -1,0 +1,256 @@
+:host {
+  width: 100%;
+  flex: 0;
+
+  &.error {
+    .input-box {
+      border-color: var(--txt-err-color) !important;
+    }
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+
+    .input-container {
+      pointer-events: none;
+      opacity: 0.7;
+
+      .input-box input {
+        opacity: 0.7;
+      }
+    }
+  }
+
+  &.loading {
+    cursor: wait;
+
+    .input-container {
+      pointer-events: none;
+      opacity: 0.85;
+
+      .input-box input {
+        opacity: 0.85;
+      }
+    }
+  }
+}
+
+.input-container {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  position: relative;
+
+  &.large {
+    font-size: 14px;
+
+    .input-box {
+      height: 48px;
+      width: 100%;
+      padding: 0 10px 0 15px;
+    }
+  }
+
+  &.medium {
+    font-size: 14px;
+
+    .input-box {
+      height: 40px;
+      padding: 0 6px 0 10px;
+
+      @media (max-width: 767px) {
+        width: 100%;
+
+        &:not(.fixed-height) {
+          height: 48px;
+        }
+      }
+    }
+  }
+
+  &.small {
+    font-size: 12px;
+
+    .input-box {
+      width: 100px;
+      height: 30px;
+      padding: 0 5px 0 8px;
+    }
+  }
+
+  .input-label {
+    font-size: inherit;
+    color: var(--text-color-20);
+    margin-bottom: 8px;
+    padding-left: 1px;
+
+    .required {
+      color: #ff7172;
+    }
+
+    em {
+      font-size: 10px;
+      padding-left: 10px;
+    }
+  }
+
+  .error-info {
+    color: var(--txt-err-color);
+    font-size: 12px;
+    padding-top: 4px;
+  }
+
+  .input-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--default-border-color);
+    border-radius: 4px;
+    background-color: var(--container-bg-color);
+    width: 150px;
+    transition: border 0.2s;
+    color: var(--text-color-20);
+
+    > * + * {
+      margin-left: 6px;
+    }
+
+    &:focus-within {
+      border-color: var(--btn-bg-color);
+    }
+
+    @media (any-hover: hover) {
+      &:hover {
+        border-color: var(--btn-bg-color);
+      }
+    }
+
+    .input-area {
+      flex: 1;
+      height: 100%;
+      position: relative;
+
+      .custom-value {
+        position: absolute;
+        pointer-events: none;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+
+        > * + * {
+          margin-left: 5px;
+        }
+
+        > span {
+          opacity: 0;
+        }
+      }
+    }
+
+    input {
+      outline: none;
+      border: none;
+      background-color: transparent;
+      height: 100%;
+      font-size: inherit;
+      color: var(--text-color);
+      width: 100%;
+      padding: 0;
+      margin: 0;
+
+      &[readonly] {
+        pointer-events: none;
+        opacity: 0.9;
+      }
+    }
+
+    // 隐藏密码自带icon
+    input::-ms-reveal {
+      display: none;
+    }
+
+    input::placeholder {
+      opacity: 0.4;
+    }
+
+    .left-content,
+    .custom-value {
+      display: flex;
+      align-items: center;
+      color: var(--text-color-20-lighten);
+
+      img {
+        width: 1.2em;
+        height: 1.2em;
+      }
+
+      i {
+        font-size: 1.1em;
+
+        &.icon-search {
+          font-size: 1.5em;
+        }
+      }
+    }
+
+    .right-content {
+      color: var(--text-color-20-lighten);
+      display: flex;
+      align-items: center;
+
+      ::ng-deep {
+        > * + * {
+          margin-left: 5px;
+        }
+      }
+
+      ::ng-deep {
+        i {
+          font-size: 1.1em;
+          line-height: 0;
+          cursor: pointer;
+          transition: opacity 0.2s;
+          will-change: opacity;
+          user-select: none;
+          @media (any-hover: hover) {
+            &:hover {
+              opacity: 0.8;
+            }
+          }
+
+          @media (any-hover: none) {
+            &:active {
+              opacity: 0.8;
+            }
+          }
+
+          &.icon-pwd-show,
+          &.icon-pwd-hidden,
+          &.icon-clear-fill {
+            font-size: 1.4em;
+          }
+
+          &.animation-icon-loading-dot {
+            font-size: 1em;
+          }
+        }
+      }
+    }
+
+    ::ng-deep {
+      i {
+        font-size: inherit;
+        text-align: center;
+        color: inherit;
+
+        &::before {
+          color: inherit;
+        }
+      }
+    }
+  }
+}

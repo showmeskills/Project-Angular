@@ -1,0 +1,353 @@
+<div>
+  <div class="modal-header">
+    <div class="modal-title h4">{{ 'finance.deposit.tradeOrder' | lang }}</div>
+
+    <div class="c-btn-close" (click)="modal.dismiss()">
+      <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon menu-icon"></svg-icon>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="info flexbox">
+      <div class="w-50">
+        <span class="title">{{ 'finance.bill.customer' | lang }}：</span>
+        <span>{{ item.merchantName }}</span>
+      </div>
+      <div class="w-50">
+        <span class="title">UID：</span>
+        <span>{{ item.uid }}</span>
+      </div>
+    </div>
+
+    <div class="info flexbox flex-wrap">
+      <span class="title">{{ 'finance.deposit.orderNum' | lang }}：</span>
+      <div *ngIf="item.isDigital">{{ item.orderNum }}</div>
+      <div class="mr-16" *ngIf="!item.isDigital">
+        <span class="title">{{ 'finance.withdrawals.merchantOrder' | lang }}：</span><span>{{ item.orderNum }}</span>
+      </div>
+      <div *ngIf="!item.isDigital">
+        <span class="title" style="width: auto">{{ 'finance.withdrawals.thirdParty' | lang }}：</span
+        ><span>{{ item.thirdPartOrderNum }}</span>
+      </div>
+    </div>
+
+    <div class="info flexbox">
+      <!-- 汇率 -->
+      <div class="w-50" *ngIf="item.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase()">
+        <span class="title">{{ 'payment.approval.exchangeRate' | lang }}：</span>
+        <span>{{ item.exchangeRate | toFormatMoney }}</span>
+      </div>
+
+      <!-- 币种类型 -->
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.currencyType' | lang }}：</span>
+        <span>{{
+          item.isDigital ? ('finance.deposit.cryptoCurrency' | lang) : ('finance.deposit.legalCurrency' | lang)
+        }}</span>
+      </div>
+    </div>
+
+    <div class="info flexbox">
+      <div class="w-50">
+        <span class="title">{{ 'common.currency' | lang }}：</span>
+        <span>{{ item.currency }}</span>
+      </div>
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.paymentMethod' | lang }}：</span>
+        <span>{{ item.paymentMethod }}</span>
+      </div>
+    </div>
+
+    <div class="info flexbox">
+      <!-- 交易金额 -->
+      <ng-template #transAmountTpl>
+        <div class="w-50">
+          <span class="title">{{ 'finance.deposit.transactionAmount' | lang }}：</span>
+          <span class="red">+{{ item.amount | currencyValue: item.currency }}</span>
+        </div>
+      </ng-template>
+
+      <!-- 申请金额 -->
+      <ng-container
+        *ngIf="item.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase(); else transAmountTpl"
+      >
+        <div class="w-50">
+          <span class="title">{{ 'payment.transactionList.applicationAmount' | lang }}：</span>
+          <span class="red">+{{ item.amount | currencyValue: item.currency }}</span>
+        </div>
+      </ng-container>
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.discount' | lang }}：</span>
+        <span>{{ item.discountedAmount | currencyValue: item.currency }}</span>
+      </div>
+    </div>
+
+    <div class="info flexbox">
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.overhead' | lang }}：</span>
+        <span>{{ item.fee | currencyValue: item.currency }}</span>
+      </div>
+
+      <!-- 虚拟币到账数量 -->
+      <div
+        class="w-50"
+        *ngIf="item.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase(); else totalAmountTpl"
+      >
+        <span class="title">{{ 'payment.transactionList.digitalCurrencyNumber' | lang }}：</span>
+        <span class="red">+{{ item.exchangeAmount || 0 | currencyValue: item.exchangeCurrency }}</span>
+      </div>
+      <ng-template #totalAmountTpl>
+        <!-- 到账金额 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.deposit.totalAmount' | lang }}：</span>
+          <span class="red">+{{ item.receiveAmount || 0 | currencyValue: item.currency }}</span>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="info flexbox">
+      <!-- 手续费减免金额 -->
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.feeWaiver' | lang }}：</span>
+        <span>{{ item.feeWaiver | currencyValue: item.currency }}</span>
+      </div>
+
+      <!-- 数字货币手续费 -->
+      <div class="w-50">
+        <span class="title">{{ 'payment.transactionList.digitalFee' | lang }}：</span>
+        <span>{{ item.exchangeFee || 0 | currencyValue: item.exchangeCurrency }}</span>
+      </div>
+    </div>
+
+    <!-- 兑换币种 -->
+    <div class="info flexbox" *ngIf="item.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase()">
+      <div class="w-50"></div>
+      <div class="w-50">
+        <span class="title">{{ 'payment.approval.exchange' | lang }}：</span>
+        <span>{{ item.exchangeCurrency }}</span>
+      </div>
+    </div>
+
+    <div class="info flexbox">
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.applyTime' | lang }}：</span>
+        <span>{{ item.applyTime | timeFormat: 'YYYY-MM-DD HH:mm' }}</span>
+      </div>
+    </div>
+
+    <!-- 审核时间和审核人 -->
+    <!--    <div class="info flexbox">-->
+    <!--      <div class="w-50">-->
+    <!--        <span class="title">{{ 'finance.deposit.auditTime' | lang }}：</span>-->
+    <!--        <span>{{ item.finishTime | timeFormat : 'YYYY-MM-DD HH:mm' }}</span>-->
+    <!--      </div>-->
+    <!--      <div class="w-50">-->
+    <!--        <span class="title">{{ 'finance.deposit.aduitor' | lang }}</span>-->
+    <!--        <span>{{ item.reviewUserName }}</span>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <!--    <div class="info flexbox high-box">-->
+    <!--      <span class="title">订单备注：</span>-->
+    <!--      <textarea type="text" [(ngModel)]="item.orderRemark" class="form-control" autocomplete="off"></textarea>-->
+    <!--    </div>-->
+
+    <div class="info flexbox">
+      <span class="title">{{ 'finance.deposit.detail' | lang }}：</span>
+
+      <ng-container
+        *ngIf="
+          item.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase() ||
+            item?.paymentMethod === 'ebpayqrcode';
+          else detailTpl
+        "
+      >
+        <ng-container *ngIf="item?.paymentMethod?.toLowerCase() === 'CryptocurrencyTransfer'.toLowerCase()">
+          To: {{ item.toAddress }}
+        </ng-container>
+
+        <ng-container *ngIf="item?.paymentMethod === 'ebpayqrcode'">
+          EB{{ 'payment.bankManage.address' | lang }}: {{ item?.walletAddress }}
+        </ng-container>
+      </ng-container>
+
+      <ng-template #detailTpl>
+        <div *ngIf="!item.isDigital" class="mr-16">
+          <span class="title">{{ 'finance.deposit.transferName' | lang }}：</span
+          ><span>{{ item.pspBankHolderName }}</span>
+        </div>
+        <div *ngIf="!item.isDigital">
+          <span class="title">{{ 'finance.deposit.bankCard' | lang }}：</span><span>{{ item.pspBankAccount }}</span>
+        </div>
+
+        <div *ngIf="item.isDigital" class="mr-16">
+          <span>To：</span><span class="coinAddress">{{ item.toAddress }}</span>
+        </div>
+        <div *ngIf="item.isDigital">
+          <span>From：</span><span class="coinAddress">{{ item.fromAddress || '-' }}</span>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- 1审 -->
+    <ng-container *ngIf="item.approveName1">
+      <div class="info d-flex">
+        <!-- 1级审核人 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.withdrawals.st1Operator' | lang }}：</span>
+          <span>{{ item.approveName1 || '-' }}</span>
+        </div>
+      </div>
+
+      <div class="info d-flex">
+        <!-- 1级审核时间 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.withdrawals.st1time' | lang }}：</span>
+          <span>{{ item.approveTime1 | timeFormat }}</span>
+        </div>
+        <!-- 1级审核备注 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.withdrawals.st1remark' | lang }}：</span>
+          <span>{{ item.approveRemark1 || '-' }}</span>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- 1审操作 -->
+    <ng-container
+      *ngIf="
+        [OrderStatusEnum[OrderStatusEnum.Review], OrderStatusEnum[OrderStatusEnum.OnHold]].includes(item.status) &&
+        item.isApprove2 === false
+      "
+    >
+      <div class="info d-flex">
+        <span class="title">{{ 'finance.withdrawals.review' | lang }}</span>
+        <span class="d-flex flex-wrap">
+          <label class="radio radio-lg lh-32 my-2 fz-14 mr-12" *ngFor="let item of operatorList">
+            <input
+              type="radio"
+              name="st1Opera"
+              [value]="item.value"
+              [formControl]="operatorForm.controls.operator"
+              (change)="onReviewChange(item.remarksRequired)"
+            />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </span>
+      </div>
+
+      <div class="info d-flex">
+        <span class="title">{{ 'finance.withdrawals.st1remark' | lang }}</span>
+        <form-row [showLabel]="false" [control]="operatorForm.controls.remark">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input
+              class="form-control py-0 lh-32 rounded-0 fz-14"
+              [style.width.px]="366"
+              [style.height.px]="28"
+              type="text"
+              [formControl]="control"
+              [class.is-invalid]="invalid"
+            />
+          </ng-template>
+        </form-row>
+      </div>
+    </ng-container>
+
+    <!-- 2审 -->
+    <!-- 如果不等于审核，显示是否需要二审 -->
+    <ng-container
+      *ngIf="![OrderStatusEnum[OrderStatusEnum.Review], OrderStatusEnum[OrderStatusEnum.OnHold]].includes(item.status)"
+    >
+      <div class="info d-flex">
+        <!-- 是否需要2级审核 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.withdrawals.nd2Review' | lang }}：</span>
+          <span>{{ (item.isApprove2 ? 'common.yes' : 'common.no') | lang }}</span>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- 如果有2审，并且状态不等于审核就展示二审信息 -->
+    <ng-container *ngIf="item.approveName2">
+      <div class="info d-flex">
+        <!-- 2级审核人 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.withdrawals.nd2Operator' | lang }}：</span>
+          <span>{{ item.approveName2 || '-' }}</span>
+        </div>
+      </div>
+
+      <div class="info d-flex">
+        <!-- 2级审核时间 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.withdrawals.nd2time' | lang }}：</span>
+          <span>{{ item.approveTime2 | timeFormat }}</span>
+        </div>
+        <!-- 2级审核备注 -->
+        <div class="w-50">
+          <span class="title">{{ 'finance.withdrawals.nd2remark' | lang }}：</span>
+          <span>{{ item.approveRemark2 || '-' }}</span>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- 2审操作 -->
+    <ng-container
+      *ngIf="
+        [OrderStatusEnum[OrderStatusEnum.Review], OrderStatusEnum[OrderStatusEnum.OnHold]].includes(item.status) &&
+        item.isApprove2 === true
+      "
+    >
+      <div class="info d-flex">
+        <span class="title">{{ 'finance.withdrawals.review' | lang }}</span>
+        <span class="d-flex flex-wrap">
+          <label class="radio radio-lg lh-32 my-2 fz-14 mr-12" *ngFor="let item of operatorList">
+            <input
+              type="radio"
+              name="st1Opera"
+              [value]="item.value"
+              [formControl]="operatorForm.controls.operator"
+              (change)="onReviewChange(item.remarksRequired)"
+            />
+            <span class="mr-4"></span>{{ item.lang | lang }}
+          </label>
+        </span>
+      </div>
+
+      <div class="info d-flex">
+        <span class="title">{{ 'finance.withdrawals.nd2remark' | lang }}</span>
+        <form-row [showLabel]="false" [control]="operatorForm.controls.remark">
+          <ng-template let-invalid="invalid" let-control="formControl">
+            <input
+              class="form-control py-0 lh-32 rounded-0 fz-14"
+              [style.width.px]="366"
+              [style.height.px]="28"
+              type="text"
+              [formControl]="control"
+              [class.is-invalid]="invalid"
+            />
+          </ng-template>
+        </form-row>
+      </div>
+    </ng-container>
+
+    <!-- 状态 -->
+    <div class="info flexbox">
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.orderStatus' | lang }}：</span>
+        <finance-status-label [status]="item.status" [isReviewLevel]="item.isApprove2"></finance-status-label>
+      </div>
+      <div class="w-50">
+        <span class="title">{{ 'finance.deposit.completeTime' | lang }}：</span>
+        <span>{{ item.finishTime | timeFormat: 'YYYY-MM-DD HH:mm' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer btn-wrap">
+    <button class="c-btn c-btn-default" (click)="modal.dismiss()">{{ 'common.back' | lang }}</button>
+    <button class="c-btn c-btn-primary" (click)="onConfirm()" *ngIf="['Review', 'OnHold'].includes(this.item.status)">
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>

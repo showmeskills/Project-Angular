@@ -1,0 +1,49 @@
+<app-races-table-template
+  [tableHeader]="isH5() ? renderLuckiesUsertData().isH5Titles : renderLuckiesUsertData().titles"
+  [loading]="renderLuckiesUsertData().loading"
+  [tableData]="renderLuckiesUsertData().data"
+  [customizedData]="luckiestUser"
+  [columns]="isH5() ? 3 : 5"
+  [emptyHeight]="156"
+  [skeletonLength]="skeletonLength"
+></app-races-table-template>
+
+<ng-template #luckiestUser>
+  <div class="list-item-container">
+    <div class="list-item" *ngFor="let item of renderLuckiesUsertData().data; let index = index">
+      <div>
+        <img class="badge" [src]="'assets/images/daily-races/' + (index + 1) + '.svg'" lazy="loading" alt="" />
+      </div>
+      <div>
+        <div class="user-name-container">
+          <img
+            class="avatar"
+            #img
+            [src]="item.avatar | avatarDefault"
+            lazy="loading"
+            alt=""
+            (error)="dailyRacesService.onImageError(img)"
+          />
+          <p class="text-14 ml-6 user-name">
+            {{ item?.playerName || ('invisible' | translate) }}
+          </p>
+        </div>
+      </div>
+      <div *ngIf="!isH5()">
+        <app-races-conversion-currency
+          [amount]="item?.betAmount || 0"
+          [currency]="item?.currency || 'USDT'"
+        ></app-races-conversion-currency>
+      </div>
+      <div class="text-14">
+        {{ item?.odds ? item?.odds + 'x' : '-' }}
+      </div>
+      <div *ngIf="!isH5()">
+        <app-races-conversion-currency
+          [amount]="item?.payAmount || 0"
+          [currency]="item?.currency || 'USDT'"
+        ></app-races-conversion-currency>
+      </div>
+    </div>
+  </div>
+</ng-template>

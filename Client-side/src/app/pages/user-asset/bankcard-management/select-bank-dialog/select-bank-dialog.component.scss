@@ -1,0 +1,156 @@
+div {
+  display: flex;
+}
+
+.main-container {
+  height: 454px;
+  width: 384px;
+  flex-direction: column;
+  overflow: hidden;
+
+  &:host-context(.dark) & {
+    background-color: #0f212e;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  // 标题栏
+  .header-row {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    // padding-bottom: 28px;
+    padding: 24px 24px 28px 24px;
+
+    //标题
+    .title {
+      color: #1e2329;
+      font-size: 20px;
+
+      &:host-context(.dark) & {
+        color: #fff;
+      }
+    }
+
+    //关闭icon
+    .icon-close {
+      height: 14px;
+      width: 14px;
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/close-3.png);
+    }
+  }
+
+  //搜索框
+  .search-contanier {
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-bottom: 12px;
+    margin: 0 24px;
+
+    @media (max-width: 767px) {
+      padding: 20px 16px 12px 16px;
+      margin: 0px;
+    }
+
+    &:hover,
+    &.focus {
+      border-color: var(--primary-color);
+    }
+
+    // 搜索icon
+    .search-icon {
+      background-size: 100%;
+      height: 17px;
+      background-repeat: no-repeat;
+      background-image: url(src/assets/images/kyc/search.png);
+      position: absolute;
+      width: 18px;
+      left: 13px;
+
+      @media (max-width: 767px) {
+        left: 29px;
+      }
+    }
+
+    //input
+    .search-input {
+      height: 40px;
+      border: 1px solid #d5d8dc;
+      width: 336px;
+      padding-left: 33px;
+      font-size: 12px;
+      padding-top: 4px;
+      outline: none;
+
+      &:host-context(.dark) & {
+        border-radius: 4px;
+        background-color: var(--container-bg-color);
+        border-color: var(--input-border-color);
+        color: #fff;
+      }
+
+      @media (max-width: 767px) {
+        width: 100%;
+      }
+    }
+
+    // 清除icon
+    .close-icon {
+      background-size: 100%;
+      height: 18px;
+      margin-right: 0.4rem;
+      background-repeat: no-repeat;
+      position: absolute;
+      width: 18px;
+      right: 12px;
+      background-image: url(src/assets/images/kyc/close_icon.png);
+    }
+  }
+
+  .options-container {
+    width: 100%;
+    overflow: hidden;
+    height: auto;
+
+    // 选项列
+    .select-row {
+      padding-left: 24px;
+      height: 64px;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      @media (max-width: 767px) {
+        height: 62px;
+      }
+
+      &.select,
+      &:hover {
+        background-color: var(--list-hover-bg-color);
+      }
+
+      .bank-icon {
+        height: 24px;
+        width: 24px;
+        background-size: 24px 24px;
+        background-repeat: no-repeat;
+        margin-right: 8px;
+      }
+
+      .infor {
+        flex-direction: column;
+        font-size: 14px;
+        color: #636871;
+
+        &:host-context(.dark) & {
+          color: #fff;
+        }
+      }
+    }
+  }
+}

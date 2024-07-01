@@ -1,0 +1,22 @@
+<div class="h5-container" [class]="type">
+  <div class="title-row">
+    <em>{{ 'real_history ' | translate }}</em>
+    <div class="img-bar">
+      <img src="assets/orignal/images/dice/union.svg" alt="" />
+      <em>{{ realHistoryList.length }}</em>
+    </div>
+  </div>
+</div>
+<div class="item-container" [class]="type">
+  <div class="play-list" *ngFor="let item of realHistoryList">
+    <div class="name-part">
+      <div class="name">{{ item.userName }}</div>
+      <div [class.win_color]="item.winColor" *ngIf="item.stop">{{ item.stop }}x</div>
+      <div *ngIf="!item.stop" class="no-stop">-</div>
+    </div>
+    <div class="money">
+      <img class="currency-icon" [src]="item.icon" />
+      <span [class.win_color]="item.winColor">{{ item.BetAmount }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+<!-- 空内容展示 -->
+<div class="upload-empty" [hidden]="!!value || uploadState">
+  <ng-container
+    [ngTemplateOutlet]="defaultContent?.templateRef || defaultView"
+    [ngTemplateOutletContext]="{ $implicit: limitSize | bytes }"
+  ></ng-container>
+  <ng-template #defaultView>
+    <svg-icon [src]="'./assets/images/svg/upload.svg'" class="svg-icon svg-icon-4x"></svg-icon>
+
+    <div style="margin-left: 4px; line-height: 1.4">
+      <!-- 点击上传 -->
+      <div class="upload-empty-title">{{ 'components.clickUpload' | lang }}</div>
+      <span class="upload-empty-desc">{{ desc }}</span>
+      <!-- 内 -->
+      <div class="upload-empty-txt" *ngIf="limit && showLimitText">
+        {{ limitSize | bytes }}{{ 'components.Inside' | lang }}
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<input
+  type="file"
+  class="upload-file"
+  autocomplete="off"
+  #fileDom
+  (click)="onFileInputClick($event)"
+  (change)="onChangeValue(fileDom, fileDom.files!?.[0])"
+  [hidden]="disabled || disabledInput"
+  [accept]="acceptFile"
+/>
+
+<!-- 上传后展示 -->
+<div class="upload-wrap" [style.padding]="padding" [hidden]="!value || uploadState">
+  <div class="upload-thumbnail">
+    <div class="w-100 h-100 position-relative">
+      <div
+        *ngIf="showClear && !disabled && !disabledInput"
+        class="upload-thumbnail-close"
+        (click)="onChangeValue(fileDom)"
+      ></div>
+      <ng-container [ngSwitch]="mark">
+        <div
+          *ngSwitchCase="'img'"
+          class="rounded overflow-hidden position-relative h-100"
+          (click)="onPreview(previewURL)"
+        >
+          <img [src]="previewURL | safeUrl" alt="" class="position-relative upload-cover" />
+          <img [src]="previewURL | safeUrl" alt="" class="upload-cover-bg" />
+        </div>
+
+        <video *ngSwitchCase="'video'" [src]="previewURL | safeUrl" (click)="onPreview(videoPreview)"></video>
+        <div *ngSwitchDefault class="d-flex flex-center flex-column h-100">
+          <svg-icon [src]="'./assets/images/svg/upload.svg'" class="svg-icon svg-icon-4x"></svg-icon>
+          <div class="w-100">
+            <div class="text-nowrap text-truncate w-100">
+              {{ filename ? filename : ('components.file' | lang) }}
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- 进度条 -->
+<div class="upload-wrap d-flex flex-center flex-column" [style.padding]="padding" *ngIf="uploadState">
+  <div
+    class="upload-progress-text"
+    [class.success]="uploadState.state === 'DONE'"
+    [class.danger]="uploadState.state === 'FAILED'"
+  >
+    <span>{{ (uploadState.loaded | bytes) || '0kb' }}</span>
+    <span *ngIf="uploadState.total"> / {{ +uploadState.total | bytes }}</span>
+  </div>
+
+  <div
+    class="upload-progress-wrap"
+    [class.upload-progress-success]="uploadState.state === 'DONE'"
+    [class.upload-progress-danger]="uploadState.state === 'FAILED'"
+  >
+    <div class="upload-progress-track">
+      <div class="upload-progress" [style.width.%]="uploadState.progress"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 视频浮层预览 -->
+<ng-template #videoPreview>
+  <video [src]="previewURL | safeUrl" style="width: 600px; height: 320px" controls="true"></video>
+</ng-template>

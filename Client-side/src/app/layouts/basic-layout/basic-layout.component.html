@@ -1,0 +1,64 @@
+<div
+  class="basic-layout"
+  [class.left-side-invisible]="layout.leftMenuInvisible$ | async"
+  [class.left-side-expand]="leftMenuState"
+>
+  <app-statistics-panel></app-statistics-panel>
+
+  <div class="layout-widgets {{ hideHead ? 'widgets-hide' : 'widgets-show' }}" [style.left]="layoutContentMarginLeft">
+    <img src="{{ 'assets/images/activity/ny2024/c1.png' | preferWebp }}" alt="" />
+    <img src="{{ 'assets/images/activity/ny2024/c1.png' | preferWebp }}" alt="" />
+  </div>
+  <div class="layout-background">
+    <img src="{{ 'assets/images/activity/euro2024/bg.jpg' | preferWebp }}" alt="" />
+  </div>
+  <div class="layout-backdrop" [class.show]="leftMenuBackdrop" (click)="layout.leftMenuState$.next(false)"></div>
+  <div class="left-side" [style.width]="leftMenuWidth" [class.hide]="conciseMode">
+    <app-left-menu></app-left-menu>
+  </div>
+  <div
+    class="layout-content"
+    [style.margin-left]="layoutContentMarginLeft"
+    [style.padding-top]="hideHead ? '0' : hideLevel2Head ? 'var(--topbar-height)' : '60px'"
+  >
+    <app-header
+      [layoutContentMarginLeft]="layoutContentMarginLeft"
+      [style.transition-duration]="hideHead ? '0.5s' : '0.2s'"
+      [style.transform]="'translateY(' + (hideHead ? '-100' : '0') + '%)'"
+      [class.islevel2]="!hideLevel2Head"
+    ></app-header>
+    @if (hideLevel2Head) {
+      <app-header-level2-menu
+        #level2Menu
+        [class.hide]="conciseMode"
+        [layoutContentMarginLeft]="layoutContentMarginLeft"
+        [style.transition-duration]="hideHead ? '0.5s' : '0.2s'"
+        [style.transform]="'translateY(' + (hideHead ? '-250' : '0') + '%)'"
+      ></app-header-level2-menu>
+    }
+
+    <app-banner></app-banner>
+    <div class="layout-main-content">
+      <ng-container *ngIf="isDesktop">
+        <app-scrollbar
+          #scrollbar
+          (scorllDistance)="onScrollDistance($event)"
+          [disabled]="fullMode || !!(layout.lockLayoutScroll$ | async)"
+        >
+          <router-outlet></router-outlet>
+          <app-footer *ngIf="!fullMode"></app-footer>
+        </app-scrollbar>
+      </ng-container>
+      <div
+        class="content"
+        *ngIf="!isDesktop"
+        [class.disabled]="fullMode || !!(layout.lockLayoutScroll$ | async)"
+        (scroll)="onScrollOldIos($event)"
+      >
+        <router-outlet></router-outlet>
+        <app-footer *ngIf="!fullMode"></app-footer>
+      </div>
+      <app-bottom-menu *ngIf="!fullMode"></app-bottom-menu>
+    </div>
+  </div>
+</div>

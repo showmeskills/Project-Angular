@@ -1,0 +1,143 @@
+:host {
+  display: flex;
+  margin-top: 20px;
+  flex-flow: column nowrap;
+}
+
+.item {
+  $color: #fd228b;
+  $colorBG: #fff8fb;
+  $color2: #81d113;
+  $color2BG: #f6fded;
+  $color3: #ef9c00;
+  $color3BG: #fdfbef;
+  $color4: #2db1f0;
+  $color4BG: #f3fbff;
+  $color5: #b458d4;
+  $color5BG: #fcfaff;
+
+  width: 160px;
+  flex: 1 1 160px;
+  height: 86px;
+  border-radius: 6px;
+  padding: 14px 10px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  margin: 0 6px 12px;
+  background: $colorBG;
+  min-width: 160px;
+  max-width: 220px;
+
+  &.empty {
+    height: 0;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .title {
+    padding-bottom: 5px;
+    border-bottom: 1px dashed rgba($color, 0.5);
+  }
+
+  &-text {
+    color: $color;
+  }
+
+  &-content {
+    margin-left: -6px;
+    margin-right: -6px;
+  }
+
+  &-wrap {
+    margin: 0 auto;
+    flex-flow: row wrap;
+    max-width: 1372px;
+  }
+
+  &:nth-child(2),
+  &:nth-child(4) {
+    background: $color2BG;
+
+    .item-text {
+      color: $color2;
+    }
+
+    .title {
+      border-bottom: 1px dashed rgba($color2, 0.5);
+    }
+  }
+
+  &:nth-child(3) {
+    background: $color3BG;
+
+    .item-text {
+      color: $color3;
+    }
+
+    .title {
+      border-bottom: 1px dashed rgba($color3, 0.5);
+    }
+  }
+
+  &:nth-child(5),
+  &:nth-child(6) {
+    background: $color4BG;
+
+    .item-text {
+      color: $color4;
+    }
+
+    .title {
+      border-bottom: 1px dashed rgba($color4, 0.5);
+    }
+  }
+
+  &:nth-child(7) {
+    background: $color5BG;
+
+    .item-text {
+      color: $color5;
+    }
+
+    .title {
+      border-bottom: 1px dashed rgba($color5, 0.5);
+    }
+  }
+
+  //&:nth-child(n+4) {
+  //  .item-text {
+  //    color: $color2;
+  //  }
+  //
+  //  .title {
+  //    border-bottom: 1px dashed  rgba($color2, 0.5);
+  //  }
+  //}
+  //
+  //&:nth-last-child(-n+2) {
+  //  .item-text {
+  //    color: $color3;
+  //  }
+  //
+  //  .title {
+  //    border-bottom: 1px dashed  rgba($color3, 0.5);
+  //  }
+  //}
+}
+
+::ng-deep {
+  .vip-settings-modal.modal {
+    overflow-x: auto;
+
+    .modal-dialog {
+      max-width: 1516px;
+      min-width: 1280px;
+    }
+
+    .modal-content {
+      margin: 0 30px;
+    }
+  }
+}

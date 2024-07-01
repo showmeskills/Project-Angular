@@ -1,0 +1,129 @@
+<div class="modal-header flex-ac">
+  <div class="modal-title fz-20 fw-bolder">{{ 'common.edit' | lang }}</div>
+
+  <div class="c-btn-close" mat-modal-close>
+    <svg-icon [src]="'./assets/images/svg/admin-close.svg'" class="svg-icon"></svg-icon>
+  </div>
+</div>
+
+<div class="modal-body fz-16 p-12">
+  <form-row [label]="'common.currency' | lang" label-width="120px">
+    <ng-template>{{ propsData.currency }}</ng-template>
+  </form-row>
+
+  <form-row [label]="'system.exchange.middlePrice' | lang" label-width="120px">
+    <ng-template>{{ propsData.rate | toFormatMoney : { maximumDecimalPlaces: 9 } }}</ng-template>
+  </form-row>
+
+  <!-- 自动获取 -->
+  <!--  <form-row [label]="'payment.currency.autoGet' | lang" label-width="110px">-- label-width=120px>-->
+  <!--    <ng-template>-->
+  <!--      <label class="switch switch-success mb-0">-->
+  <!--        <input type="checkbox" [(ngModel)]="autoGet" (change)="onAutoGetChange()" />-->
+  <!--        <span></span>-->
+  <!--      </label>-->
+  <!--    </ng-template>-->
+  <!--  </form-row>-->
+
+  <!-- 汇率换算 -->
+  <form-row [label]="'payment.currency.exchangeRate' | lang" label-width="120px">
+    <ng-template>
+      <div class="d-flex">
+        <mat-form-field [style.width.px]="100">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="convertData.convertCurrency"
+            (selectionChange)="onConvert()"
+            *search="let searchList of currencyList; key: 'currency'"
+          >
+            <input searchInput type="search" />
+            <mat-option *ngFor="let item of searchList | async" [value]="item.currency">
+              <span [class.text-success]="propsData.currency === item.currency">{{ item.currency }}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="ml-8">
+          <div>
+            <span>{{ 'payment.approval.exchangeRate' | lang }}:</span>
+            <span>
+              {{ convertData.result?.rate ?? 1 | toFormatMoney : { maximumDecimalPlaces: 9 } }}
+            </span>
+          </div>
+
+          <div *ngIf="!isSameCurrency" class="color-999 fz-14 lh-16 convert-rate">
+            <div>
+              <span>{{ convertData.convertCurrency }} {{ 'system.exchange.buyPrice' | lang }}: </span>
+              <span>{{ convertData?.result?.buyRateSpread || 0 }}%</span>
+            </div>
+            <div>
+              <span>{{ convertData.convertCurrency }} {{ 'system.exchange.sellPrice' | lang }}: </span>
+              <span>{{ convertData?.result?.sellRateSpread || 0 }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 买入价 -->
+  <form-row [label]="'system.exchange.buyPrice' | lang" label-width="120px">
+    <ng-template>
+      <div class="w-100 d-flex flex-ac flex-nowrap color-999">
+        <ng-container>
+          <input
+            [style.width.px]="130"
+            class="form-control text-center"
+            style="caret-color: inherit"
+            type="text"
+            autocomplete="off"
+            [input-float]="8"
+            [negative]="true"
+            [(ngModel)]="buy"
+          />
+          <span class="ml-2">%</span>
+        </ng-container>
+        <!--      <ng-template #buyTpl>-->
+        <!--        <span>{{ propsData.rate }}</span>-->
+        <!--      </ng-template>-->
+        <div class="pl-12">
+          {{ buyRateSpread | toFormatMoney : { maximumDecimalPlaces: 9 } }}
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+
+  <!-- 卖出价 -->
+  <form-row [label]="'system.exchange.sellPrice' | lang" label-width="120px">
+    <ng-template>
+      <div class="flex-1 d-flex flex-ac flex-nowrap color-999">
+        <ng-container>
+          <input
+            [style.width.px]="130"
+            class="form-control text-center"
+            style="caret-color: inherit"
+            type="text"
+            autocomplete="off"
+            [input-float]="8"
+            [negative]="true"
+            [(ngModel)]="sell"
+          />
+          <span class="ml-2">%</span>
+        </ng-container>
+        <!--      <ng-template #sellTpl>-->
+        <!--        <span>{{ propsData.rate }}</span>-->
+        <!--      </ng-template>-->
+        <div class="pl-12">
+          {{ sellRateSpread | toFormatMoney : { maximumDecimalPlaces: 9 } }}
+        </div>
+      </div>
+    </ng-template>
+  </form-row>
+</div>
+
+<div class="modal-footer btn-wrap">
+  <button type="button" class="c-btn btn btn-light" mat-modal-close>{{ 'common.cancel' | lang }}</button>
+  <button type="button" class="c-btn btn btn-primary" (click)="onSubmit()">
+    {{ 'common.confirm' | lang }}
+  </button>
+</div>

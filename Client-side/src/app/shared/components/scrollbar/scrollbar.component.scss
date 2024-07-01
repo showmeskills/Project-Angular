@@ -1,0 +1,98 @@
+div {
+  display: flex;
+}
+
+:host {
+  flex: 1 1 100%;
+  display: flex;
+  width: inherit;
+  height: inherit;
+  overflow: hidden;
+  flex-direction: column;
+  // position: relative;
+}
+
+.scroll-box {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  flex-direction: column;
+  display: block;
+
+  &.disabled {
+    overflow: hidden !important;
+  }
+
+  &.auto-thumb {
+    @media (any-hover: hover) {
+      scrollbar-width: none; //firefox scrollbar hide
+      &::-webkit-scrollbar {
+        width: 0;
+        display: none;
+      }
+    }
+    @media (any-hover: none) {
+      .scrollbar,
+      .scrollbar-thumb {
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    }
+  }
+
+  &:not(.auto-thumb) {
+    scrollbar-width: none; //firefox scrollbar hide
+    &::-webkit-scrollbar {
+      width: 0;
+      display: none;
+    }
+  }
+
+  // PC版
+  &:not(.mobile, .disabled) {
+    &:hover {
+      > .scrollbar {
+        opacity: 1;
+        transition-delay: 0ms;
+      }
+    }
+
+    > .scrollbar.drag {
+      opacity: 1;
+      transition-delay: 0ms;
+    }
+  }
+
+  // Mobile版
+  &.mobile.scroll {
+    > .scrollbar {
+      opacity: 1;
+      transition-delay: 0ms;
+    }
+  }
+}
+
+.scroll-content {
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.scrollbar {
+  position: absolute;
+  width: var(--scrollbar-size);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  transition-delay: 1s;
+
+  .scrollbar-thumb {
+    position: absolute;
+    right: 0;
+    left: 0;
+    border-radius: 8px;
+    background: #69696952;
+  }
+}

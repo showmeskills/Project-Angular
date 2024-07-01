@@ -1,0 +1,404 @@
+<div class="page-container">
+  <!-- 标题栏 -->
+  <div class="main-container unity-padding-web">
+    <div class="container header-container">
+      <div class="header">
+        <div class="content">
+          <!-- 大标题 -->
+          <div class="title">
+            {{ 'account_security' | translate }}
+          </div>
+          <div class="sub">
+            <!-- 次标题内容 -->
+            <div>
+              <span [ngClass]="userInfor?.isBindGoogleValid && userInfor?.isBindMobile ? 'check' : 'close'"></span>
+              {{ 'dual_authentication' | translate }}
+            </div>
+            <div>
+              <span [ngClass]="currenKycStatus.length > 3 ? 'check' : 'close'"></span> {{ 'id_ver' | translate }}
+            </div>
+            <div>
+              <span [ngClass]="userInfor?.hasWhiteList ? 'check' : 'close'"></span>
+              {{ 'cash_withdrawal_whitelist' | translate }}
+            </div>
+          </div>
+        </div>
+        <!-- 右侧icon -->
+        <div class="right-icon">
+          <ng-container
+            *ngIf="
+              currenKycStatus.length > 3 &&
+                userInfor?.isBindGoogleValid &&
+                userInfor?.isBindMobile &&
+                userInfor?.hasWhiteList;
+              else isFail
+            "
+          >
+            <img src="assets/svg/safety-logo-success.svg" />
+          </ng-container>
+          <ng-template #isFail>
+            <img src="assets/svg/safety-logo-fail.svg" />
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 列表 -->
+  <div class="main-container inner-page unity-padding-web">
+    <div class="container list-container" [appLoading]="loading">
+      <!-- 双重验证(2FA) -->
+      <div class="list" [style.opacity]="loading ? '0.5' : '1'">
+        <!-- 总标题 -->
+        <div class="list">
+          <div class="list-title">{{ 'dual_authentication' | translate }}</div>
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/phone-auth.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'phone_verification' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span>{{ 'protect_security' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content">
+              <!-- 状态 -->
+              <div class="status">
+                <div class="mobile">
+                  <span [ngClass]="userInfor?.isBindMobile ? 'check' : 'close'"></span>
+                  {{ userInfor?.isBindMobile ? userInfor?.areaCode + ' ' + userInfor?.mobile : ('unbind' | translate) }}
+                </div>
+              </div>
+              <!-- 按钮 -->
+              <div class="btn-group">
+                <customize-button
+                  class="btn"
+                  *ngIf="userInfor?.isBindMobile"
+                  minWidth="80px"
+                  size="small"
+                  (onClick)="handleReset()"
+                >
+                  {{ 'change_button' | translate }}</customize-button
+                >
+                <customize-button
+                  class="btn"
+                  [type]="userInfor?.isBindMobile ? 'default' : 'primary'"
+                  *ngIf="!userInfor?.isBindMobile"
+                  minWidth="80px"
+                  size="small"
+                  (onClick)="handleMobile(userInfor?.isBindMobile)"
+                  >{{ 'binding_button' | translate }}</customize-button
+                >
+                <!-- <div class="btn" (click)="handleMobile(userInfor?.isBindMobile)">
+                  {{userInfor?.isBindMobile? ('unbinding_button'|translate):('binding_button'|translate)}}
+                </div> -->
+              </div>
+            </div>
+          </div>
+          <!-- 谷歌验证器 -->
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/google-auth.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'google_authenticator' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span>{{ 'google_authenticator_desc' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content">
+              <div class="status">
+                <span [ngClass]="userInfor?.isBindGoogleValid ? 'check' : 'close'"></span>
+                {{ userInfor?.isBindGoogleValid ? ('start_using' | translate) : ('unbind' | translate) }}
+              </div>
+              <div class="btn-group">
+                <customize-button
+                  [type]="userInfor?.isBindGoogleValid ? 'default' : 'primary'"
+                  class="btn"
+                  minWidth="80px"
+                  size="small"
+                  (onClick)="handleGoogle(userInfor?.isBindGoogleValid)"
+                >
+                  {{ userInfor?.isBindGoogleValid ? ('unbinding_button' | translate) : ('binding_button' | translate) }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+          <!-- 邮箱验证 -->
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/email.svg" lazy="loading" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'email_verify' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span>{{ 'protect_asset' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content">
+              <div class="status">
+                <span [ngClass]="userInfor?.isBindEmail ? 'check' : 'close'"></span>
+                {{ userInfor?.isBindEmail ? getMaskedEmail(userInfor?.email || '') : ('unbind' | translate) }}
+              </div>
+              <div class="btn-group">
+                <customize-button
+                  [type]="userInfor?.isBindEmail ? 'default' : 'primary'"
+                  class="btn"
+                  minWidth="80px"
+                  size="small"
+                  (onClick)="handleEmail(userInfor?.isBindEmail)"
+                >
+                  {{ userInfor?.isBindEmail ? ('unbinding_button' | translate) : ('binding_button' | translate) }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 第三方账号登录 -->
+        <div class="list" *ngIf="socialInfo?.socialInfoList?.length">
+          <div class="list-title">{{ 'third_login' | translate }}</div>
+          <div class="single-list" *ngFor="let item of socialInfo.socialInfoList">
+            <div class="left-content">
+              <div class="list-icon">
+                <img [src]="'assets/images/auth-login/' + item.socialUserType.toLowerCase() + '.svg'" />
+              </div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ item?.socialUserType || '' }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content">
+              <!-- 状态 -->
+              <div class="status">
+                <div class="mobile">
+                  <span [ngClass]="item?.isBinded ? 'check' : 'close'"></span>
+                  {{ item?.isBinded ? item?.socialUserName || '' : ('unbind' | translate) }}
+                </div>
+              </div>
+              <!-- 按钮 -->
+              <div class="btn-group">
+                <customize-button
+                  class="btn"
+                  minWidth="80px"
+                  size="small"
+                  [type]="item?.isBinded ? 'default' : 'primary'"
+                  (onClick)="onThirdAuth(item)"
+                >
+                  {{
+                    item?.isBinded ? ('unbinding_button' | translate) : ('binding_button' | translate)
+                  }}</customize-button
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 高级设置 -->
+        <div class="list">
+          <!-- 总标题 -->
+          <div class="list-title">{{ 'adv_settings' | translate }}</div>
+          <!-- 修改用户名 -->
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/username-edit.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'change_username' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span>{{ 'username_change_desc' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content">
+              <!-- 状态 -->
+              <div class="status">
+                <span [ngClass]="userInfor?.userName?.length > 2 ? 'check' : 'close'"></span>
+                {{ userInfor?.userName }}
+              </div>
+              <div class="btn-group">
+                <customize-button class="btn" minWidth="80px" size="small" [routerLink]="['../security', 'reset-name']">
+                  {{ 'change_button' | translate }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+          <!-- 登录密码 -->
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/login-password.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'login_password' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span>{{ 'manage_password' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content f-end">
+              <div class="btn-group">
+                <customize-button
+                  class="btn"
+                  minWidth="80px"
+                  size="small"
+                  [routerLink]="['../security', 'reset-password']"
+                >
+                  {{ !userInfor?.hasPassword ? ('setting' | translate) : ('change_button' | translate) }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+          <!-- 身份认证 -->
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/id-identify.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'id_ver' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span>{{ 'protect_security' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content">
+              <div class="status">
+                <span [ngClass]="currentKycLevel > 0 ? 'check' : 'close'"></span>
+                {{ currenKycStatus }}
+              </div>
+              <div class="btn-group">
+                <customize-button class="btn" minWidth="80px" size="small" [routerLink]="['../kyc']">
+                  {{ 'verification' | translate }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+          <!-- 提现白名单 -->
+          <div class="single-list whitelist">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/whitelist.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'cash_withdrawal_whitelist' | translate }}</span>
+                  <span
+                    [routerLink]="['../../wallet', 'address']"
+                    class="mutual-opacity onact96-not description-link"
+                    >{{ 'address_management' | translate }}</span
+                  >
+                </div>
+                <div class="description">{{ 'whitelisting_info' | translate }}<span></span></div>
+              </div>
+            </div>
+            <div class="right-content f-end">
+              <div class="status">
+                <span [ngClass]="userInfor?.hasWhiteList ? 'check' : 'close'"></span>
+                {{ userInfor?.hasWhiteList ? ('opened' | translate) : ('closed' | translate) }}
+              </div>
+              <div class="btn-group">
+                <customize-button
+                  class="btn"
+                  *ngIf="!userInfor?.hasWhiteList"
+                  minWidth="80px"
+                  size="small"
+                  (onClick)="updateWhiteliststatus(true)"
+                >
+                  {{ 'enable_button' | translate }}
+                </customize-button>
+                <customize-button
+                  class="btn"
+                  minWidth="80px"
+                  size="small"
+                  *ngIf="userInfor?.hasWhiteList"
+                  (onClick)="updateWhiteliststatus(false)"
+                >
+                  {{ 'off_button' | translate }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 账户活动 -->
+        <div class="list">
+          <!-- 总标题 -->
+          <div class="list-title">{{ 'account_activity' | translate }}</div>
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/device.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'device_management' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span>{{ 'allowed_device' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="right-content f-end">
+              <!-- 按钮 -->
+              <div class="btn-group">
+                <customize-button
+                  class="btn"
+                  minWidth="80px"
+                  size="small"
+                  [routerLink]="['../security', 'device-management']"
+                >
+                  {{ 'manage_button' | translate }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+          <!-- 账户活动 -->
+          <div class="single-list">
+            <div class="left-content">
+              <div class="list-icon"><img src="assets/svg/activities.svg" /></div>
+              <div class="content">
+                <div class="content-title">
+                  <span>{{ 'account_activity' | translate }}</span>
+                </div>
+                <div class="description">
+                  <span
+                    >{{ 'last_login' | translate }}：{{
+                      userInfor?.lastLoginTime * 1000 | mdate : 'YYYY-MM-DD HH:mm:ss'
+                    }}</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="right-content f-end">
+              <div class="btn-group">
+                <customize-button class="btn" minWidth="80px" size="small" [routerLink]="['../security', 'activities']">
+                  {{ 'more_text' | translate }}
+                </customize-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- tg弹窗使用的独立底部 -->
+<ng-template #tgfooter>
+  <div class="tg-footer">
+    <customize-button width="100%" size="large" [type]="'default'" (onClick)="closeTgPop()">
+      {{ 'cancels' | translate }}
+    </customize-button>
+    <customize-button width="100%" size="large" [type]="'primary'" [class.loading]="tgLoading">
+      <ng-container *ngIf="tgLoading">
+        <i class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+      </ng-container>
+      <ng-container *ngIf="!tgLoading">
+        {{ 'confirm_button' | translate }}
+      </ng-container>
+      <app-third-auth [singleUse]="'Telegram'" (clickAuth)="tgConfirm()"></app-third-auth>
+    </customize-button>
+  </div>
+</ng-template>

@@ -1,0 +1,480 @@
+<div class="card py-8 px-12 flex-row flex-wrap">
+  <form-row label="UID" class="mr-8" [contentWidth]="200">
+    <ng-template>
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="data.uid"
+        (keyup)="$event.keyCode === 13 && loadData(true)"
+      />
+    </ng-template>
+  </form-row>
+  <form-row [label]="'report.playerItem.accountManager' | lang" class="mr-8">
+    <ng-template>
+      <mat-form-field [style.width.px]="120">
+        <mat-select class="form-control" [(ngModel)]="data.accountId" (selectionChange)="loadData(true)">
+          <mat-option value="">
+            {{ 'common.all' | lang }}
+          </mat-option>
+          <mat-option *ngFor="let item of accountManagerList" [value]="item.id">
+            {{ item.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
+  </form-row>
+
+  <div class="btn-wrap py-2">
+    <button class="c-btn c-btn-default" [disabled]="appService.isContentLoadingSubject | async" (click)="onReset()">
+      {{ 'common.reset' | lang }}
+    </button>
+    <button
+      class="c-btn c-btn-primary"
+      [disabled]="appService.isContentLoadingSubject | async"
+      (click)="loadData(true)"
+    >
+      {{ 'common.confirm' | lang }}
+    </button>
+  </div>
+</div>
+
+<div class="mt-6 card card-body">
+  <div class="d-flex flex-ac">
+    <div class="fz-20 flex-1">{{ 'report.vipPerformance' | lang }}</div>
+
+    <!-- <button type="button" class="ml-6 btn btn-light-primary" (click)="onExport()">
+      <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon svg-icon-lg"></svg-icon>
+      <span class="vam">{{ 'common.export' | lang }}</span>
+    </button> -->
+
+    <div>
+      <!-- 导出全部 -->
+      <button (click)="onExport(true)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.exportAll' | lang }}</span>
+      </button>
+      <!-- 导出 -->
+      <button (click)="onExport(false)" type="button" class="ml-6 btn btn-light-primary py-3 px-9">
+        <svg-icon [src]="'./assets/images/svg/export.svg'" class="svg-icon"></svg-icon>
+        <span class="vam">{{ 'game.provider.export' | lang }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <div class="export-table-wrap">
+      <table class="table mb-0" *ngIf="list.length">
+        <thead>
+          <tr>
+            <th>
+              <span class="cell">UID</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'report.playerItem.accountManager' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'report.playerItem.createTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'report.playerItem.isFirstVip' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.removals' | lang,
+                      sortColumn: 'removals'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">{{ 'report.playerItem.bindAccountTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">{{ 'report.playerItem.lastLoginTime' | lang }}</span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.totalDeposit' | lang,
+                      sortColumn: 'totalDeposit'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.depositCount' | lang,
+                      sortColumn: 'depositCount'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.totalWithdrawal' | lang,
+                      sortColumn: 'totalWithdrawal'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.withdrawCount' | lang,
+                      sortColumn: 'withdrawCount'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'NGR',
+                      sortColumn: 'ngr'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.vipActiveDay' | lang,
+                      sortColumn: 'vipActiveDay'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.activeDaysMonth' | lang,
+                      sortColumn: 'activeDaysMonth'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th style="min-width: 180px">
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.activeThirtyDay' | lang,
+                      sortColumn: 'activeThirtyDay'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th style="min-width: 180px">
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.accountActiveDay' | lang,
+                      sortColumn: 'accountActiveDay'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.casinoActiveFlow' | lang,
+                      sortColumn: 'casinoActiveFlow'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.sportsActiveFlow' | lang,
+                      sortColumn: 'sportsActiveFlow'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: 'report.playerItem.totalActiveFlow' | lang,
+                      sortColumn: 'totalActiveFlow'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: ('report.playerItem.toBon' | lang) + '%',
+                      sortColumn: 'toBon'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: ('report.playerItem.toDep' | lang) + '%',
+                      sortColumn: 'toDep'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th style="min-width: 180px">
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: ('report.playerItem.totalAmount' | lang),
+                      sortColumn: 'totalAmount'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: ('report.playerItem.bonusesCount' | lang),
+                      sortColumn: 'bonusesCount'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th style="min-width: 180px">
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: ('report.playerItem.avgBetCasino' | lang),
+                      sortColumn: 'avgBetCasino'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th style="min-width: 180px">
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: ('report.playerItem.avgBetSports' | lang),
+                      sortColumn: 'avgBetSports'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+            <th>
+              <span class="cell">
+                <ng-container
+                  *ngTemplateOutlet="
+                    sortTpl;
+                    context: {
+                      lang: ('report.playerItem.avgBet' | lang),
+                      sortColumn: 'avgBet'
+                    }
+                  "
+                ></ng-container>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of list; let i = index">
+            <td>
+              <span class="cell">{{ item.uid }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.accountManager || '-' }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.createTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ (item.isFirstVip ? 'common.yes' : 'common.no') | lang }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.removals }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.bindAccountTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.lastLoginTime | timeFormat }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.totalDeposit | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.depositCount }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.totalWithdrawal | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.withdrawCount }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.ngr | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.vipActiveDay }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.activeDaysMonth }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.activeThirtyDay }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.accountActiveDay }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.casinoActiveFlow | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.sportsActiveFlow | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.totalActiveFlow | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.toBon | integer }}%</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.toDep | integer }}%</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.totalAmount | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.bonusesCount }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.avgBetCasino | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.avgBetSports | currencyValue: true }}</span>
+            </td>
+            <td>
+              <span class="cell">{{ item.avgBet | currencyValue: true }}</span>
+            </td>
+          </tr>
+
+          <!-- <span class="cell">{{ item[key] | currencyValue : true }}</span> -->
+        </tbody>
+      </table>
+    </div>
+
+    <empty *ngIf="!list.length"></empty>
+
+    <!-- 页码 -->
+    <div class="d-flex flex-between pt-10 table-footer" *ngIf="list.length > 0">
+      <div>
+        <mat-form-field [style.width.px]="68">
+          <mat-select
+            class="form-control"
+            [(ngModel)]="paginator.pageSize"
+            [style.height.px]="34"
+            [style.font-size.px]="14"
+            (selectionChange)="loadData(true)"
+          >
+            <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="paginator.total">
+        <app-paginator
+          class="paginator d-flex justify-content-between align-items-center flex-wrap py-0"
+          [paginator]="paginator"
+          (paginate)="loadData()"
+        ></app-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #sortTpl let-lang="lang" let-sortColumn="sortColumn">
+  <span class="cursor-pointer d-flex align-items-center" (click)="onSort(sortColumn)" *ngIf="list.length">
+    <span class="vam white-space-nor" [class.text-primary]="sortRow.sortField === sortColumn">{{ lang }}</span>
+    <span class="ml-2 vam d-inline-block">
+      <div
+        class="triangle-up vam"
+        [class.active]="sortRow.isAsc !== null && sortRow.sortField === sortColumn && !sortRow?.isAsc"
+      ></div>
+      <div
+        class="triangle-down vam"
+        [class.active]="sortRow.isAsc !== null && sortRow.sortField === sortColumn && sortRow?.isAsc"
+      ></div>
+    </span>
+  </span>
+  <span class="vam" *ngIf="!list.length">{{ lang }}</span>
+</ng-template>

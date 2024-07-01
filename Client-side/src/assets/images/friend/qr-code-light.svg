@@ -1,0 +1,9 @@
+<svg id="二维码_2_" data-name="二维码 (2)" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17">
+    <defs>
+        <style>
+            .cls-1{fill:#333}
+        </style>
+    </defs>
+    <path id="形状" class="cls-1" d="M11.334 17v-5.666H17V17zM0 17v-5.666h5.666V17zm7.083-1.417v-4.25H8.5v4.25zm-1.417-4.25V6.375h2.125V2.48h1.417v3.186h2.126v1.417h3.542v2.834h-1.417V8.5h-2.125V7.083H9.208v.708H7.083v3.542zM2.125 9.208V7.791h1.417v1.417zm9.209-3.542V0H17v5.666zM0 5.666V0h5.666v5.666zm7.791-4.25V0h1.417v1.417z"/>
+    <path id="路径" class="cls-1" d="M0 0h1.7v2.55H0z" transform="translate(8.5 9.35)"/>
+</svg>

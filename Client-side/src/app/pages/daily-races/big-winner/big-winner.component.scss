@@ -1,0 +1,21 @@
+.list-item-container {
+  min-height: unset !important;
+  height: 156px !important;
+  overflow: hidden;
+
+  .list-item {
+    > div {
+      @media (max-width: 767px) {
+        &:first-child {
+          justify-content: flex-start;
+        }
+        &:nth-child(n + 2) {
+          justify-content: center;
+        }
+        &:last-child {
+          justify-content: flex-end;
+        }
+      }
+    }
+  }
+}

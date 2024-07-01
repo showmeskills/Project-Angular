@@ -1,0 +1,16 @@
+<div class="d-flex flex-ac">
+  <div class="flex-1 d-flex flex-ac">
+    <div class="d-flex flex-center position-relative" style="width: 56px; height: 56px">
+      <img [src]="src" *ngIf="src" />
+      <ng-container *ngIf="!src">
+        <img [currencyIcon]="name" currencySize="38px" class="position-relative zindex-1" />
+        <img [currencyIcon]="name" currencySize="38px" class="position-absolute icon-underside" />
+      </ng-container>
+    </div>
+    <span class="ml-2 fz-16 color-aaa">{{ title }}</span>
+  </div>
+
+  <div class="fz-16 color-aaa mr-2">{{ name }}</div>
+</div>
+
+<div class="fz-24 mx-4 lh-30 mt-3">{{ value | currencyValue : name }}</div>

@@ -1,0 +1,156 @@
+<div class="advance-container">
+  <!-- 标题栏 -->
+  <div class="header-container">
+    <div class="dailog-header">{{ 'adv_ver' | translate }}</div>
+    <div>
+      <!-- 返回 -->
+      <span
+        class="icon-left-arrow onact96-not"
+        *ngIf="!isPage1"
+        [class.disabled]="submitLoading || upLoading"
+        (click)="back()"
+      ></span>
+      <!-- 关闭 -->
+      <span
+        class="icon-close-simple onact96-not"
+        [class.disabled]="submitLoading || upLoading"
+        (click)="close()"
+      ></span>
+    </div>
+  </div>
+  <!--表单验证-->
+  <div class="dailog-container" [appLoading]="initLoading">
+    <!--Page 1-->
+    <ng-container *ngIf="isPage1">
+      <!--labe-->
+      <div class="label">
+        <span class="offset-right">{{ 'confirm_ad' | translate }}</span>
+      </div>
+      <!--选择国家-->
+      <div class="country-selecter-colunm">
+        <label class="form-header">{{ 'c_r' | translate }}</label>
+        <app-country-selecter [isShowSearch]="true" [isFromDialog]="true"> </app-country-selecter>
+      </div>
+      <form>
+        <ul>
+          <li class="form-colunm">
+            <app-customize-input
+              [required]="true"
+              size="large"
+              [trim]="false"
+              [(value)]="address"
+              #iUAddress
+              [label]="'residence_ad' | translate"
+              [error]="
+                !address && iUAddress.foc
+                  ? ('required_msg' | translate)
+                  : address && !(address.length > 4)
+                  ? ('fill_again' | translate)
+                  : ''
+              "
+            >
+              >
+            </app-customize-input>
+          </li>
+          <li class="form-row">
+            <div class="colunm-root">
+              <app-customize-input
+                type="text"
+                [required]="true"
+                size="large"
+                [(value)]="postcode"
+                #iUPostCode
+                [label]="'pt_c' | translate"
+                (onChange)="onPostInput()"
+                [format]="kycService.zipCodeFormat"
+                [trim]="false"
+                [error]="
+                  !postcode && iUPostCode.foc
+                    ? ('required_msg' | translate)
+                    : postcode && !postCodeValid
+                    ? ('fill_again' | translate)
+                    : ''
+                "
+              >
+                >
+              </app-customize-input>
+            </div>
+            <div class="colunm-root">
+              <app-customize-input
+                [required]="true"
+                size="large"
+                [trim]="false"
+                [(value)]="city"
+                #iUCity
+                [label]="'city' | translate"
+                (onChange)="onCityInput()"
+                [error]="
+                  !city && iUCity.foc
+                    ? ('required_msg' | translate)
+                    : city && !cityVaild
+                    ? ('fill_again' | translate)
+                    : ''
+                "
+              >
+                >
+              </app-customize-input>
+            </div>
+          </li>
+        </ul>
+      </form>
+    </ng-container>
+    <!--Page 2-->
+    <ng-container *ngIf="!isPage1">
+      <!--labe-->
+      <div class="label">
+        <span class="offset-right">{{ 'prof_ad' | translate }}</span>
+      </div>
+      <div class="details-column">
+        <p class="txt">{{ 'provide_file' | translate }}</p>
+        <p class="link onact96" (click)="openNotice()" (clickOutside)="showNotice = false">
+          {{ 'support_file' | translate }}
+          <span *ngIf="showNotice" class="notice-box">
+            <p class="notice-title">{{ noticeConfig.title }}</p>
+            <p class="txt" *ngFor="let item of noticeConfig.list">{{ item }}</p>
+          </span>
+        </p>
+        <p class="txt">{{ detailConfig.title }}</p>
+        <p class="txt" *ngFor="let item of detailConfig.detailList">{{ item }}</p>
+      </div>
+      <!--上传文档-->
+      <div class="document-box">
+        <div class="uploader-containter mutual-opacity colunm" [class.disabled]="upLoading">
+          <div class="face-uploader">
+            <i *ngIf="upLoading" class="animation-icon-loading-dot"><i></i><i></i><i></i></i>
+            <div class="note">
+              <i class="icon-kyc-camera"></i>
+              <span>{{ (imgFile ? 'upload_again' : 'up_files') | translate }}</span>
+            </div>
+            <object *ngIf="imgFile" [type]="imgFile.type" [data]="imgFileUrl | safe"></object>
+            <input type="file" (change)="selectFile($event)" />
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <div class="footer-container">
+      <div class="btn-group">
+        <customize-button
+          size="large"
+          type="primary"
+          width="40%"
+          [disabled]="!canSubmit()"
+          (onClick)="handleNext()"
+          [loading]="submitLoading"
+        >
+          {{ 'continue' | translate }}
+        </customize-button>
+      </div>
+      <div class="notice-row">
+        <i class="safety-i"></i>
+        <div class="notice-text">
+          {{ 'secure_info' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

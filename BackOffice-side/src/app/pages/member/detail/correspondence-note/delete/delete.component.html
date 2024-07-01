@@ -1,0 +1,38 @@
+<modal-title [title]="'member.overview.correspondence.deleteTips' | lang" (close)="modal.dismiss()"></modal-title>
+
+<div class="modal-body">
+  <!-- 类型 -->
+  <form-row [label]="'member.overview.correspondence.category' | lang" label-width="150">
+    <ng-template>
+      <ng-container [ngSwitch]="data?.boardType">
+        <ng-container *ngSwitchCase="'Email'">
+          {{ 'member.overview.correspondence.email' | lang }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'Chat'">
+          {{ 'member.overview.correspondence.chat' | lang }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'Other'">
+          {{ 'member.overview.correspondence.other' | lang }}
+        </ng-container>
+        <ng-container *ngSwitchDefault>-</ng-container>
+      </ng-container>
+    </ng-template>
+  </form-row>
+
+  <!-- 日期 -->
+  <form-row [label]="'common.date' | lang" label-width="150">
+    <ng-template>{{ data?.messageBoardTime | timeFormat }}</ng-template>
+  </form-row>
+
+  <!-- 最后添加人 -->
+  <form-row [label]="'member.overview.correspondence.lastEditor' | lang" label-width="150">
+    <ng-template>{{ data?.lastEditName || '-' }}</ng-template>
+  </form-row>
+
+  <!-- 问题 -->
+  <form-row [label]="'member.overview.correspondence.problem' | lang" label-width="150">
+    <ng-template>{{ getProblemLang(data?.info) }}</ng-template>
+  </form-row>
+</div>
+
+<modal-footer (confirm)="onSubmit()" (dismiss)="modal.dismiss()"></modal-footer>
